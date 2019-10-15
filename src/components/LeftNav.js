@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { withRouter } from "react-router"
 import '../assets/css/LeftNav.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faMeteor, faIdCard, faShieldAlt, faDiceD20, faCog, faDragon } from '@fortawesome/free-solid-svg-icons';
+import { faMeteor, faShieldAlt, faDiceD20, faCog, faDragon } from '@fortawesome/free-solid-svg-icons';
 import Particles from 'react-particles-js';
 
 class LeftNav extends Component {
@@ -123,27 +123,27 @@ class LeftNav extends Component {
         <div className="gradIcon">
           <FontAwesomeIcon icon={faDiceD20} className="smallIcon" />
         </div>
-        <Link to="/spell-overview" style={{ top: "70px" }} className={this.props.location.pathname == "/spell-overview" ? "menuItemActiv" : ""}>
+        <Link to="/spell-overview" style={{ top: "70px" }} className={this.props.location.pathname === "/spell-overview" ? "menuItemActiv" : ""}>
           <div className="menuItem">
             <FontAwesomeIcon icon={faMeteor} /> Spells
           </div>
         </Link>
-        <Link to="/item-overview" style={{ top: "120px" }} className={this.props.location.pathname == "/item-overview" ? "menuItemActiv" : ""}>
+        <Link to="/item-overview" style={{ top: "120px" }} className={this.props.location.pathname === "/item-overview" ? "menuItemActiv" : ""}>
           <div className="menuItem">
             <FontAwesomeIcon icon={faShieldAlt} /> Items
           </div>
         </Link>
-        {/* <Link to="/char-overview" style={{ top: "170px" }} className={this.props.location.pathname == "/char-overview" ? "menuItemActiv" : ""}>
+        {/* <Link to="/char-overview" style={{ top: "170px" }} className={this.props.location.pathname === "/char-overview" ? "menuItemActiv" : ""}>
           <div className="menuItem">
             <FontAwesomeIcon icon={faIdCard} /> Chars
           </div>
         </Link> */}
-        <Link to="/monster-overview" style={{ top: "170px" }} className={this.props.location.pathname == "/monster-overview" ? "menuItemActiv" : ""}>
+        <Link to="/monster-overview" style={{ top: "170px" }} className={this.props.location.pathname === "/monster-overview" ? "menuItemActiv" : ""}>
           <div className="menuItem">
             <FontAwesomeIcon icon={faDragon} /> Monsters
           </div>
         </Link>
-        <Link to="/options" style={{ bottom: "10px" }} className={this.props.location.pathname == "/options" ? "menuItemActiv" : ""}>
+        <Link to="/options" style={{ bottom: "10px" }} className={this.props.location.pathname === "/options" ? "menuItemActiv" : ""}>
           <div className="menuItem">
             <FontAwesomeIcon icon={faCog} /> Options
           </div>

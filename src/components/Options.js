@@ -3,18 +3,14 @@ import React, { Component } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPatreon, faDiscord } from '@fortawesome/free-brands-svg-icons';
 
-const electron = window.require('electron');
-const { shell } = window.require('electron');
-const ipcRenderer = electron.ipcRenderer;
-const { dialog, app } = electron.remote;
-const fs = require('fs');
+// const fs = require('fs');
 
 class Options extends Component {
   state = {
     spells: [],
     items: [],
     monsters: [],
-    appPath: app.getAppPath() + '\\export'
+    // appPath: app.getAppPath() + '\\export'
   }
 
   receiveAllSpells = (evt, result) => {
@@ -39,176 +35,176 @@ class Options extends Component {
   }
 
   componentDidMount() {
-    ipcRenderer.send('getAllSpells');
-    ipcRenderer.send('getAllItems');
-    ipcRenderer.send('getAllMonsters');
-    ipcRenderer.on("getAllSpellsResult", this.receiveAllSpells);
-    ipcRenderer.on("getAllItemsResult", this.receiveAllItems);
-    ipcRenderer.on("getAllMonstersResult", this.receiveAllMonsters);
+    // ipcRenderer.send('getAllSpells');
+    // ipcRenderer.send('getAllItems');
+    // ipcRenderer.send('getAllMonsters');
+    // ipcRenderer.on("getAllSpellsResult", this.receiveAllSpells);
+    // ipcRenderer.on("getAllItemsResult", this.receiveAllItems);
+    // ipcRenderer.on("getAllMonstersResult", this.receiveAllMonsters);
 
   }
   componentWillUnmount() {
-    ipcRenderer.removeListener("getAllSpellsResult", this.receiveAllSpells);
-    ipcRenderer.removeListener("getAllItemsResult", this.receiveAllItems);
-    ipcRenderer.removeListener("getAllMonstersResult", this.receiveAllMonsters)
+    // ipcRenderer.removeListener("getAllSpellsResult", this.receiveAllSpells);
+    // ipcRenderer.removeListener("getAllItemsResult", this.receiveAllItems);
+    // ipcRenderer.removeListener("getAllMonstersResult", this.receiveAllMonsters)
   }
 
   toPatreon = () => {
-    shell.openExternal("https://www.patreon.com/bePatron?u=25310394");
+    // shell.openExternal("https://www.patreon.com/bePatron?u=25310394");
   }
   toDiscord = () => {
-    shell.openExternal("https://discord.gg/2KB3tzG");
+    // shell.openExternal("https://discord.gg/2KB3tzG");
   }
 
   exportSpells = (e) => {
-    let content = JSON.stringify(this.state.spells);
+    // let content = JSON.stringify(this.state.spells);
 
-    let fileName = this.state.appPath;
-    if (!fs.existsSync(fileName)) {
-      fs.mkdirSync(fileName);
-      console.log("Export folder created!");
-    }
-    fileName = fileName + '\\spells.json';
-    console.log(fileName);
-    // fileName is a string that contains the path and filename created in the save file dialog.  
-    fs.writeFile(fileName, content, (err) => {
-      if (err) {
-        alert("An error ocurred creating the file " + err.message)
-      }
-      alert("The file has been succesfully saved");
-    });
+    // let fileName = this.state.appPath;
+    // if (!fs.existsSync(fileName)) {
+    //   fs.mkdirSync(fileName);
+    //   console.log("Export folder created!");
+    // }
+    // fileName = fileName + '\\spells.json';
+    // console.log(fileName);
+    // // fileName is a string that contains the path and filename created in the save file dialog.
+    // fs.writeFile(fileName, content, (err) => {
+    //   if (err) {
+    //     alert("An error ocurred creating the file " + err.message)
+    //   }
+    //   alert("The file has been succesfully saved");
+    // });
   }
 
   exportItems = (e) => {
-    let content = JSON.stringify(this.state.items);
+    // let content = JSON.stringify(this.state.items);
 
-    let fileName = this.state.appPath;
-    if (!fs.existsSync(fileName)) {
-      fs.mkdirSync(fileName);
-      console.log("Export folder created!");
-    }
-    fileName = fileName + '\\items.json';
-    console.log(fileName);
-    // fileName is a string that contains the path and filename created in the save file dialog.  
-    fs.writeFile(fileName, content, (err) => {
-      if (err) {
-        alert("An error ocurred creating the file " + err.message)
-      }
-      alert("The file has been succesfully saved");
-    });
+    // let fileName = this.state.appPath;
+    // if (!fs.existsSync(fileName)) {
+    //   fs.mkdirSync(fileName);
+    //   console.log("Export folder created!");
+    // }
+    // fileName = fileName + '\\items.json';
+    // console.log(fileName);
+    // // fileName is a string that contains the path and filename created in the save file dialog.
+    // fs.writeFile(fileName, content, (err) => {
+    //   if (err) {
+    //     alert("An error ocurred creating the file " + err.message)
+    //   }
+    //   alert("The file has been succesfully saved");
+    // });
   }
 
   exportMonsters = (e) => {
-    let content = JSON.stringify(this.state.monsters);
+    // let content = JSON.stringify(this.state.monsters);
 
-    let fileName = this.state.appPath;
-    if (!fs.existsSync(fileName)) {
-      fs.mkdirSync(fileName);
-      console.log("Export folder created!");
-    }
-    fileName = fileName + '\\monsters.json';
-    console.log(fileName);
-    // fileName is a string that contains the path and filename created in the save file dialog.  
-    fs.writeFile(fileName, content, (err) => {
-      if (err) {
-        alert("An error ocurred creating the file " + err.message)
-      }
-      alert("The file has been succesfully saved");
-    });
+    // let fileName = this.state.appPath;
+    // if (!fs.existsSync(fileName)) {
+    //   fs.mkdirSync(fileName);
+    //   console.log("Export folder created!");
+    // }
+    // fileName = fileName + '\\monsters.json';
+    // console.log(fileName);
+    // // fileName is a string that contains the path and filename created in the save file dialog.
+    // fs.writeFile(fileName, content, (err) => {
+    //   if (err) {
+    //     alert("An error ocurred creating the file " + err.message)
+    //   }
+    //   alert("The file has been succesfully saved");
+    // });
   }
 
   importSpells = (e) => {
-    dialog.showOpenDialog((fileNames) => {
-      // fileNames is an array that contains all the selected
-      if (fileNames === undefined) {
-        console.log("No file selected");
-        return;
-      }
+    // dialog.showOpenDialog((fileNames) => {
+    //   // fileNames is an array that contains all the selected
+    //   if (fileNames === undefined) {
+    //     console.log("No file selected");
+    //     return;
+    //   }
 
-      fs.readFile(fileNames[0], 'utf-8', (err, data) => {
-        if (err) {
-          alert("An error ocurred reading the file :" + err.message);
-          return;
-        }
+    //   fs.readFile(fileNames[0], 'utf-8', (err, data) => {
+    //     if (err) {
+    //       alert("An error ocurred reading the file :" + err.message);
+    //       return;
+    //     }
 
-        // Change how to handle the file content
-        let spells = JSON.parse(data);
-        ipcRenderer.send('saveNewSpells', { spells });
-      });
-    });
+    //     // Change how to handle the file content
+    //     let spells = JSON.parse(data);
+    //     ipcRenderer.send('saveNewSpells', { spells });
+    //   });
+    // });
   }
 
   importItems = (e) => {
-    dialog.showOpenDialog((fileNames) => {
-      // fileNames is an array that contains all the selected
-      if (fileNames === undefined) {
-        console.log("No file selected");
-        return;
-      }
+    // dialog.showOpenDialog((fileNames) => {
+    //   // fileNames is an array that contains all the selected
+    //   if (fileNames === undefined) {
+    //     console.log("No file selected");
+    //     return;
+    //   }
 
-      fs.readFile(fileNames[0], 'utf-8', (err, data) => {
-        if (err) {
-          alert("An error ocurred reading the file :" + err.message);
-          return;
-        }
+    //   fs.readFile(fileNames[0], 'utf-8', (err, data) => {
+    //     if (err) {
+    //       alert("An error ocurred reading the file :" + err.message);
+    //       return;
+    //     }
 
-        // Change how to handle the file content
-        let items = JSON.parse(data);
-        ipcRenderer.send('saveNewItems', { items }); // fehlt noch
-      });
-    });
+    //     // Change how to handle the file content
+    //     let items = JSON.parse(data);
+    //     ipcRenderer.send('saveNewItems', { items }); // fehlt noch
+    //   });
+    // });
   }
 
   importMonsters = (e) => {
-    dialog.showOpenDialog((fileNames) => {
-      // fileNames is an array that contains all the selected
-      if (fileNames === undefined) {
-        console.log("No file selected");
-        return;
-      }
+    // dialog.showOpenDialog((fileNames) => {
+    //   // fileNames is an array that contains all the selected
+    //   if (fileNames === undefined) {
+    //     console.log("No file selected");
+    //     return;
+    //   }
 
-      fs.readFile(fileNames[0], 'utf-8', (err, data) => {
-        if (err) {
-          alert("An error ocurred reading the file :" + err.message);
-          return;
-        }
+    //   fs.readFile(fileNames[0], 'utf-8', (err, data) => {
+    //     if (err) {
+    //       alert("An error ocurred reading the file :" + err.message);
+    //       return;
+    //     }
 
-        // Change how to handle the file content
-        let monsters = JSON.parse(data);
-        ipcRenderer.send('saveNewMonsters', { monsters });
-      });
-    });
+    //     // Change how to handle the file content
+    //     let monsters = JSON.parse(data);
+    //     ipcRenderer.send('saveNewMonsters', { monsters });
+    //   });
+    // });
   }
 
   importMonstersSRD = (e) => {
-    dialog.showOpenDialog((fileNames) => {
-      // fileNames is an array that contains all the selected
-      if (fileNames === undefined) {
-        console.log("No file selected");
-        return;
-      }
+    // dialog.showOpenDialog((fileNames) => {
+    //   // fileNames is an array that contains all the selected
+    //   if (fileNames === undefined) {
+    //     console.log("No file selected");
+    //     return;
+    //   }
 
-      fs.readFile(fileNames[0], 'utf-8', (err, data) => {
-        if (err) {
-          alert("An error ocurred reading the file :" + err.message);
-          return;
-        }
+    //   fs.readFile(fileNames[0], 'utf-8', (err, data) => {
+    //     if (err) {
+    //       alert("An error ocurred reading the file :" + err.message);
+    //       return;
+    //     }
 
-        // Change how to handle the file content
-        let monsters = JSON.parse(data);
-        ipcRenderer.send('saveNewMonstersSRD', { monsters });
-      });
-    });
+    //     // Change how to handle the file content
+    //     let monsters = JSON.parse(data);
+    //     ipcRenderer.send('saveNewMonstersSRD', { monsters });
+    //   });
+    // });
   }
 
   deleteAllItems = () => {
-    ipcRenderer.send('deleteAllItems');
+    // ipcRenderer.send('deleteAllItems');
   }
   deleteAllSpells = () => {
-    ipcRenderer.send('deleteAllSpells');
+    // ipcRenderer.send('deleteAllSpells');
   }
   deleteAllMonsters = () => {
-    ipcRenderer.send('deleteAllMonsters');
+    // ipcRenderer.send('deleteAllMonsters');
   }
 
   render() {

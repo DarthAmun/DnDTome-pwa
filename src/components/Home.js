@@ -4,10 +4,7 @@ import '../assets/css/Home.css';
 import Particles from 'react-particles-js';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faDiceD20, faDragon } from '@fortawesome/free-solid-svg-icons';
-
-const electron = window.require('electron');
-const ipcRenderer = electron.ipcRenderer;
+import { faDiceD20 } from '@fortawesome/free-solid-svg-icons';
 
 class Home extends Component {
   render() {

@@ -1,20 +1,9 @@
 import './assets/css/App.css';
 import React, { Component } from 'react';
-import { MemoryRouter, Switch, Route } from 'react-router';
-
-import SpellOverview from './components/spell/SpellOverview';
-import CharOverview from './components/char/CharOverview';
-import ItemOverview from './components/item/ItemOverview';
-import MonsterOverview from './components/monster/MonsterOverview';
-
-import CharView from './components/char/CharView';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 
 import Home from './components/Home';
 import Options from './components/Options';
-
-import AddSpell from './components/add/AddSpell';
-import AddItem from './components/add/AddItem';
-import AddMonster from './components/add/AddMonster';
 
 import LeftNav from './components/LeftNav';
 import TopNav from './components/TopNav';
@@ -34,35 +23,24 @@ class PageLayout extends Component {
   }
 }
 
+class DebugRouter extends Router {
+  constructor(props){
+    super(props);
+    console.log('initial history is: ', JSON.stringify(this.history, null,2))
+    this.history.listen((location, action)=>{
+      console.log(
+        `The current URL is ${location.pathname}${location.search}${location.hash}`
+      )
+      console.log(`The last navigation action was ${action}`, JSON.stringify(this.history, null,2));
+    });
+  }
+}
+
 class App extends Component {
   render() {
     return (
-      <MemoryRouter>
+      <DebugRouter>
         <Switch>
-          <Route path="/spell-overview" render={() => {
-            return <PageLayout><SpellOverview /></PageLayout>
-          }} />
-          <Route path="/item-overview" render={() => {
-            return <PageLayout><ItemOverview /></PageLayout>
-          }} />
-          <Route path="/monster-overview" render={() => {
-            return <PageLayout><MonsterOverview /></PageLayout>
-          }} />
-          <Route path="/char-overview" render={() => {
-            return <PageLayout><CharOverview /></PageLayout>
-          }} />
-          <Route path="/char/:id" render={props => {
-            return <PageLayout><CharView {...props}/></PageLayout>
-          }} />
-          <Route path="/add-spell" render={() => {
-            return <PageLayout><AddSpell /></PageLayout>
-          }} />
-          <Route path="/add-item" render={() => {
-            return <PageLayout><AddItem /></PageLayout>
-          }} />
-          <Route path="/add-monster" render={() => {
-            return <PageLayout><AddMonster /></PageLayout>
-          }} />
           <Route path="/options" render={() => {
             return <PageLayout><Options /></PageLayout>
           }} />
@@ -75,7 +53,7 @@ class App extends Component {
             </div>
           }} />
         </Switch>
-      </MemoryRouter>
+      </DebugRouter>
     );
   }
 }

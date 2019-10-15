@@ -4,17 +4,14 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { faWindowMinimize } from '@fortawesome/free-regular-svg-icons';
 
-const electron = window.require('electron');
-const ipcRenderer = electron.ipcRenderer;
-
 class TopNav extends Component {
 
     closeMainWindow = () => {
-        ipcRenderer.send('closeMainWindow');
+        // ipcRenderer.send('closeMainWindow');
     }
 
     minimizeWindow = () => {
-        ipcRenderer.send('minimizeMainWindow');
+        // ipcRenderer.send('minimizeMainWindow');
     }
 
     render() {
