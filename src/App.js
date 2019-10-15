@@ -6,7 +6,6 @@ import Home from './components/Home';
 import Options from './components/Options';
 
 import LeftNav from './components/LeftNav';
-import TopNav from './components/TopNav';
 
 class PageLayout extends Component {
   render() {
@@ -14,7 +13,6 @@ class PageLayout extends Component {
       <div className="App">
         <LeftNav />
         <div id="content">
-          <TopNav />
           {this.props.children}
         </div>
         <div id="credits">by DarthAmun</div>
