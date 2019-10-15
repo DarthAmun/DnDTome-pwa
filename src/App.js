@@ -6,6 +6,7 @@ import Home from './components/Home';
 import Options from './components/Options';
 
 import LeftNav from './components/LeftNav';
+import packageJson from '../package.json';
 
 class PageLayout extends Component {
   render() {
@@ -15,7 +16,7 @@ class PageLayout extends Component {
         <div id="content">
           {this.props.children}
         </div>
-        <div id="credits">by DarthAmun</div>
+        <div id="credits">v{packageJson.version} by DarthAmun</div>
       </div>
     );
   }
@@ -47,7 +48,7 @@ class App extends Component {
               <div id="content">
                 <Home />
               </div>
-              <div id="credits">by DarthAmun</div>
+              <div id="credits">v{packageJson.version} by DarthAmun</div>
             </div>
           }} />
         </Switch>
