@@ -17,7 +17,7 @@
     "react-scripts": "3.2.0"
   },
   "scripts": {
-    "start": "cross-env HTTPS=true react-scripts start",
+    "start": "set HTTPS=true && react-scripts start",
     "start-sw": "http-server ./build",
     "build": "react-scripts build",
     "test": "react-scripts test",
