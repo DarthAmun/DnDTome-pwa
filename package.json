@@ -1,6 +1,7 @@
 {
   "name": "dndtome-pwa",
   "version": "0.1.0",
+  "homepage": "https://darthamun.github.io/dndtome-pwa",
   "private": true,
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.25",
@@ -20,7 +21,9 @@
     "start-sw": "http-server ./build",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "eslintConfig": {
     "extends": "react-app"
