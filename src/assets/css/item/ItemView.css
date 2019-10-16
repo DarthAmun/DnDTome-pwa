@@ -1,0 +1,122 @@
+body {
+    height: 100%;
+    margin: 0px;
+    background-color: rgb(248, 248, 248);
+    overflow: hidden;
+}
+
+@font-face {
+    font-family: 'Quicksand';
+    src: url('../../font/Quicksand-Medium.ttf') format('truetype');
+}
+
+#itemView {
+    height: calc(100% - 20px);
+    width: calc(100% - 20px);
+    overflow: hidden;
+    color: dimgrey;
+    padding: 10px;
+    font-family: 'Quicksand', sans-serif;
+}
+
+#itemView input {
+    height: 30px;
+    width: 200px;
+    border: none;
+    border-radius: 3px;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-left: 5px;
+    margin-bottom: 5px;
+    float: right;
+    font-family: inherit;
+    font-size: 14px;
+    background-color: white;
+    color: dimgrey;
+    box-shadow: 0px 0px 10px 0px rgba(172, 172, 172, 0.2);
+}
+
+#itemView button {
+    height: 32px;
+    width: 110px;
+    border: none;
+    border-radius: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-bottom: 5px;
+    margin-left: 5px;
+    text-align: center;
+    float: right;
+    font-family: inherit;
+    font-size: 14px;
+    background-color: #8000ff;
+    color: white;
+    cursor: pointer;
+}
+
+#itemView button:hover {
+    box-shadow: 0px 0px 10px 0px rgba(172, 172, 172, 1);
+    cursor: pointer;
+}
+
+#itemView button.delete {
+    background-color: darkred;
+}
+
+#itemView textarea {
+    height: 300px;
+    width: 428px;
+    float: left;
+    resize: none;
+    border-radius: 3px;
+    border-bottom-right-radius: 0px;
+    border: none;
+    padding: 10px;
+    font-family: inherit;
+    font-size: 14px;
+    margin-bottom: 5px;
+    background-color: white;
+    color: dimgrey;
+    box-shadow: 0px 0px 10px 0px rgba(172, 172, 172, 0.2);
+}
+
+#itemView .image {
+    float: left;
+    width: 320px;
+    height: 320px;
+    overflow: hidden;
+    margin-right: 5px;
+    margin-bottom: 5px;
+    box-shadow: 0px 0px 10px 0px rgba(172, 172, 172, 0.2);
+    background-color: white;
+}
+
+#itemView label {
+    display: inline-block;
+    width: 320px;
+    text-align: right;
+    line-height: 30px;
+}
+
+#itemView .top {
+    float: left;
+    width: 320px;
+    margin-right: 10px;
+}
+
+#itemView img {
+    width: 320px;
+    margin-left: 5px;
+    box-shadow: 0px 0px 10px 0px rgba(172, 172, 172, 0.2);
+}
+
+#itemView::-webkit-scrollbar, #itemView textarea::-webkit-scrollbar {
+    width: 6px;
+    background-color: rgba(92, 102, 130, 1);
+    border-radius: 5px;
+}
+
+#itemView::-webkit-scrollbar-thumb, #itemView textarea::-webkit-scrollbar-thumb {
+    background-color: #8000ff;
+    border-radius: 5px;
+}

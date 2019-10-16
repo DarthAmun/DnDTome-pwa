@@ -1,26 +1,28 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { withRouter } from "react-router"
-import '../assets/css/LeftNav.css';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faMeteor, faShieldAlt, faDiceD20, faCog, faDragon } from '@fortawesome/free-solid-svg-icons';
+import './assets/css/Home.css';
 import Particles from 'react-particles-js';
 
-class LeftNav extends Component {
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faDiceD20, faDragon } from '@fortawesome/free-solid-svg-icons';
+
+
+
+class Home extends Component {
   render() {
     return (
-      <div id="leftNav">
-        <Particles className="particlesWrapper" params={{
+      <div className="home">
+        <Particles className="particlesWrapperContainer" params={{
           "particles": {
             "number": {
               "value": 160,
               "density": {
                 "enable": true,
-                "value_area": 400
+                "value_area": 800
               }
             },
             "color": {
-              "value": "#ffffff"
+              "value": "#8000ff"
             },
             "shape": {
               "type": "circle",
@@ -120,43 +122,21 @@ class LeftNav extends Component {
           },
           "retina_detect": true
         }} />
-        <div className="gradIcon">
-          <FontAwesomeIcon icon={faDiceD20} className="smallIcon" />
+        <div id="container">
+          <div id="title">DnDTome</div>
+          <Link to="/spell-overview">
+            <FontAwesomeIcon icon={faDiceD20} className="animated bounce" />
+          </Link>
         </div>
-        <Link to="/spell-overview" style={{ top: "70px" }} className={this.props.location.pathname === "/spell-overview" ? "menuItemActiv" : ""}>
-          <div className="menuItem">
-            <FontAwesomeIcon icon={faMeteor} /> Spells
-          </div>
-        </Link>
-        <Link to="/item-overview" style={{ top: "120px" }} className={this.props.location.pathname === "/item-overview" ? "menuItemActiv" : ""}>
-          <div className="menuItem">
-            <FontAwesomeIcon icon={faShieldAlt} /> Items
-          </div>
-        </Link>
-        {/* <Link to="/char-overview" style={{ top: "170px" }} className={this.props.location.pathname === "/char-overview" ? "menuItemActiv" : ""}>
-          <div className="menuItem">
-            <FontAwesomeIcon icon={faIdCard} /> Chars
-          </div>
-        </Link> */}
-        <Link to="/monster-overview" style={{ top: "170px" }} className={this.props.location.pathname === "/monster-overview" ? "menuItemActiv" : ""}>
-          <div className="menuItem">
-            <FontAwesomeIcon icon={faDragon} /> Monsters
-          </div>
-        </Link>
-        <Link to="/options" style={{ bottom: "10px" }} className={this.props.location.pathname === "/options" ? "menuItemActiv" : ""}>
-          <div className="menuItem">
-            <FontAwesomeIcon icon={faCog} /> Options
-          </div>
-        </Link>
         <svg width="0" height="0">
-          <radialGradient id="rgg" r="150%" cx="30%" cy="107%">
+          <radialGradient id="rg" r="150%" cx="30%" cy="107%">
             <stop stopColor="#350069" offset="0" />
             <stop stopColor="#B973FF" offset="0.9" />
           </radialGradient>
         </svg>
       </div>
-    )
+    );
   }
 }
 
-export default withRouter(LeftNav);
+export default Home;
