@@ -20,7 +20,11 @@ jobs:
     - name: npm install, build, and test
       run: |
         npm install
-        npm run deploy --if-present
+        npm run build --if-present
+        cd build 
+        git remote add XYZ
+        git commit -am "Neues deployment"
+        git push -f master
         
       env:
         CI: true
