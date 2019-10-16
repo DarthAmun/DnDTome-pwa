@@ -11,105 +11,105 @@ db.version(1).stores({
                 'monster_ablt,monster_skills,monster_sAblt,monster_lAbtl,monster_speed'
 });
 
-async function test() {
+// async function test() {
 
-    var id = await db.spells.put({
-        name: 'Test' ,
-        classes: 'Test' ,
-        sources: 'Test' ,
-        level: '0',
-        school: 'Test' ,
-        time: 'Test' ,
-        range: 'Test' ,
-        components: 'Test' ,
-        duration: 'Test' ,
-        ritual: 'Test',
-        text: 'Test'
-    });
+//     var id = await db.spells.put({
+//         name: 'Test' ,
+//         classes: 'Test' ,
+//         sources: 'Test' ,
+//         level: '0',
+//         school: 'Test' ,
+//         time: 'Test' ,
+//         range: 'Test' ,
+//         components: 'Test' ,
+//         duration: 'Test' ,
+//         ritual: 'Test',
+//         text: 'Test'
+//     });
 
-    var id2 = await db.monsters.put({
-        monster_name: 'Test',
-        monster_size: 'Test',
-        monster_type: 'Test',
-        monster_subtype: 'Test',
-        monster_cr: 'Test',
-        monster_alignment: 'Test',
-        monster_armorClass: 1,
-        monster_hitPoints: 1,
-        monster_strength: 1,
-        monster_dexterity: 1,
-        monster_constitution: 1,
-        monster_intelligence: 1,
-        monster_wisdom: 1,
-        monster_charisma: 1,
-        monster_dmgVulnerabilities: 'Test',
-        monster_dmgResistance: 'Test',
-        monster_dmgImmunities: 'Test',
-        monster_conImmunities: 'Test',
-        monster_senses: 'Test',
-        monster_lang: 'Test',
-        monster_source: 'Test',
-        monster_pic: 'Test',
-        monster_savingThrows: 'Test',
-        monster_ablt: 'Test',
-        monster_skills: 'Test',
-        monster_sAblt: 'Test',
-        monster_lAbtl: 'Test',
-        monster_speed: 'Test'
-    })
-    console.log("Got id " + id);
-    // Now lets add a bunch of tasks
-    await db.spells.bulkPut([
-        {
-            name: 'Test2' ,
-            classes: 'Test2' ,
-            sources: 'Test2' ,
-            level: '3',
-            school: 'Test2' ,
-            time: 'Test2' ,
-            range: 'Test2' ,
-            components: 'Test2' ,
-            duration: 'Test2' ,
-            ritual: 'Test2',
-            text: 'Test2'
-        },
-        {
-            name: 'Test3' ,
-            classes: 'Test3' ,
-            sources: 'Test3' ,
-            level: '4',
-            school: 'Test3' ,
-            time: 'Test3' ,
-            range: 'Test3' ,
-            components: 'Test3' ,
-            duration: 'Test3' ,
-            ritual: 'Test3',
-            text: 'Test3'
-        }
+//     var id2 = await db.monsters.put({
+//         monster_name: 'Test',
+//         monster_size: 'Test',
+//         monster_type: 'Test',
+//         monster_subtype: 'Test',
+//         monster_cr: 'Test',
+//         monster_alignment: 'Test',
+//         monster_armorClass: 1,
+//         monster_hitPoints: 1,
+//         monster_strength: 1,
+//         monster_dexterity: 1,
+//         monster_constitution: 1,
+//         monster_intelligence: 1,
+//         monster_wisdom: 1,
+//         monster_charisma: 1,
+//         monster_dmgVulnerabilities: 'Test',
+//         monster_dmgResistance: 'Test',
+//         monster_dmgImmunities: 'Test',
+//         monster_conImmunities: 'Test',
+//         monster_senses: 'Test',
+//         monster_lang: 'Test',
+//         monster_source: 'Test',
+//         monster_pic: 'Test',
+//         monster_savingThrows: 'Test',
+//         monster_ablt: 'Test',
+//         monster_skills: 'Test',
+//         monster_sAblt: 'Test',
+//         monster_lAbtl: 'Test',
+//         monster_speed: 'Test'
+//     })
+//     console.log("Got id " + id);
+//     // Now lets add a bunch of tasks
+//     await db.spells.bulkPut([
+//         {
+//             name: 'Test2' ,
+//             classes: 'Test2' ,
+//             sources: 'Test2' ,
+//             level: '3',
+//             school: 'Test2' ,
+//             time: 'Test2' ,
+//             range: 'Test2' ,
+//             components: 'Test2' ,
+//             duration: 'Test2' ,
+//             ritual: 'Test2',
+//             text: 'Test2'
+//         },
+//         {
+//             name: 'Test3' ,
+//             classes: 'Test3' ,
+//             sources: 'Test3' ,
+//             level: '4',
+//             school: 'Test3' ,
+//             time: 'Test3' ,
+//             range: 'Test3' ,
+//             components: 'Test3' ,
+//             duration: 'Test3' ,
+//             ritual: 'Test3',
+//             text: 'Test3'
+//         }
 
-    ]);
-    // Ok, so let's query it
+//     ]);
+//     // Ok, so let's query it
 
-    var spells = await db.spells.where('level').above(0).toArray();
-    //console.log("Found Spells: " + JSON.stringify(spells));
+//     var spells = await db.spells.where('level').above(0).toArray();
+//     //console.log("Found Spells: " + JSON.stringify(spells));
 
-    // Ok, so let's complete the 'Test Dexie' task.
-    await db.spells
-        .where('school')
-        .startsWithIgnoreCase('Test')
-        .modify({level: 1});
+//     // Ok, so let's complete the 'Test Dexie' task.
+//     await db.spells
+//         .where('school')
+//         .startsWithIgnoreCase('Test')
+//         .modify({level: 1});
 
-    console.log ("All tasks should be completed now.");
-    console.log ("Now let's delete all old tasks:");
+//     console.log ("All tasks should be completed now.");
+//     console.log ("Now let's delete all old tasks:");
 
-    // And let's remove all old tasks:
+//     // And let's remove all old tasks:
 
-    //await db.spells.where('id').above(0).delete();
+//     //await db.spells.where('id').above(0).delete();
 
-    console.log ("Done.");
-}
+//     console.log ("Done.");
+// }
 
-test().catch (err => {
-    console.error ("Uh oh! " + err.stack);
-});
+// test().catch (err => {
+//     console.error ("Uh oh! " + err.stack);
+// });
 export default db;
