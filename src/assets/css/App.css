@@ -35,7 +35,7 @@ html, body, #root {
 }
 
 #credits {
-  width: 100px;
+  width: 150px;
   height: 30px;
   position: absolute;
   bottom: 10px;
@@ -51,7 +51,7 @@ html, body, #root {
 
 #content {
   float: left;
-  height: calc(100% - 60px);
+  height: calc(100% - 20px);
   width: calc(100% - 120px);
   padding-left: 10px;
   padding-right: 10px;

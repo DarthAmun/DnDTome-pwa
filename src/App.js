@@ -2,6 +2,7 @@ import './assets/css/App.css';
 import React, { Component } from 'react';
 import { MemoryRouter, Switch, Route } from 'react-router';
 
+import packageJson from '../package.json';
 
 import SpellOverview from './components/spell/SpellOverview';
 import CharOverview from './components/char/CharOverview';
@@ -27,7 +28,7 @@ class PageLayout extends Component {
         <div id="content">
           {this.props.children}
         </div>
-        <div id="credits">by DarthAmun</div>
+        <div id="credits">v{packageJson.version} by DarthAmun</div>
       </div>
     );
   }
@@ -70,7 +71,7 @@ class App extends Component {
               <div id="content">
                 <Home />
               </div>
-              <div id="credits">by DarthAmun</div>
+              <div id="credits">v{packageJson.version} by DarthAmun</div>
             </div>
           }} />
         </Switch>
