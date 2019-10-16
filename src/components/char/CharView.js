@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
-import '../assets/css/char/CharView.css';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSave, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import '../../assets/css/char/CharView.css';
 
 
 

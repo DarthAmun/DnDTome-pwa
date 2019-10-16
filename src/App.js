@@ -3,22 +3,21 @@ import React, { Component } from 'react';
 import { MemoryRouter, Switch, Route } from 'react-router';
 
 
-import SpellOverview from './spell/SpellOverview';
-import CharOverview from './char/CharOverview';
-import ItemOverview from './item/ItemOverview';
-import MonsterOverview from './monster/MonsterOverview';
+import SpellOverview from './components/spell/SpellOverview';
+import CharOverview from './components/char/CharOverview';
+import ItemOverview from './components/item/ItemOverview';
+import MonsterOverview from './components/monster/MonsterOverview';
 
-import CharView from './char/CharView';
+import CharView from './components/char/CharView';
 
-import Home from './Home';
-import Options from './Options';
+import Home from './components/Home';
+import Options from './components/Options';
 
-import AddSpell from './add/AddSpell';
-import AddItem from './add/AddItem';
-import AddMonster from './add/AddMonster';
+import AddSpell from './components/add/AddSpell';
+import AddItem from './components/add/AddItem';
+import AddMonster from './components/add/AddMonster';
 
-import LeftNav from './LeftNav';
-import TopNav from './TopNav';
+import LeftNav from './components/LeftNav';
 
 class PageLayout extends Component {
   render() {
@@ -26,7 +25,6 @@ class PageLayout extends Component {
       <div className="App">
         <LeftNav />
         <div id="content">
-          <TopNav />
           {this.props.children}
         </div>
         <div id="credits">by DarthAmun</div>

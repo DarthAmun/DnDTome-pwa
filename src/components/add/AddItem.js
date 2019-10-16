@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
-import '../assets/css/add/AddItem.css';
+import '../../assets/css/add/AddItem.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSave, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import { faSave } from '@fortawesome/free-solid-svg-icons';
 
 
-
-class AddEquipment extends Component {
+class AddItem extends Component {
     state = {
         name: "",
         id: "",
@@ -13,11 +12,7 @@ class AddEquipment extends Component {
         pic: "",
         rarity: "",
         type: "",
-        source: "",
-        weight: "",
-        value: "",
-
-
+        source: ""
     }
 
     handleNameChange = (e) => {
@@ -56,21 +51,8 @@ class AddEquipment extends Component {
             source: e.target.value
         });
     }
-    handleWeightChange = (e) => {
-        this.setState({
-            ...this.state,
-            weight: e.target.value
-        });
-    }
-    handleValueChange = (e) => {
-        this.setState({
-            ...this.state,
-            value: e.target.value
-        });
-    }
 
-
-    saveEquipment = (e) => {
+    saveItem = (e) => {
     }
 
     render() {
@@ -94,11 +76,8 @@ class AddEquipment extends Component {
                     <div className="top">
                         <label>Rarity:<input name="rarity" type="text" value={this.state.rarity} onChange={this.handleRarityChange} /></label>
                         <label>Type:<input name="type" type="text" value={this.state.type} onChange={this.handleTypeChange} /></label>
-                        <label>Weight:<input name="type" type="text" value={this.state.weight} onChange={this.handleWeightChange} /></label>
-                        <label>Value:<input name="type" type="text" value={this.state.value} onChange={this.handleValueChange} /></label>
                         <button onClick={this.saveItem}><FontAwesomeIcon icon={faSave} /> Save</button>
                     </div>
-
                 </div>
             </div>
         )

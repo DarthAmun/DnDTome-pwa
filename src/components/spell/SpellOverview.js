@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
-import '../assets/css/spell/SpellOverview.css';
+import '../../assets/css/spell/SpellOverview.css';
 import Spell from './Spell';
 import Pagination from '../Pagination';
 import SearchBar from '../SearchBar';
-import spellsContext from '../services/spellsContext';
 
 
 

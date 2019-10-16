@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import '../assets/css/spell/SpellView.css';
+import '../../assets/css/spell/SpellView.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSave, faTrashAlt, faPlus } from '@fortawesome/free-solid-svg-icons';
 

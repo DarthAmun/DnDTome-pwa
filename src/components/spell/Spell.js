@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import '../assets/css/spell/Spell.css';
+import '../../assets/css/spell/Spell.css';
 
 class Spell extends Component {
 
@@ -9,14 +9,14 @@ class Spell extends Component {
     }
 
     formatLevel = (value) => {
-        if (value == "0") {
+        if (value === "0") {
             return <b>C</b>;
         }
         return value;
     }
 
     hasRitual = (value) => {
-        if (value == '1') {
+        if (value === '1') {
             return <div className="icon">R</div>;
         }
         return "";

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import '../assets/css/monster/Monster.css';
+import '../../assets/css/monster/Monster.css';
 
 class Monster extends Component {
     formatType = (value) => {
@@ -7,7 +7,7 @@ class Monster extends Component {
     }
 
     formatSubType = (value) => {
-        if (value == "") {
+        if (value === "") {
             return "";
         } else {
             return " (" + value + ")";

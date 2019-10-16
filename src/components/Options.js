@@ -1,8 +1,7 @@
-import './assets/css/Options.css';
+import '../assets/css/Options.css';
 import React, { Component, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPatreon, faDiscord } from '@fortawesome/free-brands-svg-icons';
-import Files from 'react-files'
 import spellsContext from './services/spellsContext';
 
 const fs = require('fs');
@@ -16,11 +15,6 @@ class Options extends Component {
     }
 
   }
-
-
-
-
-
 
   receiveAllSpells = (result) => {
     this.setState({

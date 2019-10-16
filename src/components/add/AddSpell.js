@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSave } from '@fortawesome/free-solid-svg-icons';
-import '../assets/css/add/AddSpell.css';
+import '../../assets/css/add/AddSpell.css';
 
 
 

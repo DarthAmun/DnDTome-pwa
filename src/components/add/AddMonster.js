@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import '../assets/css/add/AddMonster.css';
+import '../../assets/css/add/AddMonster.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSave, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 

@@ -1,5 +1,5 @@
 {
-  "name": "dnd-pwa",
+  "name": "dndtome",
   "version": "0.1.0",
   "private": true,
   "devDependencies": {
@@ -29,7 +29,6 @@
     "@types/react-dom": "^16.9.2",
     "dexie": "^2.0.4",
     "idb": "^4.0.5",
-    "kex": "2.1.5",
     "node-gyp": "6.0.0",
     "react": "16.10.2",
     "react-dom": "16.10.2",
@@ -37,7 +36,6 @@
     "react-files": "^2.4.8",
     "react-particles-js": "2.7.0",
     "react-scripts": "3.2.0",
-    "sqlite3": "4.1.0",
     "typescript": "^3.6.4"
   },
   "scripts": {
