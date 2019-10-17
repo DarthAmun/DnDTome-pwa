@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import '../../assets/css/monster/MonsterOverview.css';
 import Monster from './Monster';
-import Pagination from '../Pagination';
 import SearchBar from '../SearchBar';
 
 
@@ -46,7 +45,6 @@ class MonsterOverview extends Component {
                         })}
                     </div>
                 </div>
-                <Pagination name="Monster" />
             </div>
         )
     }

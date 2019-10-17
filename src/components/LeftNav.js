@@ -128,21 +128,21 @@ class LeftNav extends Component {
             <FontAwesomeIcon icon={faMeteor} /> Spells
           </div>
         </Link>
-        <Link to="/item-overview" style={{ top: "120px" }} className={this.props.location.pathname === "/item-overview" ? "menuItemActiv" : ""}>
+        {/* <Link to="/item-overview" style={{ top: "120px" }} className={this.props.location.pathname === "/item-overview" ? "menuItemActiv" : ""}>
           <div className="menuItem">
             <FontAwesomeIcon icon={faShieldAlt} /> Items
           </div>
-        </Link>
+        </Link> */}
         {/* <Link to="/char-overview" style={{ top: "170px" }} className={this.props.location.pathname == "/char-overview" ? "menuItemActiv" : ""}>
           <div className="menuItem">
             <FontAwesomeIcon icon={faIdCard} /> Chars
           </div>
         </Link> */}
-        <Link to="/monster-overview" style={{ top: "170px" }} className={this.props.location.pathname === "/monster-overview" ? "menuItemActiv" : ""}>
+        {/* <Link to="/monster-overview" style={{ top: "170px" }} className={this.props.location.pathname === "/monster-overview" ? "menuItemActiv" : ""}>
           <div className="menuItem">
             <FontAwesomeIcon icon={faDragon} /> Monsters
           </div>
-        </Link>
+        </Link> */}
         <Link to="/options" style={{ bottom: "10px" }} className={this.props.location.pathname === "/options" ? "menuItemActiv" : ""}>
           <div className="menuItem">
             <FontAwesomeIcon icon={faCog} /> Options
