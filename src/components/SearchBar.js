@@ -3,7 +3,7 @@ import '../assets/css/SearchBar.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUndo } from '@fortawesome/free-solid-svg-icons';
 
-
+import {searchSpells} from './services/DnDTomeDatabase';
 
 export default function SearchBar({ inputs, queryName }) {
     const initialState = () => inputs.reduce((acc, curr) => ((acc[curr] = ''), acc), {});
@@ -11,6 +11,7 @@ export default function SearchBar({ inputs, queryName }) {
 
     const sendQuery = e => {
         if (e.key === 'Enter') {
+            searchSpells(query);
         }
     };
 

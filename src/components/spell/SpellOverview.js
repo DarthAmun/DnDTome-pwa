@@ -54,7 +54,7 @@ export default function SpellOverview() {
     return (
         <div id="overview">
             <div id="spellOverview">
-                <SearchBar inputs={["name", "school", "level", "duration", "time", "range", "components", "text", "classes", "sources"]} queryName="sendSpellSearchQuery" />
+                <SearchBar inputs={["spell_name", "spell_school", "spell_level", "spell_duration", "spell_time", "spell_range", "spell_components", "spell_text", "spell_classes", "spell_sources"]} queryName="sendSpellSearchQuery" />
                 <div id="spells" onScroll={handleScroll} ref={spells}>
                     {currentSpellList.map((spell, index) => {
                         return <Spell delay={index - (step - 20)} spell={spell} key={index} onClick={() => viewSpell(spell)} />;
