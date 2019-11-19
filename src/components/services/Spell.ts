@@ -29,8 +29,4 @@ export default class Spell {
     this.text = text;
     this.id = id;
   }
-
-  save() {
-    
-  }
 }

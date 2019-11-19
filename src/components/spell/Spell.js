@@ -76,17 +76,7 @@ class Spell extends Component {
     render() {
         return (
             <div className="spell" style={{ animationDelay: `${this.props.delay * 50}ms` }} onClick={this.props.onClick}>
-                <div className={`spellSchool spellAttr ${this.props.spell.spell_school}`}>{this.props.spell.spell_school}</div>
-                <div className="spellLevel spellAttr">{this.formatLevel(this.props.spell.spell_level)}</div>
-                {this.hasRitual(this.props.spell.spell_ritual)}
-                {this.hasConcentration(this.props.spell.spell_duration)}
-
-                <div className="spellName spellAttr"><b>{this.props.spell.spell_name}</b></div>
-
-                <div className="spellTime smallSpellAttr"><b>Time: </b>{this.formatTime(this.props.spell.spell_time)}</div>
-                <div className="spellDuration smallSpellAttr"><b>Duration: </b>{this.formatDuration(this.props.spell.spell_duration)}</div>
-                <div className="spellRange smallSpellAttr"><b>Range: </b>{this.props.spell.spell_range}</div>
-                <div className="spellComp smallSpellAttr"><b>Comp.: </b>{this.formatComponents(this.props.spell.spell_components)}</div>
+                <div className="spellName spellAttr"><b>{this.props.spell.name}</b></div>
             </div>
         )
     }

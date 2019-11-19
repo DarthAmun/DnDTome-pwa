@@ -3,61 +3,40 @@ import '../../assets/css/spell/SpellOverview.css';
 import Spell from './Spell';
 import SearchBar from '../SearchBar';
 
-import {readSpellsByStep} from '../services/DnDTomeDatabase';
+import { SpellService } from "../services/spellService";
 
 export default function SpellOverview() {
     const [currentSpellList, setCurrentSpellList] = useState([]);
     const spells = useRef(null);
-    const [isFetching, setIsFetching] = useState(false);
     const [step, setStep] = useState(0);
 
-
-    const receiveSpells = (result) => {
-        const newList = currentSpellList.concat(result);
-        setCurrentSpellList(newList);
-    }
-
     useEffect(() => {
-        fetchMoreListItems(step);
+        loadSpellsFromDb();
     }, []);
 
     useEffect(() => {
-        if (isFetching) {
-            fetchMoreListItems(step + 10);
-            setIsFetching(false);
-        };
-    }, [isFetching]);
-
-    useEffect(() => {
-        if (spells.current.scrollHeight == spells.current.clientHeight) {
-            fetchMoreListItems(step);
-        }
+        console.log(currentSpellList);
     }, [currentSpellList]);
 
-    const fetchMoreListItems = (currentStep) => {
-        readSpellsByStep(currentStep).then(spells => {
-            if(spells === []) return;
-            receiveSpells(spells);
-            setStep(step + 10);
-        })
+    async function loadSpellsFromDb() {
+        const service = new SpellService();
+        try {
+            const spells = await service.getSpells()
+            setCurrentSpellList(spells);
+        }
+        catch (ex) {
+            console.error(ex);
+        }
     }
 
-    const handleScroll = () => {
-        if ((Math.round(spells.current.offsetHeight + spells.current.scrollTop) + 10) < spells.current.scrollHeight) return;
-        setIsFetching(true);
-    }
-
-    const viewSpell = (spell) => {
-        // ipcRenderer.send('openSpellView', spell);
-    }
 
     return (
         <div id="overview">
             <div id="spellOverview">
                 <SearchBar inputs={["spell_name", "spell_school", "spell_level", "spell_duration", "spell_time", "spell_range", "spell_components", "spell_text", "spell_classes", "spell_sources"]} queryName="sendSpellSearchQuery" />
-                <div id="spells" onScroll={handleScroll} ref={spells}>
+                <div id="spells" ref={spells}>
                     {currentSpellList.map((spell, index) => {
-                        return <Spell delay={index - (step - 20)} spell={spell} key={index} onClick={() => viewSpell(spell)} />;
+                        return <Spell delay={index - (step - 20)} spell={spell} key={index} />;
                     })}
                 </div>
             </div>

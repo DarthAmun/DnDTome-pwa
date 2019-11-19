@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPatreon, faDiscord } from '@fortawesome/free-brands-svg-icons';
 
-import {writeSpells} from './services/DnDTomeDatabase';
+//import {writeSpells} from './services/database';
 
 export default function Options() {
   let fileReader;
@@ -21,7 +21,7 @@ export default function Options() {
   const handleFileRead = (e) => {
     const content = fileReader.result;
     let items = JSON.parse(content);
-    writeSpells(items);
+    //writeSpells(items);
   }
 
   return (
