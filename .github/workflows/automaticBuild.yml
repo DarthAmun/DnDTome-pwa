@@ -1,28 +1,23 @@
-name: Deploy
-
-on: [push]
-
+name: Deploy to GitHub Pages
+on:
+  push:
+    branches:
+      - master
 jobs:
-  build:
-
+  build-and-deploy:
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [8.x, 10.x, 12.x]
-
     steps:
-    - uses: actions/checkout@v1
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node-version }}
-    - name: npm install and deploy
+    - name: Checkout
+      uses: actions/checkout@v1
+
+    - name: Build
       run: |
         npm install
-        npm ci
-        npm run build --if-present
-        npm test
-        npm run deploy
-      env:
-        CI: true
+        npm run-script build
+
+    - name: Deploy
+      uses: JamesIves/github-pages-deploy-action@releases/v3
+      with:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        BRANCH: gh-pages
+        FOLDER: dist
