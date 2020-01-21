@@ -6,27 +6,35 @@ const db = new MyAppDatabase();
 export function getSpells(callback) {
   db.open()
     .then(function () {
-      for (let i = 0; i < 30; i++) {
-        db.spells.put({
-          id: i,
-          name: "Test" + i,
-          classes: "class",
-          sources: "source",
-          level: 0,
-          school: "school",
-          time: "time",
-          range: "range",
-          components: "comps",
-          duration: "duration",
-          ritual: i % 2,
-          text: "text",
-        });
-      }
-    })
-    .finally(function () {
       db.spells.toArray().then(function (array) {
         callback(array);
       })
+    })
+    .finally(function () {
+      db.close();
+    });
+}
+
+export function writeSpells(spells) {
+  db.open()
+    .then(function () {
+      spells.map(spell => {
+        db.spells.put({
+          name: spell.spell_name,
+          classes: spell.spell_classes,
+          sources: spell.spell_sources,
+          level: spell.spell_level,
+          school: spell.spell_school,
+          time: spell.spell_time,
+          range: spell.spell_range,
+          components: spell.spell_components,
+          duration: spell.spell_duration,
+          ritual: spell.spell_ritual,
+          text: spell.spell_text,
+        });
+      });
+    })
+    .finally(function () {
       db.close();
     });
 }

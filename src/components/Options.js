@@ -2,6 +2,7 @@ import '../assets/css/Options.css';
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPatreon, faDiscord } from '@fortawesome/free-brands-svg-icons';
+import {writeSpells} from './services/spellService';
 
 //import {writeSpells} from './services/database';
 
@@ -20,8 +21,8 @@ export default function Options() {
 
   const handleFileRead = (e) => {
     const content = fileReader.result;
-    let items = JSON.parse(content);
-    //writeSpells(items);
+    let spells = JSON.parse(content);
+    writeSpells(spells);
   }
 
   return (
