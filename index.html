@@ -1,6 +1,25 @@
+<!DOCTYPE html>
 <html>
-    <head>
-        <meta http-equiv="refresh" content="0; url=https://darthamun.github.io/dndtome-pwa/src/index.html">
-        <title>DnDTome</title>
-    </head>
+<head>
+    <title>Title</title>
+    <link rel="canonical" href="https://darthamun.github.io/dndtome-pwa/" />
+    <style type="text/css">
+    /* --- application CSS here --- */
+    *{
+      background-color: #F5F4F0;
+      font-family: Georgia, serif;
+    }
+    </style>
+</head>
+<body>
+  <h1>Content</h1>
+  <script>
+  // register ServiceWorker, remember to use absolute path!
+  if (navigator.serviceWorker) {
+    navigator.serviceWorker.register('/dndtome-pwa/sw.js', {scope: '/dndtome-pwa/'})
+  }
+  
+  // --- Application code here ---
+  </script>
+</body>
 </html>
