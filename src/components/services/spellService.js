@@ -1,53 +1,32 @@
-import {
-    BaseService
-} from "./baseService";
+import { MyAppDatabase } from "./MyDatabase";
+import Spell from "../spell/Spell";
 
-export class SpellService extends BaseService {
+const db = new MyAppDatabase();
 
-    constructor() {
-        super();
-        this.tableName = "spells";
-    }
-
-    getSpells() {
-        return this.connection.select({
-            from: this.tableName,
-        })
-    }
-
-    addSpell(Spell) {
-        return this.connection.insert({
-            into: this.tableName,
-            values: [Spell],
-            return: true // since Spellid is autoincrement field and we need id, 
-            // so we are making return true which will return the whole data inserted.
-        })
-    }
-
-    getSpellById(id) {
-        return this.connection.select({
-            from: this.tableName,
-            where: {
-                id: id
-            }
-        })
-    }
-
-    removeSpell(id) {
-        return this.connection.remove({
-            from: this.tableName,
-            where: {
-                id: id
-            }
-        })
-    }
-
-    updateSpellById(id, updateData) {
-        return this.connection.update({ in: this.tableName,
-            set: updateData,
-            where: {
-                id: id
-            }
-        })
-    }
+export function getSpells(callback) {
+  db.open()
+    .then(function () {
+      for (let i = 0; i < 30; i++) {
+        db.spells.put({
+          id: i,
+          name: "Test" + i,
+          classes: "class",
+          sources: "source",
+          level: 0,
+          school: "school",
+          time: "time",
+          range: "range",
+          components: "comps",
+          duration: "duration",
+          ritual: i % 2,
+          text: "text",
+        });
+      }
+    })
+    .finally(function () {
+      db.spells.toArray().then(function (array) {
+        callback(array);
+      })
+      db.close();
+    });
 }
