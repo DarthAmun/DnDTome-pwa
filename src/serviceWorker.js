@@ -51,30 +51,6 @@ export function register(config) {
         registerValidSW(swUrl, config);
       }
     });
-
-    window.addEventListener('install', (e) => {
-      console.log("install");
-      e.waitUntil(
-        caches.open('dndtome').then((cache) => {
-          return cache.addAll([
-            '/',
-            '/*.js',
-            '/*.css',
-            '/**/*'
-          ]);
-        })
-      );
-     });
-
-     window.addEventListener('fetch', (event) => {
-      console.log(event.request.url);
-
-      event.respondWith(
-        caches.match(event.request).then((response) => {
-          return response || fetch(event.request);
-        })
-      );
-     });
   }
 }
 
