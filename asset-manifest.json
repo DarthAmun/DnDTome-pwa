@@ -1,0 +1,23 @@
+{
+  "files": {
+    "main.css": "/DnDTomePwa/static/css/main.9021ae36.chunk.css",
+    "main.js": "/DnDTomePwa/static/js/main.20812762.chunk.js",
+    "main.js.map": "/DnDTomePwa/static/js/main.20812762.chunk.js.map",
+    "runtime-main.js": "/DnDTomePwa/static/js/runtime-main.7e1a9e91.js",
+    "runtime-main.js.map": "/DnDTomePwa/static/js/runtime-main.7e1a9e91.js.map",
+    "static/js/2.fcf5c18c.chunk.js": "/DnDTomePwa/static/js/2.fcf5c18c.chunk.js",
+    "static/js/2.fcf5c18c.chunk.js.map": "/DnDTomePwa/static/js/2.fcf5c18c.chunk.js.map",
+    "index.html": "/DnDTomePwa/index.html",
+    "precache-manifest.ac14c8bafa78ddf64c5d09919a60554b.js": "/DnDTomePwa/precache-manifest.ac14c8bafa78ddf64c5d09919a60554b.js",
+    "scripts/jsstore.worker.min.js": "/DnDTomePwa/scripts/jsstore.worker.min.185ce60ce167155b0007fde8c75db4cf.js",
+    "service-worker.js": "/DnDTomePwa/service-worker.js",
+    "static/css/main.9021ae36.chunk.css.map": "/DnDTomePwa/static/css/main.9021ae36.chunk.css.map",
+    "static/media/App.css": "/DnDTomePwa/static/media/Quicksand-Medium.f65d1a07.ttf"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.7e1a9e91.js",
+    "static/js/2.fcf5c18c.chunk.js",
+    "static/css/main.9021ae36.chunk.css",
+    "static/js/main.20812762.chunk.js"
+  ]
+}
