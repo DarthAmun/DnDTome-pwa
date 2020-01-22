@@ -1,22 +1,17 @@
-#overview {
-    height: 100%;
-    width: 100%;
-}
-
 #char {
     height: calc(100% - 20px);
     width: calc(100% - 20px);
-    overflow: hidden;
-    color: dimgrey;
+    color: var(--card-title-color);
     padding-left: 10px;
     padding-right: 10px;
     padding-bottom: 10px;
-    overflow-y: auto;
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-start;
     align-items: center;
     align-content: flex-start;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 #char input {
@@ -30,9 +25,9 @@
     float: right;
     font-family: inherit;
     font-size: 14px;
-    background-color: white;
-    color: dimgrey;
-    box-shadow: 0px 0px 10px 0px rgba(172, 172, 172, 0.2);
+    box-shadow: var(--boxshadow);
+    background-color: var(--pagination-input-background-color);
+    color: var(--pagination-input-color);
 }
 
 #char button {
@@ -48,13 +43,13 @@
     float: right;
     font-family: inherit;
     font-size: 14px;
-    background-color: #8000ff;
-    color: white;
+    background-color: var(--button-background-color);
+    color: var(--button-color);
     cursor: pointer;
 }
 
 #char button:hover {
-    box-shadow: 0px 0px 10px 0px rgba(172, 172, 172, 1);
+    box-shadow: var(--boxshadow-hover);
     cursor: pointer;
 }
 
@@ -74,9 +69,34 @@
     font-family: inherit;
     font-size: 14px;
     margin: 5px;
-    background-color: white;
-    color: dimgrey;
-    box-shadow: 0px 0px 10px 0px rgba(172, 172, 172, 0.2);
+    box-shadow: var(--boxshadow);
+    background-color: var(--pagination-input-background-color);
+    color: var(--pagination-input-color);
+}
+#char textarea.big {
+    height: 400px;
+    width: 280px;
+    float: left;
+    resize: none;
+    border-radius: 3px;
+    border-bottom-right-radius: 0px;
+    border: none;
+    padding: 10px;
+    font-family: inherit;
+    font-size: 14px;
+    margin: 5px;
+    box-shadow: var(--boxshadow);
+    background-color: var(--pagination-input-background-color);
+    color: var(--pagination-input-color);
+}
+#char textarea.small {
+    height: 28px;
+    width: 310px; 
+    margin: 0px;
+    line-height: 15px;
+}
+#char textarea.slim {
+    width: 210px;
 }
 
 #char .image {
@@ -92,7 +112,25 @@
     margin: 5px;
 }
 
-#char label {
+#char .charSpell .image, #char .charMonsters .image, #char .charItems .image {
+    float: left;
+    width: 27px;
+    height: 27px;
+    border-radius: 100px;
+    border: 3px solid #8000ff;
+    overflow: hidden;
+    margin-right: 10px;
+    box-shadow: 0px 0px 10px 0px rgba(172, 172, 172, 0.2);
+    background-color: white;
+    margin: 5px;
+}
+#char .charMonsters .image {
+    width: 57px;
+    height: 57px;
+}
+
+#char .smallLabelGroup label, #char .abilityScores label, 
+#char .savingThrows label, #char .skills label {
     display: inline-block;
     width: auto;
     text-align: right;
@@ -120,14 +158,15 @@
     border: none;
     padding: 10px;
     font-size: 14px;
-    background-color: white;
-    color: dimgrey;
-    box-shadow: 0px 0px 10px 0px rgba(172, 172, 172, 0.2);
+    box-shadow: var(--boxshadow);
+    background-color: var(--pagination-input-background-color);
+    color: var(--pagination-input-color);
 }
 #char .deathSaves .deathSave {
     height: 45px;
     width: 150px;
     line-height: 45px;
+    position: relative;
 }
 #char .deathSaves .deathSave input{
     height: 15px;
@@ -137,19 +176,20 @@
 }
 
 #char .abilityScores, #char .savingThrows, #char .skills {
-    height: 205px;
     width: 210px;
     margin: 5px;
 }
 #char .abilityScores .score {
     width: 210px;
     float: left;
-    height: 35px;
     line-height: 30px;
 }
 #char .abilityScores .score input, #char .savingThrows input, #char .skills input {
     width: 40px;
     margin-right: 5px;
+}
+#char .skills input, #char .savingThrows input {
+    margin-left: 30px;
 }
 #char .abilityScores .score label, #char .savingThrows label, #char .skills label {
     float: left;
@@ -158,16 +198,6 @@
 
 #char .savingThrows{
     width: 180px;
-}
-#char .savingThrows input[type=radio], #char .skills input[type=radio] { 
-    width: 15px;
-    height: 15px;
-    margin-top: 8px;
-    margin-right: 0px;
-    float: right;
-
-    background-color: white;
-    border: none;
 }
 
 #char .skills{
@@ -181,6 +211,12 @@
 #char .skills label {
     float: left;
     width: 270px;
+    position: relative;
+}
+#char .savingThrows label {
+    float: left;
+    width: 180px;
+    position: relative;
 }
 
 #char .abilityScores .score .abilityBonus {
@@ -190,54 +226,433 @@
     float: right;
     text-align: center;
     border-top-right-radius: 3px;
-    box-shadow: 0px 0px 10px 0px rgba(172, 172, 172, 0.2);
     border-radius: 30px;
-    background-color: white;
+    box-shadow: var(--boxshadow);
+    background-color: var(--pagination-input-background-color);
+    color: var(--pagination-input-color);
+}
+
+#char .charSpells .castingInfo label{
+    float: left;
+    width: 95px;
+    position: relative;
+    height: 30px;
+    line-height: 30px;
+    margin-right: 5px;
+}
+#char .charSpells .castingInfo label input{
+    width: 40px;
 }
 
 #char .charSpells {
-    height: 260px;
+    height: 420px;
     width: auto;
-    min-width: 300px;
+    min-width: 370px;
     max-width: 610px;
     float: left;
     border-radius: 3px;
     border: none;
     margin: 5px;
-    background-color: white;
-    color: dimgrey;
-    box-shadow: 0px 0px 10px 0px rgba(172, 172, 172, 0.2);
+    box-shadow: var(--boxshadow);
+    background-color: var(--card-background-color);
+    color: var(--pagination-input-color);
+    overflow-y: auto;
+}
+#char .charItems, #char .charMonsters {
+    width: 100%;
+    height: 420px;
+    float: left;
+    border-radius: 3px;
+    border: none;
+    margin: 5px;
+    box-shadow: var(--boxshadow);
+    background-color: var(--card-background-color);
+    color: var(--pagination-input-color);
     overflow-y: auto;
 }
 
-#char .charSpells tr {
+#char .charSpells tr, #char .charItems tr, #char .charMonsters tr {
     height: 20px;
     line-height: 20px;
     font-size: 12px;
     border-bottom: 1px dashed lightgray;
 }
 
-#char .charSpells .charSpell:hover {
+#char .charSpells .charSpell:hover, #char .charItems .charItem:hover, #char .charMonsters .charItem:hover {
     font-weight: bold;
-    box-shadow: 0px 0px 10px 0px rgba(172, 172, 172, 0.2);
+    box-shadow: var(--boxshadow-hover);
 }
 
-#char .charSpells td, #char .charSpells th {
+#char .charSpells td, #char .charSpells th, #char .charItems td, #char .charItems th, #char .charMonsters td, #char .charMonsters th {
     padding: 5px;
     text-align: left;
 }
+#char .charItems td.centered, #char .charItems th.centered, #char .charSpells td.centered, #char .charSpells th.centered, 
+#char .charMonsters td.centered, #char .charMonsters th.centered {
+    text-align: center;
+}
+#char .charItems td.centered input {
+    float: unset;
+    margin: 0px;
+}
+#char .charItems td.centered input[type=checkbox] {
+    margin-top: 9px;
+}
+.removeIcon {
+    font-size: 16px;
+    color: darkred;
+}
+.removeIcon:hover {
+    color: red;
+}
+
 
 #char table {
     border-collapse: collapse;
 }
+#char table.itemTable {
+    width: 100%;
+}
 
-#char::-webkit-scrollbar, #char textarea::-webkit-scrollbar, #char .charSpells::-webkit-scrollbar {
+#char table input{
+    width: 30px;
+    height: 30px;
+}
+#char table input[type=checkbox]{
+    width: 15px;
+    height: 15px;
+}
+
+#char::-webkit-scrollbar, #char textarea::-webkit-scrollbar, #char .charSpells::-webkit-scrollbar, #char .charMonsters::-webkit-scrollbar, #char .charItems::-webkit-scrollbar {
     width: 6px;
-    background-color: rgba(92, 102, 130, 1);
+    background-color: var(--scrollbar);
     border-radius: 5px;
 }
 
-#char::-webkit-scrollbar-thumb, #char textarea::-webkit-scrollbar-thumb, #char .charSpells::-webkit-scrollbar-thumb {
-    background-color: #8000ff;
+#char::-webkit-scrollbar-thumb, #char textarea::-webkit-scrollbar-thumb, #char .charSpells::-webkit-scrollbar-thumb, #char .charMonsters::-webkit-scrollbar-thumb, #char .charItems::-webkit-scrollbar-thumb {
+    background-color: var(--scrollbar-thumb);
     border-radius: 5px;
 }
+
+
+#char .tabComponent {
+    height: auto;
+    width: 100%;
+    float:left;
+}
+#char .tabComponent .tabSelector {
+    height: auto;
+    width: calc(100% - 10px);
+    float:left;
+    padding: 10px;
+    background-color: var(--card-background-color);
+    margin-left: -10px;
+}
+#char .tabComponent .tabSelector .tabName {
+    height: 30px;
+    width: auto;
+    border: none;
+    border-radius: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin: 2px;
+    text-align: center;
+    line-height: 30px;
+    float: left;
+    font-family: inherit;
+    font-size: 14px;
+    background-color: var(--button-background-color);
+    color: var(--button-color);
+    cursor: pointer;
+    position: relative;
+}
+#char .tabComponent .tabSelector .tabName.active:after {
+	top: 100%;
+	left: 50%;
+	border: solid transparent;
+	content: " ";
+	height: 0;
+	width: 0;
+	position: absolute;
+	pointer-events: none;
+	border-color: rgba(128, 0, 255, 0);
+	border-top-color: var(--button-background-color);
+	border-width: 10px;
+	margin-left: -10px;
+}
+
+
+#char .tabComponent .tabs {
+    height: auto;
+    width: 100%;
+    float:left;
+}
+#char .tabComponent .tabs .tabContent {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: center;
+    align-content: flex-start;
+}
+
+#char .profToggler {
+    top: 5px;
+    margin-left: 5px;
+    position: absolute;
+    padding: 3px;
+    width: 15px;
+    height: 15px;
+    border-radius: 20px;
+    box-shadow: var(--boxshadow);
+    background-color: var(--pagination-input-background-color);
+    color: var(--pagination-input-color);
+    cursor: pointer;
+}
+
+.checkbox-label {
+    display: block;
+    position: relative;
+    margin: auto;
+    cursor: pointer;
+    font-size: 22px;
+    line-height: 24px;
+    height: 24px;
+    width: 24px;
+    clear: both;
+  }
+  
+  .checkbox-label input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    display: none;
+  }
+  
+  .checkbox-label .checkbox-custom {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    height: 24px;
+    width: 24px;
+    background-color: transparent;
+    border-radius: 5px;
+    transition: all 0.3s ease-out;
+    -webkit-transition: all 0.3s ease-out;
+    -moz-transition: all 0.3s ease-out;
+    -ms-transition: all 0.3s ease-out;
+    -o-transition: all 0.3s ease-out;
+    border: 2px solid #FFFFFF;
+    box-shadow: 0px 0px 10px 0px rgba(172, 172, 172, 0.2);
+  }
+  
+  
+  .checkbox-label input:checked ~ .checkbox-custom {
+    background-color: #FFFFFF;
+    border-radius: 5px;
+    -webkit-transform: rotate(0deg) scale(1);
+    -ms-transform: rotate(0deg) scale(1);
+    transform: rotate(0deg) scale(1);
+    opacity:1;
+    border: 2px solid #FFFFFF;
+  }
+  
+  
+  .checkbox-label .checkbox-custom::after {
+    position: absolute;
+    content: "";
+    left: 12px;
+    top: 12px;
+    height: 0px;
+    width: 0px;
+    border-radius: 5px;
+    border: solid #8000ff;
+    border-width: 0 3px 3px 0;
+    -webkit-transform: rotate(0deg) scale(0);
+    -ms-transform: rotate(0deg) scale(0);
+    transform: rotate(0deg) scale(0);
+    opacity:1;
+    transition: all 0.3s ease-out;
+    -webkit-transition: all 0.3s ease-out;
+    -moz-transition: all 0.3s ease-out;
+    -ms-transition: all 0.3s ease-out;
+    -o-transition: all 0.3s ease-out;
+  }
+  
+  
+  .checkbox-label input:checked ~ .checkbox-custom::after {
+  -webkit-transform: rotate(45deg) scale(1);
+  -ms-transform: rotate(45deg) scale(1);
+  transform: rotate(45deg) scale(1);
+  opacity:1;
+  left: 8px;
+  top: 3px;
+  width: 6px;
+  height: 12px;
+  border: solid #8000ff;
+  border-width: 0 2px 2px 0;
+  background-color: transparent;
+  border-radius: 0;
+  }
+  
+  .checkbox-label input:checked ~ .checkbox-custom::before {
+    transition: all 0.3s ease-out;
+    -webkit-transition: all 0.3s ease-out;
+    -moz-transition: all 0.3s ease-out;
+    -ms-transition: all 0.3s ease-out;
+    -o-transition: all 0.3s ease-out;
+  }
+  
+  
+  /* Style for Circular Checkbox */
+  .checkbox-label .checkbox-custom.circular {
+    border-radius: 50%;
+    border: 2px solid #8000ff;
+  }
+  
+  .checkbox-label input:checked ~ .checkbox-custom.circular {
+    background-color: #FFFFFF;
+    border-radius: 50%;
+    border: 2px solid #FFFFFF;
+  }
+  .checkbox-label input:checked ~ .checkbox-custom.circular::after {
+    border: solid #8000ff;
+    border-width: 0 2px 2px 0;
+  }
+  .checkbox-label .checkbox-custom.circular::after {
+    border-radius: 50%;
+  }
+  
+  .checkbox-label .checkbox-custom.circular::before {
+    border-radius: 50%;
+    border: 2px solid #FFFFFF;
+  }
+  
+  .checkbox-label input:checked ~ .checkbox-custom.circular::before {
+    border-radius: 50%;
+  }
+
+  .recharts-polar-angle-axis-tick-value {
+    line-height: 20px;
+  }
+
+
+  #char .smallLabelGroup .checkbox-label {
+    display: block;
+    position: relative;
+    cursor: pointer;
+    height: 30px;
+    font-size: 16px;
+    width: 100%;
+    text-align: left;
+    margin-bottom: 5px;
+  }
+  
+  #char .smallLabelGroup .checkbox-label input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    display: none;
+  }
+  
+  #char .smallLabelGroup .checkbox-label .checkbox-custom {
+    position: absolute;
+    top: 6px;
+    left: 90px;
+    height: 16px;
+    width: 16px;
+    background-color: transparent;
+    border-radius: 5px;
+    transition: all 0.3s ease-out;
+    -webkit-transition: all 0.3s ease-out;
+    -moz-transition: all 0.3s ease-out;
+    -ms-transition: all 0.3s ease-out;
+    -o-transition: all 0.3s ease-out;
+    border: 2px solid #FFFFFF;
+    box-shadow: 0px 0px 10px 0px rgba(172, 172, 172, 0.2);
+  }
+  
+  
+  #char .smallLabelGroup .checkbox-label input:checked ~ .checkbox-custom {
+    border-radius: 5px;
+    -webkit-transform: rotate(0deg) scale(1);
+    -ms-transform: rotate(0deg) scale(1);
+    transform: rotate(0deg) scale(1);
+    opacity:1;
+    border: 2px solid #FFFFFF;
+    background-color: var(--pagination-input-background-color);
+  }
+  
+  
+  #char .smallLabelGroup .checkbox-label .checkbox-custom::after {
+    position: absolute;
+    content: "";
+    left: 6px;
+    top: 6px;
+    height: 0px;
+    width: 0px;
+    border-radius: 5px;
+    border: solid #8000ff;
+    border-width: 0 3px 3px 0;
+    -webkit-transform: rotate(0deg) scale(0);
+    -ms-transform: rotate(0deg) scale(0);
+    transform: rotate(0deg) scale(0);
+    opacity:1;
+    transition: all 0.3s ease-out;
+    -webkit-transition: all 0.3s ease-out;
+    -moz-transition: all 0.3s ease-out;
+    -ms-transition: all 0.3s ease-out;
+    -o-transition: all 0.3s ease-out;
+  }
+  
+  
+  #char .smallLabelGroup .checkbox-label input:checked ~ .checkbox-custom::after {
+  -webkit-transform: rotate(45deg) scale(1);
+  -ms-transform: rotate(45deg) scale(1);
+  transform: rotate(45deg) scale(1);
+  opacity:1;
+  left: 7px;
+  top: 1px;
+  width: 3px;
+  height: 9px;
+  border: solid #8000ff;
+  border-width: 0 2px 2px 0;
+  background-color: transparent;
+  border-radius: 0;
+  }
+  
+  #char .smallLabelGroup .checkbox-label input:checked ~ .checkbox-custom::before {
+    transition: all 0.3s ease-out;
+    -webkit-transition: all 0.3s ease-out;
+    -moz-transition: all 0.3s ease-out;
+    -ms-transition: all 0.3s ease-out;
+    -o-transition: all 0.3s ease-out;
+  }
+  
+  
+  /* Style for Circular Checkbox */
+  #char .smallLabelGroup .checkbox-label .checkbox-custom.circular {
+    border-radius: 50%;
+    border: 2px solid #8000ff;
+  }
+  
+  #char .smallLabelGroup .checkbox-label input:checked ~ .checkbox-custom.circular {
+    background-color: var(--pagination-input-background-color);
+    border-radius: 50%;
+    border: 2px solid var(--pagination-input-background-color);
+  }
+  #char .smallLabelGroup .checkbox-label input:checked ~ .checkbox-custom.circular::after {
+    border: solid #8000ff;
+    border-width: 0 2px 2px 0;
+  }
+  #char .smallLabelGroup .checkbox-label .checkbox-custom.circular::after {
+    border-radius: 50%;
+  }
+  
+  #char .smallLabelGroup .checkbox-label .checkbox-custom.circular::before {
+    border-radius: 50%;
+    border: 2px solid #FFFFFF;
+  }
+  
+  #char .smallLabelGroup .checkbox-label input:checked ~ .checkbox-custom.circular::before {
+    border-radius: 50%;
+  }

@@ -1,9 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../assets/css/SearchBar.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUndo } from '@fortawesome/free-solid-svg-icons';
-
-//import {searchSpells} from './services/database';
 
 export default function SearchBar({ inputs, queryName }) {
     const initialState = () => inputs.reduce((acc, curr) => ((acc[curr] = ''), acc), {});
@@ -11,7 +9,7 @@ export default function SearchBar({ inputs, queryName }) {
 
     const sendQuery = e => {
         if (e.key === 'Enter') {
-            //searchSpells(query);
+            // ipcRenderer.send(queryName, { query });
         }
     };
 
@@ -19,6 +17,7 @@ export default function SearchBar({ inputs, queryName }) {
 
     const resetSearch = () => {
         setQuery({ ...initialState() });
+        // ipcRenderer.send(queryName, { query: {} });
     };
 
     return (

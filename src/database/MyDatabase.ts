@@ -1,5 +1,5 @@
 import Dexie from "dexie";
-import Spell from "./Spell";
+import Spell from "../components/spell/Spell";
 
 export class MyAppDatabase extends Dexie {
   // Declare implicit table properties.

@@ -1,0 +1,129 @@
+#gearView {
+  height: calc(100% - 20px);
+  width: calc(100% - 20px);
+  color: var(--card-title-color);
+  padding: 10px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+#gearView input,
+#gearView select {
+  height: 30px;
+  width: 300px;
+  border: none;
+  border-radius: 3px;
+  padding-left: 10px;
+  padding-right: 10px;
+  margin-left: 5px;
+  margin-bottom: 5px;
+  float: right;
+  font-family: inherit;
+  font-size: 14px;
+  box-shadow: var(--boxshadow);
+  background-color: var(--pagination-input-background-color);
+  color: var(--pagination-input-color);
+}
+
+#gearView select {
+  width: 320px;
+}
+
+#gearView button {
+  height: 30px;
+  width: 120px;
+  border: none;
+  border-radius: 5px;
+  padding-left: 10px;
+  padding-right: 10px;
+  margin-right: 10px;
+  text-align: center;
+  float: right;
+  font-family: inherit;
+  font-size: 14px;
+  background-color: var(--button-background-color);
+  color: var(--button-color);
+  cursor: pointer;
+}
+
+#gearView button:hover {
+  box-shadow: var(--boxshadow-hover);
+  cursor: pointer;
+}
+
+#gearView button.delete {
+  background-color: darkred;
+}
+
+#gearView textarea {
+  height: 100px;
+  width: 464px;
+  float: left;
+  resize: none;
+  border-radius: 3px;
+  border-bottom-right-radius: 0px;
+  border: none;
+  padding: 10px;
+  font-family: inherit;
+  font-size: 14px;
+  margin-bottom: 5px;
+  box-shadow: var(--boxshadow);
+  background-color: var(--pagination-input-background-color);
+  color: var(--pagination-input-color);
+}
+
+#gearView .image {
+  float: left;
+  width: 120px;
+  height: 120px;
+  overflow: hidden;
+  margin-right: 5px;
+  margin-bottom: 5px;
+  box-shadow: 0px 0px 10px 0px rgba(172, 172, 172, 0.2);
+  background-color: white;
+}
+
+#gearView label {
+  display: inline-block;
+  width: 400px;
+  text-align: right;
+  line-height: 30px;
+}
+#gearView label .labelText {
+  float: left;
+  height: 30px;
+  line-height: 33px;
+}
+#gearView label input[type="checkbox"] {
+  width: 15px;
+  background: none;
+  box-shadow: none;
+  float: left;
+  margin-bottom: 0px;
+}
+
+#gearView .top {
+  float: left;
+  width: 400px;
+  height: 175px;
+  margin-right: 10px;
+}
+
+#gearView img {
+  width: 320px;
+  margin-left: 5px;
+  box-shadow: var(--boxshadow);
+}
+
+#gearView::-webkit-scrollbar,
+#gearView textarea::-webkit-scrollbar {
+  width: 6px;
+  background-color: var(--scrollbar);
+  border-radius: 5px;
+}
+
+#gearView::-webkit-scrollbar-thumb,
+#gearView textarea::-webkit-scrollbar-thumb {
+  background-color: var(--scrollbar-thumb);
+  border-radius: 5px;
+}
