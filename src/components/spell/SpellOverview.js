@@ -3,13 +3,10 @@ import { Link } from "react-router-dom";
 import * as ReactDOM from "react-dom";
 import "../../assets/css/spell/SpellOverview.css";
 import Spell from "./Spell";
-import { reciveSpells, reciveSpellCount } from "../../database/SpellService";
 import SpellSearchBar from "./SpellSearchBar";
+import { reciveSpells, reciveSpellCount } from "../../database/SpellService";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
-
-const electron = window.require("electron");
-const ipcRenderer = electron.ipcRenderer;
 
 export default function SpellOverview() {
   const [currentSpellList, setCurrentSpellList] = useState({ spells: [] });
@@ -28,53 +25,6 @@ export default function SpellOverview() {
     });
   };
 
-  const updateSpell = (e, result) => {
-    let spells = currentSpellList.spells.map(spell => {
-      if (spell.spell_id === result.spell_id) {
-        return result;
-      } else {
-        return spell;
-      }
-    });
-    setCurrentSpellList({ spells: spells });
-  };
-  const removeWindow = (e, result) => {
-    let spells = currentSpellList.spells.filter(spell => {
-      if (spell.spell_id !== result.id) return spell;
-    });
-    setCurrentSpellList({ spells: spells });
-  };
-
-  const searchSpell = (evt, rquery) => {
-    setQuery(rquery.query);
-    spells.current.scrollTop = 0;
-    setStart(0);
-    reciveSpells(10, 0, rquery.query, function (result) {
-      receiveSpellsResult(result);
-    });
-  };
-
-  useEffect(() => {
-    ipcRenderer.on("sendSpellSearchQuery", searchSpell);
-    return () => {
-      ipcRenderer.removeListener("sendSpellSearchQuery", searchSpell);
-    };
-  }, []);
-
-  useEffect(() => {
-    ipcRenderer.on("updateWindow", updateSpell);
-    return () => {
-      ipcRenderer.removeListener("updateWindow", updateSpell);
-    };
-  }, [updateSpell]);
-
-  useEffect(() => {
-    ipcRenderer.on("removeWindow", removeWindow);
-    return () => {
-      ipcRenderer.removeListener("removeWindow", removeWindow);
-    };
-  }, [removeWindow]);
-
   useEffect(() => {
     if (isFetching) {
       fetchMoreListItems();
@@ -85,13 +35,14 @@ export default function SpellOverview() {
     setIsFetching(false);
 
     reciveSpellCount(query, function (result) {
-      let spellCount = result.count;
+      let spellCount = result;
       if (spellCount > currentSpellList.spells.length) {
         if (!currentSpellList.spells.length) {
           reciveSpells(10, start, query, function (result) {
             receiveSpellsResult(result);
           });
         }
+        console.log(spells.current.scrollHeight + "==" + spells.current.clientHeight + "&&" + currentSpellList.spells.length);
         if (spells.current.scrollHeight == spells.current.clientHeight && currentSpellList.spells.length) {
           reciveSpells(10, start, query, function (spells) {
             receiveSpellsResult(spells);
@@ -102,7 +53,7 @@ export default function SpellOverview() {
   }, [currentSpellList]);
 
   const viewSpell = spell => {
-    ipcRenderer.send("openView", spell);
+    // ipcRenderer.send("openView", spell);
   };
 
   const fetchMoreListItems = () => {
@@ -122,7 +73,7 @@ export default function SpellOverview() {
         <SpellSearchBar />
         <div id="spells" onScroll={handleScroll} ref={spells}>
           {currentSpellList.spells.map((spell, index) => {
-            return <Spell delay={0} spell={spell} key={spell.spell_id} onClick={() => viewSpell(spell)} />;
+            return <Spell delay={0} spell={spell} key={spell.id} onClick={() => viewSpell(spell)} />;
           })}
         </div>
       </div>

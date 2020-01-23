@@ -50,7 +50,7 @@ html, body, #root {
 
 #content {
   float: left;
-  height: calc(100% - 40px);
+  height: 100%;
   width: calc(100% - 200px);
   padding-left: 10px;
   padding-right: 10px;

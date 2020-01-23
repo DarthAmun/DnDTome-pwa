@@ -10,12 +10,11 @@ export class MyAppDatabase extends Dexie {
   constructor() {
     super("MyAppDatabase");
     this.version(1).stores({
-      spells: "++id, name,classes,sources,level,school, time, range,components,duration, ritual,text",
+      spells: "++id, name, classes, sources, level, school, time, range, components, duration, ritual, text, pic",
       //...other tables goes here...
     });
     // The following line is needed if your typescript
     // is compiled using babel instead of tsc:
     this.spells = this.table("spells");
   }
-
 }

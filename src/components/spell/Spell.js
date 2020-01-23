@@ -54,10 +54,10 @@ export default function Spell(props) {
     }
 
     const getPicture = () => {
-        if (props.spell.spell_pic === "" || props.spell.spell_pic === null) {
+        if (props.spell.pic === "" || props.spell.pic === null) {
             return icon;
         }
-        return props.spell.spell_pic;
+        return props.spell.pic;
     }
 
     const style = {
@@ -69,20 +69,20 @@ export default function Spell(props) {
 
     return (
         <div className="spell" style={{ animationDelay: `${props.delay * 50}ms` }} onClick={props.onClick}>
-            <div className={`spellSchool spellAttr ${props.spell.spell_school}`}>{props.spell.spell_school}</div>
-            <div className="spellLevel spellAttr">{formatLevel(props.spell.spell_level)}</div>
-            {hasRitual(props.spell.spell_ritual)}
-            {hasConcentration(props.spell.spell_duration)}
+            <div className={`spellSchool spellAttr ${props.spell.school}`}>{props.spell.school}</div>
+            <div className="spellLevel spellAttr">{formatLevel(props.spell.level)}</div>
+            {hasRitual(props.spell.ritual)}
+            {hasConcentration(props.spell.duration)}
 
             <div className="spellName spellAttr">
                 <div className="image" style={style}></div>
-                <b>{props.spell.spell_name}</b>
+                <b>{props.spell.name}</b>
             </div>
 
-            <div className="spellTime smallSpellAttr"><b>Time: </b>{formatTime(props.spell.spell_time)}</div>
-            <div className="spellDuration smallSpellAttr"><b>Duration: </b>{formatDuration(props.spell.spell_duration)}</div>
-            <div className="spellRange smallSpellAttr"><b>Range: </b>{props.spell.spell_range}</div>
-            <div className="spellComp smallSpellAttr"><b>Comp.: </b>{formatComponents(props.spell.spell_components)}</div>
+            <div className="spellTime smallSpellAttr"><b>Time: </b>{formatTime(props.spell.time)}</div>
+            <div className="spellDuration smallSpellAttr"><b>Duration: </b>{formatDuration(props.spell.duration)}</div>
+            <div className="spellRange smallSpellAttr"><b>Range: </b>{props.spell.range}</div>
+            <div className="spellComp smallSpellAttr"><b>Comp.: </b>{formatComponents(props.spell.components)}</div>
         </div>
     )
 }

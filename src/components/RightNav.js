@@ -6,14 +6,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 
 import SpellView from "./spell/SpellView";
-import ItemView from "./item/ItemView";
-import GearView from "./gear/GearView";
-import MonsterView from "./monster/MonsterView";
-import CharView from "./char/CharView";
-import RaceView from "./race/RaceView";
-
-const electron = window.require("electron");
-const ipcRenderer = electron.ipcRenderer;
 
 export default function RightNav() {
   const [shortWindows, setShortWindows] = useState([]);
@@ -79,30 +71,6 @@ export default function RightNav() {
     setShortWindows(windows);
   }
 
-  useEffect(() => {
-    ipcRenderer.on("onView", receiveResult);
-    ipcRenderer.on("closeActiveView", closeActiveView);
-
-    return () => {
-      ipcRenderer.removeListener("onView", receiveResult);
-      ipcRenderer.removeListener("closeActiveView", closeActiveView);
-    };
-  }, []);
-
-  useEffect(() => {
-    ipcRenderer.on("updateWindow", updateWindow);
-    return () => {
-      ipcRenderer.removeListener("updateWindow", updateWindow);
-    };
-  }, [updateWindow]);
-  useEffect(() => {
-    ipcRenderer.on("removeWindow", removeWindow);
-    return () => {
-      ipcRenderer.removeListener("removeWindow", removeWindow);
-    };
-  }, [removeWindow]);
-
-
   const getSpellPicture = spell => {
     if (spell.spell_pic === "" || spell.spell_pic === null) {
       return icon;
@@ -145,36 +113,6 @@ export default function RightNav() {
       return (
         <div className={`activeView ${showView ? 'show' : 'hide'}`}>
           <SpellView spell={activeView} />
-        </div>
-      );
-    } else if (activeView.windowType === "item") {
-      return (
-        <div className={`activeView ${showView ? 'show' : 'hide'}`}>
-          <ItemView item={activeView} />
-        </div>
-      );
-    } else if (activeView.windowType === "gear") {
-      return (
-        <div className={`activeView ${showView ? 'show' : 'hide'}`}>
-          <GearView gear={activeView} />
-        </div>
-      );
-    } else if (activeView.windowType === "monster") {
-      return (
-        <div className={`activeView ${showView ? 'show' : 'hide'}`}>
-          <MonsterView monster={activeView} />
-        </div>
-      );
-    } else if (activeView.windowType === "char") {
-      return (
-        <div className={`activeView ${showView ? 'show' : 'hide'}`}>
-          <CharView char={activeView} />
-        </div>
-      );
-    } else if (activeView.windowType === "race") {
-      return (
-        <div className={`activeView ${showView ? 'show' : 'hide'}`}>
-          <RaceView race={activeView} />
         </div>
       );
     }

@@ -7,9 +7,6 @@ import { faUndo } from '@fortawesome/free-solid-svg-icons';
 
 import Select from 'react-select';
 
-const electron = window.require('electron');
-const ipcRenderer = electron.ipcRenderer;
-
 export default function SpellSearchBar() {
     const [name, setName] = useState("");
     const [school, setSchool] = useState([]);
@@ -47,7 +44,7 @@ export default function SpellSearchBar() {
     }, []);
 
     useEffect(() => {
-        ipcRenderer.send("sendSpellSearchQuery", { query: { name, school, level, time, range, duration, components, text, classes, sources, ritual } });
+        // ipcRenderer.send("sendSpellSearchQuery", { query: { name, school, level, time, range, duration, components, text, classes, sources, ritual } });
     }, [name, school, level, time, range, duration, components, text, classes, sources, ritual]);
 
     const resetSearch = () => {
