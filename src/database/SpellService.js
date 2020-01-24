@@ -1,7 +1,7 @@
 import { MyAppDatabase } from "./MyDatabase";
-import Spell from "../components/spell/Spell";
 
 const db = new MyAppDatabase();
+let searchSpellQuery;
 
 export function reciveSpell(id, callback) {
   db.spells.where("id").equals(id)
@@ -36,11 +36,14 @@ export function reciveAllSpells(callback) {
 }
 
 export function reciveSpells(step, start, query, callback) {
-  console.log(step + " " + start)
+
+  if (query !== null) {
+    searchSpellQuery = query.query;
+  }
+
   db.open()
     .then(function () {
       db.spells.orderBy('name').offset(start).limit(step).toArray().then(function (array) {
-        console.log(array);
         callback(array);
       })
     })
@@ -62,9 +65,15 @@ export function reciveSpellCount(query, callback) {
 }
 
 export function reciveAttributeSelection(attribute, callback) {
-  db.spells.orderBy(attribute).uniqueKeys(function (array) {
-    callback(array);
-  })
+  db.open()
+    .then(function () {
+      db.spells.orderBy(attribute).uniqueKeys(function (array) {
+        callback(array);
+      })
+    })
+    .finally(function () {
+      db.close();
+    });
 }
 
 
@@ -75,10 +84,11 @@ export function saveNewSpell(spell) {
 }
 
 export function saveNewSpells(spells, callback) {
+  let spellImportLength = Object.keys(spells).length;
+  let spellImported = 0;
   db.open()
     .then(function () {
       spells.map(spell => {
-        console.log(spell)
         db.spells.put({
           name: spell.spell_name,
           classes: spell.spell_classes,
@@ -93,6 +103,8 @@ export function saveNewSpells(spells, callback) {
           text: spell.spell_text,
           pic: spell.spell_pic
         });
+        spellImported++;
+        callback({ now: spellImported, full: spellImportLength, name: spell.spell_name });
       });
     })
     .finally(function () {

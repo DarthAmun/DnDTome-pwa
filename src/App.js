@@ -3,6 +3,8 @@ import React, { useEffect } from 'react';
 import { MemoryRouter, Switch, Route } from 'react-router';
 import packageJson from '../package.json';
 
+import ThemeService from './services/ThemeService';
+
 import SpellOverview from './components/spell/SpellOverview';
 
 import Home from './components/Home';
@@ -43,6 +45,17 @@ const LayoutRoute = ({ component: Component, layout: Layout, ...rest }) => (
 );
 
 const App = () => {
+
+  useEffect(() => {
+    let theme = localStorage.getItem('theme');
+      if (theme !== undefined) {
+        ThemeService.setTheme(theme);
+        ThemeService.applyTheme(theme);
+      } else {
+        localStorage.setItem('theme', 'light');
+      }
+  }, []);
+
   return (
     <MemoryRouter>
       <Switch>

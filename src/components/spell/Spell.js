@@ -10,7 +10,7 @@ export default function Spell(props) {
     }
 
     const formatLevel = (value) => {
-        if (value == "0") {
+        if (value === "0") {
             return <b>C</b>;
         }
         return value;

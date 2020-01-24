@@ -26,6 +26,13 @@ export default function SpellOverview() {
   };
 
   useEffect(() => {
+    ReactDOM.unstable_batchedUpdates(() => {
+      setCurrentSpellList({ spells: [] });
+      setStart(0);
+    });
+  }, [query]);
+
+  useEffect(() => {
     if (isFetching) {
       fetchMoreListItems();
     }
@@ -42,7 +49,6 @@ export default function SpellOverview() {
             receiveSpellsResult(result);
           });
         }
-        console.log(spells.current.scrollHeight + "==" + spells.current.clientHeight + "&&" + currentSpellList.spells.length);
         if (spells.current.scrollHeight == spells.current.clientHeight && currentSpellList.spells.length) {
           reciveSpells(10, start, query, function (spells) {
             receiveSpellsResult(spells);
@@ -70,7 +76,7 @@ export default function SpellOverview() {
   return (
     <div id="overview">
       <div id="spellOverview">
-        <SpellSearchBar />
+        <SpellSearchBar updateSpells={query => setQuery(query)}/>
         <div id="spells" onScroll={handleScroll} ref={spells}>
           {currentSpellList.spells.map((spell, index) => {
             return <Spell delay={0} spell={spell} key={spell.id} onClick={() => viewSpell(spell)} />;

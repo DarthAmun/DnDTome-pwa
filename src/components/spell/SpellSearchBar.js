@@ -7,7 +7,7 @@ import { faUndo } from '@fortawesome/free-solid-svg-icons';
 
 import Select from 'react-select';
 
-export default function SpellSearchBar() {
+export default function SpellSearchBar({updateSpells}) {
     const [name, setName] = useState("");
     const [school, setSchool] = useState([]);
     const [schoolList, setSchoolList] = useState([]);
@@ -25,26 +25,26 @@ export default function SpellSearchBar() {
     useEffect(() => {
         reciveAttributeSelection("school", function (result) {
             let schools = result.map(school => {
-                if (school.spell_school === "") {
-                    return { value: school.spell_school, label: "Empty" };
+                if (school === "") {
+                    return { value: school, label: "Empty" };
                 }
-                return { value: school.spell_school, label: school.spell_school };
+                return { value: school, label: school };
             })
             setSchoolList(schools);
         })
         reciveAttributeSelection("level", function (result) {
             let levels = result.map(level => {
-                if (level.spell_level === "") {
-                    return { value: level.spell_level, label: "Empty" };
+                if (level === "") {
+                    return { value: level, label: "Empty" };
                 }
-                return { value: level.spell_level, label: level.spell_level };
+                return { value: level, label: level };
             })
             setLevelList(levels);
         })
     }, []);
 
     useEffect(() => {
-        // ipcRenderer.send("sendSpellSearchQuery", { query: { name, school, level, time, range, duration, components, text, classes, sources, ritual } });
+        updateSpells({query: { name, school, level, time, range, duration, components, text, classes, sources, ritual } });
     }, [name, school, level, time, range, duration, components, text, classes, sources, ritual]);
 
     const resetSearch = () => {

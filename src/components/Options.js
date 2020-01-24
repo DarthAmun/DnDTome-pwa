@@ -48,9 +48,11 @@ export default function Options() {
 
   const darkMode = () => {
     if (ThemeService.getTheme() === 'light') {
+      localStorage.setItem('theme', 'dark');
       ThemeService.applyTheme('dark');
       ThemeService.setTheme('dark');
     } else {
+      localStorage.setItem('theme', 'light');
       ThemeService.applyTheme('light');
       ThemeService.setTheme('light');
     }
