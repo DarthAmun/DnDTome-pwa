@@ -43,9 +43,13 @@ export function reciveSpells(step, start, query, callback) {
 
   db.open()
     .then(function () {
-      db.spells.orderBy('name').offset(start).limit(step).toArray().then(function (array) {
-        callback(array);
-      })
+      db.spells
+        .where('name')
+        .startsWithIgnoreCase(searchSpellQuery !== undefined ? searchSpellQuery.name : '')
+        .sortBy('name', function (array) {
+          console.log(array)
+          callback(array);
+        })
     })
     .finally(function () {
       db.close();

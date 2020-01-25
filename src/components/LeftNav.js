@@ -5,9 +5,9 @@ import '../assets/css/LeftNav.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMeteor, faIdCard, faShieldAlt, faDiceD20, faCog, faDragon, faFistRaised } from '@fortawesome/free-solid-svg-icons';
 import Particles from 'react-particles-js';
-import backpackIcon from "../assets/img/backpack.png";
-import raceIcon from "../assets/img/orc-head.png";
-import encounterIcon from "../assets/img/sword-clash.png";
+// import backpackIcon from "../assets/img/backpack.png";
+// import raceIcon from "../assets/img/orc-head.png";
+// import encounterIcon from "../assets/img/sword-clash.png";
 
 class LeftNav extends Component {
   render() {
@@ -130,12 +130,12 @@ class LeftNav extends Component {
         <div className="gradIcon">
           <FontAwesomeIcon icon={faDiceD20} className="smallIcon" />
         </div>
-        <Link onClick={e => closeActiveView()} to="/spell-overview" style={{ top: "70px" }} className={this.props.location.pathname == "/spell-overview" ? "menuItemActiv" : ""}>
+        <Link onClick={e => closeActiveView()} to="/spell-overview" style={{ top: "70px" }} className={this.props.location.pathname === "/spell-overview" ? "menuItemActiv" : ""}>
           <div className="menuItem">
             <FontAwesomeIcon icon={faMeteor} /> Spells
           </div>
         </Link>
-        <Link onClick={e => closeActiveView()} to="/options" style={{ bottom: "5px" }} className={this.props.location.pathname == "/options" ? "menuItemActiv" : ""}>
+        <Link onClick={e => closeActiveView()} to="/options" style={{ bottom: "5px" }} className={this.props.location.pathname === "/options" ? "menuItemActiv" : ""}>
           <div className="menuItem">
             <FontAwesomeIcon icon={faCog} /> Options
           </div>
