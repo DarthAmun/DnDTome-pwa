@@ -13,7 +13,7 @@ export default function SpellSearchBar({updateSpells}) {
     const [schoolList, setSchoolList] = useState([]);
     const [level, setLevel] = useState("");
     const [levelList, setLevelList] = useState([]);
-    const [ritual, setRitual] = useState(0);
+    const [ritual, setRitual] = useState(false);
     const [time, setTime] = useState("");
     const [range, setRange] = useState("");
     const [duration, setDuration] = useState("");

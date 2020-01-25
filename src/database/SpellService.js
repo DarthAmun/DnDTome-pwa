@@ -35,19 +35,30 @@ export function reciveAllSpells(callback) {
     });
 }
 
-export function reciveSpells(step, start, query, callback) {
+export function reciveSpells(query, callback) {
 
   if (query !== null) {
     searchSpellQuery = query.query;
   }
-
+  console.log(searchSpellQuery)
   db.open()
     .then(function () {
       db.spells
-        .where('name')
-        .startsWithIgnoreCase(searchSpellQuery !== undefined ? searchSpellQuery.name : '')
+        .filter(spell => {
+          return (
+            (searchSpellQuery.name !== undefined && spell.name.includes(searchSpellQuery.name))
+            && (searchSpellQuery.time !== undefined && spell.time.includes(searchSpellQuery.time))
+            && (searchSpellQuery.range !== undefined && spell.range.includes(searchSpellQuery.range))
+            && (searchSpellQuery.duration !== undefined && spell.duration.includes(searchSpellQuery.duration))
+            && (searchSpellQuery.components !== undefined && spell.components.includes(searchSpellQuery.components))
+            && (searchSpellQuery.text !== undefined && spell.text.includes(searchSpellQuery.text))
+            && (searchSpellQuery.classes !== undefined && spell.classes.includes(searchSpellQuery.classes))
+            && (searchSpellQuery.sources !== undefined && spell.sources.includes(searchSpellQuery.sources))
+            // && (searchSpellQuery.ritual && spell.ritual === 1)
+          );
+        })
         .sortBy('name', function (array) {
-          console.log(array)
+
           callback(array);
         })
     })
