@@ -1,10 +1,10 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "24146bd3e34976828f50a14c367fa6bd",
+    "revision": "d5621fec9bf7c9e6c1a94e177a00c1d0",
     "url": "/DnDTome-pwa/index.html"
   },
   {
-    "revision": "9eab7eb3466b33231dc8",
+    "revision": "80869f2220ec0e213a78",
     "url": "/DnDTome-pwa/static/css/main.21248448.chunk.css"
   },
   {
@@ -12,8 +12,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/DnDTome-pwa/static/js/2.991b9e02.chunk.js"
   },
   {
-    "revision": "9eab7eb3466b33231dc8",
-    "url": "/DnDTome-pwa/static/js/main.dee4689c.chunk.js"
+    "revision": "80869f2220ec0e213a78",
+    "url": "/DnDTome-pwa/static/js/main.88731c73.chunk.js"
   },
   {
     "revision": "001bdc50d1fa47f480b3",
@@ -24,19 +24,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/DnDTome-pwa/static/media/Quicksand-Medium.f65d1a07.ttf"
   },
   {
-    "revision": "1bb790792aca4ed534bebac01d82e6a2",
-    "url": "/DnDTome-pwa/static/media/backpack.1bb79079.png"
-  },
-  {
     "revision": "e40fe0d3ca1d5ec5ec44e267a0947f26",
     "url": "/DnDTome-pwa/static/media/dice_icon_grey.e40fe0d3.png"
-  },
-  {
-    "revision": "a296b8426406649bb3f7f38f0f3ffb04",
-    "url": "/DnDTome-pwa/static/media/orc-head.a296b842.png"
-  },
-  {
-    "revision": "2b5f79a98bea12ec9e32bb8279c1a755",
-    "url": "/DnDTome-pwa/static/media/sword-clash.2b5f79a9.png"
   }
 ]);
