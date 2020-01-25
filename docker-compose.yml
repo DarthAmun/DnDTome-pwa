@@ -12,7 +12,7 @@ services:
       # change this to the directory containing the dockerfile if in a different place
       context: .
       # the dockerfile to be run
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile-dev
     # map the exposed port from the underlying service to a port exposed to the outside
     # in this case  map port 3000 exposed by create react app to also 3000
     # to be used to access the container from the outside
