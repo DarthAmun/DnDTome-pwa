@@ -4,6 +4,7 @@ import '../../assets/css/spell/SpellView.css';
 import { saveSpell, deleteSpell, addSpellToChar } from '../../database/SpellService';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSave, faTrashAlt, faPlus } from '@fortawesome/free-solid-svg-icons';
+import EventEmitter from '../../services/EventEmitter';
 
 export default function SpellView({ spell }) {
     const [id, setId] = useState("");
@@ -28,29 +29,29 @@ export default function SpellView({ spell }) {
             console.time("receiveSpell")
 
             let text = "";
-            if (result.spell_text !== null) {
-                text = result.spell_text.replace(/\\n/gm, "\r\n");
+            if (result.text !== null) {
+                text = result.text.replace(/\\n/gm, "\r\n");
             }
             let sources = "";
-            if (result.spell_sources !== null) {
-                sources = result.spell_sources.replace(/\\n/gm, "\r\n");
+            if (result.sources !== null) {
+                sources = result.sources.replace(/\\n/gm, "\r\n");
             }
 
-            setName(result.spell_name);
-            setSchool(result.spell_school);
-            setLevel(result.spell_level);
-            setRitual(result.spell_ritual);
-            setTime(result.spell_time);
-            setRange(result.spell_range);
-            setDuration(result.spell_duration);
-            setComponents(result.spell_components);
+            setName(result.name);
+            setSchool(result.school);
+            setLevel(result.level);
+            setRitual(result.ritual);
+            setTime(result.time);
+            setRange(result.range);
+            setDuration(result.duration);
+            setComponents(result.components);
             setText(text);
-            setClasses(result.spell_classes);
+            setClasses(result.classes);
             setSources(sources);
-            setId(result.spell_id);
-            setPic(result.spell_pic);
+            setId(result.id);
+            setPic(result.pic);
 
-            if (result.spell_pic === null) {
+            if (result.pic === null) {
                 setPic("");
             }
 
@@ -63,11 +64,15 @@ export default function SpellView({ spell }) {
     }, [spell]);
 
     const saveSpellAction = (e) => {
-        saveSpell({ id, name, school, level, ritual, time, range, duration, components, text, classes, sources, pic });
+        let newSpell = { id, name, school, level, ritual, time, range, duration, components, text, classes, sources, pic };
+        saveSpell(newSpell);
+        EventEmitter.dispatch('updateWindow', newSpell);
     }
     
     const deleteSpellAction = (e) => {
-        deleteSpell({ id, name, school, ritual, level, time, range, duration, components, text, classes, sources });
+        let removeSpell = { id, name, school, ritual, level, time, range, duration, components, text, classes, sources };
+        deleteSpell(removeSpell);
+        EventEmitter.dispatch('removeWindow', removeSpell);
     }
 
     const style = {

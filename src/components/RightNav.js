@@ -6,25 +6,26 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 
 import SpellView from "./spell/SpellView";
+import EventEmitter from '../services/EventEmitter';
 
 export default function RightNav() {
   const [shortWindows, setShortWindows] = useState([]);
   const [activeView, setActiveView] = useState({});
   const [showView, setShowView] = useState(false);
 
-  const receiveResult = (event, result) => {
+  const receiveResult = (result) => {
     let type = "";
-    if (result.spell_id !== undefined) {
+    if (result.id !== undefined) {
       type = "spell";
-    } else if (result.item_id !== undefined) {
+    } else if (result.id !== undefined) {
       type = "item";
-    } else if (result.gear_id !== undefined) {
+    } else if (result.id !== undefined) {
       type = "gear";
-    } else if (result.race_id !== undefined) {
+    } else if (result.id !== undefined) {
       type = "race";
-    } else if (result.monster_id !== undefined) {
+    } else if (result.id !== undefined) {
       type = "monster";
-    } else if (result.char_id !== undefined) {
+    } else if (result.id !== undefined) {
       type = "char";
     }
 
@@ -36,9 +37,9 @@ export default function RightNav() {
     });
   };
 
-  const updateWindow = (e, result) => {
+  const updateWindow = (result) => {
     let windows = shortWindows.map(shortWindow => {
-      if (shortWindow.windowType === "spell" && result.spell_id !== undefined && shortWindow.spell_id === result.spell_id) {
+      if (shortWindow.windowType === "spell" && result.id !== undefined && shortWindow.id === result.id) {
         return { ...result, windowType: "spell" };
       } else if (shortWindow.windowType === "item" && result.item_id !== undefined && shortWindow.item_id === result.item_id) {
         return { ...result, windowType: "item" };
@@ -56,9 +57,9 @@ export default function RightNav() {
     });
     setShortWindows(windows);
   }
-  const removeWindow = (e, result) => {
+  const removeWindow = (result) => {
     let windows = shortWindows.filter(shortWindow => {
-      if (shortWindow.windowType === "spell" && shortWindow.spell_id === result.id) {
+      if (shortWindow.windowType === "spell" && shortWindow.id === result.id) {
       } else if (shortWindow.windowType === "item" && shortWindow.item_id === result.id) {
       } else if (shortWindow.windowType === "gear" && shortWindow.gear_id === result.id) {
       } else if (shortWindow.windowType === "race" && shortWindow.race_id === result.id) {
@@ -68,14 +69,29 @@ export default function RightNav() {
         return shortWindow;
       }
     });
-    setShortWindows(windows);
+    ReactDOM.unstable_batchedUpdates(() => {
+      setShortWindows(windows);
+      setShowView(false);
+    });
   }
 
+  useEffect(() => {
+    EventEmitter.subscribe("openView", receiveResult);
+    EventEmitter.subscribe("closeActiveView", closeActiveView);
+  }, []);
+
+  useEffect(() => {
+    EventEmitter.subscribe("updateWindow", updateWindow);
+  }, [updateWindow]);
+  useEffect(() => {
+    EventEmitter.subscribe("removeWindow", removeWindow);
+  }, [removeWindow]);
+
   const getSpellPicture = spell => {
-    if (spell.spell_pic === "" || spell.spell_pic === null) {
+    if (spell.pic === "" || spell.pic === null) {
       return icon;
     }
-    return spell.spell_pic;
+    return spell.pic;
   };
   const getMonsterPicture = monster => {
     if (monster.monster_pic === "" || monster.monster_pic === null) {
@@ -153,7 +169,7 @@ export default function RightNav() {
                 <FontAwesomeIcon icon={faTimesCircle} />
               </div>
               <div className="image" onClick={e => showActiveView(window)} style={{ backgroundImage: `url(${getSpellPicture(window)})`, backgroundPosition: "center", backgroundSize: "cover", backgroundRepeat: "no-repeat" }}></div>
-              <div className="windowToolTip">{window.spell_name}</div>
+              <div className="windowToolTip">{window.name}</div>
             </div>
           );
         } else if (window.windowType === "item") {

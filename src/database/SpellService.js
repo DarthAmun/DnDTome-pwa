@@ -40,11 +40,27 @@ export function reciveSpells(query, callback) {
   if (query !== null) {
     searchSpellQuery = query.query;
   }
-  console.log(searchSpellQuery)
+
   db.open()
     .then(function () {
+      console.time("sortSpells")
       db.spells
         .filter(spell => {
+          let schoolbool = true;
+          if (searchSpellQuery.school.length !== 0) {
+            schoolbool = false;
+            searchSpellQuery.school.map(school => {
+
+              if (spell.school === school.value) schoolbool = true;
+            });
+          }
+          let levelbool = true;
+          if (searchSpellQuery.level.length !== 0) {
+            levelbool = false;
+            searchSpellQuery.level.map(level => {
+              if (spell.level === level.value) levelbool = true;
+            });
+          }
           return (
             (searchSpellQuery.name !== undefined && spell.name.includes(searchSpellQuery.name))
             && (searchSpellQuery.time !== undefined && spell.time.includes(searchSpellQuery.time))
@@ -54,11 +70,13 @@ export function reciveSpells(query, callback) {
             && (searchSpellQuery.text !== undefined && spell.text.includes(searchSpellQuery.text))
             && (searchSpellQuery.classes !== undefined && spell.classes.includes(searchSpellQuery.classes))
             && (searchSpellQuery.sources !== undefined && spell.sources.includes(searchSpellQuery.sources))
-            // && (searchSpellQuery.ritual && spell.ritual === 1)
+            && ((searchSpellQuery.ritual && spell.ritual === 1) || (!searchSpellQuery.ritual))
+            && levelbool
+            && schoolbool
           );
         })
         .sortBy('name', function (array) {
-
+          console.timeEnd("sortSpells")
           callback(array);
         })
     })
@@ -93,9 +111,17 @@ export function reciveAttributeSelection(attribute, callback) {
 
 
 export function saveSpell(spell) {
+  db.open()
+    .then(function () {
+      db.spells.update(spell.id, spell);
+    })
+    .finally(function () {
+      db.close();
+    });
 }
 
 export function saveNewSpell(spell) {
+
 }
 
 export function saveNewSpells(spells, callback) {
@@ -131,6 +157,13 @@ export function saveNewSpellFromJson(spell, callback) {
 }
 
 export function deleteSpell(spell) {
+  db.open()
+    .then(function () {
+      db.spells.where('id').equals(spell.id).delete();
+    })
+    .finally(function () {
+      db.close();
+    });
 }
 
 export function deleteAllSpells() {

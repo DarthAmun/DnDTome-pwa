@@ -48,12 +48,12 @@ const App = () => {
 
   useEffect(() => {
     let theme = localStorage.getItem('theme');
-      if (theme !== undefined) {
-        ThemeService.setTheme(theme);
-        ThemeService.applyTheme(theme);
-      } else {
-        localStorage.setItem('theme', 'light');
-      }
+    if (theme !== undefined) {
+      ThemeService.setTheme(theme);
+      ThemeService.applyTheme(theme);
+    } else {
+      localStorage.setItem('theme', 'light');
+    }
   }, []);
 
   return (
