@@ -26,7 +26,7 @@ export function reciveSpellByName(name, callback) {
 export function reciveAllSpells(callback) {
   db.open()
     .then(function () {
-      db.spells.orderBy("name").then(function (array) {
+      db.spells.toCollection().sortBy('name', function (array) {
         callback(array);
       })
     })
