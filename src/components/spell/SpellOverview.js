@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
-import * as ReactDOM from "react-dom";
 import "../../assets/css/spell/SpellOverview.css";
 import Spell from "./Spell";
 import SpellSearchBar from "./SpellSearchBar";

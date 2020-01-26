@@ -1,6 +1,7 @@
 import '../assets/css/Options.css';
 import React, { useState } from 'react';
 import { reciveAllSpells, saveNewSpells, deleteAllSpells } from '../database/SpellService';
+import { reciveAllItems, saveNewItems, deleteAllItems } from '../database/ItemService';
 import { Line } from 'rc-progress';
 import ThemeService from '../services/ThemeService';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -11,12 +12,18 @@ let fileReader;
 
 export default function Options() {
   const [spellsImported, setSpellsImported] = useState({ percent: 0, now: 0, full: 0, name: "" });
+  const [itemsImported, setItemsImported] = useState({ percent: 0, now: 0, full: 0, name: "" });
   const [importing, setImporting] = useState("none");
 
   const updateSpellImport = (result) => {
     let percent = Math.round((result.now / result.full) * 100);
     percent !== 0 && percent !== 100 ? setImporting("block") : setImporting("none");
     setSpellsImported({ percent: percent, now: result.now, full: result.full, name: result.name });
+  } 
+  const updateItemImport = (result) => {
+    let percent = Math.round((result.now / result.full) * 100);
+    percent !== 0 && percent !== 100 ? setImporting("block") : setImporting("none");
+    setItemsImported({ percent: percent, now: result.now, full: result.full, name: result.name });
   }
 
   const importSpells = e => {
@@ -24,16 +31,33 @@ export default function Options() {
 
     files.forEach((file, i) => {
       fileReader = new FileReader();
-      fileReader.onloadend = handleFileRead;
+      fileReader.onloadend = handleSpellFileRead;
       fileReader.readAsText(file);
     })
   }
-
-  const handleFileRead = (e) => {
+  const handleSpellFileRead = (e) => {
     const content = fileReader.result;
     let spellsJson = JSON.parse(content);
     saveNewSpells(spellsJson, function (result) {
       updateSpellImport(result);
+    });
+  }
+
+  const importItems = e => {
+    const files = Array.from(e.target.files)
+
+    files.forEach((file, i) => {
+      fileReader = new FileReader();
+      fileReader.onloadend = handleItemFileRead;
+      fileReader.readAsText(file);
+    })
+  }
+  const handleItemFileRead = (e) => {
+    const content = fileReader.result;
+    let itemsJson = JSON.parse(content);
+    console.log(itemsJson)
+    saveNewItems(itemsJson, function (result) {
+      updateItemImport(result);
     });
   }
 
@@ -61,6 +85,9 @@ export default function Options() {
 
   const deleteAllSpellsAction = () => {
     deleteAllSpells();
+  }
+  const deleteAllItemsAction = () => {
+    deleteAllItems();
   }
 
   const darkMode = () => {
@@ -93,8 +120,10 @@ export default function Options() {
           </div>
           <div className="optionSection">
             <h3>Data Import</h3>
-            <input type="file" name="file" id="file" className="inputfile" onChange={importSpells} />
-            <label for="file"><FontAwesomeIcon icon={faFileImport} /> Import Spells </label>
+            <input type="file" name="spellfile" id="spellfile" className="inputfile" onChange={importSpells} />
+            <label htmlFor="spellfile"><FontAwesomeIcon icon={faFileImport} /> Import Spells </label><br />
+            <input type="file" name="itemfile" id="itemfile" className="inputfile" onChange={importItems} />
+            <label htmlFor="itemfile"><FontAwesomeIcon icon={faFileImport} /> Import Items </label><br />
           </div>
           <div className="optionSection">
             <h3>Data Export</h3>
@@ -103,6 +132,7 @@ export default function Options() {
           <div className="optionSection">
             <h3>Delete Data</h3>
             <button onClick={deleteAllSpellsAction}><FontAwesomeIcon icon={faTrashAlt} /> Delete all Spells </button><br />
+            <button onClick={deleteAllItemsAction}><FontAwesomeIcon icon={faTrashAlt} /> Delete all Items </button><br />
           </div>
         </div>
       </div>
@@ -112,6 +142,12 @@ export default function Options() {
             (<div>Imported {spellsImported.percent}% ({spellsImported.now}/{spellsImported.full}) of spells.
               <Line percent={spellsImported.percent} strokeWidth="1" trailWidth="1" strokeColor="#8000ff" />
               Importing {spellsImported.name} ...
+              </div>) : (<div></div>)
+          }
+          {itemsImported.percent !== 0 && itemsImported.percent !== 100 ?
+            (<div>Imported {itemsImported.percent}% ({itemsImported.now}/{itemsImported.full}) of magic items.
+              <Line percent={itemsImported.percent} strokeWidth="1" trailWidth="1" strokeColor="#8000ff" />
+              Importing {itemsImported.name} ...
               </div>) : (<div></div>)
           }
         </div>

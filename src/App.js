@@ -5,12 +5,14 @@ import packageJson from '../package.json';
 
 import ThemeService from './services/ThemeService';
 
-import SpellOverview from './components/spell/SpellOverview';
-
 import Home from './components/Home';
 import Options from './components/Options';
 
+import SpellOverview from './components/spell/SpellOverview';
+import ItemOverview from './components/item/ItemOverview';
+
 import AddSpell from './components/add/AddSpell';
+import AddItem from './components/add/AddItem';
 
 import LeftNav from './components/LeftNav';
 import RightNav from './components/RightNav';
@@ -60,7 +62,9 @@ const App = () => {
     <MemoryRouter>
       <Switch>
         <LayoutRoute path="/spell-overview" layout={PageLayout} component={SpellOverview} />
+        <LayoutRoute path="/item-overview" layout={PageLayout} component={ItemOverview} />
         <LayoutRoute path="/add-spell" layout={PageLayout} component={AddSpell} />
+        <LayoutRoute path="/add-item" layout={PageLayout} component={AddItem} />
         <LayoutRoute path="/options" layout={PageLayout} component={Options} />
         <LayoutRoute path="/" layout={HomeLayout} component={Home} />
       </Switch>

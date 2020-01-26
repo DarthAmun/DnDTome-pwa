@@ -6,6 +6,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 
 import SpellView from "./spell/SpellView";
+import ItemView from "./item/ItemView";
+
 import EventEmitter from '../services/EventEmitter';
 
 export default function RightNav() {
@@ -15,9 +17,10 @@ export default function RightNav() {
 
   const receiveResult = (result) => {
     let type = "";
-    if (result.id !== undefined) {
+    console.log(typeof result)
+    if (result.ritual !== undefined) {
       type = "spell";
-    } else if (result.id !== undefined) {
+    } else if (result.attunment !== undefined) {
       type = "item";
     } else if (result.id !== undefined) {
       type = "gear";
@@ -39,9 +42,9 @@ export default function RightNav() {
 
   const updateWindow = (result) => {
     let windows = shortWindows.map(shortWindow => {
-      if (shortWindow.windowType === "spell" && result.id !== undefined && shortWindow.id === result.id) {
+      if (shortWindow.windowType === "spell" && result.ritual !== undefined && shortWindow.id === result.id) {
         return { ...result, windowType: "spell" };
-      } else if (shortWindow.windowType === "item" && result.item_id !== undefined && shortWindow.item_id === result.item_id) {
+      } else if (shortWindow.windowType === "item" && result.attunment !== undefined && shortWindow.id === result.id) {
         return { ...result, windowType: "item" };
       } else if (shortWindow.windowType === "gear" && result.gear_id !== undefined && shortWindow.gear_id === result.gear_id) {
         return { ...result, windowType: "gear" };
@@ -60,7 +63,7 @@ export default function RightNav() {
   const removeWindow = (result) => {
     let windows = shortWindows.filter(shortWindow => {
       if (shortWindow.windowType === "spell" && shortWindow.id === result.id) {
-      } else if (shortWindow.windowType === "item" && shortWindow.item_id === result.id) {
+      } else if (shortWindow.windowType === "item" && shortWindow.id === result.id) {
       } else if (shortWindow.windowType === "gear" && shortWindow.gear_id === result.id) {
       } else if (shortWindow.windowType === "race" && shortWindow.race_id === result.id) {
       } else if (shortWindow.windowType === "monster" && shortWindow.monster_id === result.id) {
@@ -100,10 +103,10 @@ export default function RightNav() {
     return monster.monster_pic;
   };
   const getItemPicture = item => {
-    if (item.item_pic === "" || item.item_pic === null) {
+    if (item.pic === "" || item.pic === null) {
       return icon;
     }
-    return item.item_pic;
+    return item.pic;
   };
   const getGearPicture = gear => {
     if (gear.gear_pic === "" || gear.gear_pic === null) {
@@ -129,6 +132,12 @@ export default function RightNav() {
       return (
         <div className={`activeView ${showView ? 'show' : 'hide'}`}>
           <SpellView spell={activeView} />
+        </div>
+      );
+    } else if (activeView.windowType === "item") {
+      return (
+        <div className={`activeView ${showView ? 'show' : 'hide'}`}>
+          <ItemView item={activeView} />
         </div>
       );
     }
@@ -179,7 +188,7 @@ export default function RightNav() {
                 <FontAwesomeIcon icon={faTimesCircle} />
               </div>
               <div className="image" onClick={e => showActiveView(window)} style={{ backgroundImage: `url(${getItemPicture(window)})`, backgroundPosition: "center", backgroundSize: "cover", backgroundRepeat: "no-repeat" }}></div>
-              <div className="windowToolTip">{window.item_name}</div>
+              <div className="windowToolTip">{window.name}</div>
             </div>
           );
         } else if (window.windowType === "gear") {

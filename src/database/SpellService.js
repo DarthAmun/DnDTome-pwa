@@ -4,9 +4,15 @@ const db = new MyAppDatabase();
 let searchSpellQuery;
 
 export function reciveSpell(id, callback) {
-  db.spells.where("id").equals(id)
-    .then((spell) => {
-      callback(spell);
+  db.open()
+    .then(function () {
+      db.spells.where("id").equals(id)
+        .then((spell) => {
+          callback(spell);
+        })
+        .finally(function () {
+          db.close();
+        });
     })
     .finally(function () {
       db.close();
@@ -14,9 +20,15 @@ export function reciveSpell(id, callback) {
 }
 
 export function reciveSpellByName(name, callback) {
-  db.spells.where("name").equalsIgnoreCase(name)
-    .then((spell) => {
-      callback(spell);
+  db.open()
+    .then(function () {
+      db.spells.where("name").equalsIgnoreCase(name)
+        .then((spell) => {
+          callback(spell);
+        })
+        .finally(function () {
+          db.close();
+        });
     })
     .finally(function () {
       db.close();
