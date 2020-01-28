@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMeteor, faIdCard, faShieldAlt, faDiceD20, faCog, faDragon, faFistRaised } from '@fortawesome/free-solid-svg-icons';
 import Particles from 'react-particles-js';
 import EventEmitter from '../services/EventEmitter';
-// import backpackIcon from "../assets/img/backpack.png";
+import backpackIcon from "../assets/img/backpack.png";
 // import raceIcon from "../assets/img/orc-head.png";
 // import encounterIcon from "../assets/img/sword-clash.png";
 
@@ -140,6 +140,11 @@ class LeftNav extends Component {
         <Link onClick={e => closeActiveView()} to="/item-overview" style={{ top: "110px" }} className={this.props.location.pathname == "/item-overview" ? "menuItemActiv" : ""}>
           <div className="menuItem">
             <FontAwesomeIcon icon={faShieldAlt} /> Magic Items
+          </div>
+        </Link>
+        <Link onClick={e => closeActiveView()} to="/gear-overview" style={{ top: "150px" }} className={this.props.location.pathname == "/gear-overview" ? "menuItemActiv" : ""}>
+          <div className="menuItem">
+            <img src={backpackIcon} style={{ width: '20px', marginTop: '10px', marginRight: '5px', float: 'left' }} /> Equip
           </div>
         </Link>
         <Link onClick={e => closeActiveView()} to="/options" style={{ bottom: "5px" }} className={this.props.location.pathname === "/options" ? "menuItemActiv" : ""}>

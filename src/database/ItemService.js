@@ -32,7 +32,6 @@ export function reciveItemByName(name, callback) {
 }
 
 export function reciveItems(query, callback) {
-
     if (query !== null) {
         searchItemQuery = query.query;
     }
@@ -42,7 +41,28 @@ export function reciveItems(query, callback) {
             console.time("sortItems")
             db.items
                 .filter(item => {
-                    return true
+                    let raritybool = true;
+                    if (searchItemQuery.rarity !== null && searchItemQuery.rarity.length !== 0) {
+                        raritybool = false;
+                        searchItemQuery.rarity.map(rarity => {
+                            if (item.rarity === rarity.value) raritybool = true;
+                        });
+                    }
+                    let typebool = true;
+                    if (searchItemQuery.type !== null && searchItemQuery.type.length !== 0) {
+                        typebool = false;
+                        searchItemQuery.type.map(type => {
+                            if (item.type === type.value) typebool = true;
+                        });
+                    }
+                    return (
+                        (searchItemQuery.name !== undefined && item.name.includes(searchItemQuery.name))
+                        && (searchItemQuery.description !== undefined && item.description.includes(searchItemQuery.description))
+                        && (searchItemQuery.sources !== undefined && item.sources.includes(searchItemQuery.sources))
+                        && ((searchItemQuery.attunment && item.attunment === 1) || (!searchItemQuery.attunment))
+                        && raritybool
+                        && typebool
+                    );
                 })
                 .sortBy('name', function (array) {
                     console.timeEnd("sortItems")
@@ -88,7 +108,7 @@ export function saveItem(item) {
         });
 }
 
-export function saveNewItem (item) {
+export function saveNewItem(item) {
 
 }
 
@@ -99,13 +119,13 @@ export function saveNewItems(items, callback) {
         .then(function () {
             items.map(item => {
                 db.items.put({
-                    name: item.item_name,
-                    sources: item.item_sources,
-                    pic: item.item_pic,
-                    description: item.item_description,
-                    rarity: item.item_rarity,
-                    type: item.item_type,
-                    attunment: item.item_attunment
+                    name: item.item_name !== undefined ? item.item_name : "",
+                    sources: item.item_source !== undefined ? item.item_source : "",
+                    pic: item.item_pic !== undefined ? item.item_pic : "",
+                    description: item.item_description !== undefined ? item.item_description : "",
+                    rarity: item.item_rarity !== undefined ? item.item_rarity : "",
+                    type: item.item_type !== undefined ? item.item_type : "",
+                    attunment: item.item_attunment !== undefined ? item.item_attunment : 0
                 });
                 itemImported++;
                 callback({ now: itemImported, full: itemImportLength, name: item.item_name });
@@ -120,7 +140,7 @@ export function saveNewItemFromJson(item, callback) {
 
 }
 
-export function deleteItem (item) {
+export function deleteItem(item) {
     db.open()
         .then(function () {
             db.items.where('id').equals(item.id).delete();
@@ -132,12 +152,12 @@ export function deleteItem (item) {
 
 export function deleteAllItems() {
     db.open()
-    .then(function () {
-      db.items.clear();
-    })
-    .finally(function () {
-      db.close();
-    });
+        .then(function () {
+            db.items.clear();
+        })
+        .finally(function () {
+            db.close();
+        });
 };
 
 export function addItemToChar(char, item, callback) {

@@ -1,32 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import * as ReactDOM from "react-dom";
 import '../../assets/css/SearchBar.css';
-import { reciveAttributeSelection } from '../../database/ItemService';
+import { reciveAttributeSelection } from '../../database/GearService';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUndo } from '@fortawesome/free-solid-svg-icons';
 
 import Select from 'react-select';
 
-export default function ItemSearchBar({updateItems}) {
+export default function GearSearchBar({updateGears}) {
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
-    const [rarity, setRarity] = useState("");
-    const [rarityList, setRarityList] = useState([]);
+    const [cost, setCost] = useState("");
+    const [damage, setDamage] = useState("");
+    const [sources, setSources] = useState("");
+    const [weight, setWeight] = useState("");
+    const [properties, setProperties] = useState("");
     const [type, setType] = useState("");
     const [typeList, setTypeList] = useState([]);
-    const [sources, setSources] = useState("");
-    const [attunment, setAttunment] = useState("");
 
     useEffect(() => {
-        reciveAttributeSelection("rarity", function (result) {
-            let rarities = result.map(rarity => {
-                if(rarity === "") {
-                    return { value: rarity, label: "Empty" };
-                }
-                return { value: rarity, label: rarity };
-            })
-            setRarityList(rarities);
-        })
         reciveAttributeSelection("type", function (result) {
             let types = result.map(type => {
                 if(type === "") {
@@ -39,17 +31,19 @@ export default function ItemSearchBar({updateItems}) {
     }, []);
 
     useEffect(() => {
-        updateItems({ query: { name, type, rarity, sources, attunment, description } });
-    }, [name, type, rarity, sources, attunment, description]);
+        updateGears({ query: { name, description, sources, cost, weight, damage, properties, type } });
+    }, [name, description, sources, cost, weight, damage, properties, type]);
 
     const resetSearch = () => {
         ReactDOM.unstable_batchedUpdates(() => {
             setName("");
             setDescription("");
-            setRarity("");
+            setCost("");
+            setDamage("");
+            setWeight("");
+            setProperties("");
             setType("");
             setSources("");
-            setAttunment("");
         });
     };
 
@@ -81,20 +75,7 @@ export default function ItemSearchBar({updateItems}) {
 
     return (
         <div id="searchBar">
-            <label className="smaller left checkbox-label" style={{width: '110px'}}>
-                <div className="labelText" style={{width: '110px'}}>Attunment:</div>
-                <input name="ritual" type="checkbox" checked={attunment} onChange={e => setAttunment(e.target.checked)} />
-                <span className="checkbox-custom circular" style={{left: '95px'}}></span>
-            </label>
             <input type="text" name={name} placeholder="Name..." value={name} onChange={e => setName(e.target.value)} />
-            <Select
-                value={rarity}
-                onChange={rarity => setRarity(rarity)}
-                options={rarityList}
-                isMulti={true}
-                styles={customStyles}
-                placeholder="Rarity..."
-            />
             <Select
                 value={type}
                 onChange={type => setType(type)}
@@ -103,6 +84,9 @@ export default function ItemSearchBar({updateItems}) {
                 styles={customStyles}
                 placeholder="Type..."
             />
+            <input type="text" name={weight} placeholder="Weight..." value={weight} onChange={e => setWeight(e.target.value)} />
+            <input type="text" name={damage} placeholder="Damage..." value={damage} onChange={e => setDamage(e.target.value)} />
+            <input type="text" name={properties} placeholder="Properties..." value={properties} onChange={e => setProperties(e.target.value)} />
             <input type="text" name={description} placeholder="Description..." value={description} onChange={e => setDescription(e.target.value)} />
             <input type="text" name={sources} placeholder="Sources..." value={sources} onChange={e => setSources(e.target.value)} />
             <button onClick={resetSearch}>

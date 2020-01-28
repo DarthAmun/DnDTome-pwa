@@ -1,7 +1,7 @@
 export default class Item {
   id: number;
   name: string;
-  descirption: string;
+  description: string;
   pic: string;
   rarity: string;
   type: string;
@@ -12,7 +12,7 @@ export default class Item {
     name: string,
     sources: string,
     id: number,
-    descirption: string,
+    description: string,
     pic: string,
     rarity: string,
     type: string,
@@ -21,7 +21,7 @@ export default class Item {
     this.name = name;
     this.sources = sources;
     this.id = id;
-    this.descirption = descirption;
+    this.description = description;
     this.pic = pic;
     this.rarity = rarity;
     this.type = type;

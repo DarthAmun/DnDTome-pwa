@@ -10,9 +10,11 @@ import Options from './components/Options';
 
 import SpellOverview from './components/spell/SpellOverview';
 import ItemOverview from './components/item/ItemOverview';
+import GearOverview from './components/gear/GearOverview';
 
 import AddSpell from './components/add/AddSpell';
 import AddItem from './components/add/AddItem';
+import AddGear from './components/add/AddGear';
 
 import LeftNav from './components/LeftNav';
 import RightNav from './components/RightNav';
@@ -63,8 +65,10 @@ const App = () => {
       <Switch>
         <LayoutRoute path="/spell-overview" layout={PageLayout} component={SpellOverview} />
         <LayoutRoute path="/item-overview" layout={PageLayout} component={ItemOverview} />
+        <LayoutRoute path="/gear-overview" layout={PageLayout} component={GearOverview} />
         <LayoutRoute path="/add-spell" layout={PageLayout} component={AddSpell} />
         <LayoutRoute path="/add-item" layout={PageLayout} component={AddItem} />
+        <LayoutRoute path="/add-gear" layout={PageLayout} component={AddGear} />
         <LayoutRoute path="/options" layout={PageLayout} component={Options} />
         <LayoutRoute path="/" layout={HomeLayout} component={Home} />
       </Switch>

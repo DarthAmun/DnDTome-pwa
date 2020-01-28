@@ -59,7 +59,7 @@ export function reciveSpells(query, callback) {
       db.spells
         .filter(spell => {
           let schoolbool = true;
-          if (searchSpellQuery.school.length !== 0) {
+          if (searchSpellQuery.school !== null && searchSpellQuery.school.length !== 0) {
             schoolbool = false;
             searchSpellQuery.school.map(school => {
 
@@ -67,7 +67,7 @@ export function reciveSpells(query, callback) {
             });
           }
           let levelbool = true;
-          if (searchSpellQuery.level.length !== 0) {
+          if (searchSpellQuery.level !== null && searchSpellQuery.level.length !== 0) {
             levelbool = false;
             searchSpellQuery.level.map(level => {
               if (spell.level === level.value) levelbool = true;
@@ -143,18 +143,18 @@ export function saveNewSpells(spells, callback) {
     .then(function () {
       spells.map(spell => {
         db.spells.put({
-          name: spell.spell_name,
-          classes: spell.spell_classes,
-          sources: spell.spell_sources,
-          level: spell.spell_level,
-          school: spell.spell_school,
-          time: spell.spell_time,
-          range: spell.spell_range,
-          components: spell.spell_components,
-          duration: spell.spell_duration,
-          ritual: spell.spell_ritual,
-          text: spell.spell_text,
-          pic: spell.spell_pic
+          name: spell.spell_name !== undefined ? spell.spell_name : "",
+          classes: spell.spell_classes !== undefined ? spell.spell_classes : "",
+          sources: spell.spell_sources !== undefined ? spell.spell_sources : "",
+          level: spell.spell_level !== undefined ? spell.spell_level : 0,
+          school: spell.spell_school !== undefined ? spell.spell_school : "",
+          time: spell.spell_time !== undefined ? spell.spell_time : "",
+          range: spell.spell_range !== undefined ? spell.spell_range : "",
+          components: spell.spell_components !== undefined ? spell.spell_components : "",
+          duration: spell.spell_duration !== undefined ? spell.spell_duration : "",
+          ritual: spell.spell_ritual !== undefined ? spell.spell_ritual : 0,
+          text: spell.spell_text !== undefined ? spell.spell_text : "",
+          pic: spell.spell_pic !== undefined ? spell.spell_pic : ""
         });
         spellImported++;
         callback({ now: spellImported, full: spellImportLength, name: spell.spell_name });
