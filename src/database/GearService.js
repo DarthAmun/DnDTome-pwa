@@ -106,7 +106,13 @@ export function saveGear(gear) {
 }
 
 export function saveNewGear(gear) {
-
+    db.open()
+        .then(function () {
+            db.gears.put(gear);
+        })
+        .finally(function () {
+            db.close();
+        });
 }
 
 export function saveNewGears(gears, callback) {

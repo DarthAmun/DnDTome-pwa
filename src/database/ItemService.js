@@ -109,7 +109,13 @@ export function saveItem(item) {
 }
 
 export function saveNewItem(item) {
-
+    db.open()
+        .then(function () {
+            db.items.put(item);
+        })
+        .finally(function () {
+            db.close();
+        });
 }
 
 export function saveNewItems(items, callback) {

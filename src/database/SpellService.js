@@ -133,7 +133,13 @@ export function saveSpell(spell) {
 }
 
 export function saveNewSpell(spell) {
-
+  db.open()
+    .then(function () {
+      db.spells.put(spell);
+    })
+    .finally(function () {
+      db.close();
+    });
 }
 
 export function saveNewSpells(spells, callback) {
