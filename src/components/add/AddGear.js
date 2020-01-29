@@ -13,9 +13,10 @@ export default function GearView() {
     const [weight, setWeight] = useState("");
     const [properties, setProperties] = useState("");
     const [type, setType] = useState("");
+    const [sources, setSources] = useState("");
 
     const saveGear = (e) => {
-        saveNewGear({ name, pic, description, cost, weight, damage, properties, type });
+        saveNewGear({ name, pic, description, cost, weight, damage, properties, type, sources });
     }
 
     const style = {
@@ -35,6 +36,7 @@ export default function GearView() {
             <div className="top">
                 <label>Weight:<input name="weight" type="weight" value={weight} onChange={e => setWeight(e.target.value)} /></label>
                 <label>Damage:<input name="damage" type="damage" value={damage} onChange={e => setDamage(e.target.value)} /></label>
+                <label>Sources:<input name="sources" type="text" value={sources} onChange={e => setSources(e.target.value)} /></label>
                 <label>Cost:<input name="cost" type="text" value={cost} onChange={e => setCost(e.target.value)} /></label>
             </div>
             <label style={{ float: "left", width: "623px" }}>Props:<input style={{ width: "510px", marginRight: "13px" }} name="props" type="text" value={properties} onChange={e => setProperties(e.target.value)} /></label>

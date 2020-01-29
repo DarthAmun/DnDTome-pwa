@@ -13,7 +13,7 @@ export default function ItemView({ item }) {
     const [description, setDescription] = useState("");
     const [rarity, setRarity] = useState("");
     const [type, setType] = useState("");
-    const [source, setSource] = useState("");
+    const [sources, setSources] = useState("");
     const [attunment, setAttunment] = useState("");
 
     const [chars, setChars] = useState([]);
@@ -32,7 +32,7 @@ export default function ItemView({ item }) {
             setPic(result.pic);
             setRarity(result.rarity);
             setType(result.type);
-            setSource(result.source);
+            setSources(result.source);
             setAttunment(result.attunment);
             console.timeEnd("receiveItem")
         })
@@ -48,13 +48,13 @@ export default function ItemView({ item }) {
     }, [item]);
 
     const saveItemAction = (e) => {
-        let newItem = { id, name, pic, type, rarity, source, attunment, description };
+        let newItem = { id, name, pic, type, rarity, sources, attunment, description };
         saveItem(newItem);
         EventEmitter.dispatch('updateWindow', newItem);
     }
 
     const deleteItemAction = (e) => {
-        let removeItem = { id, name, pic, type, rarity, source, description };
+        let removeItem = { id, name, pic, type, rarity, sources, description };
         deleteItem(removeItem);
         EventEmitter.dispatch('removeWindow', removeItem);
     }
@@ -70,7 +70,7 @@ export default function ItemView({ item }) {
         <div id="itemView">
             <div className="top">
                 <label>Name:<input name="name" type="text" value={name} onChange={e => setName(e.target.value)} /></label>
-                <label>Sources:<input name="source" type="text" value={source} onChange={e => setSource(e.target.value)} /></label>
+                <label>Sources:<input name="sources" type="text" value={sources} onChange={e => setSources(e.target.value)} /></label>
                 <label>Pic:<input name="pic" type="text" value={pic} onChange={e => setPic(e.target.value)} /></label>
             </div>
             <div className="top">

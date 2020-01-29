@@ -49,7 +49,14 @@ export function reciveGears(query, callback) {
                             if (gear.type === type.value) typebool = true;
                         });
                     }
-                    console.log(gear)
+                    console.log(typebool)
+                    console.log("'" + searchGearQuery.name + "', '" + gear.name)
+                    console.log("'" + searchGearQuery.description + "', '" + gear.description)
+                    console.log("'" + searchGearQuery.sources + "', '" + gear.sources)
+                    console.log("'" + searchGearQuery.cost + "', '" + gear.cost)
+                    console.log("'" + searchGearQuery.damage + "', '" + gear.damage)
+                    console.log("'" + searchGearQuery.weight + "', '" + gear.weight)
+                    console.log("'" + searchGearQuery.properties + "', '" + gear.properties)
                     return (
                         (searchGearQuery.name !== undefined && gear.name.includes(searchGearQuery.name))
                         && (searchGearQuery.description !== undefined && gear.description.includes(searchGearQuery.description))

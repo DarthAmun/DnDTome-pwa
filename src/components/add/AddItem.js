@@ -10,11 +10,11 @@ export default function AddItem() {
     const [description, setDescription] = useState("");
     const [rarity, setRarity] = useState("");
     const [type, setType] = useState("");
-    const [source, setSource] = useState("");
+    const [sources, setSources] = useState("");
     const [attunment, setAttunment] = useState("");
 
     const saveItemAction = (e) => {
-        saveNewItem({ name, pic, type, rarity, source, attunment, description });
+        saveNewItem({ name, pic, type, rarity, sources, attunment, description });
     }
 
     const style = {
@@ -28,7 +28,7 @@ export default function AddItem() {
         <div id="itemView">
             <div className="top">
                 <label>Name:<input name="name" type="text" value={name} onChange={e => setName(e.target.value)} /></label>
-                <label>Sources:<input name="source" type="text" value={source} onChange={e => setSource(e.target.value)} /></label>
+                <label>Sources:<input name="sources" type="text" value={sources} onChange={e => setSources(e.target.value)} /></label>
                 <label>Pic:<input name="pic" type="text" value={pic} onChange={e => setPic(e.target.value)} /></label>
             </div>
             <div className="top">
