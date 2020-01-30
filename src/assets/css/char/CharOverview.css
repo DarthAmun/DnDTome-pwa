@@ -1,0 +1,47 @@
+#chars {
+    float: left;
+    height: calc(100% - 80px);
+    width: calc(100% - 30px);
+    overflow-y: scroll;
+    overflow-x: hidden;
+    margin-bottom: 10px;
+}
+
+#chars::-webkit-scrollbar {
+    width: 6px;
+    background-color: var(--scrollbar);
+    border-radius: 5px;
+} 
+
+#chars::-webkit-scrollbar-thumb {
+    background-color: var(--scrollbar-thumb);
+    border-radius: 5px;
+}
+
+#chars .add {
+    width: 120px;
+    height: 120px;
+    padding: 10px;
+    float: left;
+    text-align: center;
+    color: var(--card-color);;
+    margin: 5px;
+    border-radius: 5px;
+    overflow: hidden;
+    background-color: var(--card-background-color);
+    animation-name: zoomIn;
+    animation-duration: 500ms;
+    transition-duration: 500ms;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
+    box-shadow: var(--boxshadow);
+}
+
+#chars .add:hover {
+    box-shadow: var(--boxshadow-hover);
+    cursor: pointer;
+}
+
+.addIcon {
+    font-size: 40px;
+}

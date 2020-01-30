@@ -126,7 +126,7 @@ export function saveNewItems(items, callback) {
             items.map(item => {
                 db.items.put({
                     name: item.item_name !== undefined ? item.item_name : "",
-                    sources: item.item_source !== undefined ? item.item_source : "",
+                    sources: item.item_sources !== undefined ? item.item_sources : "",
                     pic: item.item_pic !== undefined ? item.item_pic : "",
                     description: item.item_description !== undefined ? item.item_description : "",
                     rarity: item.item_rarity !== undefined ? item.item_rarity : "",

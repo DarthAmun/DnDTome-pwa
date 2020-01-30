@@ -142,6 +142,16 @@ class LeftNav extends Component {
             <FontAwesomeIcon icon={faShieldAlt} /> Magic Items
           </div>
         </Link>
+        <Link onClick={e => closeActiveView()} to="/char-overview" style={{ top: "230px" }} className={this.props.location.pathname == "/char-overview" ? "menuItemActiv" : ""}>
+          <div className="menuItem">
+            <FontAwesomeIcon icon={faIdCard} /> Chars
+          </div>
+        </Link>
+        <Link onClick={e => closeActiveView()} to="/monster-overview" style={{ top: "270px" }} className={this.props.location.pathname == "/monster-overview" ? "menuItemActiv" : ""}>
+          <div className="menuItem">
+            <FontAwesomeIcon icon={faDragon} /> Monsters
+          </div>
+        </Link>
         <Link onClick={e => closeActiveView()} to="/gear-overview" style={{ top: "150px" }} className={this.props.location.pathname == "/gear-overview" ? "menuItemActiv" : ""}>
           <div className="menuItem">
             <img src={backpackIcon} style={{ width: '20px', marginTop: '10px', marginRight: '5px', float: 'left' }} /> Equip

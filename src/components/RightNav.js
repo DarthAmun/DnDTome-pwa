@@ -8,6 +8,8 @@ import { faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 import SpellView from "./spell/SpellView";
 import ItemView from "./item/ItemView";
 import GearView from "./gear/GearView";
+import MonsterView from "./monster/MonsterView";
+import CharView from "./char/CharView";
 
 import EventEmitter from '../services/EventEmitter';
 
@@ -24,12 +26,12 @@ export default function RightNav() {
       type = "item";
     } else if (result.weight !== undefined) {
       type = "gear";
+    } else if (result.lAblt !== undefined) {
+      type = "monster";
+    } else if (result.player !== undefined) {
+      type = "char";
     } else if (result.id !== undefined) {
       type = "race";
-    } else if (result.id !== undefined) {
-      type = "monster";
-    } else if (result.id !== undefined) {
-      type = "char";
     }
     console.log(type)
 
@@ -49,11 +51,11 @@ export default function RightNav() {
         return { ...result, windowType: "item" };
       } else if (shortWindow.windowType === "gear" && result.weight !== undefined && shortWindow.id === result.id) {
         return { ...result, windowType: "gear" };
-      } else if (shortWindow.windowType === "race" && result.race_id !== undefined && shortWindow.race_id === result.race_id) {
+      } else if (shortWindow.windowType === "race" && result.id !== undefined && shortWindow.id === result.id) {
         return { ...result, windowType: "race" };
-      } else if (shortWindow.windowType === "monster" && result.monster_id !== undefined && shortWindow.monster_id === result.monster_id) {
+      } else if (shortWindow.windowType === "monster" && result.lAblt !== undefined && shortWindow.id === result.id) {
         return { ...result, windowType: "monster" };
-      } else if (shortWindow.windowType === "char" && result.char_id !== undefined && shortWindow.char_id === result.char_id) {
+      } else if (shortWindow.windowType === "char" && result.player !== undefined && shortWindow.id === result.id) {
         return { ...result, windowType: "char" };
       } else {
         return shortWindow;
@@ -66,9 +68,9 @@ export default function RightNav() {
       if (shortWindow.windowType === "spell" && shortWindow.id === result.id) {
       } else if (shortWindow.windowType === "item" && shortWindow.id === result.id) {
       } else if (shortWindow.windowType === "gear" && shortWindow.id === result.id) {
-      } else if (shortWindow.windowType === "race" && shortWindow.race_id === result.id) {
-      } else if (shortWindow.windowType === "monster" && shortWindow.monster_id === result.id) {
-      } else if (shortWindow.windowType === "char" && shortWindow.char_id === result.id) {
+      } else if (shortWindow.windowType === "race" && shortWindow.id === result.id) {
+      } else if (shortWindow.windowType === "monster" && shortWindow.id === result.id) {
+      } else if (shortWindow.windowType === "char" && shortWindow.id === result.id) {
       } else {
         return shortWindow;
       }
@@ -98,10 +100,10 @@ export default function RightNav() {
     return spell.pic;
   };
   const getMonsterPicture = monster => {
-    if (monster.monster_pic === "" || monster.monster_pic === null) {
+    if (monster.pic === "" || monster.pic === null) {
       return icon;
     }
-    return monster.monster_pic;
+    return monster.pic;
   };
   const getItemPicture = item => {
     if (item.pic === "" || item.pic === null) {
@@ -116,16 +118,16 @@ export default function RightNav() {
     return gear.pic;
   };
   const getCharPicture = char => {
-    if (char.char_pic === "" || char.char_pic === null) {
+    if (char.pic === "" || char.pic === null) {
       return icon;
     }
-    return char.char_pic;
+    return char.pic;
   };
   const getRacePicture = race => {
-    if (race.race_pic === "" || race.race_pic === null) {
+    if (race.pic === "" || race.pic === null) {
       return icon;
     }
-    return race.race_pic;
+    return race.pic;
   };
 
   const getView = () => {
@@ -145,6 +147,18 @@ export default function RightNav() {
       return (
         <div className={`activeView ${showView ? 'show' : 'hide'}`}>
           <GearView gear={activeView} />
+        </div>
+      );
+    } else if (activeView.windowType === "monster") {
+      return (
+        <div className={`activeView ${showView ? 'show' : 'hide'}`}>
+          <MonsterView monster={activeView} />
+        </div>
+      );
+    } else if (activeView.windowType === "char") {
+      return (
+        <div className={`activeView ${showView ? 'show' : 'hide'}`}>
+          <CharView char={activeView} />
         </div>
       );
     }
@@ -215,7 +229,7 @@ export default function RightNav() {
                 <FontAwesomeIcon icon={faTimesCircle} />
               </div>
               <div className="image" onClick={e => showActiveView(window)} style={{ backgroundImage: `url(${getMonsterPicture(window)})`, backgroundPosition: "center", backgroundSize: "cover", backgroundRepeat: "no-repeat", }}></div>
-              <div className="windowToolTip">{window.monster_name}</div>
+              <div className="windowToolTip">{window.name}</div>
             </div>
           );
         } else if (window.windowType === "race") {
@@ -225,7 +239,7 @@ export default function RightNav() {
                 <FontAwesomeIcon icon={faTimesCircle} />
               </div>
               <div className="image" onClick={e => showActiveView(window)} style={{ backgroundImage: `url(${getRacePicture(window)})`, backgroundPosition: "center", backgroundSize: "cover", backgroundRepeat: "no-repeat", }}></div>
-              <div className="windowToolTip">{window.race_name}</div>
+              <div className="windowToolTip">{window.name}</div>
             </div>
           );
         } else if (window.windowType === "char") {
@@ -235,7 +249,7 @@ export default function RightNav() {
                 <FontAwesomeIcon icon={faTimesCircle} />
               </div>
               <div className="image" onClick={e => showActiveView(window)} style={{ backgroundImage: `url(${getCharPicture(window)})`, backgroundPosition: "center", backgroundSize: "cover", backgroundRepeat: "no-repeat", }}></div>
-              <div className="windowToolTip">{window.char_name}</div>
+              <div className="windowToolTip">{window.name}</div>
             </div>
           );
         }

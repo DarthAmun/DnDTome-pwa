@@ -3,6 +3,8 @@ import React, { useState } from 'react';
 import { reciveAllSpells, saveNewSpells, deleteAllSpells } from '../database/SpellService';
 import { reciveAllItems, saveNewItems, deleteAllItems } from '../database/ItemService';
 import { reciveAllGears, saveNewGears, deleteAllGear } from '../database/GearService';
+import { reciveAllMonsters, saveNewMonsters, deleteAllMonsters } from '../database/MonsterService';
+import { saveNewCharFromJson, deleteAllCharacters } from '../database/CharacterService';
 import { Line } from 'rc-progress';
 import ThemeService from '../services/ThemeService';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -15,6 +17,7 @@ export default function Options() {
   const [spellsImported, setSpellsImported] = useState({ percent: 0, now: 0, full: 0, name: "" });
   const [itemsImported, setItemsImported] = useState({ percent: 0, now: 0, full: 0, name: "" });
   const [gearsImported, setGearsImported] = useState({ percent: 0, now: 0, full: 0, name: "" });
+  const [monstersImported, setMonstersImported] = useState({ percent: 0, now: 0, full: 0, name: "" });
   const [importing, setImporting] = useState("none");
 
   const updateSpellImport = (result) => {
@@ -31,6 +34,11 @@ export default function Options() {
     let percent = Math.round((result.now / result.full) * 100);
     percent !== 0 && percent !== 100 ? setImporting("block") : setImporting("none");
     setGearsImported({ percent: percent, now: result.now, full: result.full, name: result.name });
+  }
+  const updateMonsterImport = (result) => {
+    let percent = Math.round((result.now / result.full) * 100);
+    percent !== 0 && percent !== 100 ? setImporting("block") : setImporting("none");
+    setMonstersImported({ percent: percent, now: result.now, full: result.full, name: result.name });
   }
 
   const importSpells = e => {
@@ -84,6 +92,38 @@ export default function Options() {
     });
   }
 
+  const importMonsters = e => {
+    const files = Array.from(e.target.files)
+
+    files.forEach((file, i) => {
+      fileReader = new FileReader();
+      fileReader.onloadend = handleMonsterFileRead;
+      fileReader.readAsText(file);
+    })
+  }
+  const handleMonsterFileRead = (e) => {
+    const content = fileReader.result;
+    let monsterJson = JSON.parse(content);
+    saveNewMonsters(monsterJson, function (result) {
+      updateMonsterImport(result);
+    });
+  }
+
+  const importChar = e => {
+    const files = Array.from(e.target.files)
+
+    files.forEach((file, i) => {
+      fileReader = new FileReader();
+      fileReader.onloadend = handleCharFileRead;
+      fileReader.readAsText(file);
+    })
+  }
+  const handleCharFileRead = (e) => {
+    const content = fileReader.result;
+    let charJson = JSON.parse(content);
+    saveNewCharFromJson(charJson);
+  }
+
   const exportSpells = (e) => {
     reciveAllSpells(function (result) {
       exportToJson(result, 'spells_export.json');
@@ -97,6 +137,11 @@ export default function Options() {
   const exportGears = (e) => {
     reciveAllGears(function (result) {
       exportToJson(result, 'gears_export.json');
+    });
+  }
+  const exportMonsters = (e) => {
+    reciveAllMonsters(function (result) {
+      exportToJson(result, 'monsters_export.json');
     });
   }
 
@@ -124,6 +169,12 @@ export default function Options() {
   }
   const deleteAllGearsAction = () => {
     deleteAllGear();
+  }
+  const deleteAllMonstersAction = () => {
+    deleteAllMonsters();
+  }
+  const deleteAllCharsAction = () => {
+    deleteAllCharacters();
   }
 
   const darkMode = () => {
@@ -162,18 +213,25 @@ export default function Options() {
             <label htmlFor="itemfile"><FontAwesomeIcon icon={faFileImport} /> Import Magic Items </label><br />
             <input type="file" name="gearfile" id="gearfile" className="inputfile" onChange={importGears} />
             <label htmlFor="gearfile"><FontAwesomeIcon icon={faFileImport} /> Import Gear </label><br />
+            <input type="file" name="monsterfile" id="monsterfile" className="inputfile" onChange={importMonsters} />
+            <label htmlFor="monsterfile"><FontAwesomeIcon icon={faFileImport} /> Import Monsters </label><br />
+            <input type="file" name="charfile" id="charfile" className="inputfile" onChange={importChar} />
+            <label htmlFor="charfile"><FontAwesomeIcon icon={faFileImport} /> Import Char </label><br />
           </div>
           <div className="optionSection">
             <h3>Data Export</h3>
             <button onClick={exportSpells}><FontAwesomeIcon icon={faFileExport} /> Export all Spells </button><br />
             <button onClick={exportItems}><FontAwesomeIcon icon={faFileExport} /> Export all Magic Items </button><br />
             <button onClick={exportGears}><FontAwesomeIcon icon={faFileExport} /> Export all Gear </button><br />
+            <button onClick={exportMonsters}><FontAwesomeIcon icon={faFileExport} /> Export all Monsters </button><br />
           </div>
           <div className="optionSection">
             <h3>Delete Data</h3>
             <button onClick={deleteAllSpellsAction}><FontAwesomeIcon icon={faTrashAlt} /> Delete all Spells </button><br />
             <button onClick={deleteAllItemsAction}><FontAwesomeIcon icon={faTrashAlt} /> Delete all Magic Items </button><br />
             <button onClick={deleteAllGearsAction}><FontAwesomeIcon icon={faTrashAlt} /> Delete all Gear </button><br />
+            <button onClick={deleteAllMonstersAction}><FontAwesomeIcon icon={faTrashAlt} /> Delete all Monsters </button><br />
+            <button onClick={deleteAllCharacters}><FontAwesomeIcon icon={faTrashAlt} /> Delete all Characters </button><br />
           </div>
         </div>
       </div>
@@ -195,6 +253,12 @@ export default function Options() {
             (<div>Imported {gearsImported.percent}% ({gearsImported.now}/{gearsImported.full}) of gear.
               <Line percent={gearsImported.percent} strokeWidth="1" trailWidth="1" strokeColor="#8000ff" />
               Importing {gearsImported.name} ...
+              </div>) : (<div></div>)
+          }
+          {monstersImported.percent !== 0 && monstersImported.percent !== 100 ?
+            (<div>Imported {monstersImported.percent}% ({monstersImported.now}/{monstersImported.full}) of monsters.
+              <Line percent={monstersImported.percent} strokeWidth="1" trailWidth="1" strokeColor="#8000ff" />
+              Importing {monstersImported.name} ...
               </div>) : (<div></div>)
           }
         </div>

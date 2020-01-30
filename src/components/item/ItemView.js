@@ -38,10 +38,10 @@ export default function ItemView({ item }) {
         })
     }
 
-    const receiveChars = (result) => {
-        setChars(result);
-        setSelectedChar(result[0].char_id);
-    }
+    // const receiveChars = (result) => {
+    //     setChars(result);
+    //     setSelectedChar(result[0].char_id);
+    // }
 
     useEffect(() => {
         receiveItem(item);

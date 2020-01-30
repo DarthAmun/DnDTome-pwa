@@ -1,0 +1,26 @@
+#monsterOverview {
+    height: calc(100% - 40px);
+    float: left;
+    overflow-y: hidden;
+    overflow-x: hidden;
+}
+
+#monsters {
+    float: left;
+    height: calc(100% - 50px);
+    width: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    background: var(--app-background-color);
+}
+
+#monsters::-webkit-scrollbar {
+    width: 6px;
+    background-color: var(--scrollbar);
+    border-radius: 5px;
+} 
+
+#monsters::-webkit-scrollbar-thumb {
+    background-color: var(--scrollbar-thumb);
+    border-radius: 5px;
+}
