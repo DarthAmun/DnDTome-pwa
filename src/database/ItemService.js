@@ -132,9 +132,10 @@ export function saveNewItems(items, callback) {
                     rarity: item.item_rarity !== undefined ? item.item_rarity : "",
                     type: item.item_type !== undefined ? item.item_type : "",
                     attunment: item.item_attunment !== undefined ? item.item_attunment : 0
+                }).then(() => {
+                    itemImported++;
+                    callback({ now: itemImported, full: itemImportLength, name: item.item_name });
                 });
-                itemImported++;
-                callback({ now: itemImported, full: itemImportLength, name: item.item_name });
             });
         })
         .finally(function () {

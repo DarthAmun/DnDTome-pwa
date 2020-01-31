@@ -138,9 +138,10 @@ export function saveNewGears(gears, callback) {
                     weight: gear.gear_weight !== undefined ? gear.gear_weight : "",
                     properties: gear.gear_properties !== undefined ? gear.gear_properties : "",
                     type: gear.gear_type !== undefined ? gear.gear_type : "",
+                }).then(() => {
+                    gearImported++;
+                    callback({ now: gearImported, full: gearImportLength, name: gear.gear_name });
                 });
-                gearImported++;
-                callback({ now: gearImported, full: gearImportLength, name: gear.gear_name });
             });
         })
         .finally(function () {

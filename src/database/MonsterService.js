@@ -149,9 +149,10 @@ export function saveNewMonsters(monsters, callback) {
                     sAblt: monster.monster_sAblt !== undefined ? monster.monster_sAblt : "",
                     ablt: monster.monster_ablt !== undefined ? monster.monster_ablt : "",
                     lAblt: monster.monster_lAblt !== undefined ? monster.monster_lAblt : "",
+                }).then(() => {
+                    monsterImported++;
+                    callback({ now: monsterImported, full: monsterImportLength, name: monster.monster_name });
                 });
-                monsterImported++;
-                callback({ now: monsterImported, full: monsterImportLength, name: monster.monster_name });
             });
         })
         .finally(function () {

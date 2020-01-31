@@ -161,9 +161,10 @@ export function saveNewSpells(spells, callback) {
           ritual: spell.spell_ritual !== undefined ? spell.spell_ritual : 0,
           text: spell.spell_text !== undefined ? spell.spell_text : "",
           pic: spell.spell_pic !== undefined ? spell.spell_pic : ""
+        }).then(() => {
+          spellImported++;
+          callback({ now: spellImported, full: spellImportLength, name: spell.spell_name });
         });
-        spellImported++;
-        callback({ now: spellImported, full: spellImportLength, name: spell.spell_name });
       });
     })
     .finally(function () {
