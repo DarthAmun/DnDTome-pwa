@@ -196,5 +196,11 @@ export function deleteAllSpells() {
 }
 
 export function addSpellToChar(char, spell, callback) {
-
+  db.open()
+    .then(function () {
+      db.chars_spells.put({"char_id": char, "spell_id": spell.id, "prepared": false});
+    })
+    .finally(function () {
+      db.close();
+    });
 }

@@ -1,6 +1,8 @@
 import { MyAppDatabase } from "./MyDatabase";
+import Dexie from "dexie";
 
 const db = new MyAppDatabase();
+var all = Dexie.Promise.all;
 
 export function reciveAllChars(callback) {
     db.open()
@@ -31,15 +33,36 @@ export function reciveChar(id, callback) {
 }
 
 export function reciveCharSpells(id, callback) {
-    // db.serialize(function () {
-    //     db.all("SELECT * FROM 'main'.'tab_characters_chars' AS a LEFT JOIN 'main'.'tab_chars' AS b ON a.char_id = b.char_id WHERE char_id=? ORDER BY b.char_level, b.char_name", [id], function (err, rows) {
-    //         if (err != null) {
-    //             console.log("====>" + err);
-    //         }
-    //         callback(rows);
-    //         console.log("====>" + `getCharSpellsResult successfull`)
-    //     });
-    // });
+    db.open();
+    joinCharSpells(db.chars_spells.where('char_id').equals(id)).then(function (spells) {
+        callback(spells);
+    });
+}
+
+function joinCharSpells(charSpellCollection) {
+
+    // Start by getting all bands as an array of band objects
+    return charSpellCollection.toArray(function (charSpells) {
+
+        // Query related properties:
+        var spellsPromises = charSpells.map(function (charSpell) {
+            return db.spells.get(charSpell.spell_id || 0);
+        });
+
+        // Await genres and albums queries:
+        return all([
+            all(spellsPromises),
+        ]).then(function (allCharSpells) {
+
+            // Now we have all foreign keys resolved and
+            // we can put the results onto the bands array
+            // before returning it:
+            charSpells.forEach(function (charSpell, i) {
+                charSpell.spell_id = allCharSpells[0][i];
+            });
+            return allCharSpells;
+        });
+    });
 }
 
 export function reciveCharItems(id, callback) {

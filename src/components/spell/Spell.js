@@ -68,7 +68,7 @@ export default function Spell(props) {
     };
 
     return (
-        <div className="spell" style={{ animationDelay: `${props.delay * 50}ms` }} onClick={props.onClick}>
+        <div className="spell" style={{ animationDelay: `${props.delay * 50}ms` }} onClick={props.onClick} onContextMenu={props.onClick}>
             <div className={`spellSchool spellAttr ${props.spell.school}`}>{props.spell.school}</div>
             <div className="spellLevel spellAttr">{formatLevel(props.spell.level)}</div>
             {hasRitual(props.spell.ritual)}

@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import "../../assets/css/spell/SpellOverview.css";
 import Spell from "./Spell";
 import SpellSearchBar from "./SpellSearchBar";
+import SpellContextMenu from "./SpellContextMenu";
 import { reciveSpells, reciveSpellCount } from "../../database/SpellService";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
@@ -44,9 +45,45 @@ export default function SpellOverview() {
     EventEmitter.subscribe("removeWindow", removeWindow);
   }, [removeWindow]);
 
-  const viewSpell = spell => {
-    EventEmitter.dispatch("openView", spell);
-  };
+  const viewSpell = (e, spell) => {
+    if (e.type === 'click') {
+      EventEmitter.dispatch("openView", spell);
+    } else if (e.type === 'contextmenu') {
+      e.preventDefault();
+
+      const clickX = e.clientX;
+      const clickY = e.clientY;
+      const screenW = window.innerWidth;
+      const screenH = window.innerHeight;
+      const rootW = 200;
+      const rootH = 90;
+
+      const right = (screenW - clickX) > rootW;
+      const left = !right;
+      const top = (screenH - clickY) > rootH;
+      const bottom = !top;
+
+      let menuLeft;
+      let menuTop;
+
+      if (right) {
+        menuLeft = `${clickX + 5}px`;
+      }
+
+      if (left) {
+        menuLeft = `${clickX - rootW - 5}px`;
+      }
+
+      if (top) {
+        menuTop = `${clickY + 5}px`;
+      }
+
+      if (bottom) {
+        menuTop = `${clickY - rootH - 5}px`;
+      }
+      EventEmitter.dispatch("openSpellContext", { spell: spell, top: menuTop, left: menuLeft });
+    };
+  }
 
   return (
     <div id="overview">
@@ -54,9 +91,10 @@ export default function SpellOverview() {
         <SpellSearchBar updateSpells={query => setQuery(query)} />
         <div id="spells" ref={spells}>
           {currentSpellList.spells.map((spell, index) => {
-            return <Spell delay={0} spell={spell} key={spell.id} onClick={() => viewSpell(spell)} />;
+            return <Spell delay={0} spell={spell} key={spell.id} onClick={(e) => viewSpell(e, spell)} />;
           })}
         </div>
+        <SpellContextMenu />
       </div>
       <Link to={`/add-spell`} className="button">
         <FontAwesomeIcon icon={faPlus} /> Add new Spell

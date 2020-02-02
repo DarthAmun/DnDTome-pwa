@@ -222,9 +222,10 @@ export default function CharView({ char }) {
         console.timeEnd("receiveChar")
     }
 
-    // const receiveSpellsResult = (result) => {
-    //     setSpells(result);
-    // }
+    const receiveSpellsResult = (result) => {
+        console.log(result[0])
+        setSpells(result[0]);
+    }
     // const receiveItemsResult = (result) => {
     //     setItems(result);
     // }
@@ -232,17 +233,17 @@ export default function CharView({ char }) {
     //     setMonsters(result);
     // }
 
-    // useEffect(() => {
-    //     reciveCharSpells(id, function (result) {
-    //         receiveSpellsResult(result);
-    //     })
-    //     reciveCharMonsters(id, function (result) {
-    //         reciveMonstersResult(result);
-    //     })
-    //     reciveCharItems(id, function (result) {
-    //         receiveItemsResult(result);
-    //     })
-    // }, [id]);
+    useEffect(() => {
+        reciveCharSpells(id, function (result) {
+            receiveSpellsResult(result);
+        })
+        // reciveCharMonsters(id, function (result) {
+        //     reciveMonstersResult(result);
+        // })
+        // reciveCharItems(id, function (result) {
+        //     receiveItemsResult(result);
+        // })
+    }, [id]);
 
     useEffect(() => {
         receiveCharResult(char);
@@ -306,7 +307,7 @@ export default function CharView({ char }) {
     const makeCards = () => {
         let cards = `<html><head><title>Cards</title><style>@media print { div{ page-break-inside: avoid; }} .card { height: 88mm; width: 63mm; margin: 5px; border: 1px solid darkgrey; border-radius: 5px; float: left; font-family: Arial, Helvetica, sans-serif;} /* HEAD */ .head{ height: 15mm; width: 100%; float: left; margin-top: 1mm; position: relative; z-index: 1; } .level { width: 10mm; height: 10mm; float:left; margin-left: 1mm; margin-top: -1mm; line-height: 12mm; text-align: center; background-color: white; font-size: 20px; position: relative; box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.50); } .level:after { top: 100%; left: 50%; border: solid transparent; content: ' '; height: 0; width: 0; position: absolute; pointer-events: none; border-color: rgba(136, 183, 213, 0); border-top-color: white; border-width: 5mm; margin-left: -5mm; } .level:before { content: ''; position: absolute; transform: rotate(45deg); width: 7mm; height: 7mm; bottom: -15px; margin-left: -8px; z-index: -1; box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.50); } .name { float: left; width: calc(100% - 30mm); height: 10mm; padding-top: 2mm; padding-right: 2mm; padding-left: 2mm; background-color: white; text-align: center; font-size: 14px;} .school { float: right; height: 12mm; width: 12mm; margin-right: 1mm; background-color:white; border: 2px darkgrey; border-style: solid dashed solid dashed; border-radius: 8mm; line-height: 12mm; text-align: center; } /* ATTRIBUTES */ .spellAttributes { width: 100%; height: 5mm; float: left; font-size: 9px; text-align: center; line-height: 3mm;} .spellAttributes div { display: inline-block; } .spellAttributes div:after { white-space: pre; content: " | "; } .spellAttributes div:last-child:after { content: ''; } /* TEXT */ .text { width: calc(100% - 10px); height: auto; max-height: 62mm; float:left; padding-left: 5px; padding-right: 5px; overflow: hidden; font-size: 8px; } hr.seperator { border: 0; height: 1px; background-image: -webkit-linear-gradient(left, #f0f0f0, #8c8b8b, #f0f0f0); background-image: -moz-linear-gradient(left, #f0f0f0, #8c8b8b, #f0f0f0); background-image: -ms-linear-gradient(left, #f0f0f0, #8c8b8b, #f0f0f0); background-image: -o-linear-gradient(left, #f0f0f0, #8c8b8b, #f0f0f0); float: left; width: calc(100% - 50px); margin-left: 25px; margin-right: 25px; } hr.seperatorSmall { border: 0; height: 1px; background-image: -webkit-linear-gradient(left, #f0f0f0, #8c8b8b, #f0f0f0); background-image: -moz-linear-gradient(left, #f0f0f0, #8c8b8b, #f0f0f0); background-image: -ms-linear-gradient(left, #f0f0f0, #8c8b8b, #f0f0f0); background-image: -o-linear-gradient(left, #f0f0f0, #8c8b8b, #f0f0f0); float: left; width: calc(100% - 100px); margin-left: 50px; margin-right: 50px; margin-top: -11px; } .square { transform: rotate(45deg); width: 1mm; height: 1mm; background-color: lightgray; margin-bottom: 1mm; margin-left: auto; margin-right: auto; }</style></head><body>`;
         spells.forEach(spell => {
-            cards = cards + `<div class="card"><div class="head"><div class="level">${formatLevel(spell.spell_level)}</div><div class="name">${spell.spell_name}</div><div class="school">${spell.spell_school.substring(0, 3)}</div></div><hr class="seperatorSmall"><div class="spellAttributes"><div>${spell.spell_time}</div><div>${spell.spell_range}</div><div>${spell.spell_duration}</div><div>${spell.spell_components}</div></div><hr class="seperator"><div class="text"><p>${spell.spell_text.replace("\\n", "</p><p>")}</p><div class="square"></div></div></div>`;
+            cards = cards + `<div class="card"><div class="head"><div class="level">${formatLevel(spell.level)}</div><div class="name">${spell.name}</div><div class="school">${spell.school.substring(0, 3)}</div></div><hr class="seperatorSmall"><div class="spellAttributes"><div>${spell.time}</div><div>${spell.range}</div><div>${spell.duration}</div><div>${spell.components}</div></div><hr class="seperator"><div class="text"><p>${spell.text.replace("\\n", "</p><p>")}</p><div class="square"></div></div></div>`;
         });
         cards = cards + '</body></html>';
         return cards;
@@ -344,9 +345,9 @@ export default function CharView({ char }) {
         return "";
     }
 
-    // const viewSpell = (spell) => {
-    //     ipcRenderer.send('openView', spell);
-    // }
+    const viewSpell = (spell) => {
+        EventEmitter.dispatch("openView", spell);
+    }
     // const viewItem = (item) => {
     //     ipcRenderer.send('openView', item);
     // }
@@ -357,12 +358,12 @@ export default function CharView({ char }) {
     //     ipcRenderer.send('openView', monster);
     // }
 
-    // const deleteCharSpellAction = (spell) => {
-    //     deleteCharSpell(spell);
-    //     reciveCharSpells(props.match.params.id, function (result) {
-    //         receiveSpellsResult(result);
-    //     })
-    // }
+    const deleteCharSpellAction = (spell) => {
+        deleteCharSpell(spell);
+        reciveCharSpells(id, function (result) {
+            receiveSpellsResult(result);
+        })
+    }
     // const deleteCharItemAction = (item) => {
     //     deleteCharItem(item);
     //     reciveCharItems(props.match.params.id, function (result) {
@@ -395,7 +396,7 @@ export default function CharView({ char }) {
         saveChar(newChar);
         EventEmitter.dispatch('updateWindow', newChar);
         // saveCharItems(items);
-        // saveCharSpells(spells);
+        saveCharSpells(spells);
     }
 
     const deleteCharAction = () => {
@@ -489,12 +490,12 @@ export default function CharView({ char }) {
         }
     }
 
-    // const getSpellPicture = (spell) => {
-    //     if (spell.spell_pic === "" || spell.spell_pic === null) {
-    //         return icon;
-    //     }
-    //     return spell.spell_pic;
-    // };
+    const getSpellPicture = (spell) => {
+        if (spell.pic === "" || spell.pic === null) {
+            return icon;
+        }
+        return spell.pic;
+    };
     // const getMonsterPicture = (monster) => {
     //     if (monster.monster_pic === "" || monster.monster_pic === null) {
     //         return icon;
@@ -768,7 +769,7 @@ export default function CharView({ char }) {
                                     </div>
                                     <button onClick={exportSpells} style={{ width: "150px" }}><FontAwesomeIcon icon={faFileExport} /> Export as cards</button>
                                 </div>
-                                {/* <table style={{ width: "100%" }}>
+                                <table style={{ width: "100%" }}>
                                     <tbody>
                                         <tr>
                                             <th>Icon</th>
@@ -782,13 +783,13 @@ export default function CharView({ char }) {
                                         {spells.map((spell, index) => {
                                             return <tr className="charSpell" key={spell.id} style={{ cursor: 'pointer' }}>
                                                 <td onClick={() => viewSpell(spell)}><div className="image" style={{ backgroundImage: `url(${getSpellPicture(spell)})`, backgroundPosition: 'center', backgroundSize: 'cover', backgroundRepeat: 'no-repeat' }}></div></td>
-                                                <td onClick={() => viewSpell(spell)}>{formatLevel(spell.spell_level)}</td>
-                                                <td onClick={() => viewSpell(spell)}>{spell.spell_name}</td>
-                                                <td onClick={() => viewSpell(spell)}>{formatCastingTime(spell.spell_time)}</td>
-                                                <td onClick={() => viewSpell(spell)}>{spell.spell_range}</td>
+                                                <td onClick={() => viewSpell(spell)}>{formatLevel(spell.level)}</td>
+                                                <td onClick={() => viewSpell(spell)}>{spell.name}</td>
+                                                <td onClick={() => viewSpell(spell)}>{formatCastingTime(spell.time)}</td>
+                                                <td onClick={() => viewSpell(spell)}>{spell.range}</td>
                                                 <td className="centered">
                                                     <label className="checkbox-label">
-                                                        <input name="prepared" type="checkbox" checked={spell.spell_prepared} onChange={createCheckedListenerSpell(spell, "spell_prepared")} />
+                                                        <input name="prepared" type="checkbox" checked={spell.prepared} onChange={createCheckedListenerSpell(spell, "spell_prepared")} />
                                                         <span className="checkbox-custom circular"></span>
                                                     </label>
                                                 </td>
@@ -796,7 +797,7 @@ export default function CharView({ char }) {
                                             </tr>;
                                         })}
                                     </tbody> 
-                                </table>*/}
+                                </table>
                             </div>
                             <textarea className="big" value={spellNotes} onChange={e => setSpellNotes(e.target.value)} placeholder="Spell Notes..."></textarea>
                         </div>
