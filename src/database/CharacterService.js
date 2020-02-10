@@ -284,18 +284,11 @@ export function saveNewCharFromJson(char, callback) {
         });
 }
 
-export function deleteCharSpell(char) {
-    // let data = [char.id];
-    // let sql = `DELETE FROM 'main'.'tab_characters_chars' WHERE id = ?`;
-    // db.serialize(function () {
-    //     db.run(sql, data, function (err) {
-    //         if (err) {
-    //             return console.error(err.message);
-    //         }
-    //         console.log(`====>Removed ${char.char_name} successfull`);
-    //         ipcRenderer.send('displayMessage', { type: `Removed char`, message: `Removed ${char.char_name} successful` });
-    //     });
-    // });
+export function deleteCharSpell(char, spell, callback) {
+    db.open()
+        .then(function () {
+            db.chars_spells.where({char_id: char, spell_id: spell.id}).delete().then(callback());
+        })
 }
 
 

@@ -4,7 +4,7 @@ import { reciveAllSpells, saveNewSpells, deleteAllSpells } from '../database/Spe
 import { reciveAllItems, saveNewItems, deleteAllItems } from '../database/ItemService';
 import { reciveAllGears, saveNewGears, deleteAllGear } from '../database/GearService';
 import { reciveAllMonsters, saveNewMonsters, deleteAllMonsters } from '../database/MonsterService';
-import { saveNewCharFromJson, deleteAllCharacters } from '../database/CharacterService';
+import { saveNewCharFromJson, deleteAllCharacters, reciveAllChars, reciveCharSpells } from '../database/CharacterService';
 import { Line } from 'rc-progress';
 import ThemeService from '../services/ThemeService';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -144,6 +144,36 @@ export default function Options() {
       exportToJson(result, 'monsters_export.json');
     });
   }
+  const exportChars = (e) => {
+    reciveAllChars(function (result) {
+      result.forEach(char => {
+        console.log(char)
+        reciveCharSpells(char.id, function (spells) {
+          let completeChar = { char, spells };
+          console.log(spells)
+          exportToJson(completeChar, char.name + '_export.json');
+          // reciveCharItems(char.char_id, function (items) {
+          //   reciveCharMonsters(char.char_id, function (monsters) {
+          //     let completeChar = { char, monsters, spells, items };
+          //     let content = JSON.stringify(completeChar);
+
+          //     options.defaultPath = options.defaultPath + '/' + char.char_name + '_export.json';
+          //     dialog.showSaveDialog(null, options, (path) => {
+
+          //       // fileName is a string that contains the path and filename created in the save file dialog.  
+          //       fs.writeFile(path, content, (err) => {
+          //         if (err) {
+          //           ipcRenderer.send('displayMessage', { type: `Chars exported`, message: `Chars export failed` });
+          //         }
+          //         ipcRenderer.send('displayMessage', { type: `Chars exported`, message: `Chars export successful` });
+          //       });
+          //     });
+          //   });
+          // });
+        });
+      });
+    });
+  }
 
   const exportToJson = (objectData, filename) => {
     let contentType = "application/json;charset=utf-8;";
@@ -224,6 +254,7 @@ export default function Options() {
             <button onClick={exportItems}><FontAwesomeIcon icon={faFileExport} /> Export all Magic Items </button><br />
             <button onClick={exportGears}><FontAwesomeIcon icon={faFileExport} /> Export all Gear </button><br />
             <button onClick={exportMonsters}><FontAwesomeIcon icon={faFileExport} /> Export all Monsters </button><br />
+            <button onClick={exportChars}><FontAwesomeIcon icon={faFileExport} /> Export all Chars </button><br />
           </div>
           <div className="optionSection">
             <h3>Delete Data</h3>

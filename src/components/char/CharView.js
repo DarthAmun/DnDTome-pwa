@@ -233,10 +233,14 @@ export default function CharView({ char }) {
     //     setMonsters(result);
     // }
 
-    useEffect(() => {
+    const updateSpells = () => {
         reciveCharSpells(id, function (result) {
             receiveSpellsResult(result);
         })
+    }
+
+    useEffect(() => {
+        updateSpells();
         // reciveCharMonsters(id, function (result) {
         //     reciveMonstersResult(result);
         // })
@@ -244,6 +248,10 @@ export default function CharView({ char }) {
         //     receiveItemsResult(result);
         // })
     }, [id]);
+
+    useEffect(() => {
+        EventEmitter.subscribe("updateCharSpell", updateSpells);
+    }, [updateSpells]);
 
     useEffect(() => {
         receiveCharResult(char);
@@ -318,7 +326,7 @@ export default function CharView({ char }) {
     }
 
     const printChar = () => {
-       
+
     }
 
     const formatScore = (score) => {
@@ -359,10 +367,11 @@ export default function CharView({ char }) {
     // }
 
     const deleteCharSpellAction = (spell) => {
-        deleteCharSpell(spell);
-        reciveCharSpells(id, function (result) {
-            receiveSpellsResult(result);
-        })
+        deleteCharSpell(id, spell, () => {
+            reciveCharSpells(id, function (result) {
+                receiveSpellsResult(result);
+            })
+        });
     }
     // const deleteCharItemAction = (item) => {
     //     deleteCharItem(item);
@@ -796,7 +805,7 @@ export default function CharView({ char }) {
                                                 <td onClick={() => deleteCharSpellAction(spell)} className="centered removeIcon"><FontAwesomeIcon icon={faTimes} /></td>
                                             </tr>;
                                         })}
-                                    </tbody> 
+                                    </tbody>
                                 </table>
                             </div>
                             <textarea className="big" value={spellNotes} onChange={e => setSpellNotes(e.target.value)} placeholder="Spell Notes..."></textarea>

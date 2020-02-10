@@ -3,7 +3,7 @@ import { useHistory } from 'react-router-dom';
 import { saveNewChar } from '../../database/CharacterService';
 import '../../assets/css/char/CharView.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSave, faAngleUp, faAngleDoubleUp, faMinus, faHeartBroken, faHeartbeat } from '@fortawesome/free-solid-svg-icons';
+import { faSave, faAngleUp, faAngleDoubleUp, faMinus} from '@fortawesome/free-solid-svg-icons';
 
 export default function CharView() {
     let historyRoute = useHistory();

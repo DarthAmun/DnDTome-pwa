@@ -62,7 +62,6 @@ export function reciveSpells(query, callback) {
           if (searchSpellQuery.school !== null && searchSpellQuery.school.length !== 0) {
             schoolbool = false;
             searchSpellQuery.school.map(school => {
-
               if (spell.school === school.value) schoolbool = true;
             });
           }
