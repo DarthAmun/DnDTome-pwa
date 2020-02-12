@@ -43,8 +43,11 @@ export default function SpellContextMenu() {
     }
 
     const receiveChars = (result) => {
-        setChars(result);
-        setSelectedChar(result[0].id);
+        console.log(result)
+        if(result.length !== 0) {
+            setChars(result);
+            setSelectedChar(result[0].id);
+        }
     }
 
     useEffect(() => {
