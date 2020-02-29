@@ -54,7 +54,6 @@ export default function MonsterSearchBar({updateMonsters}) {
                 return { value: ac, label: ac };
             })
             setArmorClassList(acs);
-            console.log(acs)
         })
         reciveAttributeSelection("cr", function (result) {
             let crs = result.map(cr => {
@@ -64,7 +63,6 @@ export default function MonsterSearchBar({updateMonsters}) {
                 return { value: cr, label: cr };
             })
             setCrList(crs);
-            console.log(crs)
         })
         reciveAttributeSelection("size", function (result) {
             let sizes = result.map(size => {
@@ -74,7 +72,6 @@ export default function MonsterSearchBar({updateMonsters}) {
                 return { value: size, label: size };
             })
             setSizeList(sizes);
-            console.log(sizes)
         })
     }, []);
 

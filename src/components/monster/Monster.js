@@ -31,7 +31,7 @@ export default function Monster(props) {
     };
 
     return (
-        <div className="monster" style={{ animationDelay: `${props.delay * 50}ms` }} onClick={props.onClick}>
+        <div className="monster" style={{ animationDelay: `${props.delay * 50}ms` }} onClick={props.onClick} onContextMenu={props.onClick}>
             <div className="monsterAttr monsterType">
                 <b>{formatType(props.monster.type)}</b>
                 {formatSubType(props.monster.subtype)}

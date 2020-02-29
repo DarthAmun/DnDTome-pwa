@@ -5,6 +5,7 @@ import Gear from "../components/gear/Gear";
 import Monster from "../components/monster/Monster";
 import Char from "../components/char/Char";
 import CharSpell from "../components/char/CharSpell";
+import CharMonster from "../components/char/CharMonster";
 
 export class MyAppDatabase extends Dexie {
   spells: Dexie.Table<Spell, number>; // number = type of the primkey
@@ -13,6 +14,7 @@ export class MyAppDatabase extends Dexie {
   monsters: Dexie.Table<Monster, number>; // number = type of the primkey
   chars: Dexie.Table<Char, number>; // number = type of the primkey
   chars_spells: Dexie.Table<CharSpell, number>; // number = type of the primkey
+  chars_monsters: Dexie.Table<CharMonster, number>; // number = type of the primkey
 
   constructor() {
     super("MyAppDatabase");
@@ -58,5 +60,6 @@ export class MyAppDatabase extends Dexie {
     this.monsters = this.table("monsters");
     this.chars = this.table("chars");
     this.chars_spells = this.table("chars_spells");
+    this.chars_monsters = this.table("chars_monsters");
   }
 }

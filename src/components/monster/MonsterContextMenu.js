@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useRef } from "react";
 import * as ReactDOM from "react-dom";
 import "../../assets/css/ContextMenu.css";
-import { deleteSpell, addSpellToChar } from '../../database/SpellService';
+import { deleteMonster, addMonsterToChar } from '../../database/MonsterService';
 import { reciveAllChars } from '../../database/CharacterService';
 import EventEmitter from '../../services/EventEmitter';
 
-export default function SpellContextMenu() {
+export default function MonsterContextMenu() {
     const [visible, setVisible] = useState(false);
-    const [spell, setSpell] = useState();
+    const [monster, setMonster] = useState();
     const [top, setTop] = useState("");
     const [left, setLeft] = useState("");
 
@@ -20,22 +20,22 @@ export default function SpellContextMenu() {
     });
 
 
-    const deleteSpellAction = (e) => {
-        deleteSpell(spell);
-        EventEmitter.dispatch('removeWindow', spell);
+    const deleteMonsterAction = (e) => {
+        deleteMonster(monster);
+        EventEmitter.dispatch('removeWindow', monster);
         setVisible(false);
     }
-    const addSpellToCharAction = (e) => {
-        addSpellToChar(selectedChar, spell, function () { });
+    const addMonsterToCharAction = (e) => {
+        addMonsterToChar(selectedChar, monster, function () { });
         setVisible(false);
-        EventEmitter.dispatch("updateCharSpell");
+        EventEmitter.dispatch("updateCharMonster");
     }
 
     const setValues = (value) => {
-        const { spell, top, left } = value;
+        const { monster, top, left } = value;
         ReactDOM.unstable_batchedUpdates(() => {
             setVisible(true);
-            setSpell(spell);
+            setMonster(monster);
             setTop(top);
             setLeft(left);
         })
@@ -49,14 +49,14 @@ export default function SpellContextMenu() {
     }
 
     useEffect(() => {
-        EventEmitter.subscribe("openSpellContext", setValues);
+        EventEmitter.subscribe("openMonsterContext", setValues);
     }, []);
 
     useEffect(() => {
         reciveAllChars(function (result) {
             receiveChars(result)
         })
-    }, [spell]);
+    }, [monster]);
 
     return (
         visible && <div className="contextMenu" style={{ "left": left, "top": top }} ref={wrapperRef}>
@@ -65,8 +65,8 @@ export default function SpellContextMenu() {
                     return <option key={index} value={char.id}>{char.name}</option>;
                 })}
             </select>
-            <div className="contextOption" onClick={() => addSpellToCharAction()}>Add to Char</div>
-            <div className="contextOption" onClick={() => deleteSpellAction()}>Delete Spell</div>
+            <div className="contextOption" onClick={() => addMonsterToCharAction()}>Add to Char</div>
+            <div className="contextOption" onClick={() => deleteMonsterAction()}>Delete Monster</div>
         </div>
     );
 }

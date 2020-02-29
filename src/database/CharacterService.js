@@ -38,7 +38,6 @@ export function reciveCharSpells(id, callback) {
         callback(spells);
     });
 }
-
 function joinCharSpells(charSpellCollection) {
 
     // Start by getting all bands as an array of band objects
@@ -57,10 +56,11 @@ function joinCharSpells(charSpellCollection) {
             // Now we have all foreign keys resolved and
             // we can put the results onto the bands array
             // before returning it:
+            let spells = []
             charSpells.forEach(function (charSpell, i) {
-                charSpell.spell_id = allCharSpells[0][i];
+                spells[i]= allCharSpells[0][i];
             });
-            return allCharSpells;
+            return spells;
         });
     });
 }
@@ -78,15 +78,36 @@ export function reciveCharItems(id, callback) {
 }
 
 export function reciveCharMonsters(id, callback) {
-    // db.serialize(function () {
-    //     db.all("SELECT * FROM 'main'.'tab_characters_monsters' AS a LEFT JOIN 'main'.'tab_monsters' AS b ON a.monster_id = b.monster_id WHERE char_id=? ORDER BY b.monster_name", [id], function (err, rows) {
-    //         if (err != null) {
-    //             console.log("====>" + err);
-    //         }
-    //         callback(rows);
-    //         console.log("====>" + `getCharMonstersResult successfull`)
-    //     });
-    // });
+    db.open();
+    joinCharMonsters(db.chars_monsters.where('char_id').equals(id)).then(function (monsters) {
+        callback(monsters);
+    });
+}
+function joinCharMonsters(charMonsterCollection) {
+
+    // Start by getting all bands as an array of band objects
+    return charMonsterCollection.toArray(function (charMonsters) {
+
+        // Query related properties:
+        var monstersPromises = charMonsters.map(function (charMonster) {
+            return db.monsters.get(charMonster.monster_id || 0);
+        });
+
+        // Await genres and albums queries:
+        return all([
+            all(monstersPromises),
+        ]).then(function (allCharMonsters) {
+
+            // Now we have all foreign keys resolved and
+            // we can put the results onto the bands array
+            // before returning it:
+            let monsters = [];
+            charMonsters.forEach(function (charMonster, i) {
+                monsters[i] = allCharMonsters[0][i];
+            });
+            return monsters;
+        });
+    });
 }
 
 export function saveNewChar(char, mainWindow) {
@@ -124,6 +145,9 @@ export function saveCharItems(items) {
     //         });
     //     });
     // });
+}
+
+export function saveCharMonsters(chars) {
 }
 
 export function saveCharSpells(chars) {
@@ -306,18 +330,11 @@ export function deleteCharItem(item) {
     // });
 }
 
-export function deleteCharMonster(monster) {
-    // let data = [monster.monster_id];
-    // let sql = `DELETE FROM 'main'.'tab_characters_monsters' WHERE monster_id = ?`;
-    // db.serialize(function () {
-    //     db.run(sql, data, function (err) {
-    //         if (err) {
-    //             return console.error(err.message);
-    //         }
-    //         console.log(`====>Removed ${monster.monster_name} successfull`);
-    //         ipcRenderer.send('displayMessage', { type: `Removed monster`, message: `Removed ${monster.monster_name} successful` });
-    //     });
-    // });
+export function deleteCharMonster(char, monster, callback) {
+    db.open()
+    .then(function () {
+        db.chars_monsters.where({char_id: char, monster_id: monster.id}).delete().then(callback());
+    })
 }
 
 export function deleteChar(char) {

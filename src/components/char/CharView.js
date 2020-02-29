@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import * as ReactDOM from "react-dom";
 import '../../assets/css/char/CharView.css';
-import { saveChar, saveCharItems, saveCharSpells, deleteChar, deleteCharItem, deleteCharMonster, reciveChar, reciveCharSpells, reciveCharMonsters, reciveCharItems, deleteCharSpell } from '../../database/CharacterService';
+import { saveChar, saveCharItems, saveCharSpells, deleteChar, deleteCharItem, deleteCharMonster, reciveCharSpells, reciveCharMonsters, reciveCharItems, deleteCharSpell, saveCharMonsters } from '../../database/CharacterService';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSave, faTimes, faAngleUp, faAngleDoubleUp, faMinus, faHeartBroken, faHeartbeat, faTrashAlt, faFileExport, faPrint } from '@fortawesome/free-solid-svg-icons';
 import StatChart from './StatChart';
@@ -223,27 +223,29 @@ export default function CharView({ char }) {
     }
 
     const receiveSpellsResult = (result) => {
-        console.log(result[0])
-        setSpells(result[0]);
+        setSpells(result);
     }
     // const receiveItemsResult = (result) => {
     //     setItems(result);
     // }
-    // const reciveMonstersResult = (result) => {
-    //     setMonsters(result);
-    // }
+    const reciveMonstersResult = (result) => {
+        setMonsters(result);
+    }
 
     const updateSpells = () => {
         reciveCharSpells(id, function (result) {
             receiveSpellsResult(result);
         })
     }
+    const updateMonsters = () => {
+        reciveCharMonsters(id, function (result) {
+            reciveMonstersResult(result);
+        })
+    }
 
     useEffect(() => {
         updateSpells();
-        // reciveCharMonsters(id, function (result) {
-        //     reciveMonstersResult(result);
-        // })
+        updateMonsters();
         // reciveCharItems(id, function (result) {
         //     receiveItemsResult(result);
         // })
@@ -252,6 +254,9 @@ export default function CharView({ char }) {
     useEffect(() => {
         EventEmitter.subscribe("updateCharSpell", updateSpells);
     }, [updateSpells]);
+    useEffect(() => {
+        EventEmitter.subscribe("updateCharMonster", updateMonsters);
+    }, [updateMonsters]);
 
     useEffect(() => {
         receiveCharResult(char);
@@ -362,9 +367,9 @@ export default function CharView({ char }) {
     // const viewGear = (gear) => {
     //     ipcRenderer.send('openView', gear);
     // }
-    // const viewMonster = (monster) => {
-    //     ipcRenderer.send('openView', monster);
-    // }
+    const viewMonster = (monster) => {
+        EventEmitter.dispatch("openView", monster);
+    }
 
     const deleteCharSpellAction = (spell) => {
         deleteCharSpell(id, spell, () => {
@@ -379,12 +384,13 @@ export default function CharView({ char }) {
     //         receiveItemsResult(result);
     //     })
     // }
-    // const deleteCharMonsterAction = (monster) => {
-    //     deleteCharMonster(monster);
-    //     reciveCharMonsters(props.match.params.id, function (result) {
-    //         reciveMonstersResult(result);
-    //     })
-    // }
+    const deleteCharMonsterAction = (monster) => {
+        deleteCharMonster(id, monster, () => {
+            reciveCharMonsters(id, function (result) {
+                reciveMonstersResult(result);
+            })
+        });
+    }
 
 
     const saveCharAction = () => {
@@ -406,6 +412,7 @@ export default function CharView({ char }) {
         EventEmitter.dispatch('updateWindow', newChar);
         // saveCharItems(items);
         saveCharSpells(spells);
+        saveCharMonsters(monsters);
     }
 
     const deleteCharAction = () => {
@@ -505,12 +512,12 @@ export default function CharView({ char }) {
         }
         return spell.pic;
     };
-    // const getMonsterPicture = (monster) => {
-    //     if (monster.monster_pic === "" || monster.monster_pic === null) {
-    //         return icon;
-    //     }
-    //     return monster.monster_pic;
-    // };
+    const getMonsterPicture = (monster) => {
+        if (monster.pic === "" || monster.pic === null) {
+            return icon;
+        }
+        return monster.pic;
+    };
     // const getItemPicture = (item) => {
     //     if (item.item_id === null) {
     //         if (item.gear_pic === "" || item.gear_pic === null) {
@@ -886,7 +893,7 @@ export default function CharView({ char }) {
                         </div>
                         <div className="tabContent" style={{ display: tabs.monsters ? "flex" : "none" }}>
                             <div className="charMonsters">
-                                {/* <table style={{ width: "100%" }}>
+                                <table style={{ width: "100%" }}>
                                     <tbody>
                                         <tr>
                                             <th>Icon</th>
@@ -900,16 +907,16 @@ export default function CharView({ char }) {
                                         {monsters.map((monster, index) => {
                                             return <tr className="charMonster" key={index} style={{ cursor: 'pointer' }}>
                                                 <td onClick={() => viewMonster(monster)}><div className="image" style={{ backgroundImage: `url(${getMonsterPicture(monster)})`, backgroundPosition: 'center', backgroundSize: 'cover', backgroundRepeat: 'no-repeat' }}></div></td>
-                                                <td onClick={() => viewMonster(monster)}>{monster.monster_cr}</td>
-                                                <td onClick={() => viewMonster(monster)}>{monster.monster_name}</td>
-                                                <td onClick={() => viewMonster(monster)}>{monster.monster_armorClass}</td>
-                                                <td onClick={() => viewMonster(monster)}>{monster.monster_hitPoints}</td>
-                                                <td onClick={() => viewMonster(monster)}>{monster.monster_speed}</td>
+                                                <td onClick={() => viewMonster(monster)}>{monster.cr}</td>
+                                                <td onClick={() => viewMonster(monster)}>{monster.name}</td>
+                                                <td onClick={() => viewMonster(monster)}>{monster.ac}</td>
+                                                <td onClick={() => viewMonster(monster)}>{monster.hp}</td>
+                                                <td onClick={() => viewMonster(monster)}>{monster.speed}</td>
                                                 <td onClick={() => deleteCharMonsterAction(monster)} className="centered removeIcon"><FontAwesomeIcon icon={faTimes} /></td>
                                             </tr>;
                                         })}
                                     </tbody>
-                                </table> */}
+                                </table>
                             </div>
                         </div>
                         <div className="tabContent" style={{ display: tabs.notes ? "flex" : "none" }}>

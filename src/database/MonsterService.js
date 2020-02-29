@@ -185,5 +185,11 @@ export function deleteAllMonsters() {
 };
 
 export function addMonsterToChar(char, monster, callback) {
-
+    db.open()
+    .then(function () {
+      db.chars_monsters.put({"char_id": char, "monster_id": monster.id});
+    })
+    .finally(function () {
+      db.close();
+    });
 }
