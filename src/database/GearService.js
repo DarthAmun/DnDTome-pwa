@@ -121,18 +121,18 @@ export function saveNewGears(gears, callback) {
         .then(function () {
             gears.map(gear => {
                 db.gears.put({
-                    name: gear.gear_name !== undefined ? gear.gear_name : "",
-                    sources: gear.gear_sources !== undefined ? gear.gear_sources : "",
-                    pic: gear.gear_pic !== undefined ? gear.gear_pic : "",
-                    description: gear.gear_description !== undefined ? gear.gear_description : "",
-                    cost: gear.gear_cost !== undefined ? gear.gear_cost : "",
-                    damage: gear.gear_damage !== undefined ? gear.gear_damage : "",
-                    weight: gear.gear_weight !== undefined ? gear.gear_weight : "",
-                    properties: gear.gear_properties !== undefined ? gear.gear_properties : "",
-                    type: gear.gear_type !== undefined ? gear.gear_type : "",
+                    name: gear.name !== undefined ? gear.name : "",
+                    sources: gear.sources !== undefined ? gear.sources : "",
+                    pic: gear.pic !== undefined ? gear.pic : "",
+                    description: gear.description !== undefined ? gear.description : "",
+                    cost: gear.cost !== undefined ? gear.cost : "",
+                    damage: gear.damage !== undefined ? gear.damage : "",
+                    weight: gear.weight !== undefined ? gear.weight : "",
+                    properties: gear.properties !== undefined ? gear.properties : "",
+                    type: gear.type !== undefined ? gear.type : "",
                 }).then(() => {
                     gearImported++;
-                    callback({ now: gearImported, full: gearImportLength, name: gear.gear_name });
+                    callback({ now: gearImported, full: gearImportLength, name: gear.name });
                 });
             });
         })

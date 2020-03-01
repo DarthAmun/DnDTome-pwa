@@ -125,16 +125,16 @@ export function saveNewItems(items, callback) {
         .then(function () {
             items.map(item => {
                 db.items.put({
-                    name: item.item_name !== undefined ? item.item_name : "",
-                    sources: item.item_sources !== undefined ? item.item_sources : "",
-                    pic: item.item_pic !== undefined ? item.item_pic : "",
-                    description: item.item_description !== undefined ? item.item_description : "",
-                    rarity: item.item_rarity !== undefined ? item.item_rarity : "",
-                    type: item.item_type !== undefined ? item.item_type : "",
-                    attunment: item.item_attunment !== undefined ? item.item_attunment : 0
+                    name: item.name !== undefined ? item.name : "",
+                    sources: item.sources !== undefined ? item.sources : "",
+                    pic: item.pic !== undefined ? item.pic : "",
+                    description: item.description !== undefined ? item.description : "",
+                    rarity: item.rarity !== undefined ? item.rarity : "",
+                    type: item.type !== undefined ? item.type : "",
+                    attunment: item.attunment !== undefined ? item.attunment : 0
                 }).then(() => {
                     itemImported++;
-                    callback({ now: itemImported, full: itemImportLength, name: item.item_name });
+                    callback({ now: itemImported, full: itemImportLength, name: item.name });
                 });
             });
         })

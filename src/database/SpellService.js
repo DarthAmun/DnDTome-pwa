@@ -148,21 +148,21 @@ export function saveNewSpells(spells, callback) {
     .then(function () {
       spells.map(spell => {
         db.spells.put({
-          name: spell.spell_name !== undefined ? spell.spell_name : "",
-          classes: spell.spell_classes !== undefined ? spell.spell_classes : "",
-          sources: spell.spell_sources !== undefined ? spell.spell_sources : "",
-          level: spell.spell_level !== undefined ? spell.spell_level : 0,
-          school: spell.spell_school !== undefined ? spell.spell_school : "",
-          time: spell.spell_time !== undefined ? spell.spell_time : "",
-          range: spell.spell_range !== undefined ? spell.spell_range : "",
-          components: spell.spell_components !== undefined ? spell.spell_components : "",
-          duration: spell.spell_duration !== undefined ? spell.spell_duration : "",
-          ritual: spell.spell_ritual !== undefined ? spell.spell_ritual : 0,
-          text: spell.spell_text !== undefined ? spell.spell_text : "",
-          pic: spell.spell_pic !== undefined ? spell.spell_pic : ""
+          name: spell.name !== undefined ? spell.name : "",
+          classes: spell.classes !== undefined ? spell.classes : "",
+          sources: spell.sources !== undefined ? spell.sources : "",
+          level: spell.level !== undefined ? spell.level : 0,
+          school: spell.school !== undefined ? spell.school : "",
+          time: spell.time !== undefined ? spell.time : "",
+          range: spell.range !== undefined ? spell.range : "",
+          components: spell.components !== undefined ? spell.components : "",
+          duration: spell.duration !== undefined ? spell.duration : "",
+          ritual: spell.ritual !== undefined ? spell.ritual : 0,
+          text: spell.text !== undefined ? spell.text : "",
+          pic: spell.pic !== undefined ? spell.pic : ""
         }).then(() => {
           spellImported++;
-          callback({ now: spellImported, full: spellImportLength, name: spell.spell_name });
+          callback({ now: spellImported, full: spellImportLength, name: spell.name });
         });
       });
     })
