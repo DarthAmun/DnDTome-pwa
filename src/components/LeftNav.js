@@ -8,7 +8,7 @@ import Particles from 'react-particles-js';
 import EventEmitter from '../services/EventEmitter';
 import backpackIcon from "../assets/img/backpack.png";
 // import raceIcon from "../assets/img/orc-head.png";
-// import encounterIcon from "../assets/img/sword-clash.png";
+import encounterIcon from "../assets/img/sword-clash.png";
 
 class LeftNav extends Component {
   render() {
@@ -142,19 +142,24 @@ class LeftNav extends Component {
             <FontAwesomeIcon icon={faShieldAlt} /> Magic Items
           </div>
         </Link>
-        <Link onClick={e => closeActiveView()} to="/char-overview" style={{ top: "230px" }} className={this.props.location.pathname === "/char-overview" ? "menuItemActiv" : ""}>
+        <Link onClick={e => closeActiveView()} to="/gear-overview" style={{ top: "150px" }} className={this.props.location.pathname === "/gear-overview" ? "menuItemActiv" : ""}>
+          <div className="menuItem">
+            <img src={backpackIcon} style={{ width: '20px', marginTop: '10px', marginRight: '5px', float: 'left' }} /> Equip
+          </div>
+        </Link>
+        <Link onClick={e => closeActiveView()} to="/char-overview" style={{ top: "220px" }} className={this.props.location.pathname === "/char-overview" ? "menuItemActiv" : ""}>
           <div className="menuItem">
             <FontAwesomeIcon icon={faIdCard} /> Chars
           </div>
         </Link>
-        <Link onClick={e => closeActiveView()} to="/monster-overview" style={{ top: "270px" }} className={this.props.location.pathname === "/monster-overview" ? "menuItemActiv" : ""}>
+        <Link onClick={e => closeActiveView()} to="/monster-overview" style={{ top: "260px" }} className={this.props.location.pathname === "/monster-overview" ? "menuItemActiv" : ""}>
           <div className="menuItem">
             <FontAwesomeIcon icon={faDragon} /> Monsters
           </div>
         </Link>
-        <Link onClick={e => closeActiveView()} to="/gear-overview" style={{ top: "150px" }} className={this.props.location.pathname === "/gear-overview" ? "menuItemActiv" : ""}>
+        <Link onClick={e => closeActiveView()} to="/encounter" style={{ top: "320px" }} className={this.props.location.pathname === "/encounter" ? "menuItemActiv" : ""}>
           <div className="menuItem">
-            <img src={backpackIcon} style={{ width: '20px', marginTop: '10px', marginRight: '5px', float: 'left' }} /> Equip
+            <img src={encounterIcon} style={{ width: '20px', marginTop: '10px', marginRight: '5px', float: 'left' }} /> Encounter
           </div>
         </Link>
         <Link onClick={e => closeActiveView()} to="/options" style={{ bottom: "5px" }} className={this.props.location.pathname === "/options" ? "menuItemActiv" : ""}>

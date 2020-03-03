@@ -14,6 +14,8 @@ import GearOverview from './components/gear/GearOverview';
 import MonsterOverview from './components/monster/MonsterOverview';
 import CharOverview from './components/char/CharOverview';
 
+import Encounters from './components/Encounters';
+
 import AddSpell from './components/add/AddSpell';
 import AddItem from './components/add/AddItem';
 import AddGear from './components/add/AddGear';
@@ -72,6 +74,7 @@ const App = () => {
         <LayoutRoute path="/gear-overview" layout={PageLayout} component={GearOverview} />
         <LayoutRoute path="/monster-overview" layout={PageLayout} component={MonsterOverview} />
         <LayoutRoute path="/char-overview" layout={PageLayout} component={CharOverview} />
+        <LayoutRoute path="/encounter" layout={PageLayout} component={Encounters} />
         <LayoutRoute path="/add-spell" layout={PageLayout} component={AddSpell} />
         <LayoutRoute path="/add-item" layout={PageLayout} component={AddItem} />
         <LayoutRoute path="/add-gear" layout={PageLayout} component={AddGear} />
