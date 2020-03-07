@@ -58,7 +58,8 @@ function joinCharSpells(charSpellCollection) {
             // before returning it:
             let spells = []
             charSpells.forEach(function (charSpell, i) {
-                spells[i]= allCharSpells[0][i];
+                spells[i] = allCharSpells[0][i];
+                spells[i] = { ...spells[i], "charSpellId": charSpell.id, "prepared": charSpell.prepared };
             });
             return spells;
         });
@@ -75,7 +76,43 @@ export function reciveCharItems(id, callback) {
     //         console.log("====>" + `getCharItemsResult successfull`)
     //     });
     // });
+    db.open();
+    joinCharItems(db.chars_items.where('char_id').equals(id)).then(function (items) {
+        callback(items);
+    });
 }
+function joinCharItems(charItemCollection) {
+
+    // Start by getting all bands as an array of band objects
+    return charItemCollection.toArray(function (charItems) {
+
+        // Query related properties:
+        var itemsPromises = charItems.map(function (charItem) {
+            if (charItem.item_id != null) {
+                return db.items.get(charItem.item_id || 0);
+            } else {
+                return db.gears.get(charItem.gear_id || 0);
+            }
+        });
+
+        // Await genres and albums queries:
+        return all([
+            all(itemsPromises),
+        ]).then(function (allCharItems) {
+
+            // Now we have all foreign keys resolved and
+            // we can put the results onto the bands array
+            // before returning it:
+            let items = []
+            charItems.forEach(function (charItem, i) {
+                items[i] = allCharItems[0][i];
+                items[i] = { ...items[i], "charItemId": charItem.id, "amount": charItem.amount, "equiped": charItem.equiped, "damage": charItem.damage, "hit": charItem.hit, "range": charItem.range, "properties": charItem.properties };
+            });
+            return items;
+        });
+    });
+}
+
 
 export function reciveCharMonsters(id, callback) {
     db.open();
@@ -131,40 +168,30 @@ export function saveChar(char) {
 }
 
 export function saveCharItems(items) {
-    // items.forEach(item => {
-    //     let data = [item.item_amount, item.item_equiped, item.item_attuned, item.item_damage, item.item_hit, item.item_range, item.item_properties, item.id];
-    //     let sql = `UPDATE 'main'.'tab_characters_items'
-    //             SET item_amount = ?, item_equiped = ?, item_attuned = ?, item_damage = ?, item_hit = ?, item_range = ?, item_properties = ?
-    //             WHERE id = ?`;
-    //     db.serialize(function () {
-    //         db.run(sql, data, function (err) {
-    //             if (err) {
-    //                 return console.error(err.message);
-    //             }
-    //             console.log(`====> ${item.item_name} updated successfull`);
-    //         });
-    //     });
-    // });
+    db.open()
+        .then(function () {
+            items.forEach(item => {
+                db.chars_items.update(item.charItemId, { "amount": item.amount, "equiped": item.equiped, "damage": item.damage, "hit": item.hit, "range": item.range, "properties": item.properties });
+            });
+        })
+        .finally(function () {
+            db.close();
+        });
 }
 
 export function saveCharMonsters(chars) {
 }
 
-export function saveCharSpells(chars) {
-    // chars.forEach(char => {
-    //     let data = [char.char_prepared, char.id];
-    //     let sql = `UPDATE 'main'.'tab_characters_chars'
-    //             SET char_prepared = ?
-    //             WHERE id = ?`;
-    //     db.serialize(function () {
-    //         db.run(sql, data, function (err) {
-    //             if (err) {
-    //                 return console.error(err.message);
-    //             }
-    //             console.log(`====> ${char.char_name} updated successfull`);
-    //         });
-    //     });
-    // });
+export function saveCharSpells(spells) {
+    db.open()
+        .then(function () {
+            spells.forEach(spell => {
+                db.chars_spells.update(spell.charSpellId, { "prepared": spell.prepared });
+            });
+        })
+        .finally(function () {
+            db.close();
+        });
 }
 
 // export function saveNewChars(chars) {
@@ -311,30 +338,23 @@ export function saveNewCharFromJson(char, callback) {
 export function deleteCharSpell(char, spell, callback) {
     db.open()
         .then(function () {
-            db.chars_spells.where({char_id: char, spell_id: spell.id}).delete().then(callback());
+            db.chars_spells.where({ char_id: char, spell_id: spell.id }).delete().then(callback());
         })
 }
 
 
-export function deleteCharItem(item) {
-    // let data = [item.id];
-    // let sql = `DELETE FROM 'main'.'tab_characters_items' WHERE id = ?`;
-    // db.serialize(function () {
-    //     db.run(sql, data, function (err) {
-    //         if (err) {
-    //             return console.error(err.message);
-    //         }
-    //         console.log(`====>Removed ${item.item_name} successfull`);
-    //         ipcRenderer.send('displayMessage', { type: `Removed item`, message: `Removed ${item.item_name} successful` });
-    //     });
-    // });
+export function deleteCharItem(char, item, callback) {
+    db.open()
+        .then(function () {
+            db.chars_items.where({ id: item.charItemId }).delete().then(callback());
+        })
 }
 
 export function deleteCharMonster(char, monster, callback) {
     db.open()
-    .then(function () {
-        db.chars_monsters.where({char_id: char, monster_id: monster.id}).delete().then(callback());
-    })
+        .then(function () {
+            db.chars_monsters.where({ char_id: char, monster_id: monster.id }).delete().then(callback());
+        })
 }
 
 export function deleteChar(char) {

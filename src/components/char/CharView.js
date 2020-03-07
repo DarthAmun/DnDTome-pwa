@@ -132,7 +132,7 @@ export default function CharView({ char }) {
             setBackground(result.background);
             setAc(result.ac);
             setHp(result.hp);
-            setCurrentHp(result.hp_current);
+            setCurrentHp(result.currentHp);
             setHitDice(result.hitDice);
             setInit(result.init);
             setSpeed(result.speed);
@@ -222,33 +222,36 @@ export default function CharView({ char }) {
         console.timeEnd("receiveChar")
     }
 
-    const receiveSpellsResult = (result) => {
+    const reciveSpellsResult = (result) => {
         setSpells(result);
     }
-    // const receiveItemsResult = (result) => {
-    //     setItems(result);
-    // }
+    const reciveItemsResult = (result) => {
+        setItems(result);
+    }
     const reciveMonstersResult = (result) => {
         setMonsters(result);
     }
 
     const updateSpells = () => {
         reciveCharSpells(id, function (result) {
-            receiveSpellsResult(result);
-        })
+            reciveSpellsResult(result);
+        });
     }
     const updateMonsters = () => {
         reciveCharMonsters(id, function (result) {
             reciveMonstersResult(result);
-        })
+        });
+    }
+    const updateItems = () => {
+        reciveCharItems(id, function (result) {
+            reciveItemsResult(result);
+        });
     }
 
     useEffect(() => {
         updateSpells();
         updateMonsters();
-        // reciveCharItems(id, function (result) {
-        //     receiveItemsResult(result);
-        // })
+        updateItems();
     }, [id]);
 
     useEffect(() => {
@@ -257,6 +260,9 @@ export default function CharView({ char }) {
     useEffect(() => {
         EventEmitter.subscribe("updateCharMonster", updateMonsters);
     }, [updateMonsters]);
+    useEffect(() => {
+        EventEmitter.subscribe("updateCharItem", updateItems);
+    }, [updateItems]);
 
     useEffect(() => {
         receiveCharResult(char);
@@ -361,12 +367,12 @@ export default function CharView({ char }) {
     const viewSpell = (spell) => {
         EventEmitter.dispatch("openView", spell);
     }
-    // const viewItem = (item) => {
-    //     ipcRenderer.send('openView', item);
-    // }
-    // const viewGear = (gear) => {
-    //     ipcRenderer.send('openView', gear);
-    // }
+    const viewItem = (item) => {
+        EventEmitter.dispatch('openView', item);
+    }
+    const viewGear = (gear) => {
+        EventEmitter.dispatch('openView', gear);
+    }
     const viewMonster = (monster) => {
         EventEmitter.dispatch("openView", monster);
     }
@@ -374,16 +380,17 @@ export default function CharView({ char }) {
     const deleteCharSpellAction = (spell) => {
         deleteCharSpell(id, spell, () => {
             reciveCharSpells(id, function (result) {
-                receiveSpellsResult(result);
+                reciveSpellsResult(result);
             })
         });
     }
-    // const deleteCharItemAction = (item) => {
-    //     deleteCharItem(item);
-    //     reciveCharItems(props.match.params.id, function (result) {
-    //         receiveItemsResult(result);
-    //     })
-    // }
+    const deleteCharItemAction = (item) => {
+        deleteCharItem(id, item, () => {
+            reciveCharItems(id, function (result) {
+                reciveItemsResult(result);
+            })
+        });
+    }
     const deleteCharMonsterAction = (monster) => {
         deleteCharMonster(id, monster, () => {
             reciveCharMonsters(id, function (result) {
@@ -410,7 +417,7 @@ export default function CharView({ char }) {
         };
         saveChar(newChar);
         EventEmitter.dispatch('updateWindow', newChar);
-        // saveCharItems(items);
+        saveCharItems(items);
         saveCharSpells(spells);
         saveCharMonsters(monsters);
     }
@@ -518,19 +525,12 @@ export default function CharView({ char }) {
         }
         return monster.pic;
     };
-    // const getItemPicture = (item) => {
-    //     if (item.item_id === null) {
-    //         if (item.gear_pic === "" || item.gear_pic === null) {
-    //             return icon;
-    //         }
-    //         return item.gear_pic;
-    //     } else {
-    //         if (item.item_pic === "" || item.item_pic === null) {
-    //             return icon;
-    //         }
-    //         return item.item_pic;
-    //     }
-    // };
+    const getItemPicture = (item) => {
+        if (item.pic === "" || item.pic === null) {
+            return icon;
+        }
+        return item.pic;
+    };
 
     const style = {
         backgroundImage: `url(${pic})`,
@@ -628,7 +628,7 @@ export default function CharView({ char }) {
                                 </div>
                             </div>
                             <div className="charItems" style={{ width: "auto" }}>
-                                {/* <table>
+                                <table>
                                     <tbody>
                                         <tr>
                                             <th>Name</th>
@@ -639,34 +639,21 @@ export default function CharView({ char }) {
                                         </tr>
                                         {items.map((item, index) => {
                                             if (
-                                                item.item_equiped
-                                                && (
-                                                    (item.item_type !== null && item.item_type.includes("Weapon"))
-                                                    ||
-                                                    (item.gear_type !== null && item.gear_type.includes("Weapon"))
-                                                )
+                                                item.equiped
+                                                && (item.type !== null && item.type.includes("Weapon"))
+                                                
                                             ) {
-                                                if (item.item_id === null) {
-                                                    return <tr className="charItem" key={item.id} style={{ cursor: 'pointer' }}>
-                                                        <td onClick={() => viewGear(item)}>{item.gear_name}</td>
-                                                        <td className="centered"><input type="text" style={{ width: "50px" }} value={item.item_hit} onChange={createValueListenerItem(item, "item_hit")} /></td>
-                                                        <td className="centered"><input type="text" style={{ width: "200px" }} value={item.item_damage} onChange={createValueListenerItem(item, "item_damage")} /></td>
-                                                        <td className="centered"><input type="text" style={{ width: "50px" }} value={item.item_range} onChange={createValueListenerItem(item, "item_range")} /></td>
-                                                        <td className="centered"><input type="text" style={{ width: "300px" }} value={item.item_properties} onChange={createValueListenerItem(item, "item_properties")} /></td>
-                                                    </tr>;
-                                                } else {
-                                                    return <tr className="charItem" key={item.id} style={{ cursor: 'pointer' }}>
-                                                        <td onClick={() => viewItem(item)}>{item.item_name}</td>
-                                                        <td className="centered"><input type="text" style={{ width: "50px" }} value={item.item_hit} onChange={createValueListenerItem(item, "item_hit")} /></td>
-                                                        <td className="centered"><input type="text" style={{ width: "200px" }} value={item.item_damage} onChange={createValueListenerItem(item, "item_damage")} /></td>
-                                                        <td className="centered"><input type="text" style={{ width: "50px" }} value={item.item_range} onChange={createValueListenerItem(item, "item_range")} /></td>
-                                                        <td className="centered"><input type="text" style={{ width: "300px" }} value={item.item_properties} onChange={createValueListenerItem(item, "item_properties")} /></td>
-                                                    </tr>;
-                                                }
+                                                return <tr className="charItem" key={item.id} style={{ cursor: 'pointer' }}>
+                                                    <td onClick={() => viewGear(item)}>{item.name}</td>
+                                                    <td className="centered"><input type="text" style={{ width: "50px" }} value={item.hit} onChange={createValueListenerItem(item, "hit")} /></td>
+                                                    <td className="centered"><input type="text" style={{ width: "200px" }} value={item.damage} onChange={createValueListenerItem(item, "damage")} /></td>
+                                                    <td className="centered"><input type="text" style={{ width: "50px" }} value={item.range} onChange={createValueListenerItem(item, "range")} /></td>
+                                                    <td className="centered"><input type="text" style={{ width: "300px" }} value={item.properties} onChange={createValueListenerItem(item, "properties")} /></td>
+                                                </tr>;
                                             }
                                         })}
                                     </tbody>
-                                </table> */}
+                                </table>
                             </div>
                         </div>
                         <div className="tabContent" style={{ display: tabs.skills ? "flex" : "none" }}>
@@ -805,7 +792,7 @@ export default function CharView({ char }) {
                                                 <td onClick={() => viewSpell(spell)}>{spell.range}</td>
                                                 <td className="centered">
                                                     <label className="checkbox-label">
-                                                        <input name="prepared" type="checkbox" checked={spell.prepared} onChange={createCheckedListenerSpell(spell, "spell_prepared")} />
+                                                        <input name="prepared" type="checkbox" checked={spell.prepared} onChange={createCheckedListenerSpell(spell, "prepared")} />
                                                         <span className="checkbox-custom circular"></span>
                                                     </label>
                                                 </td>
@@ -819,7 +806,7 @@ export default function CharView({ char }) {
                         </div>
                         <div className="tabContent" style={{ display: tabs.equipment ? "flex" : "none" }}>
                             <div className="charItems">
-                                {/* <table className="itemTable">
+                                <table className="itemTable">
                                     <tbody>
                                         <tr>
                                             <th>Icon</th>
@@ -833,26 +820,26 @@ export default function CharView({ char }) {
                                             <th className="centered">Remove</th>
                                         </tr>
                                         {items.map((item, index) => {
-                                            if (item.item_id === null) {
-                                                return <tr className="charItem" key={item.id} style={{ cursor: 'pointer' }}>
+                                            if (item.weight !== null) {
+                                                return <tr className="charItem" key={index} style={{ cursor: 'pointer' }}>
                                                     <td onClick={() => viewGear(item)}><div className="image" style={{ backgroundImage: `url(${getItemPicture(item)})`, backgroundPosition: 'center', backgroundSize: 'cover', backgroundRepeat: 'no-repeat' }}></div></td>
-                                                    <td onClick={() => viewGear(item)}>{item.gear_name}</td>
-                                                    <td onClick={() => viewGear(item)}>{item.gear_type}</td>
-                                                    <td className="centered" onClick={() => viewItem(item)}>{item.gear_cost}</td>
-                                                    <td className="centered" onClick={() => viewItem(item)}>{item.gear_weight}</td>
+                                                    <td onClick={() => viewGear(item)}>{item.name}</td>
+                                                    <td onClick={() => viewGear(item)}>{item.type}</td>
+                                                    <td className="centered" onClick={() => viewItem(item)}>{item.cost}</td>
+                                                    <td className="centered" onClick={() => viewItem(item)}>{item.weight}</td>
                                                     <td className="centered">
-                                                        <input type="number" value={item.item_amount} onChange={createValueListenerItem(item, "item_amount")} />
+                                                        <input type="number" value={item.amount} onChange={createValueListenerItem(item, "amount")} />
                                                     </td>
                                                     <td className="centered">
                                                         <label className="checkbox-label">
-                                                            <input name="equiped" type="checkbox" checked={item.item_equiped} onChange={createCheckedListenerItem(item, "item_equiped")} />
+                                                            <input name="equiped" type="checkbox" checked={item.equiped} onChange={createCheckedListenerItem(item, "equiped")} />
                                                             <span className="checkbox-custom circular"></span>
                                                         </label>
                                                     </td>
                                                     <td className="centered">
-                                                        {item.item_attunment === 1 ?
+                                                        {item.attunment === 1 ?
                                                             <label className="checkbox-label">
-                                                                <input name="attuned" type="checkbox" checked={item.item_attuned} onChange={createCheckedListenerItem(item, "item_attuned")} />
+                                                                <input name="attuned" type="checkbox" checked={item.attuned} onChange={createCheckedListenerItem(item, "attuned")} />
                                                                 <span className="checkbox-custom circular"></span>
                                                             </label> : ""}
 
@@ -860,25 +847,25 @@ export default function CharView({ char }) {
                                                     <td onClick={() => deleteCharItemAction(item)} className="centered removeIcon"><FontAwesomeIcon icon={faTimes} /></td>
                                                 </tr>;
                                             } else {
-                                                return <tr className="charItem" key={item.id} style={{ cursor: 'pointer' }}>
+                                                return <tr className="charItem" key={index} style={{ cursor: 'pointer' }}>
                                                     <td onClick={() => viewItem(item)}><div className="image" style={{ backgroundImage: `url(${getItemPicture(item)})`, backgroundPosition: 'center', backgroundSize: 'cover', backgroundRepeat: 'no-repeat' }}></div></td>
-                                                    <td onClick={() => viewItem(item)}>{item.item_name}</td>
-                                                    <td onClick={() => viewItem(item)}>{item.item_type}</td>
+                                                    <td onClick={() => viewItem(item)}>{item.name}</td>
+                                                    <td onClick={() => viewItem(item)}>{item.type}</td>
                                                     <td className="centered" onClick={() => viewItem(item)}></td>
                                                     <td className="centered" onClick={() => viewItem(item)}></td>
                                                     <td className="centered">
-                                                        <input type="number" value={item.item_amount} onChange={createValueListenerItem(item, "item_amount")} />
+                                                        <input type="number" value={item.amount} onChange={createValueListenerItem(item, "amount")} />
                                                     </td>
                                                     <td className="centered">
                                                         <label className="checkbox-label">
-                                                            <input name="equiped" type="checkbox" checked={item.item_equiped} onChange={createCheckedListenerItem(item, "item_equiped")} />
+                                                            <input name="equiped" type="checkbox" checked={item.equiped} onChange={createCheckedListenerItem(item, "equiped")} />
                                                             <span className="checkbox-custom circular"></span>
                                                         </label>
                                                     </td>
                                                     <td className="centered">
-                                                        {item.item_attunment === 1 ?
+                                                        {item.attunment === 1 ?
                                                             <label className="checkbox-label">
-                                                                <input name="attuned" type="checkbox" checked={item.item_attuned} onChange={createCheckedListenerItem(item, "item_attuned")} />
+                                                                <input name="attuned" type="checkbox" checked={item.attuned} onChange={createCheckedListenerItem(item, "attuned")} />
                                                                 <span className="checkbox-custom circular"></span>
                                                             </label> : ""}
 
@@ -888,7 +875,7 @@ export default function CharView({ char }) {
                                             }
                                         })}
                                     </tbody>
-                                </table> */}
+                                </table>
                             </div>
                         </div>
                         <div className="tabContent" style={{ display: tabs.monsters ? "flex" : "none" }}>

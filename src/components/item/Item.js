@@ -30,7 +30,7 @@ export default function Item(props) {
     };
 
     return (
-        <div className="item" style={{ animationDelay: `${props.delay * 50}ms` }} onClick={props.onClick}>
+        <div className="item" style={{ animationDelay: `${props.delay * 50}ms` }} onClick={props.onClick} onContextMenu={props.onClick}>
             <div className={`itemIcon ${getRarityClass()}`} style={style}></div>
             <div className="itemComp">{props.item.name}</div>
             <div className="itemComp smallItemAttr">{props.item.type}</div>

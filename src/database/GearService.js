@@ -146,7 +146,13 @@ export function saveNewGearFromJson(gear, callback) {
 }
 
 export function addGearToChar(char, gear, callback) {
-
+    db.open()
+    .then(function () {
+      db.chars_items.put({"char_id": char, "gear_id": gear.id, "amount": 1, "equiped": false, "attuned": false, "damage": gear.damage, "properties": gear.properties});
+    })
+    .finally(function () {
+      db.close();
+    });
 }
 
 export function deleteGear(gear) {
