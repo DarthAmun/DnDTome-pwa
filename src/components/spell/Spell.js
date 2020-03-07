@@ -1,27 +1,29 @@
-import React, { Component } from 'react';
+import React from 'react';
 import '../../assets/css/spell/Spell.css';
+import icon from '../../assets/img/dice_icon_grey.png';
 
-class Spell extends Component {
+export default function Spell(props) {
 
-    formatTime = (value) => {
+    const formatTime = (value) => {
         let words = value.split(',');
         return words[0];
     }
 
-    formatLevel = (value) => {
+    const formatLevel = (value) => {
         if (value === "0") {
             return <b>C</b>;
         }
         return value;
     }
 
-    hasRitual = (value) => {
-        if (value === '1') {
+    const hasRitual = (value) => {
+        if (value === 1) {
             return <div className="icon">R</div>;
         }
         return "";
     }
-    hasConcentration = (value) => {
+
+    const hasConcentration = (value) => {
         let search = value.toLowerCase();
         if (search.includes("concentration")) {
             return <div className="icon">C</div>;
@@ -29,8 +31,7 @@ class Spell extends Component {
         return "";
     }
 
-
-    formatComponents = (value) => {
+    const formatComponents = (value) => {
         let words = value.split('(');
         if (words.length > 1) {
             return words[0] + "*";
@@ -38,7 +39,7 @@ class Spell extends Component {
         return words[0];
     }
 
-    formatDuration = (value) => {
+    const formatDuration = (value) => {
         let search = value.toLowerCase();
         if (search.includes("concentration")) {
             if (search.includes("concentration, ")) {
@@ -52,34 +53,36 @@ class Spell extends Component {
         return value;
     }
 
-    formatDurationIcon = (value) => {
-        let search = value.toLowerCase();
-        if (search.includes("concentration")) {
-            if (search.includes("concentration, ")) {
-                return <img className="icon" src="" alt="Conc." />;
-            } else {
-                return <img className="icon" src="" alt="Conc." />;
-            }
+    const getPicture = () => {
+        if (props.spell.pic === "" || props.spell.pic === null) {
+            return icon;
         }
-        return '';
+        return props.spell.pic;
     }
 
-    formatConstlyIcon = (value) => {
-        let search = value.match("(\\d+\\sgp)|(\\d+,\\d+\\sgp)");
-        if (search != null) {
-            return <img className="icon" src="" alt="Conc." />
-        }
+    const style = {
+        backgroundImage: `url(${getPicture()})`,
+        backgroundPosition: 'center',
+        backgroundSize: 'cover',
+        backgroundRepeat: 'no-repeat'
+    };
 
-        return '';
-    }
+    return (
+        <div className="spell" style={{ animationDelay: `${props.delay * 50}ms` }} onClick={props.onClick} onContextMenu={props.onClick}>
+            <div className={`spellSchool spellAttr ${props.spell.school}`}>{props.spell.school}</div>
+            <div className="spellLevel spellAttr">{formatLevel(props.spell.level)}</div>
+            {hasRitual(props.spell.ritual)}
+            {hasConcentration(props.spell.duration)}
 
-    render() {
-        return (
-            <div className="spell" style={{ animationDelay: `${this.props.delay * 50}ms` }} onClick={this.props.onClick}>
-                <div className="spellName spellAttr"><b>{this.props.spell.name}</b></div>
+            <div className="spellName spellAttr">
+                <div className="image" style={style}></div>
+                <b>{props.spell.name}</b>
             </div>
-        )
-    }
-}
 
-export default Spell;
+            <div className="spellTime smallSpellAttr"><b>Time: </b>{formatTime(props.spell.time)}</div>
+            <div className="spellDuration smallSpellAttr"><b>Duration: </b>{formatDuration(props.spell.duration)}</div>
+            <div className="spellRange smallSpellAttr"><b>Range: </b>{props.spell.range}</div>
+            <div className="spellComp smallSpellAttr"><b>Comp.: </b>{formatComponents(props.spell.components)}</div>
+        </div>
+    )
+}

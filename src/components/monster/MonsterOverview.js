@@ -1,53 +1,106 @@
-import React, { Component } from 'react';
-import '../../assets/css/monster/MonsterOverview.css';
-import Monster from './Monster';
-import SearchBar from '../SearchBar';
+import React, { useState, useEffect, useRef } from "react";
+import { Link } from "react-router-dom";
+import "../../assets/css/monster/MonsterOverview.css";
+import Monster from "./Monster";
+import MonsterSearchBar from "./MonsterSearchBar";
+import MonsterContextMenu from "./MonsterContextMenu";
+import { reciveMonsters, reciveMonsterCount } from "../../database/MonsterService";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import EventEmitter from '../../services/EventEmitter';
 
+export default function MonsterOverview() {
+  const [currentMonsterList, setCurrentMonsterList] = useState({ monsters: [] });
+  const monsters = useRef(null);
+  const [query, setQuery] = useState({});
 
-class MonsterOverview extends Component {
-    state = {
-        currentMonsterList: { monsters: [] },
-        currentSelectedMonster: null
-    }
+  const updateMonster = (result) => {
+    let monsters = currentMonsterList.monsters.map(monster => {
+      if (monster.id === result.id) {
+        return result;
+      } else {
+        return monster;
+      }
+    });
+    setCurrentMonsterList({ monsters: monsters });
+  };
+  const removeWindow = (result) => {
+    let monsters = currentMonsterList.monsters.filter(monster => {
+      if (monster.id !== result.id) return monster;
+    });
+    setCurrentMonsterList({ monsters: monsters });
+  };
 
-    receiveMonsters = (evt, result) => {
-        this.setState({
-            ...this.state,
-            currentMonsterList: {
-                monsters: result
-            }
-        })
-    }
+  useEffect(() => {
+    reciveMonsters(query, function (result) {
+      setCurrentMonsterList({ monsters: result });
+    });
+  }, [query]);
 
-    updateMonster = (evt, result) => {
-        let { monsterStep, monsterStart } = result;
-    }
+  useEffect(() => {
+    EventEmitter.subscribe("updateWindow", updateMonster);
+  }, [updateMonster]);
 
-    componentDidMount() {
+  useEffect(() => {
+    EventEmitter.subscribe("removeWindow", removeWindow);
+  }, [removeWindow]);
 
-    }
-    componentWillUnmount() {
+  const viewMonster = (e, monster) => {
+    if (e.type === 'click') {
+      EventEmitter.dispatch("openView", monster);
+    } else if (e.type === 'contextmenu') {
+      e.preventDefault();
 
-    }
+      const clickX = e.clientX;
+      const clickY = e.clientY;
+      const screenW = window.innerWidth;
+      const screenH = window.innerHeight;
+      const rootW = 200;
+      const rootH = 90;
 
-    viewMonster = (monster) => {
+      const right = (screenW - clickX) > rootW;
+      const left = !right;
+      const top = (screenH - clickY) > rootH;
+      const bottom = !top;
 
-    }
+      let menuLeft;
+      let menuTop;
 
-    render() {
-        return (
-            <div id="overview">
-                <div id="monsterOverview">
-                    <SearchBar inputs={["name", "type", "subtype", "cr", "alignment", "speed", "damage", "senses", "ability", "action"]} queryName="sendMonsterSearchQuery" />
-                    <div id="monsters">
-                        {this.state.currentMonsterList.monsters.map((monster, index) => {
-                            return <Monster delay={index} monster={monster} key={monster.monster_id} onClick={() => this.viewMonster(monster)} />;
-                        })}
-                    </div>
-                </div>
-            </div>
-        )
-    }
+      if (right) {
+        menuLeft = `${clickX + 5}px`;
+      }
+
+      if (left) {
+        menuLeft = `${clickX - rootW - 5}px`;
+      }
+
+      if (top) {
+        menuTop = `${clickY + 5}px`;
+      }
+
+      if (bottom) {
+        menuTop = `${clickY - rootH - 5}px`;
+      }
+      EventEmitter.dispatch("openMonsterContext", { monster: monster, top: menuTop, left: menuLeft });
+    };
+  };
+
+  return (
+    <div id="overview">
+      <div id="monsterOverview">
+        <MonsterSearchBar updateMonsters={query => setQuery(query)} />
+        <div id="monsters" ref={monsters}>
+          {currentMonsterList.monsters.map((monster, index) => {
+            return (
+              <Monster delay={0} monster={monster} key={monster.id} onClick={(e) => viewMonster(e, monster)} />
+            );
+          })}
+        </div>
+        <MonsterContextMenu />
+      </div>
+      <Link to={`/add-monster`} className="button">
+        <FontAwesomeIcon icon={faPlus} /> Add new Monster
+      </Link>
+    </div>
+  );
 }
-
-export default MonsterOverview;

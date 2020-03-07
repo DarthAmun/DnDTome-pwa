@@ -1,43 +1,49 @@
-import React, { Component } from 'react';
+import React from 'react';
 import '../../assets/css/monster/Monster.css';
+import icon from '../../assets/img/dice_icon_grey.png';
 
-class Monster extends Component {
-    formatType = (value) => {
+export default function Monster(props) {
+    const formatType = (value) => {
         return value.charAt(0).toUpperCase() + value.slice(1);
     }
 
-    formatSubType = (value) => {
-        if (value === "") {
+    const formatSubType = (value) => {
+        if (value == "") {
             return "";
         } else {
             return " (" + value + ")";
         }
     }
 
-    render() {
-        const style = {
-            backgroundImage: `url(${this.props.monster.monster_pic})`,
-            backgroundPosition: 'center',
-            backgroundSize: 'contain',
-            backgroundRepeat: 'no-repeat'
-        };
-
-        return (
-            <div className="monster" style={{ animationDelay: `${this.props.delay * 50}ms` }} onClick={this.props.onClick}>
-                <div className="monsterAttr monsterType">
-                    <b>{this.formatType(this.props.monster.monster_type)}</b>
-                    {this.formatSubType(this.props.monster.monster_subtype)}
-                </div>
-                <div className="monsterAttr monsterLevel">{this.props.monster.monster_cr}</div>
-                <div className="monsterIcon" style={style}></div>
-
-                <div className="monsterAttr monsterName"><b>{this.props.monster.monster_name}</b></div>
-
-                <div className="smallMonsterAttr"><b>Alignment: </b>{this.props.monster.monster_alignment}</div>
-                <div className="smallMonsterAttr"><b>Size: </b>{this.props.monster.monster_size}</div>
-            </div>
-        )
+    const getPicture = () => {
+        if (props.monster.pic === "" || props.monster.pic === null) {
+            return icon;
+        }
+        return props.monster.pic;
     }
-}
 
-export default Monster;
+    const style = {
+        backgroundImage: `url(${getPicture()})`,
+        backgroundPosition: 'center',
+        backgroundSize: 'contain',
+        backgroundRepeat: 'no-repeat',
+        backgroundColor: 'white'
+    };
+
+    return (
+        <div className="monster" style={{ animationDelay: `${props.delay * 50}ms` }} onClick={props.onClick} onContextMenu={props.onClick}>
+            <div className="monsterAttr monsterType">
+                <b>{formatType(props.monster.type)}</b>
+                {formatSubType(props.monster.subtype)}
+            </div>
+            <div className="monsterAttr monsterLevel">{props.monster.cr}</div>
+            <div className="monsterIcon" style={style}></div>
+
+            <div className="monsterAttr monsterName"><b>{props.monster.name}</b></div>
+
+            <div className="smallMonsterAttr"><b>Alignment: </b>{props.monster.alignment}</div>
+            <div className="smallMonsterAttr"><b>Size: </b>{props.monster.size}</div>
+        </div>
+    )
+
+}

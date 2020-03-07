@@ -1,4 +1,3 @@
-
 export default class Spell {
   id: number;
   name: string;
@@ -13,9 +12,20 @@ export default class Spell {
   ritual: number;
   text: string;
 
-  constructor(name: string, classes: string, sources: string, level: number, 
-    school: string, time: string, range: string, components: string, 
-    duration: string, ritual: number, text: string, id: number) {
+  constructor(
+    name: string,
+    classes: string,
+    sources: string,
+    level: number,
+    school: string,
+    time: string,
+    range: string,
+    components: string,
+    duration: string,
+    ritual: number,
+    text: string,
+    id: number
+  ) {
     this.name = name;
     this.classes = classes;
     this.sources = sources;

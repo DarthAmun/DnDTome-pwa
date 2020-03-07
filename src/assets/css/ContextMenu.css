@@ -1,0 +1,38 @@
+.contextMenu {
+    position: absolute;
+    background: var(--card-background-color);
+    box-shadow: var(--boxshadow);
+    z-index: 1000;
+    width: 200px;
+    height: 95px;
+}
+
+.contextMenu .contextOption {
+    width: 190px;
+    height: 19px;
+    line-height: 20px;
+    padding: 5px;
+    border-bottom: 1px solid var(--app-background-color);
+    color: var(--card-title-color);
+}
+
+.contextMenu .contextOption:hover {
+    background: var(--app-background-color);
+    cursor: pointer;
+}
+
+.contextMenu select {
+    height: 30px;
+    width: 190px;
+    border: none;
+    border-radius: 3px;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-left: 5px;
+    margin-bottom: 5px;
+    font-family: inherit;
+    font-size: 14px;
+    box-shadow: var(--boxshadow);
+    background-color: var(--pagination-input-background-color);
+    color: var(--pagination-input-color);
+  }

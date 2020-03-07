@@ -1,83 +1,90 @@
 import './assets/css/App.css';
-import React, { Component } from 'react';
+import React, { useEffect } from 'react';
 import { MemoryRouter, Switch, Route } from 'react-router';
-
 import packageJson from '../package.json';
 
-import SpellOverview from './components/spell/SpellOverview';
-import CharOverview from './components/char/CharOverview';
-import ItemOverview from './components/item/ItemOverview';
-import MonsterOverview from './components/monster/MonsterOverview';
-
-import CharView from './components/char/CharView';
+import ThemeService from './services/ThemeService';
 
 import Home from './components/Home';
 import Options from './components/Options';
 
+import SpellOverview from './components/spell/SpellOverview';
+import ItemOverview from './components/item/ItemOverview';
+import GearOverview from './components/gear/GearOverview';
+import MonsterOverview from './components/monster/MonsterOverview';
+import CharOverview from './components/char/CharOverview';
+
+import Encounters from './components/Encounters';
+
 import AddSpell from './components/add/AddSpell';
 import AddItem from './components/add/AddItem';
+import AddGear from './components/add/AddGear';
 import AddMonster from './components/add/AddMonster';
+import AddChar from './components/add/AddChar';
 
 import LeftNav from './components/LeftNav';
+import RightNav from './components/RightNav';
 
-class PageLayout extends Component {
-  render() {
-    return (
-      <div className="App">
-        <LeftNav />
-        <div id="content">
-          {this.props.children}
-        </div>
-        <div id="credits">v{packageJson.version} by DarthAmun</div>
-      </div>
-    );
-  }
-}
+const PageLayout = ({ children }) => (
+  <div className="App">
+    <LeftNav />
+    <div id="content">
+      {children}
+    </div>
+    <RightNav />
+    <div id="credits">v{packageJson.version} by DarthAmun</div>
+  </div>
+);
 
-class App extends Component {
-  render() {
-    return (
-      <MemoryRouter>
-        <Switch>
-          <Route path="/spell-overview" render={() => {
-            return <PageLayout><SpellOverview /></PageLayout>
-          }} />
-          <Route path="/item-overview" render={() => {
-            return <PageLayout><ItemOverview /></PageLayout>
-          }} />
-          <Route path="/monster-overview" render={() => {
-            return <PageLayout><MonsterOverview /></PageLayout>
-          }} />
-          <Route path="/char-overview" render={() => {
-            return <PageLayout><CharOverview /></PageLayout>
-          }} />
-          <Route path="/char/:id" render={props => {
-            return <PageLayout><CharView {...props}/></PageLayout>
-          }} />
-          <Route path="/add-spell" render={() => {
-            return <PageLayout><AddSpell /></PageLayout>
-          }} />
-          <Route path="/add-item" render={() => {
-            return <PageLayout><AddItem /></PageLayout>
-          }} />
-          <Route path="/add-monster" render={() => {
-            return <PageLayout><AddMonster /></PageLayout>
-          }} />
-          <Route path="/options" render={() => {
-            return <PageLayout><Options /></PageLayout>
-          }} />
-          <Route path="/" render={() => {
-            return <div className="App homeDrag">
-              <div id="content">
-                <Home />
-              </div>
-              <div id="credits">v{packageJson.version} by DarthAmun</div>
-            </div>
-          }} />
-        </Switch>
-      </MemoryRouter>
-    );
-  }
-}
+const HomeLayout = ({ children }) => (
+  <div className="App homeDrag">
+    <div id="content">{children}</div>
+    <div id="credits">v{packageJson.version} by DarthAmun</div>
+  </div>
+);
+
+const LayoutRoute = ({ component: Component, layout: Layout, ...rest }) => (
+  <Route
+    {...rest}
+    render={props => (
+      <Layout>
+        <Component {...props} />
+      </Layout>
+    )}
+  />
+);
+
+const App = () => {
+
+  useEffect(() => {
+    let theme = localStorage.getItem('theme');
+    if (theme !== undefined) {
+      ThemeService.setTheme(theme);
+      ThemeService.applyTheme(theme);
+    } else {
+      localStorage.setItem('theme', 'light');
+    }
+  }, []);
+
+  return (
+    <MemoryRouter>
+      <Switch>
+        <LayoutRoute path="/spell-overview" layout={PageLayout} component={SpellOverview} />
+        <LayoutRoute path="/item-overview" layout={PageLayout} component={ItemOverview} />
+        <LayoutRoute path="/gear-overview" layout={PageLayout} component={GearOverview} />
+        <LayoutRoute path="/monster-overview" layout={PageLayout} component={MonsterOverview} />
+        <LayoutRoute path="/char-overview" layout={PageLayout} component={CharOverview} />
+        <LayoutRoute path="/encounter" layout={PageLayout} component={Encounters} />
+        <LayoutRoute path="/add-spell" layout={PageLayout} component={AddSpell} />
+        <LayoutRoute path="/add-item" layout={PageLayout} component={AddItem} />
+        <LayoutRoute path="/add-gear" layout={PageLayout} component={AddGear} />
+        <LayoutRoute path="/add-monster" layout={PageLayout} component={AddMonster} />
+        <LayoutRoute path="/add-char" layout={PageLayout} component={AddChar} />
+        <LayoutRoute path="/options" layout={PageLayout} component={Options} />
+        <LayoutRoute path="/" layout={HomeLayout} component={Home} />
+      </Switch>
+    </MemoryRouter >
+  );
+};
 
 export default App;

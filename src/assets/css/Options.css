@@ -1,79 +1,109 @@
-#overview {
-    height: 100%;
-    width: 100%;
-}
-
 #optionContent {
-    float: left;
-    height: calc(100% - 20px);
-    width: calc(100% - 20px);
-    padding-left: 10px;
-    padding-right: 10px;
-    padding-bottom: 20px;
-    overflow-y: hidden;
-    overflow-x: hidden;
+  float: left;
+  height: calc(100% - 30px);
+  width: 100%;
+  overflow-y: hidden;
+  overflow-x: hidden;
 }
 
-.optionSection {
-    width: calc(100% - 30px);
-    height: auto;
-    padding: 10px;
-    background-color: white;
-    color: darkgrey;
-    box-shadow: 0px 0px 10px 0px rgba(172, 172, 172, 0.2);
-    word-wrap: break-word;
-    margin-bottom: 10px;
-    margin-top: 10px;
+#options .optionSection {
+  width: calc(100% - 30px);
+  height: auto;
+  padding: 10px;
+  background-color: var(--card-background-color);
+  color: var(--card-color);
+  box-shadow: var(--boxshadow);
+  word-wrap: break-word;
+  margin-bottom: 10px;
+  margin-top: 10px;
 }
 
-.optionSection span {
-    font-size: 12px;
+#options .optionSection span {
+  font-size: 12px;
 }
 
-#options button {
-    background-color: #8000ff;
-    height: 28px;
-    width: auto;
-    border: none;
-    border-radius: 5px;
-    padding-left: 10px;
-    padding-right: 10px;
-    margin: 5px 5px 5px 0px;
-    text-align: center;
-    font-family: inherit;
-    font-size: 14px;
-    color: white;
-    cursor: pointer;
+#options .inputfile {
+  width: 0.1px;
+  height: 0.1px;
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+  z-index: -1;
+}
+
+#options .inputfile:focus + label,
+#options .inputfile + label:hover {
+  box-shadow: var(--boxshadow-hover);
+}
+
+#options button,
+#options .inputfile + label {
+  display: inline-block;
+  background-color: var(--button-background-color);
+  height: 28px;
+  width: auto;
+  border: none;
+  border-radius: 5px;
+  padding-left: 10px;
+  padding-right: 10px;
+  margin: 5px 5px 5px 0px;
+  text-align: center;
+  font-family: inherit;
+  font-size: 14px;
+  color: var(--button-color);
+  cursor: pointer;
+  line-height: 26px;
 }
 #options .optionSection button.patreon {
-    background-color: rgb(232, 91, 70);
+  background-color: rgb(232, 91, 70);
 }
 #options .optionSection button.discord {
-    background-color: #7289DA;
+  background-color: #7289da;
 }
 
 #options .optionSection button {
-    background-color: #8000ff;
-    border-bottom: 2px solid transparent;
+  background-color: var(--button-background-color);
+  border-bottom: 2px solid transparent;
 }
 
 .optionSection button:hover {
-    box-shadow: 0px 0px 10px 0px rgba(172, 172, 172, 1);
-    cursor: pointer;
+  box-shadow: var(--boxshadow-hover);
+  cursor: pointer;
 }
 #options {
-    height: 100%;
-    width: 100%;
-    overflow-y: auto;
+  height: calc(100% - 30px);
+  width: calc(100% - 20px);
+  padding: 10px;
+  overflow-y: auto;
 }
 
 #options::-webkit-scrollbar {
-    width: 6px;
-    background-color: rgba(92, 102, 130, 1);
-    border-radius: 5px;
-} 
+  width: 6px;
+  background-color: var(--scrollbar);
+  border-radius: 5px;
+}
 
 #options::-webkit-scrollbar-thumb {
-    background-color: #8000ff;
-    border-radius: 5px;
+  background-color: var(--scrollbar-thumb);
+  border-radius: 5px;
+}
+
+.loadingScreen {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 100%;
+  background-color: var(--app-background-color);
+  z-index: 100;
+}
+
+.loadingScreen .loadingTab {
+  position: absolute;
+  top: calc(50% - 50px);
+  left: calc(50% - 200px);
+  width: 400px;
+  height: 100px;
+  text-align: center;
+  color: var(--card-color);
 }
