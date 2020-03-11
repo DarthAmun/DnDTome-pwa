@@ -20,7 +20,7 @@ export default function Gear(props) {
     };
 
     return (
-        <div className="gear" style={{ animationDelay: `${props.delay * 50}ms` }} onClick={props.onClick}>
+        <div className="gear" style={{ animationDelay: `${props.delay * 50}ms` }} onClick={props.onClick} onContextMenu={props.onClick}>
             <div className="gearIcon" style={style}></div>
             <div className="gearComp">{props.gear.name}</div>
             <div className="gearComp smallGearAttr">{props.gear.type}</div>

@@ -46,7 +46,6 @@ export default function SpellOverview() {
   }, [removeWindow]);
 
   const viewSpell = (e, spell) => {
-    console.log(e.type)
     if (e.type === 'click') {
       EventEmitter.dispatch("openView", spell);
     } else if (e.type === 'contextmenu') {

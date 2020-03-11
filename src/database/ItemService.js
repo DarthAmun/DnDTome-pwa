@@ -168,5 +168,11 @@ export function deleteAllItems() {
 };
 
 export function addItemToChar(char, item, callback) {
-
+    db.open()
+    .then(function () {
+      db.chars_items.put({"char_id": char, "item_id": item.id, "amount": 1, "equiped": false, "attuned": false, "damage": "", "properties": ""});
+    })
+    .finally(function () {
+      db.close();
+    });
 }
