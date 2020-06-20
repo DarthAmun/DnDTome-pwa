@@ -1,9 +1,21 @@
 import * as React from "react";
+import { MemoryRouter, Switch, Route } from "react-router";
+import Home from "./components/Home";
+import SpellOverview from "./components/Spells/SpellOverview";
 
-export interface HelloProps { compiler: string; framework: string; }
+const App = () => {
+  return (
+    <MemoryRouter>
+      <Switch>
+        <Route path="/">
+          <Home />
+        </Route>
+        <Route path="/spell-overview">
+          <SpellOverview />
+        </Route>
+      </Switch>
+    </MemoryRouter>
+  );
+};
 
- const App = ({HelloProps}: props) => {
-    return (
-         <h1>Hello from {this.props.compiler} and {this.props.framework}!</h1>;
-    );
-}
+export default App;
