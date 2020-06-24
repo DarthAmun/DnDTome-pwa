@@ -1,6 +1,3 @@
-import React, { ReactNode } from "react";
-import { ThemeProvider } from "styled-components";
-
 interface Theme {
   buttons: {
     color: string;
@@ -46,13 +43,5 @@ export const darkTheme: Theme = {
     color: "",
   },
 };
-
-interface children {
-  children: ReactNode;
-}
-
-const Theme = ({ children,  } : children) => (
-  <ThemeProvider theme={Theme}>{children}</ThemeProvider>
-);
 
 export default Theme;
