@@ -1,25 +1,26 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { useTheme } from "../MyThemeProvider";
-import { darkTheme, lightTheme } from "../Theme";
+import { useReciveAll } from "../../Database/SpellService";
+import { LoadingSpinner } from "../Loading";
+import Spell from "../../Data/Spell";
 
 const SpellOverview = () => {
-  const { theme, setTheme } = useTheme();
+  const [spells, setSpells] = useState<Spell[]>([]);
+  const { data, loading } = useReciveAll("spells");
 
-  const toggleTheme = () => {
-    if (theme === darkTheme) {
-      setTheme(lightTheme);
-      localStorage.setItem("theme", "light");
-    } else {
-      setTheme(darkTheme);
-      localStorage.setItem("theme", "dark");
+  useEffect(() => {
+    if (!loading) {
+      setSpells(data as Spell[]);
     }
-  };
+  }, [loading, data]);
 
   return (
     <App>
-      SpellOverview
-      <button onClick={() => toggleTheme()}>Toggle Style</button>
+      {loading && <LoadingSpinner />}
+      {!loading &&
+        spells.map((spell) => {
+          return spell.name;
+        })}
     </App>
   );
 };
