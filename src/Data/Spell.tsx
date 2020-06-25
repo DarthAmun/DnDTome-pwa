@@ -14,6 +14,7 @@ export default class Spell implements IEntity {
   ritual: number;
   text: string;
   filename: string;
+  pic: string;
 
   constructor(
     name: string,
@@ -28,7 +29,8 @@ export default class Spell implements IEntity {
     ritual: number,
     text: string,
     id: number,
-    filename: string
+    filename: string,
+    pic: string
   ) {
     this.name = name;
     this.classes = classes;
@@ -43,5 +45,6 @@ export default class Spell implements IEntity {
     this.text = text;
     this.id = id;
     this.filename = filename;
+    this.pic = pic;
   }
 }

@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { useReciveAll } from "../../Database/SpellService";
 import { LoadingSpinner } from "../Loading";
 import Spell from "../../Data/Spell";
+import SpellTile from "./SpellTile";
 
 const SpellOverview = () => {
   const [spells, setSpells] = useState<Spell[]>([]);
@@ -18,8 +19,8 @@ const SpellOverview = () => {
     <App>
       {loading && <LoadingSpinner />}
       {!loading &&
-        spells.map((spell) => {
-          return spell.name;
+        spells.map((spell,index) => {
+          return <SpellTile key={index} spell={spell}></SpellTile>;
         })}
     </App>
   );

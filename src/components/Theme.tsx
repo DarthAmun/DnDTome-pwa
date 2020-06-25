@@ -12,6 +12,10 @@ interface Theme {
     backgroundColor: string;
     color: string;
   };
+  tile: {
+    backgroundColor: string;
+    color: string;
+  }
 }
 
 export const lightTheme: Theme = {
@@ -28,6 +32,10 @@ export const lightTheme: Theme = {
     backgroundColor: "rgb(248, 248, 248)",
     color: "",
   },
+  tile: {
+    backgroundColor: "white",
+    color: "darkgrey",
+  }
 };
 
 export const darkTheme: Theme = {
@@ -42,6 +50,10 @@ export const darkTheme: Theme = {
     backgroundColor: "#1f2532",
     color: "",
   },
+  tile: {
+    backgroundColor: "#333d51",
+    color: "lightslategray",
+  }
 };
 
 export default Theme;
