@@ -30,6 +30,8 @@ export default SpellOverview;
 
 const App = styled.div`
   width: 100%;
-  height: 100%;
+  height: auto;
   background-color: ${({ theme }) => theme.main.backgroundColor};
+  display: flex;
+  flex-wrap: wrap;
 `;

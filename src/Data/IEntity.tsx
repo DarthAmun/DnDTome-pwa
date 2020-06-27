@@ -1,6 +1,6 @@
 import { Interface } from "readline";
 
 export default interface IEntity {
-    id: number;
+    id?: number;
     name: string;
 }

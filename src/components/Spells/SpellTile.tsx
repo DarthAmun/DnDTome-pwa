@@ -14,7 +14,7 @@ const SpellTile = ({ spell }: $Props) => {
 
   const formatLevel = (value: number) => {
     if (value === 0) {
-      return <b>C</b>;
+      return "C";
     }
     return value;
   };
@@ -46,10 +46,10 @@ const SpellTile = ({ spell }: $Props) => {
     let search = value.toLowerCase();
     if (search.includes("concentration")) {
       if (search.includes("concentration, ")) {
-        let words = value.replace("Concentration, ", "");
+        let words = value.replace("Concentration,", "").trim();
         return words;
       } else {
-        let words = value.replace("Concentration", "");
+        let words = value.replace("Concentration", "").trim();
         return words;
       }
     }
@@ -60,25 +60,26 @@ const SpellTile = ({ spell }: $Props) => {
     if (spell.pic === "" || spell.pic === null) {
       return "";
     }
-    return <Image style={style}></Image>;
-  };
-
-  const style = {
-    backgroundImage: `url(${getPicture()})`,
-    backgroundPosition: "center",
-    backgroundSize: "cover",
-    backgroundRepeat: "no-repeat",
+    return spell.pic;
   };
 
   return (
     <Tile>
       <School school={spell.school}>{spell.school}</School>
-      <Level>{formatLevel(spell.level)}</Level>
-      {hasRitual(spell.ritual)}
-      {hasConcentration(spell.duration)}
+
+      <Flag>
+        <b>{hasConcentration(spell.duration)}</b>
+      </Flag>
+      <Flag>
+        <b>{hasRitual(spell.ritual)}</b>
+      </Flag>
+
+      <Level>
+        <b>{formatLevel(spell.level)}</b>
+      </Level>
 
       <Name>
-        {getPicture()}
+        <Image pic={getPicture()}></Image>
         <b>{spell.name}</b>
       </Name>
 
@@ -105,23 +106,21 @@ const SpellTile = ({ spell }: $Props) => {
 export default SpellTile;
 
 const Tile = styled.div`
-  width: 200px;
-  height: 250px;
-  float: left;
+  flex: 1 1 15em;
   color: ${({ theme }) => theme.tile.color};
-  text-align: center;
-  margin: 5px;
-  border-radius: 3px;
-  overflow: hidden;
   background-color: ${({ theme }) => theme.tile.backgroundColor};
+  margin: 0.5em;
+  border-radius: 3px;
+  box-shadow: ${({ theme }) => theme.tile.boxShadow};
+  overflow: hidden;
+  cursor: pointer;
   opacity: 0;
+
   animation-name: zoomIn;
   animation-duration: 300ms;
   transition-duration: 300ms;
   animation-iteration-count: 1;
   animation-fill-mode: forwards;
-  box-shadow: var(--boxshadow);
-  cursor: pointer;
 
   @keyframes zoomIn {
     from {
@@ -144,9 +143,12 @@ type SchoolType = {
 const School = styled.div<SchoolType>`
   height: auto;
   float: left;
-  padding: 10px;
+  padding: 5px 10px 7px 10px;
   font-size: 12px;
   line-height: 30px;
+  border-radius: 0px 0px 10px 0px;
+  box-shadow: inset -2px -2px 5px 0px rgba(0, 0, 0, 0.3);
+  background-color: ${({ theme }) => theme.tile.backgroundColor};
   color: ${(props) => {
     if (props.school === "Necromancy") {
       return "#bef28e";
@@ -180,7 +182,7 @@ const Level = styled.div`
   float: right;
   text-align: center;
   border-top-right-radius: 3px;
-  box-shadow: var(--boxshadow-inset);
+  box-shadow: inset 0px 0px 10px -2px rgba(0, 0, 0, 0.4);
   border-radius: 30px;
   margin: 5px;
 `;
@@ -197,7 +199,47 @@ const Name = styled.div`
   text-align: left;
 `;
 
-const Image = styled.div`
+const Prop = styled.div`
+  height: auto;
+  width: calc(100% - 20px);
+  float: left;
+  line-height: 10px;
+  padding: 10px;
+  font-size: 12px;
+`;
+
+const Flag = styled.div`
+  height: auto;
+  float: left;
+  padding: 5px 10px 7px 10px;
+  margin-left: 5px;
+  font-size: 12px;
+  line-height: 30px;
+  border-radius: 0px 0px 10px 10px;
+  box-shadow: inset 0px 0px 5px 0px rgba(0, 0, 0, 0.3);
+  background-color: ${({ theme }) => theme.tile.backgroundColor};
+`;
+
+interface $ImageProps {
+  pic: string;
+}
+
+const Image = ({ pic }: $ImageProps) => {
+  const style = {
+    backgroundImage: `url(${pic})`,
+    backgroundPosition: "center",
+    backgroundSize: "cover",
+    backgroundRepeat: "no-repeat",
+  };
+
+  if (pic !== "") {
+    return <ImageElm style={style}></ImageElm>;
+  } else {
+    return <Empty />;
+  }
+};
+
+const ImageElm = styled.div`
   margin-right: 10px;
   height: 37px;
   width: 37px;
@@ -208,12 +250,4 @@ const Image = styled.div`
   background-color: white;
   overflow: hidden;
 `;
-
-const Prop = styled.div`
-  height: auto;
-  width: calc(100% - 20px);
-  float: left;
-  line-height: 10px;
-  padding: 10px;
-  font-size: 12px;
-`;
+const Empty = styled.div``;

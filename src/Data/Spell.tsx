@@ -1,7 +1,7 @@
 import IEntity from "./IEntity";
 
 export default class Spell implements IEntity {
-  id: number;
+  id?: number;
   name: string;
   classes: string;
   sources: string;
