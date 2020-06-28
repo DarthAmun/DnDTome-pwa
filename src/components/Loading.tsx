@@ -5,26 +5,15 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDiceD20 } from "@fortawesome/free-solid-svg-icons";
 
 export const LoadingSpinner = () => (
-  <SpinnerWrapper>
     <Spinner>
-      <Icon icon={faDiceD20} className="animated bounce" />
+      <Icon icon={faDiceD20} className="animated bounce"/>
     </Spinner>
-  </SpinnerWrapper>
 );
-
-const SpinnerWrapper = styled.div`
-  width: 100%;
-  height: 100%;
-  position: fixed;
-  z-index: 1000;
-  top: unset;
-  left: unset;
-`;
 
 const Spinner = styled.div`
   width: 40px;
   height: 40px;
-  position: relative;
+  position: fixed;
   z-index: 1000;
   top: calc(50% - 20px);
   right: calc(50% - 20px);

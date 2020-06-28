@@ -32,6 +32,22 @@ interface Theme {
       };
     };
   };
+  nav: {
+    size: {
+      small: {
+        width: string;
+        height: string;
+      };
+      medium: {
+        width: string;
+        height: string;
+      };
+      large: {
+        width: string;
+        height: string;
+      };
+    }
+  }
 }
 
 export const lightTheme: Theme = {
@@ -68,6 +84,22 @@ export const lightTheme: Theme = {
       },
     },
   },
+  nav: {
+    size: {
+      small: {
+        width: "15em",
+        height: "15em",
+      },
+      medium: {
+        width: "15em",
+        height: "15em",
+      },
+      large: {
+        width: "15em",
+        height: "15em",
+      },
+    },
+  },
 };
 
 export const darkTheme: Theme = {
@@ -91,6 +123,11 @@ export const darkTheme: Theme = {
       ...lightTheme.tile.size,
     },
   },
+  nav: {
+    size: {
+      ...lightTheme.nav.size
+    }
+  }
 };
 
 export default Theme;
