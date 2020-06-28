@@ -11,6 +11,7 @@ interface Theme {
   main: {
     backgroundColor: string;
     color: string;
+    highlight: string;
   };
   tile: {
     backgroundColor: string;
@@ -46,6 +47,7 @@ export const lightTheme: Theme = {
   main: {
     backgroundColor: "rgb(248, 248, 248)",
     color: "",
+    highlight: "#8000ff",
   },
   tile: {
     backgroundColor: "white",
@@ -79,24 +81,14 @@ export const darkTheme: Theme = {
   main: {
     backgroundColor: "#1f2532",
     color: "",
+    highlight: "#8000ff",
   },
   tile: {
     backgroundColor: "#333d51",
     color: "lightslategray",
     boxShadow: "0px 0px 5px 0px rgba(0,0,0,0.75);",
     size: {
-      small: {
-        width: "100%",
-        height: "15em",
-      },
-      medium: {
-        width: "15em",
-        height: "15em",
-      },
-      large: {
-        width: "15em",
-        height: "15em",
-      },
+      ...lightTheme.tile.size,
     },
   },
 };

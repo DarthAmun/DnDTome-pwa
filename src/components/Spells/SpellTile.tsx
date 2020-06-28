@@ -2,6 +2,14 @@ import React from "react";
 import styled from "styled-components";
 import Spell from "../../Data/Spell";
 
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faHourglassHalf,
+  faMortarPestle,
+  faHistory,
+  faPowerOff,
+} from "@fortawesome/free-solid-svg-icons";
+
 interface $Props {
   spell: Spell;
 }
@@ -77,28 +85,35 @@ const SpellTile = ({ spell }: $Props) => {
       <Level>
         <b>{formatLevel(spell.level)}</b>
       </Level>
+      {getPicture() !== "" ? (
+        <ImageName>
+          <Image pic={getPicture()}></Image>
+          <b>{spell.name}</b>
+        </ImageName>
+      ) : (
+        <Name>
+          <b>{spell.name}</b>
+        </Name>
+      )}
 
-      <Name>
-        <Image pic={getPicture()}></Image>
-        <b>{spell.name}</b>
-      </Name>
-
-      <Prop>
-        <b>Time: </b>
-        {formatTime(spell.time)}
-      </Prop>
-      <Prop>
-        <b>Duration: </b>
-        {formatDuration(spell.duration)}
-      </Prop>
-      <Prop>
-        <b>Range: </b>
-        {spell.range}
-      </Prop>
-      <Prop>
-        <b>Comp.: </b>
-        {formatComponents(spell.components)}
-      </Prop>
+      <PropWrapper>
+        <Prop>
+          <Icon icon={faHistory} />
+          {formatTime(spell.time)}
+        </Prop>
+        <Prop>
+          <Icon icon={faHourglassHalf} />
+          {formatDuration(spell.duration)}
+        </Prop>
+        <Prop>
+          <Icon icon={faPowerOff} transform={{ rotate: 42 }} />
+          {spell.range}
+        </Prop>
+        <Prop>
+          <Icon icon={faMortarPestle} />
+          {formatComponents(spell.components)}
+        </Prop>
+      </PropWrapper>
     </Tile>
   );
 };
@@ -191,21 +206,55 @@ const Name = styled.div`
   height: auto;
   float: left;
   padding: 10px;
+  margin: 0 5px 5px 5px;
   font-size: 14px;
-  border-top: var(--card-seperator-line);
-  border-bottom: var(--card-seperator-line);
-  width: calc(100% - 20px);
+  width: calc(100% - 30px);
   color: var(--card-title-color);
-  text-align: left;
+  text-align: center;
+  border-radius: 10px 10px 10px 10px;
+  box-shadow: inset 0px 0px 5px 0px rgba(0, 0, 0, 0.3);
+`;
+
+const ImageName = styled.div`
+  height: 30px;
+  float: left;
+  padding: 10px;
+  margin: 0 5px 5px 5px;
+  font-size: 14px;
+  width: calc(100% - 30px);
+  color: var(--card-title-color);
+  text-align: center;
+  border-radius: 50px 10px 10px 50px;
+  box-shadow: inset 0px 0px 5px 0px rgba(0, 0, 0, 0.3);
+`;
+
+const PropWrapper = styled.div`
+  height: auto;
+  width: calc(100% - 10px);
+  float: left;
+  padding: 5px 5px 0 5px;
+  display: flex;
+  flex-wrap: wrap;
 `;
 
 const Prop = styled.div`
   height: auto;
-  width: calc(100% - 20px);
+  width: calc(50% - 25px);
+  margin: 0 0 5px 5px;
   float: left;
   line-height: 10px;
   padding: 10px;
   font-size: 12px;
+  border-radius: 10px 10px 10px 10px;
+  box-shadow: inset 0px 0px 5px 0px rgba(0, 0, 0, 0.3);
+`;
+
+const Icon = styled(FontAwesomeIcon)`
+  margin-right: 5px;
+  width: 20px;
+  height: auto;
+  border-radius: 150px;
+  color: ${({ theme }) => theme.main.highlight}
 `;
 
 const Flag = styled.div`
@@ -240,12 +289,12 @@ const Image = ({ pic }: $ImageProps) => {
 };
 
 const ImageElm = styled.div`
-  margin-right: 10px;
-  height: 37px;
-  width: 37px;
+  margin: -10px 5px -10px -10px;
+  height: 47px;
+  width: 47px;
   float: left;
   border-radius: 100px;
-  border: 3px solid #8000ff;
+  border: 3px solid ${({ theme }) => theme.main.highlight};
   box-shadow: 0px 0px 10px 0px rgba(172, 172, 172, 0.2);
   background-color: white;
   overflow: hidden;
