@@ -5,6 +5,7 @@ import { LoadingSpinner } from "../Loading";
 import Spell from "../../Data/Spell";
 import SpellTile from "./SpellTile";
 import Navigation from "../Navigation/Navigation";
+import Header from "../Header";
 
 const SpellOverview = () => {
   const [spells, setSpells] = useState<Spell[]>([]);
@@ -18,6 +19,7 @@ const SpellOverview = () => {
 
   return (
     <App>
+      <Header />
       <Navigation />
       {loading && <LoadingSpinner />}
       {!loading &&
@@ -31,8 +33,9 @@ const SpellOverview = () => {
 export default SpellOverview;
 
 const App = styled.div`
+  padding-top: 4rem;
   width: 100%;
-  min-height: 100vh;
+  min-height: calc(100vh - 4rem);
   height: auto;
   background-color: ${({ theme }) => theme.main.backgroundColor};
   display: flex;

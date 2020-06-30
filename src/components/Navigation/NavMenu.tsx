@@ -1,31 +1,51 @@
 import React from "react";
 import styled from "styled-components";
+import { Link, useLocation } from "react-router-dom";
+
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faMeteor, faCog } from "@fortawesome/free-solid-svg-icons";
 
 interface $Props {
   open: boolean;
 }
 
 const NavMenu = ({ open }: $Props) => {
+  const location = useLocation();
+
   return (
     <Menu open={open}>
-      <a href="/">
-        <span role="img" aria-label="about us">
-          &#x1f481;&#x1f3fb;&#x200d;&#x2642;&#xfe0f;
-        </span>
-        About us
-      </a>
-      <a href="/">
-        <span role="img" aria-label="price">
-          &#x1f4b8;
-        </span>
-        Pricing
-      </a>
-      <a href="/">
-        <span role="img" aria-label="contact">
-          &#x1f4e9;
-        </span>
-        Contact
-      </a>
+      <Link
+        to="/spell-overview"
+        className={
+          location.pathname === "/spell-overview" ? "menuItemActiv" : ""
+        }
+      >
+        <FontAwesomeIcon icon={faMeteor} />
+        Spells
+      </Link>
+      {/* <Link  to="/item-overview" className={location.pathname === "/item-overview" ? "menuItemActiv" : ""}>
+        <FontAwesomeIcon icon={faShieldAlt} />
+      </Link>n} />
+      </Link>
+      <Link  to="/gear-overview" className={location.pathname === "/gear-overview" ? "menuItemActiv" : ""}>
+        <img alt="" src={backpackIcon} style={{ width: '20px', marginTop: '10px', marginRight: '5px', float: 'left' }} />
+      </Link>
+      <Link  to="/char-overview" className={location.pathname === "/char-overview" ? "menuItemActiv" : ""}>
+        <FontAwesomeIcon icon={faIdCard} />
+      </Link>
+      <Link  to="/monster-overview" className={location.pathname === "/monster-overview" ? "menuItemActiv" : ""}>
+        <FontAwesomeIcon icon={faDragon} />
+      </Link>
+      <Link  to="/encounter" className={location.pathname === "/encounter" ? "menuItemActiv" : ""}>
+        <img alt="" src={encounterIcon} style={{ width: '20px', marginTop: '10px', marginRight: '5px', float: 'left' }} />
+      </Link> */}
+      <Link
+        to="/options"
+        className={location.pathname === "/options" ? "menuItemActiv" : ""}
+      >
+        <FontAwesomeIcon icon={faCog} />
+        Options
+      </Link>
     </Menu>
   );
 };
@@ -51,17 +71,18 @@ export const Menu = styled.div<MenuType>`
   transition: transform 0.3s ease-in-out;
   transform: ${({ open }) => (open ? "translateX(0)" : "translateX(-100%)")};
 
-  @media (max-width: 576px) {
-    width: 100%;
+  svg {
+    margin-right: 5px;
   }
 
-  a {
+  @media (max-width: 576px) {
+    width: calc(100% - 4rem);
+  }
+
+   a {
     font-size: 2rem;
-    text-transform: uppercase;
     padding: 2rem 0;
-    font-weight: bold;
-    letter-spacing: 0.5rem;
-    color: ${({ theme }) => theme.main.color};
+    color: ${({ theme }) => theme.main.highlight};
     text-decoration: none;
     transition: color 0.3s linear;
 

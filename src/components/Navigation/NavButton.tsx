@@ -23,9 +23,9 @@ type ButtonType = {
 };
 
 const Button = styled.button<ButtonType>`
-  position: absolute;
-  top: 5%;
-  left: 2rem;
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
   display: flex;
   flex-direction: column;
   justify-content: space-around;
@@ -35,7 +35,7 @@ const Button = styled.button<ButtonType>`
   border: none;
   cursor: pointer;
   padding: 0;
-  z-index: 20;
+  z-index: 1001;
 
   &:focus {
     outline: none;
@@ -44,7 +44,7 @@ const Button = styled.button<ButtonType>`
   div {
     width: 2rem;
     height: 0.25rem;
-    background: ${({ theme }) => theme.main.highlight};
+    background: ${({ theme }) => theme.buttons.color};
     border-radius: 10px;
     transition: all 0.3s linear;
     position: relative;
