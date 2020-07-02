@@ -6,9 +6,12 @@ import Spell from "../../Data/Spell";
 import SpellTile from "./SpellTile";
 import Navigation from "../Navigation/Navigation";
 import Header from "../Header";
+import SpellDetailDialog from "./SpellDetailDialog";
 
 const SpellOverview = () => {
   const [spells, setSpells] = useState<Spell[]>([]);
+  const [dialog, showDialog] = useState<boolean>(false);
+  const [spellId, showId] = useState<number>();
   const { data, loading } = useReciveAll("spells");
 
   useEffect(() => {
@@ -17,14 +20,34 @@ const SpellOverview = () => {
     }
   }, [loading, data]);
 
+  const openSpellDetail = (id: number) => {
+    if (id !== undefined) {
+      showId(id);
+      showDialog(true);
+    }
+  };
+
+  const closeSpellDetail = () => {
+    showDialog(false);
+  };
+
   return (
     <App>
       <Header />
       <Navigation />
+      {dialog && (
+        <SpellDetailDialog id={spellId!} onClose={() => closeSpellDetail()} />
+      )}
       {loading && <LoadingSpinner />}
       {!loading &&
-        spells.map((spell, index) => {
-          return <SpellTile key={index} spell={spell}></SpellTile>;
+        spells.map((spell: Spell, index: number) => {
+          return (
+            <SpellTile
+              key={index}
+              spell={spell}
+              onClick={() => openSpellDetail(spell.id!)}
+            ></SpellTile>
+          );
         })}
     </App>
   );

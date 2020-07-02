@@ -12,9 +12,10 @@ import {
 
 interface $Props {
   spell: Spell;
+  onClick: () => void;
 }
 
-const SpellTile = ({ spell }: $Props) => {
+const SpellTile = ({ spell, onClick }: $Props) => {
   const formatTime = (value: string) => {
     let words = value.split(",");
     return words[0];
@@ -72,7 +73,7 @@ const SpellTile = ({ spell }: $Props) => {
   };
 
   return (
-    <Tile>
+    <Tile onClick={onClick}>
       <School school={spell.school}>{spell.school}</School>
 
       <Flag>
@@ -254,7 +255,7 @@ const Icon = styled(FontAwesomeIcon)`
   width: 20px;
   height: auto;
   border-radius: 150px;
-  color: ${({ theme }) => theme.main.highlight}
+  color: ${({ theme }) => theme.main.highlight};
 `;
 
 const Flag = styled.div`
