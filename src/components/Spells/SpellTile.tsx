@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 import Spell from "../../Data/Spell";
 
@@ -12,10 +13,9 @@ import {
 
 interface $Props {
   spell: Spell;
-  onClick: () => void;
 }
 
-const SpellTile = ({ spell, onClick }: $Props) => {
+const SpellTile = ({ spell }: $Props) => {
   const formatTime = (value: string) => {
     let words = value.split(",");
     return words[0];
@@ -73,7 +73,7 @@ const SpellTile = ({ spell, onClick }: $Props) => {
   };
 
   return (
-    <Tile onClick={onClick}>
+    <Tile to={"/spell-detail/" + spell.id}>
       <School school={spell.school}>{spell.school}</School>
 
       <Flag>
@@ -121,7 +121,7 @@ const SpellTile = ({ spell, onClick }: $Props) => {
 
 export default SpellTile;
 
-const Tile = styled.div`
+const Tile = styled(Link)`
   flex: 1 1 15em;
   color: ${({ theme }) => theme.tile.color};
   background-color: ${({ theme }) => theme.tile.backgroundColor};
@@ -130,26 +130,6 @@ const Tile = styled.div`
   box-shadow: ${({ theme }) => theme.tile.boxShadow};
   overflow: hidden;
   cursor: pointer;
-  opacity: 0;
-
-  animation-name: zoomIn;
-  animation-duration: 300ms;
-  transition-duration: 300ms;
-  animation-iteration-count: 1;
-  animation-fill-mode: forwards;
-
-  @keyframes zoomIn {
-    from {
-      opacity: 0;
-      -webkit-transform: scale3d(0.3, 0.3, 0.3);
-      transform: scale3d(0.3, 0.3, 0.3);
-    }
-    50% {
-      opacity: 1;
-    }
-    100% {
-      opacity: 1;
-    }
 `;
 
 type SchoolType = {

@@ -1,5 +1,4 @@
 import React from "react";
-import styled from "styled-components";
 import { useTheme } from "./MyThemeProvider";
 import { darkTheme, lightTheme } from "./Theme";
 
@@ -7,6 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFileImport } from "@fortawesome/free-solid-svg-icons";
 import Spell from "../Data/Spell";
 import { saveNewSpells } from "../Database/SpellService";
+import AppWrapper from "./AppWrapper";
 
 const Options = () => {
   const { theme, setTheme } = useTheme();
@@ -43,7 +43,7 @@ const Options = () => {
   };
 
   return (
-    <App>
+    <AppWrapper>
       Options
       <button onClick={() => toggleTheme()}>Toggle Style</button>
       <input
@@ -57,14 +57,8 @@ const Options = () => {
         <FontAwesomeIcon icon={faFileImport} /> Import Spells{" "}
       </label>
       <br />
-    </App>
+    </AppWrapper>
   );
 };
 
 export default Options;
-
-const App = styled.div`
-  width: 100%;
-  height: 100%;
-  background-color: ${({ theme }) => theme.main.backgroundColor};
-`;

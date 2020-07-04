@@ -5,30 +5,36 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDiceD20 } from "@fortawesome/free-solid-svg-icons";
 
 export const LoadingSpinner = () => (
-    <Spinner>
-      <Icon icon={faDiceD20} className="animated bounce"/>
-    </Spinner>
+  <Spinner>
+    <Icon icon={faDiceD20} />
+    <svg width="0" height="0">
+      <radialGradient id="rg" r="150%" cx="30%" cy="107%">
+        <stop stopColor="#350069" offset="0" />
+        <stop stopColor="#B973FF" offset="0.9" />
+      </radialGradient>
+    </svg>
+  </Spinner>
 );
 
 const Spinner = styled.div`
   width: 40px;
   height: 40px;
+  font-size: 40px;
   position: fixed;
   z-index: 1000;
   top: calc(50% - 20px);
   right: calc(50% - 20px);
+
+  svg * {
+    fill: url(#rg);
+  }
 `;
 
 const Icon = styled(FontAwesomeIcon)`
-  width: 40px;
-  height: auto;
+  width: 100%;
+  height: 100%;
   border-radius: 150px;
-  cursor: pointer;
-  animation-duration: 2s;
-  animation-fill-mode: both;
-  animation-timing-function: linear;
-  animation-iteration-count: infinite;
-  animation-name: bounce;
+  animation: bounce 2s linear infinite;
 
   @-webkit-keyframes bounce {
     0%,
