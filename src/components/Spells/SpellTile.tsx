@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useCallback, Suspense } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
+
 import Spell from "../../Data/Spell";
+import { LoadingSpinner } from "../Loading";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -9,6 +11,8 @@ import {
   faMortarPestle,
   faHistory,
   faPowerOff,
+  faUser,
+  faLink,
 } from "@fortawesome/free-solid-svg-icons";
 
 interface $Props {
@@ -16,105 +20,134 @@ interface $Props {
 }
 
 const SpellTile = ({ spell }: $Props) => {
-  const formatTime = (value: string) => {
-    let words = value.split(",");
-    return words[0];
-  };
-
-  const formatLevel = (value: number) => {
-    if (value === 0) {
-      return "C";
-    }
-    return value;
-  };
-
-  const hasRitual = (value: number) => {
-    if (value === 1) {
-      return <div className="icon">R</div>;
+  const formatTime = useCallback(() => {
+    if (spell !== undefined) {
+      let words = spell.time.split(",");
+      return words[0];
     }
     return "";
-  };
+  }, [spell]);
 
-  const hasConcentration = (value: string) => {
-    let search = value.toLowerCase();
-    if (search.includes("concentration")) {
-      return <div className="icon">C</div>;
+  const formatLevel = useCallback(() => {
+    if (spell !== undefined) {
+      if (spell.level === 0) {
+        return "C";
+      }
+      return spell.level;
     }
     return "";
-  };
+  }, [spell]);
 
-  const formatComponents = (value: string) => {
-    let words = value.split("(");
-    if (words.length > 1) {
-      return words[0] + "*";
-    }
-    return words[0];
-  };
-
-  const formatDuration = (value: string) => {
-    let search = value.toLowerCase();
-    if (search.includes("concentration")) {
-      if (search.includes("concentration, ")) {
-        let words = value.replace("Concentration,", "").trim();
-        return words;
-      } else {
-        let words = value.replace("Concentration", "").trim();
-        return words;
+  const hasRitual = useCallback(() => {
+    if (spell !== undefined) {
+      if (spell.ritual === 1) {
+        return <div className="icon">R</div>;
       }
     }
-    return value;
-  };
+    return "";
+  }, [spell]);
 
-  const getPicture = () => {
-    if (spell.pic === "" || spell.pic === null) {
-      return "";
+  const hasConcentration = useCallback(() => {
+    if (spell !== undefined) {
+      let search = spell.duration.toLowerCase();
+      if (search.includes("concentration")) {
+        return <div className="icon">C</div>;
+      }
     }
-    return spell.pic;
-  };
+    return "";
+  }, [spell]);
+
+  const formatComponents = useCallback(() => {
+    if (spell !== undefined) {
+      let words = spell.components.split("(");
+      if (words.length > 1) {
+        return words[0] + "*";
+      }
+      return words[0];
+    }
+    return "";
+  }, [spell]);
+
+  const formatDuration = useCallback(() => {
+    if (spell !== undefined) {
+      let search = spell.duration.toLowerCase();
+      if (search.includes("concentration")) {
+        if (search.includes("concentration, ")) {
+          let words = spell.duration.replace("Concentration,", "").trim();
+          return words;
+        } else {
+          let words = spell.duration.replace("Concentration", "").trim();
+          return words;
+        }
+      }
+      return spell.duration;
+    }
+    return "";
+  }, [spell]);
+
+  const getPicture = useCallback(() => {
+    if (spell !== undefined) {
+      if (spell.pic === "" || spell.pic === null) {
+        return "";
+      }
+      return spell.pic;
+    }
+    return "";
+  }, [spell]);
 
   return (
     <Tile to={"/spell-detail/" + spell.id}>
-      <School school={spell.school}>{spell.school}</School>
+      <Suspense fallback={<LoadingSpinner />}>
+        <School school={spell.school}>{spell.school}</School>
 
-      <Flag>
-        <b>{hasConcentration(spell.duration)}</b>
-      </Flag>
-      <Flag>
-        <b>{hasRitual(spell.ritual)}</b>
-      </Flag>
+        <Flag>
+          <b>{hasConcentration()}</b>
+        </Flag>
+        <Flag>
+          <b>{hasRitual()}</b>
+        </Flag>
 
-      <Level>
-        <b>{formatLevel(spell.level)}</b>
-      </Level>
-      {getPicture() !== "" ? (
-        <ImageName>
-          <Image pic={getPicture()}></Image>
-          <b>{spell.name}</b>
-        </ImageName>
-      ) : (
-        <Name>
-          <b>{spell.name}</b>
-        </Name>
-      )}
+        <Level>
+          <b>{formatLevel()}</b>
+        </Level>
+        {getPicture() !== "" ? (
+          <ImageName>
+            <Image pic={getPicture()}></Image>
+            <b>{spell.name}</b>
+          </ImageName>
+        ) : (
+          <Name>
+            <b>{spell.name}</b>
+          </Name>
+        )}
 
-      <PropWrapper>
-        <Prop>
-          <Icon icon={faHistory} />
-          {formatTime(spell.time)}
-        </Prop>
-        <Prop>
-          <Icon icon={faHourglassHalf} />
-          {formatDuration(spell.duration)}
-        </Prop>
-        <Prop>
-          <Icon icon={faPowerOff} transform={{ rotate: 42 }} />
-          {spell.range}
-        </Prop>
-        <Prop>
-          <Icon icon={faMortarPestle} />
-          {formatComponents(spell.components)}
-        </Prop>
-      </PropWrapper>
+        <PropWrapper>
+          <Prop>
+            <Icon icon={faHistory} />
+            {formatTime()}
+          </Prop>
+          <Prop>
+            <Icon icon={faHourglassHalf} />
+            {formatDuration()}
+          </Prop>
+          <Prop>
+            <Icon icon={faPowerOff} transform={{ rotate: 42 }} />
+            {spell.range}
+          </Prop>
+          <Prop>
+            <Icon icon={faMortarPestle} />
+            {formatComponents()}
+          </Prop>
+          <WideProp>
+            <Icon icon={faUser} />
+            {spell.classes}
+          </WideProp>
+          <WideProp>
+            <Icon icon={faLink} />
+            {spell.sources}
+          </WideProp>
+        </PropWrapper>
+      </Suspense>
     </Tile>
   );
 };
@@ -219,8 +252,8 @@ const PropWrapper = styled.div`
 `;
 
 const Prop = styled.div`
-  height: auto;
-  width: calc(50% - 25px);
+  height: 12px;
+  width: calc(50% - 22.5px);
   margin: 0 0 5px 5px;
   float: left;
   line-height: 10px;
@@ -228,6 +261,19 @@ const Prop = styled.div`
   font-size: 12px;
   border-radius: 10px 10px 10px 10px;
   box-shadow: inset 0px 0px 5px 0px rgba(0, 0, 0, 0.3);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+
+  &:nth-child(odd) {
+  margin: 0 0 5px 0px;
+  }
+}
+`;
+
+const WideProp = styled(Prop)`
+  margin: 0 0 5px 0px;
+  width: calc(100% - 20px);
 `;
 
 const Icon = styled(FontAwesomeIcon)`

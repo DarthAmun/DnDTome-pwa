@@ -22,8 +22,8 @@ export default AppWrapper;
 const App = styled.div`
   padding-top: 4rem;
   width: 100%;
-  min-height: calc(100vh - 4rem);
-  height: auto;
+  height: 100%;
+  min-height: 100vh;
   background-color: ${({ theme }) => theme.main.backgroundColor};
   display: flex;
   flex-wrap: wrap;
