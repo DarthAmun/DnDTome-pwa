@@ -23,8 +23,10 @@ const App = styled.div`
   padding-top: 4rem;
   width: 100%;
   height: 100%;
-  min-height: 100vh;
+  min-height: calc(100vh - 4rem);
   background-color: ${({ theme }) => theme.main.backgroundColor};
   display: flex;
   flex-wrap: wrap;
+  align-items: flex-start;
+  align-content: flex-start;
 `;

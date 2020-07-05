@@ -61,7 +61,7 @@ export const Menu = styled.div<MenuType>`
   flex-direction: column;
   justify-content: center;
   background: ${({ theme }) => theme.main.backgroundColor};
-  height: 100vh;
+  height: calc(100vh - 4em);
   text-align: left;
   padding: 2rem;
   position: absolute;
