@@ -225,7 +225,7 @@ const Name = styled.div`
   width: calc(100% - 30px);
   color: var(--card-title-color);
   text-align: center;
-  border-radius: 10px 10px 10px 10px;
+  border-radius: 5px;
   box-shadow: inset 0px 0px 5px 0px rgba(0, 0, 0, 0.3);
 `;
 
@@ -238,7 +238,7 @@ const ImageName = styled.div`
   width: calc(100% - 30px);
   color: var(--card-title-color);
   text-align: center;
-  border-radius: 50px 10px 10px 50px;
+  border-radius: 50px 5px 5px 50px;
   box-shadow: inset 0px 0px 5px 0px rgba(0, 0, 0, 0.3);
 `;
 
@@ -259,7 +259,7 @@ const Prop = styled.div`
   line-height: 10px;
   padding: 10px;
   font-size: 12px;
-  border-radius: 10px 10px 10px 10px;
+  border-radius: 5px;
   box-shadow: inset 0px 0px 5px 0px rgba(0, 0, 0, 0.3);
   white-space: nowrap;
   text-overflow: ellipsis;

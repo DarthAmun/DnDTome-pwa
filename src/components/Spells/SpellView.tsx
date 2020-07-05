@@ -140,8 +140,7 @@ const School = styled.div<SchoolType>`
   float: left;
   padding: 5px 10px 7px 10px;
   line-height: 30px;
-  border-radius: 10px;
-  box-shadow: inset -2px -2px 5px 0px rgba(0, 0, 0, 0.3);
+  border-radius: 5px;
   background-color: ${({ theme }) => theme.tile.backgroundColor};
   color: ${(props) => {
     if (props.school === "Necromancy") {
@@ -175,7 +174,6 @@ const Level = styled.div`
   float: left;
   text-align: center;
   border-top-right-radius: 3px;
-  box-shadow: inset 0px 0px 10px -2px rgba(0, 0, 0, 0.4);
   border-radius: 30px;
   margin: 5px;
   background-color: ${({ theme }) => theme.tile.backgroundColor};
@@ -189,8 +187,7 @@ const Name = styled.div`
   width: calc(100% - 30px);
   color: var(--card-title-color);
   text-align: center;
-  border-radius: 10px 10px 10px 10px;
-  box-shadow: inset 0px 0px 5px 0px rgba(0, 0, 0, 0.3);
+  border-radius: 5px;
   background-color: ${({ theme }) => theme.tile.backgroundColor};
 `;
 
@@ -202,14 +199,13 @@ const ImageName = styled.div`
   width: calc(100% - 30px);
   color: var(--card-title-color);
   text-align: center;
-  border-radius: 50px 10px 10px 50px;
-  box-shadow: inset 0px 0px 5px 0px rgba(0, 0, 0, 0.3);
+  border-radius: 50px 5px 5px 50px;
   background-color: ${({ theme }) => theme.tile.backgroundColor};
 `;
 
 const PropWrapper = styled.div`
   height: auto;
-  width: calc(100% - 10px);
+  width: calc(100% - 6px);
   float: left;
   padding: 3px;
   display: flex;
@@ -224,20 +220,18 @@ const Prop = styled.div`
   margin: 2px;
   float: left;
   padding: 10px;
-  border-radius: 10px 10px 10px 10px;
-  box-shadow: inset 0px 0px 5px 0px rgba(0, 0, 0, 0.3);
+  border-radius: 5px;
   background-color: ${({ theme }) => theme.tile.backgroundColor};
 `;
 
 const Text = styled.div`
   height: auto;
   width: calc(100% - 30px);
-  margin: 5px;
+  margin: 10px 5px 5px 5px;
   float: left;
   line-height: 18px;
   padding: 10px;
-  border-radius: 10px 10px 10px 10px;
-  box-shadow: inset 0px 0px 5px 0px rgba(0, 0, 0, 0.3);
+  border-radius: 5px;
   background-color: ${({ theme }) => theme.tile.backgroundColor};
 `;
 
@@ -257,8 +251,7 @@ const Flag = styled.div`
   margin-left: 5px;
   font-size: 12px;
   line-height: 30px;
-  border-radius: 10px;
-  box-shadow: inset 0px 0px 5px 0px rgba(0, 0, 0, 0.3);
+  border-radius: 5px;
   background-color: ${({ theme }) => theme.tile.backgroundColor};
 `;
 
@@ -288,7 +281,6 @@ const ImageElm = styled.div`
   float: left;
   border-radius: 100px;
   border: 3px solid ${({ theme }) => theme.main.highlight};
-  box-shadow: 0px 0px 10px 0px rgba(172, 172, 172, 0.2);
   background-color: white;
   overflow: hidden;
 `;
