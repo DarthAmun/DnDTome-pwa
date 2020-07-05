@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import packageJson from "../../package.json";
+import packageJson from "../../../package.json";
 
 const Header = () => {
   return (

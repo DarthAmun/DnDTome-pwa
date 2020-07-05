@@ -1,6 +1,6 @@
 import React from "react";
 import { MemoryRouter, Switch, Route } from "react-router";
-import { MyThemeProvider } from "./components/MyThemeProvider";
+import { MyThemeProvider } from "./components/Theme/MyThemeProvider";
 import SpellOverview from "./components/Spells/SpellOverview";
 import Options from "./components/Options";
 import SpellDetail from "./components/Spells/SpellDetail";

@@ -1,6 +1,6 @@
 import React from "react";
-import { useTheme } from "./MyThemeProvider";
-import { darkTheme, lightTheme } from "./Theme";
+import { useTheme } from "./Theme/MyThemeProvider";
+import { darkTheme, lightTheme } from "./Theme/Theme";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFileImport } from "@fortawesome/free-solid-svg-icons";

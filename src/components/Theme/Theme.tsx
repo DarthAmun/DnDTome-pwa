@@ -2,11 +2,10 @@ interface Theme {
   buttons: {
     color: string;
     backgroundColor: string;
-    size: {
-      small: string;
-      medium: string;
-      large: string;
-    };
+  };
+  input: {
+    color: string;
+    backgroundColor: string;
   };
   main: {
     backgroundColor: string;
@@ -54,11 +53,10 @@ export const lightTheme: Theme = {
   buttons: {
     color: "white",
     backgroundColor: "#8000ff",
-    size: {
-      small: "1em",
-      medium: "2em",
-      large: "3em",
-    },
+  },
+  input: {
+    color: "inherit",
+    backgroundColor: "white",
   },
   main: {
     backgroundColor: "rgb(248, 248, 248)",
@@ -106,9 +104,10 @@ export const darkTheme: Theme = {
   buttons: {
     color: "#cfc8d8",
     backgroundColor: "#522a82",
-    size: {
-      ...lightTheme.buttons.size,
-    },
+  },
+  input: {
+    color: "lightgrey",
+    backgroundColor: "#475062",
   },
   main: {
     backgroundColor: "#1f2532",

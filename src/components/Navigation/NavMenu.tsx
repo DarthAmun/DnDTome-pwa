@@ -64,7 +64,7 @@ export const Menu = styled.div<MenuType>`
   height: calc(100vh - 4em);
   text-align: left;
   padding: 2rem;
-  position: absolute;
+  position: fixed;
   z-index: 10;
   top: 0;
   left: 0;
