@@ -15,22 +15,9 @@ interface Theme {
   };
   tile: {
     backgroundColor: string;
+    backgroundColorLink: string;
     color: string;
     boxShadow: string;
-    size: {
-      small: {
-        width: string;
-        height: string;
-      };
-      medium: {
-        width: string;
-        height: string;
-      };
-      large: {
-        width: string;
-        height: string;
-      };
-    };
   };
   nav: {
     size: {
@@ -67,22 +54,9 @@ export const lightTheme: Theme = {
   },
   tile: {
     backgroundColor: "white",
+    backgroundColorLink: "lightslategray",
     color: "darkgrey",
     boxShadow: "0px 0px 5px 0px rgba(0,0,0,0.75);",
-    size: {
-      small: {
-        width: "100%",
-        height: "15em",
-      },
-      medium: {
-        width: "15em",
-        height: "15em",
-      },
-      large: {
-        width: "15em",
-        height: "15em",
-      },
-    },
   },
   nav: {
     size: {
@@ -119,11 +93,9 @@ export const darkTheme: Theme = {
   },
   tile: {
     backgroundColor: "#333d51",
+    backgroundColorLink: "#8CA7DE",
     color: "lightslategray",
     boxShadow: "0px 0px 5px 0px rgba(0,0,0,0.75);",
-    size: {
-      ...lightTheme.tile.size,
-    },
   },
   nav: {
     size: {

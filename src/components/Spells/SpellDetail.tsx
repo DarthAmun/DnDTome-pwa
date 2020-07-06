@@ -1,18 +1,23 @@
 import React, { useState, useEffect } from "react";
 import { RouteComponentProps } from "react-router";
+import { useHistory } from "react-router";
 import { MyAppDatabase } from "../../Database/MyDatabase";
 import { useItem } from "../../Hooks/DexieHooks";
 import styled from "styled-components";
 
-import { faArrowLeft, faSave } from "@fortawesome/free-solid-svg-icons";
+import {
+  faArrowLeft,
+  faSave,
+  faTrash,
+} from "@fortawesome/free-solid-svg-icons";
 import { LoadingSpinner } from "../Loading";
 import AppWrapper from "../AppWrapper";
 import SpellView from "./SpellView";
 import SpellEditView from "./SpellEditView";
 import BackButton from "../FormElements/BackButton";
 import Spell from "../../Data/Spell";
-import SaveButton from "../FormElements/SaveButton";
-import { update } from "../../Database/DbService";
+import IconButton from "../FormElements/IconButton";
+import { update, remove } from "../../Database/DbService";
 
 type TParams = { id: string };
 
@@ -21,6 +26,7 @@ const SpellDetail = ({ match }: RouteComponentProps<TParams>) => {
   const [spell, loading, error] = useItem(db.spells, +match.params.id);
   const [editMode, setMode] = useState<boolean>(false);
   const [spellObj, editSpell] = useState<Spell>();
+  let history = useHistory();
 
   useEffect(() => {
     if (spell !== undefined) {
@@ -28,19 +34,30 @@ const SpellDetail = ({ match }: RouteComponentProps<TParams>) => {
     }
   }, [spell, editSpell]);
 
+  const deleteSpell = (spellId: number | undefined) => {
+    remove("spells", spellId)
+    history.goBack()
+  }
+
   return (
     <AppWrapper>
       <TopBar>
-        <BackButton icon={faArrowLeft} />
+        <BackButton icon={faArrowLeft} action={() => history.goBack()}/>
         <EditToggle mode={editMode.toString()}>
           <ToggleLeft onClick={() => setMode(false)}>View</ToggleLeft>
           <ToggleRight onClick={() => setMode(true)}>Edit</ToggleRight>
         </EditToggle>
         {!error && !loading && editMode && spellObj !== undefined ? (
-          <SaveButton
-            onClick={() => update("spells", spellObj)}
-            icon={faSave}
-          />
+          <>
+            <IconButton
+              onClick={() => update("spells", spellObj)}
+              icon={faSave}
+            />
+            <IconButton
+              onClick={() => deleteSpell(spellObj.id)}
+              icon={faTrash}
+            />
+          </>
         ) : (
           ""
         )}

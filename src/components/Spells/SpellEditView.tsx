@@ -15,6 +15,7 @@ import {
   faUser,
   faLink,
   faBookOpen,
+  faImage,
 } from "@fortawesome/free-solid-svg-icons";
 
 interface $Props {
@@ -86,6 +87,12 @@ const SpellEditView = ({ spell, onEdit }: $Props) => {
           label="Sources"
           icon={faLink}
           onChange={(sources) => onEdit({ ...spell, sources: sources })}
+        />
+        <StringField
+          value={spell.pic}
+          label="Picture"
+          icon={faImage}
+          onChange={(pic) => onEdit({ ...spell, pic: pic })}
         />
         <TextField
           value={spell.text}

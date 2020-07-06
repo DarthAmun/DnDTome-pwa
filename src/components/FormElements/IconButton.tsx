@@ -11,17 +11,17 @@ interface $Props {
   onClick: () => void;
 }
 
-const SaveButton = ({ icon, transform, onClick }: $Props) => {
+const IconButton = ({ icon, transform, onClick }: $Props) => {
   return (
-    <Save onClick={onClick}>
+    <SimpleButton onClick={onClick}>
       <Icon icon={icon} transform={transform} />
-    </Save>
+    </SimpleButton>
   );
 };
 
-export default SaveButton;
+export default IconButton;
 
-const Save = styled.div`
+const SimpleButton = styled.div`
   color: ${({ theme }) => theme.buttons.color};
   background-color: ${({ theme }) => theme.buttons.backgroundColor};
   font-size: 16px;

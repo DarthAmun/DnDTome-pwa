@@ -4,17 +4,16 @@ import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { IconDefinition } from "@fortawesome/free-solid-svg-icons";
 import { Transform } from "@fortawesome/fontawesome-svg-core";
-import { useHistory } from "react-router";
 
 interface $Props {
   icon: IconDefinition;
   transform?: string | Transform;
+  action: () => void;
 }
 
-const BackButton = ({ icon, transform }: $Props) => {
-  let history = useHistory();
+const BackButton = ({ icon, transform, action }: $Props) => {
   return (
-    <Back onClick={() => history.goBack()}>
+    <Back onClick={action}>
       <Icon icon={icon} transform={transform} />
     </Back>
   );

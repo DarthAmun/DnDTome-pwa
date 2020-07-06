@@ -24,6 +24,19 @@ export const save = (tableName: string, data: IEntity) => {
     });
 };
 
+export const remove = (tableName: string, id: number | undefined) => {
+  const db = new MyAppDatabase();
+  if (id !== undefined) {
+    db.open()
+      .then(function () {
+        db.table(tableName).delete(id);
+      })
+      .finally(function () {
+        db.close();
+      });
+  }
+};
+
 export const saveNewSpells = (spells: Spell[], filename: string) => {
   const db = new MyAppDatabase();
   db.open()

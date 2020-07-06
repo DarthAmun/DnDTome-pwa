@@ -101,3 +101,54 @@ export const useItem = <T, U>(table: Dexie.Table<T, U>, id: U) => {
 
   return state;
 };
+
+export const useItemByAttr = <T, U>(
+  table: Dexie.Table<T, U>,
+  attr: string,
+  attrValue: string
+) => {
+  const [effect, setEffect] = useState<boolean>(true);
+  const reducer = useCallback(
+    (state: ItemState<T>, action: ItemAction<T>): ItemState<T> => {
+      switch (action.type) {
+        case "resolved":
+          return [action.data, false, undefined];
+        case "error":
+          return [undefined, false, action.error];
+        default:
+          return [undefined, true, undefined];
+      }
+    },
+    []
+  );
+
+  const [state, dispatch] = useReducer(reducer, [undefined, true, undefined]);
+
+  useEffect(() => {
+    if (effect) {
+      const getAndDispatch = () =>
+        table
+          .where(attr)
+          .equals(attrValue)
+          .first()
+          .then((data) => {
+            if (data !== undefined)
+              dispatch({
+                type: "resolved",
+                data,
+              });
+          })
+          .catch((error) => {
+            dispatch({
+              type: "error",
+              error,
+            });
+          });
+
+      getAndDispatch();
+      setEffect(false);
+    }
+  }, [table, attr, attrValue, effect]);
+
+  return state;
+};

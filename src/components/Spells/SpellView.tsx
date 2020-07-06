@@ -1,4 +1,5 @@
 import React, { useCallback } from "react";
+import { useHistory } from "react-router";
 import styled from "styled-components";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -17,6 +18,8 @@ interface $Props {
 }
 
 const SpellView = ({ spell }: $Props) => {
+  let history = useHistory();
+
   const formatLevel = useCallback(() => {
     if (spell !== undefined) {
       if (spell.level === 0) {
@@ -48,10 +51,26 @@ const SpellView = ({ spell }: $Props) => {
 
   const formatText = useCallback(() => {
     if (spell !== undefined) {
-      return spell.text;
+      let text = spell.text;
+      let parts: string[] = text.split("[[");
+      return parts.map((part: string, index: number) => {
+        if (part.includes("]]")) {
+          const codePart: string[] = part.split("]]");
+          const linkParts: string[] = codePart[0].split(".");
+          const link: string = "/spell-detail/linkTo/" + linkParts[1];
+          return (
+            <span key={index}>
+              <Link onClick={() => history.push(link)}>{linkParts[1]}</Link>
+              {codePart[1]}
+            </span>
+          );
+        } else {
+          return <span key={index}>{part}</span>;
+        }
+      });
     }
     return "";
-  }, [spell]);
+  }, [spell, history]);
 
   const getPicture = useCallback(() => {
     if (spell !== undefined) {
@@ -241,6 +260,17 @@ const Text = styled.div`
   padding: 10px;
   border-radius: 5px;
   background-color: ${({ theme }) => theme.tile.backgroundColor};
+`;
+
+const Link = styled.span`
+  display: inline-block;
+  background-color: ${({ theme }) => theme.tile.backgroundColorLink};
+  border-radius: 5px;
+  text-decoration: none;
+  color: ${({ theme }) => theme.tile.backgroundColor};
+  font-size: 10px;
+  padding: 0px 5px 0px 5px;
+  cursor: pointer;
 `;
 
 const Icon = styled(FontAwesomeIcon)`
