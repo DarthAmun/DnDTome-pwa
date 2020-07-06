@@ -19,38 +19,80 @@ import {
 
 interface $Props {
   spell: Spell;
+  onEdit: (value: Spell) => void;
 }
 
-const SpellEditView = ({ spell }: $Props) => {
+const SpellEditView = ({ spell, onEdit }: $Props) => {
   return (
     <CenterWrapper>
       <View>
-        <StringField value={spell.name} label="Name" />
-        <StringField value={spell.school} label="School" />
+        <StringField
+          value={spell.name}
+          label="Name"
+          onChange={(name) => onEdit({ ...spell, name: name })}
+        />
+        <StringField
+          value={spell.school}
+          label="School"
+          onChange={(school) => onEdit({ ...spell, school: school })}
+        />
         <FieldGroup>
-          <NumberField value={spell.level} label="Level" />
-          <CheckField value={!!spell.ritual} label="Ritual" />
+          <NumberField
+            value={spell.level}
+            label="Level"
+            onChange={(level) => onEdit({ ...spell, level: level })}
+          />
+          <CheckField
+            value={!!spell.ritual}
+            label="Ritual"
+            onChange={(ritual) => onEdit({ ...spell, ritual: ritual ? 1 : 0 })}
+          />
         </FieldGroup>
-        <StringField value={spell.time} label="Time" icon={faHistory} />
+        <StringField
+          value={spell.time}
+          label="Time"
+          icon={faHistory}
+          onChange={(time) => onEdit({ ...spell, time: time })}
+        />
         <StringField
           value={spell.range}
           label="Range"
           icon={faPowerOff}
           transform={{ rotate: 42 }}
+          onChange={(range) => onEdit({ ...spell, range: range })}
         />
         <StringField
           value={spell.duration}
           label="Duration"
           icon={faHourglassHalf}
+          onChange={(duration) => onEdit({ ...spell, duration: duration })}
         />
         <StringField
           value={spell.components}
           label="Comp."
           icon={faMortarPestle}
+          onChange={(components) =>
+            onEdit({ ...spell, components: components })
+          }
         />
-        <StringField value={spell.classes} label="Classes" icon={faUser} />
-        <StringField value={spell.sources} label="Sources" icon={faLink} />
-        <TextField value={spell.text} label="Text" icon={faBookOpen} />
+        <StringField
+          value={spell.classes}
+          label="Classes"
+          icon={faUser}
+          onChange={(classes) => onEdit({ ...spell, classes: classes })}
+        />
+        <StringField
+          value={spell.sources}
+          label="Sources"
+          icon={faLink}
+          onChange={(sources) => onEdit({ ...spell, sources: sources })}
+        />
+        <TextField
+          value={spell.text}
+          label="Text"
+          icon={faBookOpen}
+          onChange={(text) => onEdit({ ...spell, text: text })}
+        />
       </View>
     </CenterWrapper>
   );

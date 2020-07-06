@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -10,10 +10,10 @@ interface $Props {
   label: string;
   icon?: IconDefinition;
   transform?: string | Transform;
+  onChange: (value: number) => void;
 }
 
-const NumberField = ({ value, label, icon, transform }: $Props) => {
-  const [number, setNumber] = useState<number>(value);
+const NumberField = ({ value, label, icon, transform, onChange }: $Props) => {
   return (
     <Field>
       <LabelText>
@@ -21,8 +21,8 @@ const NumberField = ({ value, label, icon, transform }: $Props) => {
       </LabelText>
       <Input
         type="number"
-        value={number}
-        onChange={(e) => setNumber(+e.target.value)}
+        value={value}
+        onChange={(e) => onChange(+e.target.value)}
       ></Input>
     </Field>
   );

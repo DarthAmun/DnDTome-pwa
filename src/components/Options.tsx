@@ -5,7 +5,7 @@ import { darkTheme, lightTheme } from "./Theme/Theme";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFileImport } from "@fortawesome/free-solid-svg-icons";
 import Spell from "../Data/Spell";
-import { saveNewSpells } from "../Database/SpellService";
+import { saveNewSpells } from "../Database/DbService";
 import AppWrapper from "./AppWrapper";
 
 const Options = () => {

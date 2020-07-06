@@ -2,6 +2,7 @@ interface Theme {
   buttons: {
     color: string;
     backgroundColor: string;
+    height: string;
   };
   input: {
     color: string;
@@ -53,6 +54,7 @@ export const lightTheme: Theme = {
   buttons: {
     color: "white",
     backgroundColor: "#8000ff",
+    height: "20px",
   },
   input: {
     color: "inherit",
@@ -104,6 +106,7 @@ export const darkTheme: Theme = {
   buttons: {
     color: "#cfc8d8",
     backgroundColor: "#522a82",
+    height: "20px",
   },
   input: {
     color: "lightgrey",

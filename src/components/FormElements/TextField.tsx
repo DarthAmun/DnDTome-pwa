@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -10,16 +10,16 @@ interface $Props {
   label: string;
   icon?: IconDefinition;
   transform?: string | Transform;
+  onChange: (value: string) => void;
 }
 
-const TextField = ({ value, label, icon, transform }: $Props) => {
-  const [text, setText] = useState<string>(value);
+const TextField = ({ value, label, icon, transform, onChange }: $Props) => {
   return (
     <Field>
       <LabelText>
         {icon ? <Icon icon={icon} transform={transform} /> : ""} {label}
       </LabelText>
-      <Input value={text} onChange={(e) => setText(e.target.value)}></Input>
+      <Input value={value} onChange={(e) => onChange(e.target.value)}></Input>
     </Field>
   );
 };

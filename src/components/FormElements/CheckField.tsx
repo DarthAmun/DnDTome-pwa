@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -10,10 +10,10 @@ interface $Props {
   label: string;
   icon?: IconDefinition;
   transform?: string | Transform;
+  onChange: (value: boolean) => void;
 }
 
-const CheckField = ({ value, label, icon, transform }: $Props) => {
-  const [bool, setState] = useState<boolean>(value);
+const CheckField = ({ value, label, icon, transform, onChange }: $Props) => {
   return (
     <Field>
       <LabelText>
@@ -21,8 +21,8 @@ const CheckField = ({ value, label, icon, transform }: $Props) => {
       </LabelText>
       <Input
         type="checkbox"
-        defaultChecked={bool}
-        onChange={(e) => setState(e.target.checked)}
+        defaultChecked={value}
+        onChange={(e) => onChange(e.target.checked)}
       ></Input>
       <Checkmark></Checkmark>
     </Field>
