@@ -64,71 +64,79 @@ const SpellView = ({ spell }: $Props) => {
   }, [spell]);
 
   return (
-    <View>
-      <School school={spell.school}>{spell.school}</School>
+    <CenterWrapper>
+      <View>
+        <School school={spell.school}>{spell.school}</School>
 
-      <Flag>
-        <b>{hasConcentration()}</b>
-      </Flag>
-      <Flag>
-        <b>{hasRitual()}</b>
-      </Flag>
+        <Flag>
+          <b>{hasConcentration()}</b>
+        </Flag>
+        <Flag>
+          <b>{hasRitual()}</b>
+        </Flag>
 
-      <Level>
-        <b>{formatLevel()}</b>
-      </Level>
+        <Level>
+          <b>{formatLevel()}</b>
+        </Level>
 
-      {getPicture() !== "" ? (
-        <ImageName>
-          <Image pic={getPicture()}></Image>
-          <b>{spell.name}</b>
-        </ImageName>
-      ) : (
-        <Name>
-          <b>{spell.name}</b>
-        </Name>
-      )}
+        {getPicture() !== "" ? (
+          <ImageName>
+            <Image pic={getPicture()}></Image>
+            <b>{spell.name}</b>
+          </ImageName>
+        ) : (
+          <Name>
+            <b>{spell.name}</b>
+          </Name>
+        )}
 
-      <PropWrapper>
-        <Prop>
-          <Icon icon={faHistory} />
-          {spell.time}
-        </Prop>
-        <Prop>
-          <Icon icon={faHourglassHalf} />
-          {spell.duration}
-        </Prop>
-        <Prop>
-          <Icon icon={faPowerOff} transform={{ rotate: 42 }} />
-          {spell.range}
-        </Prop>
-        <Prop>
-          <Icon icon={faMortarPestle} />
-          {spell.components}
-        </Prop>
-        <Prop>
-          <Icon icon={faUser} />
-          {spell.classes}
-        </Prop>
-        <Prop>
-          <Icon icon={faLink} />
-          {spell.sources}
-        </Prop>
-      </PropWrapper>
-      <Text>{formatText()}</Text>
-    </View>
+        <PropWrapper>
+          <Prop>
+            <Icon icon={faHistory} />
+            {spell.time}
+          </Prop>
+          <Prop>
+            <Icon icon={faHourglassHalf} />
+            {spell.duration}
+          </Prop>
+          <Prop>
+            <Icon icon={faPowerOff} transform={{ rotate: 42 }} />
+            {spell.range}
+          </Prop>
+          <Prop>
+            <Icon icon={faMortarPestle} />
+            {spell.components}
+          </Prop>
+          <Prop>
+            <Icon icon={faUser} />
+            {spell.classes}
+          </Prop>
+          <Prop>
+            <Icon icon={faLink} />
+            {spell.sources}
+          </Prop>
+        </PropWrapper>
+        <Text>{formatText()}</Text>
+      </View>
+    </CenterWrapper>
   );
 };
 
 export default SpellView;
 
+const CenterWrapper = styled.div`
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+`;
+
 const View = styled.div`
   color: ${({ theme }) => theme.tile.color};
   font-size: 16px;
-  overflow: hidden;
-  flex: 1 1;
   max-width: 800px;
   padding: 5px;
+  margin-left: auto;
+  margin-right: auto;
 `;
 
 type SchoolType = {
@@ -175,7 +183,7 @@ const Level = styled.div`
   text-align: center;
   border-top-right-radius: 3px;
   border-radius: 30px;
-  margin: 5px;
+  margin: 0px 5px 5px 5px;
   background-color: ${({ theme }) => theme.tile.backgroundColor};
 `;
 

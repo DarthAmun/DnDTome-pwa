@@ -6,40 +6,43 @@ import { IconDefinition } from "@fortawesome/free-solid-svg-icons";
 import { Transform } from "@fortawesome/fontawesome-svg-core";
 
 interface $Props {
-  value: string;
+  value: number;
   label: string;
   icon?: IconDefinition;
   transform?: string | Transform;
 }
 
-const TextField = ({ value, label, icon, transform }: $Props) => {
-  const [text, setText] = useState<string>(value);
+const NumberField = ({ value, label, icon, transform }: $Props) => {
+  const [number, setNumber] = useState<number>(value);
   return (
     <Field>
       <LabelText>
         {icon ? <Icon icon={icon} transform={transform} /> : ""} {label}
       </LabelText>
-      <Input value={text} onChange={(e) => setText(e.target.value)}></Input>
+      <Input
+        type="number"
+        value={number}
+        onChange={(e) => setNumber(+e.target.value)}
+      ></Input>
     </Field>
   );
 };
 
-export default TextField;
+export default NumberField;
 
 const Field = styled.label`
   color: ${({ theme }) => theme.tile.color};
   background-color: ${({ theme }) => theme.tile.backgroundColor};
   font-size: 16px;
   overflow: hidden;
-  height: 100%;
-  min-width: calc(100% - 20px);
-  flex: 3 3 auto;
+  height: 30px;
+  line-height: 30px;
+  flex: 1 1 auto;
   padding: 5px;
   margin: 5px;
   border-radius: 5px;
 
   display: flex;
-  flex-wrap: wrap;
   justify-content: center;
   align-items: baseline;
 `;
@@ -55,18 +58,17 @@ const Icon = styled(FontAwesomeIcon)`
 
 const LabelText = styled.div`
   flex: 1 1;
-  min-width: 100%;
-  height: 30px;
-  line-height: 30px;
 `;
 
-const Input = styled.textarea`
-  flex: 1 1;
+const Input = styled.input`
+  flex: 1 1 auto;
+  max-width: 6em;
+  height: 30px;
   padding: 5px;
   box-sizing: border-box;
   border: none;
-  min-height: 22vh;
   background-color: ${({ theme }) => theme.input.backgroundColor};
   color: ${({ theme }) => theme.input.color};
+  margin-left: 5px;
   border-radius: 5px;
 `;
