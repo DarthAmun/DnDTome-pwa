@@ -1,10 +1,10 @@
 import React from "react";
 import { RouteComponentProps } from "react-router";
-import { MyAppDatabase } from "../../Database/MyDatabase";
-import { useItemByAttr } from "../../Hooks/DexieHooks";
-import { LoadingSpinner } from "../Loading";
-import AppWrapper from "../AppWrapper";
-import SpellDetail from "./SpellDetail";
+import { MyAppDatabase } from "../../../../Database/MyDatabase";
+import { useItemByAttr } from "../../../../Hooks/DexieHooks";
+import { LoadingSpinner } from "../../../Loading";
+import AppWrapper from "../../../AppWrapper";
+import SpellDetail from "../SpellDetail";
 
 type TParams = { name: string };
 

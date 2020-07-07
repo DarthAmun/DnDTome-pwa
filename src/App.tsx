@@ -3,8 +3,8 @@ import { MemoryRouter, Switch, Route } from "react-router";
 import { MyThemeProvider } from "./components/Theme/MyThemeProvider";
 import SpellOverview from "./components/Spells/SpellOverview";
 import Options from "./components/Options";
-import IdToSpell from "./components/Spells/IdToSpell";
-import NameToSpell from "./components/Spells/NameToSpell";
+import IdToSpell from "./components/Spells/Detail/LinkWrapper/IdToSpell";
+import NameToSpell from "./components/Spells/Detail/LinkWrapper/NameToSpell";
 
 const App = () => {
   return (

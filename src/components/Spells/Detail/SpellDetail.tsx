@@ -9,10 +9,10 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import SpellView from "./SpellView";
 import SpellEditView from "./SpellEditView";
-import BackButton from "../FormElements/BackButton";
-import Spell from "../../Data/Spell";
-import IconButton from "../FormElements/IconButton";
-import { update, remove } from "../../Database/DbService";
+import BackButton from "../../FormElements/BackButton";
+import Spell from "../../../Data/Spell";
+import IconButton from "../../FormElements/IconButton";
+import { update, remove } from "../../../Database/DbService";
 
 interface $Props {
   spell: Spell;

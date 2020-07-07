@@ -11,7 +11,7 @@ import {
   faUser,
   faLink,
 } from "@fortawesome/free-solid-svg-icons";
-import Spell from "../../Data/Spell";
+import Spell from "../../../Data/Spell";
 
 interface $Props {
   spell: Spell;
