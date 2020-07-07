@@ -3,8 +3,8 @@ import { MemoryRouter, Switch, Route } from "react-router";
 import { MyThemeProvider } from "./components/Theme/MyThemeProvider";
 import SpellOverview from "./components/Spells/SpellOverview";
 import Options from "./components/Options";
-import SpellDetail from "./components/Spells/SpellDetail";
-import LinkToSpell from "./components/Spells/LinkToSpell";
+import IdToSpell from "./components/Spells/IdToSpell";
+import NameToSpell from "./components/Spells/NameToSpell";
 
 const App = () => {
   return (
@@ -12,8 +12,8 @@ const App = () => {
       <MemoryRouter>
         <Switch>
           <Route exact path="/" component={SpellOverview}></Route>
-          <Route path="/spell-detail/linkTo/:name" component={LinkToSpell}></Route>
-          <Route path="/spell-detail/:id" component={SpellDetail}></Route>
+          <Route path="/spell-detail/name/:name" component={NameToSpell}></Route>
+          <Route path="/spell-detail/id/:id" component={IdToSpell}></Route>
           <Route path="/spell-overview" component={SpellOverview}></Route>
           <Route path="/options" component={Options}></Route>
         </Switch>

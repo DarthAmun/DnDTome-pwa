@@ -1,8 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { RouteComponentProps } from "react-router";
+import React, { useState } from "react";
 import { useHistory } from "react-router";
-import { MyAppDatabase } from "../../Database/MyDatabase";
-import { useItem } from "../../Hooks/DexieHooks";
 import styled from "styled-components";
 
 import {
@@ -10,8 +7,6 @@ import {
   faSave,
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
-import { LoadingSpinner } from "../Loading";
-import AppWrapper from "../AppWrapper";
 import SpellView from "./SpellView";
 import SpellEditView from "./SpellEditView";
 import BackButton from "../FormElements/BackButton";
@@ -19,35 +14,29 @@ import Spell from "../../Data/Spell";
 import IconButton from "../FormElements/IconButton";
 import { update, remove } from "../../Database/DbService";
 
-type TParams = { id: string };
+interface $Props {
+  spell: Spell;
+}
 
-const SpellDetail = ({ match }: RouteComponentProps<TParams>) => {
-  const db = new MyAppDatabase();
-  const [spell, loading, error] = useItem(db.spells, +match.params.id);
+const SpellDetail = ({ spell }: $Props) => {
   const [editMode, setMode] = useState<boolean>(false);
-  const [spellObj, editSpell] = useState<Spell>();
+  const [spellObj, editSpell] = useState<Spell>(spell);
   let history = useHistory();
 
-  useEffect(() => {
-    if (spell !== undefined) {
-      editSpell(spell);
-    }
-  }, [spell, editSpell]);
-
   const deleteSpell = (spellId: number | undefined) => {
-    remove("spells", spellId)
-    history.goBack()
-  }
+    remove("spells", spellId);
+    history.goBack();
+  };
 
   return (
-    <AppWrapper>
+    <>
       <TopBar>
-        <BackButton icon={faArrowLeft} action={() => history.goBack()}/>
+        <BackButton icon={faArrowLeft} action={() => history.goBack()} />
         <EditToggle mode={editMode.toString()}>
           <ToggleLeft onClick={() => setMode(false)}>View</ToggleLeft>
           <ToggleRight onClick={() => setMode(true)}>Edit</ToggleRight>
         </EditToggle>
-        {!error && !loading && editMode && spellObj !== undefined ? (
+        {editMode && (
           <>
             <IconButton
               onClick={() => update("spells", spellObj)}
@@ -58,26 +47,14 @@ const SpellDetail = ({ match }: RouteComponentProps<TParams>) => {
               icon={faTrash}
             />
           </>
-        ) : (
-          ""
         )}
       </TopBar>
-
-      {!error && loading && <LoadingSpinner />}
-      {!error && !loading && spellObj !== undefined ? (
-        editMode ? (
-          <SpellEditView
-            spell={spellObj}
-            onEdit={(value) => editSpell(value)}
-          />
-        ) : (
-          <SpellView spell={spellObj} />
-        )
+      {editMode ? (
+        <SpellEditView spell={spellObj} onEdit={(value) => editSpell(value)} />
       ) : (
-        ""
+        <SpellView spell={spellObj} />
       )}
-      {error && <>Fail</>}
-    </AppWrapper>
+    </>
   );
 };
 

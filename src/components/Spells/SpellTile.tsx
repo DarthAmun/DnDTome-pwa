@@ -96,7 +96,7 @@ const SpellTile = ({ spell }: $Props) => {
   }, [spell]);
 
   return (
-    <Tile to={"/spell-detail/" + spell.id}>
+    <Tile to={"/spell-detail/id/" + spell.id}>
       <Suspense fallback={<LoadingSpinner />}>
         <School school={spell.school}>{spell.school}</School>
 
