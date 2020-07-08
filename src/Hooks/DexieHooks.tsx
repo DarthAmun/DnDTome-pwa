@@ -1,5 +1,7 @@
 import Dexie from "dexie";
 import { useReducer, useEffect, useCallback, useState } from "react";
+import Filter from "../Data/Filter";
+import ReactDOM from "react-dom";
 
 type TableState<T> = [T[] | undefined, boolean, Dexie.DexieError | undefined];
 type TableAction<T> =
@@ -53,6 +55,115 @@ export const useTable = <T, U>(table: Dexie.Table<T, U>): TableState<T> => {
       setEffect(false);
     }
   }, [table, effect]);
+
+  return state;
+};
+
+export const useTableByFilter = <T, U>(
+  table: Dexie.Table<T, U>,
+  filters: Filter[]
+): TableState<T> => {
+  const [effect, setEffect] = useState<boolean>(true);
+  const [filter, setFilter] = useState<Filter[]>(filters);
+  const reducer = useCallback(
+    (state: TableState<T>, action: TableAction<T>): TableState<T> => {
+      switch (action.type) {
+        case "resolved":
+          return [action.data, false, undefined];
+        case "error":
+          return [undefined, false, action.error];
+        case "reset":
+          return [undefined, true, undefined];
+        default:
+          return [undefined, true, undefined];
+      }
+    },
+    []
+  );
+
+  const [state, dispatch] = useReducer(reducer, [undefined, true, undefined]);
+
+  useEffect(() => {
+    if (filter !== filters) {
+      ReactDOM.unstable_batchedUpdates(() => {
+        dispatch({ type: "reset" });
+        setFilter(filters);
+        setEffect(true);
+      });
+    }
+  }, [filter, filters, setEffect]);
+
+  useEffect(() => {
+    if (effect) {
+      const getAndDispatch = () =>
+        table
+          .filter((obj: T) => {
+            let test: boolean[] = [];
+            filters.forEach((filter) => {
+              if (typeof filter.value === "string") {
+                test.push(
+                  // @ts-ignore
+                  obj[filter.filedName]
+                    .toLowerCase()
+                    .includes(filter.value.toLowerCase())
+                );
+              } else if (typeof filter.value === "number") {
+                // @ts-ignore
+                test.push(obj[filter.filedName] === filter.value);
+              } else if (typeof filter.value === "boolean") {
+                // @ts-ignore
+                test.push(obj[filter.filedName] === filter.value);
+              } else if (filter.value instanceof Array) {
+                let arrayTest: boolean = false;
+                filter.value.forEach(
+                  (filterPart: string | boolean | number) => {
+                    if (typeof filterPart === "string") {
+                      if (
+                        // @ts-ignore
+                        obj[filter.filedName]
+                          .toLowerCase()
+                          .includes(filterPart.toLowerCase())
+                      )
+                        arrayTest = true;
+                    } else if (typeof filterPart === "number") {
+                      // @ts-ignore
+                      if (obj[filter.filedName] === filterPart)
+                        arrayTest = true;
+                    } else if (typeof filterPart === "boolean") {
+                      // @ts-ignore
+                      if (obj[filter.filedName] === filterPart)
+                        arrayTest = true;
+                    }
+                  }
+                );
+                test.push(arrayTest);
+              }
+            });
+
+            let result = true;
+            test.forEach((val) => {
+              if (!val) result = false;
+            });
+            return result;
+          })
+          .toArray()
+          .then((data) => {
+            dispatch({
+              type: "resolved",
+              data,
+            });
+          })
+          .catch((error) => {
+            dispatch({
+              type: "error",
+              error,
+            });
+          });
+
+      getAndDispatch();
+      setEffect(false);
+    }
+  }, [table, effect, filters]);
 
   return state;
 };

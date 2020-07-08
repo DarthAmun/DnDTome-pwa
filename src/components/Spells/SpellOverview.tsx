@@ -1,17 +1,21 @@
-import React from "react";
+import React, { useState } from "react";
 import { LoadingSpinner } from "../Loading";
 import Spell from "../../Data/Spell";
 import SpellTile from "./SpellTile";
 import AppWrapper from "../AppWrapper";
 import { MyAppDatabase } from "../../Database/MyDatabase";
-import { useTable } from "../../Hooks/DexieHooks";
+import { useTableByFilter } from "../../Hooks/DexieHooks";
+import Filter from "../../Data/Filter";
+import SpellSearchBar from "./SpellSearchBar";
 
 const SpellOverview = () => {
   const db = new MyAppDatabase();
-  const [allSpells, loading, error] = useTable(db.spells);
+  const [filters, setFilter] = useState<Filter[]>([]);
+  const [allSpells, loading, error] = useTableByFilter(db.spells, filters);
 
   return (
     <AppWrapper>
+      <SpellSearchBar onSend={(filterArray) => setFilter(filterArray)} />
       {!error && loading && <LoadingSpinner />}
       {!error &&
         !loading &&
