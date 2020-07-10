@@ -36,8 +36,8 @@ const Field = styled.label`
   background-color: ${({ theme }) => theme.tile.backgroundColor};
   font-size: 16px;
   overflow: hidden;
-  height: 30px;
-  line-height: 30px;
+  height: 38px;
+  line-height: 38px;
   flex: 1 1 auto;
   padding: 5px;
   margin: 5px;

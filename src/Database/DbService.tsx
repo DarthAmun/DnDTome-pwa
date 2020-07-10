@@ -1,6 +1,7 @@
 import { MyAppDatabase } from "./MyDatabase";
 import IEntity from "../Data/IEntity";
 import Spell from "../Data/Spell";
+import { IndexableType } from "dexie";
 
 export const update = (tableName: string, data: IEntity) => {
   const db = new MyAppDatabase();
@@ -37,6 +38,21 @@ export const remove = (tableName: string, id: number | undefined) => {
   }
 };
 
+export const reciveAttributeSelection = (tableName: string, attribute: string, callback: (data: IndexableType[]) => void) => {
+  const db = new MyAppDatabase();
+  db.open()
+    .then(function () {
+      db.table(tableName).orderBy(attribute).uniqueKeys(function (array) {
+        callback(array);
+      })
+    })
+    .finally(function () {
+      db.close();
+    });
+}
+
+
+//DEBUG ONLY
 export const saveNewSpells = (spells: Spell[], filename: string) => {
   const db = new MyAppDatabase();
   db.open()

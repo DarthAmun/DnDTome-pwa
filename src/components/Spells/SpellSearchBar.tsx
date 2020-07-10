@@ -1,9 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Filter from "../../Data/Filter";
 import ReactDOM from "react-dom";
 import StringField from "../FormElements/StringField";
-import NumberField from "../FormElements/NumberField";
 import CheckField from "../FormElements/CheckField";
 
 import {
@@ -19,6 +18,8 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import IconButton from "../FormElements/IconButton";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import MultipleSelectField from "../FormElements/MultipleSelectField";
+import { reciveAttributeSelection } from "../../Database/DbService";
 
 interface $Props {
   onSend: (filters: Filter[]) => void;
@@ -28,8 +29,14 @@ const SpellSearchBar = ({ onSend }: $Props) => {
   const [open, setOpen] = useState(false);
 
   const [name, setName] = useState<string>("");
-  const [school, setSchool] = useState<string>("");
-  const [level, setLevel] = useState<number>(-1);
+  const [school, setSchool] = useState<string[]>([]);
+  const [schoolList, setSchoolList] = useState<
+    { value: string; label: string }[]
+  >([]);
+  const [level, setLevel] = useState<number[]>([]);
+  const [levelList, setLevelList] = useState<
+    { value: string; label: string }[]
+  >([]);
   const [ritual, setRitual] = useState<number>(0);
   const [time, setTime] = useState<string>("");
   const [range, setRange] = useState<string>("");
@@ -39,13 +46,31 @@ const SpellSearchBar = ({ onSend }: $Props) => {
   const [classes, setClasses] = useState<string>("");
   const [sources, setSources] = useState<string>("");
 
+  useEffect(() => {
+    reciveAttributeSelection("spells", "school", function (result) {
+      let schools = result.map((school) => {
+        if (school === "") {
+          return { value: school.toString(), label: "Empty" };
+        }
+        return { value: school.toString(), label: school.toString() };
+      });
+      setSchoolList(schools);
+    });
+    reciveAttributeSelection("spells", "level", function (result) {
+      let levels = result.map((level) => {
+        if (level === "") {
+          return { value: level.toString(), label: "Empty" };
+        }
+        return { value: level.toString(), label: level.toString() };
+      });
+      setLevelList(levels);
+    });
+  }, []);
+
   const search = () => {
     let newFilters: Filter[] = [];
     if (name !== "") {
       newFilters = [...newFilters, new Filter("name", name)];
-    }
-    if (school !== "") {
-      newFilters = [...newFilters, new Filter("school", school)];
     }
     if (time !== "") {
       newFilters = [...newFilters, new Filter("time", time)];
@@ -68,7 +93,10 @@ const SpellSearchBar = ({ onSend }: $Props) => {
     if (sources !== "") {
       newFilters = [...newFilters, new Filter("sources", sources)];
     }
-    if (level !== -1) {
+    if (school.length !== 0) {
+      newFilters = [...newFilters, new Filter("school", school)];
+    }
+    if (level.length !== 0) {
       newFilters = [...newFilters, new Filter("level", level)];
     }
     if (ritual) {
@@ -81,8 +109,8 @@ const SpellSearchBar = ({ onSend }: $Props) => {
   const reset = () => {
     ReactDOM.unstable_batchedUpdates(() => {
       setName("");
-      setLevel(-1);
-      setSchool("");
+      setLevel([]);
+      setSchool([]);
       setRitual(0);
       setTime("");
       setRange("");
@@ -103,16 +131,22 @@ const SpellSearchBar = ({ onSend }: $Props) => {
         label="Name"
         onChange={(name: string) => setName(name)}
       />
-      <StringField
-        value={school}
+      <MultipleSelectField
+        options={schoolList}
         label="School"
-        onChange={(school: string) => setSchool(school)}
+        onChange={(schools: string[]) => setSchool(schools)}
       />
       <FieldGroup>
-        <NumberField
-          value={level}
+        <MultipleSelectField
+          options={levelList}
           label="Level"
-          onChange={(level: number) => setLevel(level)}
+          onChange={(levels: string[]) =>
+            setLevel(
+              levels.map((level) => {
+                return +level;
+              })
+            )
+          }
         />
         <CheckField
           value={!!ritual}
@@ -168,7 +202,7 @@ const SpellSearchBar = ({ onSend }: $Props) => {
 
       <SearchBarButton onClick={() => setOpen(!open)}>
         <FontAwesomeIcon icon={faSearch} /> Search
-        </SearchBarButton>
+      </SearchBarButton>
     </Bar>
   );
 };
