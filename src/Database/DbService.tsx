@@ -38,43 +38,65 @@ export const remove = (tableName: string, id: number | undefined) => {
   }
 };
 
-export const reciveAttributeSelection = (tableName: string, attribute: string, callback: (data: IndexableType[]) => void) => {
+export const reciveAttributeSelection = (
+  tableName: string,
+  attribute: string,
+  callback: (data: IndexableType[]) => void
+) => {
   const db = new MyAppDatabase();
   db.open()
     .then(function () {
-      db.table(tableName).orderBy(attribute).uniqueKeys(function (array) {
-        callback(array);
-      })
+      db.table(tableName)
+        .orderBy(attribute)
+        .uniqueKeys(function (array) {
+          callback(array);
+        });
     })
     .finally(function () {
       db.close();
     });
-}
+};
 
-
-//DEBUG ONLY
-export const saveNewSpells = (spells: Spell[], filename: string) => {
+export const saveNewFromList = (
+  tableName: string,
+  entities: Spell[],
+  filename: string
+) => {
   const db = new MyAppDatabase();
   db.open()
     .then(function () {
-      spells.map((spell) => {
-        db.spells.put({
-          name: spell.name !== undefined ? spell.name : "",
-          classes: spell.classes !== undefined ? spell.classes : "",
-          sources: spell.sources !== undefined ? spell.sources : "",
-          level: spell.level !== undefined ? spell.level : 0,
-          school: spell.school !== undefined ? spell.school : "",
-          time: spell.time !== undefined ? spell.time : "",
-          range: spell.range !== undefined ? spell.range : "",
-          components: spell.components !== undefined ? spell.components : "",
-          duration: spell.duration !== undefined ? spell.duration : "",
-          ritual: spell.ritual !== undefined ? spell.ritual : 0,
-          text: spell.text !== undefined ? spell.text : "",
-          pic: spell.pic !== undefined ? spell.pic : "",
-          filename: filename,
-        });
-        return true;
+      const refinedEntities = entities.map((entity) => {
+        return { ...entity, filename: filename };
       });
+      db.table(tableName).bulkPut(refinedEntities);
+    })
+    .finally(function () {
+      db.close();
+    });
+};
+
+export const deleteAll = (tableName: string) => {
+  const db = new MyAppDatabase();
+  db.open()
+    .then(function () {
+      db.table(tableName).clear();
+    })
+    .finally(function () {
+      db.close();
+    });
+};
+
+export const reciveCount = (
+  tableName: string,
+  callback: (value: number) => void
+) => {
+  const db = new MyAppDatabase();
+  db.open()
+    .then(function () {
+      db.table(tableName)
+        .count((count) => {
+          callback(count);
+        });
     })
     .finally(function () {
       db.close();

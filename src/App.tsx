@@ -2,7 +2,7 @@ import React from "react";
 import { MemoryRouter, Switch, Route } from "react-router";
 import { MyThemeProvider } from "./components/Theme/MyThemeProvider";
 import SpellOverview from "./components/Spells/SpellOverview";
-import Options from "./components/Options";
+import Options from "./components/Options/Options";
 import IdToSpell from "./components/Spells/Detail/LinkWrapper/IdToSpell";
 import NameToSpell from "./components/Spells/Detail/LinkWrapper/NameToSpell";
 
@@ -11,7 +11,7 @@ const App = () => {
     <MyThemeProvider>
       <MemoryRouter>
         <Switch>
-          <Route exact path="/" component={SpellOverview}></Route>
+          <Route exact path="/" component={Options}></Route>
           <Route path="/spell-detail/name/:name" component={NameToSpell}></Route>
           <Route path="/spell-detail/id/:id" component={IdToSpell}></Route>
           <Route path="/spell-overview" component={SpellOverview}></Route>
