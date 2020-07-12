@@ -25,20 +25,26 @@ const NavMenu = ({ open }: $Props) => {
       </Link>
       {/* <Link  to="/item-overview" className={location.pathname === "/item-overview" ? "menuItemActiv" : ""}>
         <FontAwesomeIcon icon={faShieldAlt} />
-      </Link>n} />
+      </Link>n} /> 
+      </Link>*/}
+      <Link
+        to="/gear-overview"
+        className={
+          location.pathname === "/gear-overview" ? "menuItemActiv" : ""
+        }
+      >
+        <FontAwesomeIcon icon={faMeteor} />
+        Gear
       </Link>
-      <Link  to="/gear-overview" className={location.pathname === "/gear-overview" ? "menuItemActiv" : ""}>
-        <img alt="" src={backpackIcon} style={{ width: '20px', marginTop: '10px', marginRight: '5px', float: 'left' }} />
-      </Link>
-      <Link  to="/char-overview" className={location.pathname === "/char-overview" ? "menuItemActiv" : ""}>
-        <FontAwesomeIcon icon={faIdCard} />
-      </Link>
-      <Link  to="/monster-overview" className={location.pathname === "/monster-overview" ? "menuItemActiv" : ""}>
-        <FontAwesomeIcon icon={faDragon} />
-      </Link>
-      <Link  to="/encounter" className={location.pathname === "/encounter" ? "menuItemActiv" : ""}>
-        <img alt="" src={encounterIcon} style={{ width: '20px', marginTop: '10px', marginRight: '5px', float: 'left' }} />
-      </Link> */}
+      {/* // <Link  to="/char-overview" className={location.pathname === "/char-overview" ? "menuItemActiv" : ""}>
+      //   <FontAwesomeIcon icon={faIdCard} />
+      // </Link>
+      // <Link  to="/monster-overview" className={location.pathname === "/monster-overview" ? "menuItemActiv" : ""}>
+      //   <FontAwesomeIcon icon={faDragon} />
+      // </Link>
+      // <Link  to="/encounter" className={location.pathname === "/encounter" ? "menuItemActiv" : ""}>
+      //   <img alt="" src={encounterIcon} style={{ width: '20px', marginTop: '10px', marginRight: '5px', float: 'left' }} />
+      // </Link> */}
       <Link
         to="/options"
         className={location.pathname === "/options" ? "menuItemActiv" : ""}
@@ -79,7 +85,7 @@ export const Menu = styled.div<MenuType>`
     width: calc(100% - 4rem);
   }
 
-   a {
+  a {
     font-size: 2rem;
     padding: 2rem 0;
     color: ${({ theme }) => theme.main.highlight};

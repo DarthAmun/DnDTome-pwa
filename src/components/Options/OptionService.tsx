@@ -1,6 +1,7 @@
-import Spell, { isSpell } from "../../Data/Spell";
 import { saveNewFromList, reciveAll } from "../../Database/DbService";
 import { IndexableType } from "dexie";
+import Spell, { isSpell } from "../../Data/Spell";
+import Gear, { isGear } from "../../Data/Gear";
 
 export const importFiles = (fileList: FileList | null) => {
   if (fileList !== null) {
@@ -15,6 +16,8 @@ export const importFiles = (fileList: FileList | null) => {
           if (Array.isArray(json)) {
             if (isSpell(json[0])) {
               saveNewFromList("spells", json as Spell[], file.name);
+            } else if (isGear(json[0])) {
+              saveNewFromList("gears", json as Gear[], file.name);
             }
           }
           //   saveNewSpells(spellsJson, file.name);
@@ -29,13 +32,17 @@ export const exportAll = (tableName: string, filename: string) => {
   reciveAll(tableName, (all: IndexableType[]) => {
     let contentType = "application/json;charset=utf-8;";
     if (window.navigator && window.navigator.msSaveOrOpenBlob) {
-      var blob = new Blob([decodeURIComponent(encodeURI(JSON.stringify(all)))], { type: contentType });
+      var blob = new Blob(
+        [decodeURIComponent(encodeURI(JSON.stringify(all)))],
+        { type: contentType }
+      );
       navigator.msSaveOrOpenBlob(blob, filename);
     } else {
-      var a = document.createElement('a');
+      var a = document.createElement("a");
       a.download = filename;
-      a.href = 'data:' + contentType + ',' + encodeURIComponent(JSON.stringify(all));
-      a.target = '_blank';
+      a.href =
+        "data:" + contentType + "," + encodeURIComponent(JSON.stringify(all));
+      a.target = "_blank";
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);

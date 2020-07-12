@@ -1,7 +1,8 @@
 import { MyAppDatabase } from "./MyDatabase";
+import { IndexableType } from "dexie";
 import IEntity from "../Data/IEntity";
 import Spell from "../Data/Spell";
-import { IndexableType } from "dexie";
+import Gear from "../Data/Gear";
 
 export const update = (tableName: string, data: IEntity) => {
   const db = new MyAppDatabase();
@@ -77,13 +78,13 @@ export const reciveAttributeSelection = (
 
 export const saveNewFromList = (
   tableName: string,
-  entities: Spell[],
+  entities: Spell[] | Gear[],
   filename: string
 ) => {
   const db = new MyAppDatabase();
   db.open()
     .then(function () {
-      const refinedEntities = entities.map((entity) => {
+      const refinedEntities = entities.map((entity: Spell | Gear) => {
         return { ...entity, filename: filename };
       });
       db.table(tableName).bulkPut(refinedEntities);

@@ -22,10 +22,14 @@ const Options = () => {
   const [activeTab, setTab] = useState<string>("General");
 
   const [spellAmount, setSpellAmount] = useState<number>(0);
+  const [gearAmount, setGearAmount] = useState<number>(0);
 
   useEffect(() => {
     reciveCount("spells", (result: number) => {
       setSpellAmount(result);
+    });
+    reciveCount("gears", (result: number) => {
+      setGearAmount(result);
     });
   }, []);
 
@@ -42,7 +46,7 @@ const Options = () => {
   return (
     <AppWrapper>
       <TabBar
-        children={["General", "Spells"]}
+        children={["General", "Spells", "Gears"]}
         onChange={(tab: string) => setTab(tab)}
       />
       {activeTab === "General" && (
@@ -104,6 +108,38 @@ const Options = () => {
               <IconButton
                 icon={faTrashAlt}
                 onClick={() => deleteAll("spells")}
+              />
+            </SectionRow>
+          </OptionSection>
+        </Spells>
+      )}
+      {activeTab === "Gears" && (
+        <Spells>
+          <OptionSection>
+            <SelectionTitle>Import</SelectionTitle>
+            <FileField
+              label="Select DnDTome Json"
+              icon={faFileImport}
+              onChange={(file) => importFiles(file)}
+            />
+          </OptionSection>
+          <OptionSection>
+            <SelectionTitle>Export</SelectionTitle>
+            <SectionRow>
+              <SectionText>Export all Gear?</SectionText>
+              <IconButton
+                icon={faFileExport}
+                onClick={() => exportAll("gears", "DnDTome_gear.json")}
+              />
+            </SectionRow>
+          </OptionSection>
+          <OptionSection>
+            <SelectionTitle>Delete</SelectionTitle>
+            <SectionRow>
+              <SectionText>Delete all {spellAmount} Gear?</SectionText>
+              <IconButton
+                icon={faTrashAlt}
+                onClick={() => deleteAll("gears")}
               />
             </SectionRow>
           </OptionSection>
