@@ -50,18 +50,22 @@ export default class Spell implements IEntity {
 }
 
 export function isSpell(arg: any): arg is Spell {
-  const nameCheck = arg.name && typeof arg.name == "string";
-  const classesCheck = arg.classes && typeof arg.classes == "string";
-  const sourcesCheck = arg.sources && typeof arg.sources == "string";
+  const nameCheck = arg.name !== undefined && typeof arg.name == "string";
+  const classesCheck =
+    arg.classes !== undefined && typeof arg.classes == "string";
+  const sourcesCheck =
+    arg.sources !== undefined && typeof arg.sources == "string";
   const levelCheck = arg.level !== undefined && typeof arg.level == "number";
-  const schoolCheck = arg.school && typeof arg.school == "string";
-  const timeCheck = arg.time && typeof arg.time == "string";
-  const rangeCheck = arg.range && typeof arg.range == "string";
-  const compCheck = arg.components && typeof arg.components == "string";
-  const durationCheck = arg.duration && typeof arg.duration == "string";
+  const schoolCheck = arg.school !== undefined && typeof arg.school == "string";
+  const timeCheck = arg.time !== undefined && typeof arg.time == "string";
+  const rangeCheck = arg.range !== undefined && typeof arg.range == "string";
+  const compCheck =
+    arg.components !== undefined && typeof arg.components == "string";
+  const durationCheck =
+    arg.duration !== undefined && typeof arg.duration == "string";
   const ritualCheck = arg.ritual !== undefined && typeof arg.ritual == "number";
-  const textCheck = arg.text && typeof arg.text == "string";
-  const picCheck = arg.pic && typeof arg.pic == "string";
+  const textCheck = arg.text !== undefined && typeof arg.text == "string";
+  const picCheck = arg.pic !== undefined && typeof arg.pic == "string";
   return (
     arg &&
     nameCheck &&

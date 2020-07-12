@@ -84,7 +84,7 @@ export const saveNewFromList = (
   const db = new MyAppDatabase();
   db.open()
     .then(function () {
-      const refinedEntities = entities.map((entity: Spell | Gear) => {
+      const refinedEntities = (entities as (Spell|Gear)[]).map((entity: Spell | Gear) => {
         return { ...entity, filename: filename };
       });
       db.table(tableName).bulkPut(refinedEntities);

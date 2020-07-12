@@ -39,16 +39,18 @@ export default class Gear {
 }
 
 export function isGear(arg: any): arg is Gear {
-  const nameCheck = arg.name && typeof arg.name == "string";
-  const sourcesCheck = arg.sources && typeof arg.sources == "string";
+  const nameCheck = arg.name !== undefined && typeof arg.name == "string";
+  const sourcesCheck =
+    arg.sources !== undefined && typeof arg.sources == "string";
   const descriptionCheck =
-    arg.description && typeof arg.description == "string";
-  const costCheck = arg.cost && typeof arg.cost == "string";
-  const damageCheck = arg.damage && typeof arg.damage == "string";
-  const weightCheck = arg.weight && typeof arg.weight == "string";
-  const propertiesCheck = arg.properties && typeof arg.properties == "string";
-  const typeCheck = arg.type && typeof arg.type == "string";
-  const picCheck = arg.pic && typeof arg.pic == "string";
+    arg.description !== undefined && typeof arg.description == "string";
+  const costCheck = arg.cost !== undefined && typeof arg.cost == "string";
+  const damageCheck = arg.damage !== undefined && typeof arg.damage == "string";
+  const weightCheck = arg.weight !== undefined && typeof arg.weight == "string";
+  const propertiesCheck =
+    arg.properties !== undefined && typeof arg.properties == "string";
+  const typeCheck = arg.type !== undefined && typeof arg.type == "string";
+  const picCheck = arg.pic !== undefined && typeof arg.pic == "string";
   return (
     arg &&
     nameCheck &&

@@ -7,12 +7,9 @@ import { LoadingSpinner } from "../Loading";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faHourglassHalf,
-  faMortarPestle,
-  faHistory,
-  faPowerOff,
-  faUser,
   faLink,
+  faCoins,
+  faWeightHanging,
 } from "@fortawesome/free-solid-svg-icons";
 
 interface $Props {
@@ -45,13 +42,18 @@ const GearTile = ({ gear }: $Props) => {
         )}
 
         <PropWrapper>
+          <Prop>
+            <Icon icon={faCoins} />
+            {gear.cost}
+          </Prop>
+          <Prop>
+            <Icon icon={faWeightHanging} />
+            {gear.weight}
+          </Prop>
+          <WideProp>{gear.type}</WideProp>
           <WideProp>
             <Icon icon={faLink} />
-            {gear.type}
-          </WideProp>
-          <WideProp>
-            <Icon icon={faUser} />
-            {gear.cost}
+            {gear.sources}
           </WideProp>
         </PropWrapper>
       </Suspense>
@@ -76,7 +78,7 @@ const Name = styled.div`
   height: auto;
   float: left;
   padding: 10px;
-  margin: 0 5px 5px 5px;
+  margin: 5px;
   font-size: 14px;
   width: calc(100% - 30px);
   color: var(--card-title-color);
@@ -89,7 +91,7 @@ const ImageName = styled.div`
   height: 30px;
   float: left;
   padding: 10px;
-  margin: 0 5px 5px 5px;
+  margin: 5px;
   font-size: 14px;
   width: calc(100% - 30px);
   color: var(--card-title-color);

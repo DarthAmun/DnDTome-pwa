@@ -3,17 +3,13 @@ import styled from "styled-components";
 import Gear from "../../../Data/Gear";
 
 import StringField from "../../FormElements/StringField";
-import NumberField from "../../FormElements/NumberField";
 import TextField from "../../FormElements/TextField";
-import CheckField from "../../FormElements/CheckField";
 
 import {
-  faHourglassHalf,
-  faMortarPestle,
-  faHistory,
-  faPowerOff,
-  faUser,
   faLink,
+  faCoins,
+  faWeightHanging,
+  faCrosshairs,
   faBookOpen,
   faImage,
 } from "@fortawesome/free-solid-svg-icons";
@@ -32,6 +28,54 @@ const GearEditView = ({ gear, onEdit }: $Props) => {
           label="Name"
           onChange={(name) => onEdit({ ...gear, name: name })}
         />
+        <StringField
+          value={gear.cost}
+          label="Cost"
+          icon={faCoins}
+          onChange={(cost) => onEdit({ ...gear, cost: cost })}
+        />
+        <StringField
+          value={gear.weight}
+          label="Weight"
+          icon={faWeightHanging}
+          onChange={(weight) => onEdit({ ...gear, weight: weight })}
+        />
+        <StringField
+          value={gear.type}
+          label="Type"
+          onChange={(type) => onEdit({ ...gear, type: type })}
+        />
+        <StringField
+          value={gear.damage}
+          label="Damage"
+          icon={faCrosshairs}
+          onChange={(damage) => onEdit({ ...gear, damage: damage })}
+        />
+        <StringField
+          value={gear.properties}
+          label="Properties"
+          onChange={(properties) => onEdit({ ...gear, properties: properties })}
+        />
+        <StringField
+          value={gear.pic}
+          label="Picture"
+          icon={faImage}
+          onChange={(pic) => onEdit({ ...gear, pic: pic })}
+        />
+        <StringField
+          value={gear.sources}
+          label="Sources"
+          icon={faLink}
+          onChange={(sources) => onEdit({ ...gear, sources: sources })}
+        />
+        <TextField
+          value={gear.description}
+          label="Text"
+          icon={faBookOpen}
+          onChange={(description) =>
+            onEdit({ ...gear, description: description })
+          }
+        />
       </View>
     </CenterWrapper>
   );
@@ -43,13 +87,6 @@ const CenterWrapper = styled.div`
   overflow: hidden;
   width: 100%;
   height: 100%;
-`;
-
-const FieldGroup = styled.div`
-  flex: 2 1 auto;
-  display: flex;
-  flex-wrap: nowrap;
-  justify-content: space-around;
 `;
 
 const View = styled.div`

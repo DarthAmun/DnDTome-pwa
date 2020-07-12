@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { Link, useLocation } from "react-router-dom";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMeteor, faCog } from "@fortawesome/free-solid-svg-icons";
+import { faMeteor, faCog, faBriefcase } from "@fortawesome/free-solid-svg-icons";
 
 interface $Props {
   open: boolean;
@@ -33,7 +33,7 @@ const NavMenu = ({ open }: $Props) => {
           location.pathname === "/gear-overview" ? "menuItemActiv" : ""
         }
       >
-        <FontAwesomeIcon icon={faMeteor} />
+        <FontAwesomeIcon icon={faBriefcase} />
         Gear
       </Link>
       {/* // <Link  to="/char-overview" className={location.pathname === "/char-overview" ? "menuItemActiv" : ""}>

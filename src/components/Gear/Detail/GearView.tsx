@@ -1,24 +1,44 @@
 import React, { useCallback } from "react";
 import { useHistory } from "react-router";
+import Gear from "../../../Data/Gear";
 import styled from "styled-components";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faHourglassHalf,
-  faMortarPestle,
-  faHistory,
-  faPowerOff,
-  faUser,
   faLink,
+  faCoins,
+  faWeightHanging,
+  faCrosshairs,
 } from "@fortawesome/free-solid-svg-icons";
-import Gear from "../../../Data/Gear";
-
 interface $Props {
   gear: Gear;
 }
 
 const GearView = ({ gear }: $Props) => {
   let history = useHistory();
+
+  const formatText = useCallback(() => {
+    if (gear !== undefined) {
+      let text = gear.description;
+      let parts: string[] = text.split("[[");
+      return parts.map((part: string, index: number) => {
+        if (part.includes("]]")) {
+          const codePart: string[] = part.split("]]");
+          const linkParts: string[] = codePart[0].split(".");
+          const link: string = "/gear-detail/name/" + linkParts[1];
+          return (
+            <span key={index}>
+              <Link onClick={() => history.push(link)}>{linkParts[1]}</Link>
+              {codePart[1]}
+            </span>
+          );
+        } else {
+          return <span key={index}>{part}</span>;
+        }
+      });
+    }
+    return "";
+  }, [gear, history]);
 
   const getPicture = useCallback(() => {
     if (gear !== undefined) {
@@ -46,13 +66,26 @@ const GearView = ({ gear }: $Props) => {
 
         <PropWrapper>
           <Prop>
-            <Icon icon={faUser} />
-            {gear.type}
-          </Prop>
-          <Prop>
-            <Icon icon={faLink} />
+            <Icon icon={faCoins} />
             {gear.cost}
           </Prop>
+          <Prop>
+            <Icon icon={faWeightHanging} />
+            {gear.weight}
+          </Prop>
+          <Prop>{gear.type}</Prop>
+          <Prop>
+            <Icon icon={faLink} />
+            {gear.sources}
+          </Prop>
+          {gear.damage && (
+            <Prop>
+              <Icon icon={faCrosshairs} />
+              {gear.damage}
+            </Prop>
+          )}
+          {gear.properties && <Prop>{gear.properties}</Prop>}
+          <Text>{formatText()}</Text>
         </PropWrapper>
       </View>
     </CenterWrapper>
@@ -119,6 +152,28 @@ const Prop = styled.div`
   padding: 10px;
   border-radius: 5px;
   background-color: ${({ theme }) => theme.tile.backgroundColor};
+`;
+
+const Text = styled.div`
+  height: auto;
+  width: calc(100% - 30px);
+  margin: 10px 5px 5px 5px;
+  float: left;
+  line-height: 18px;
+  padding: 10px;
+  border-radius: 5px;
+  background-color: ${({ theme }) => theme.tile.backgroundColor};
+`;
+
+const Link = styled.span`
+  display: inline-block;
+  background-color: ${({ theme }) => theme.tile.backgroundColorLink};
+  border-radius: 5px;
+  text-decoration: none;
+  color: ${({ theme }) => theme.tile.backgroundColor};
+  font-size: 10px;
+  padding: 0px 5px 0px 5px;
+  cursor: pointer;
 `;
 
 const Icon = styled(FontAwesomeIcon)`

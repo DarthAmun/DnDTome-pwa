@@ -136,7 +136,7 @@ const Options = () => {
           <OptionSection>
             <SelectionTitle>Delete</SelectionTitle>
             <SectionRow>
-              <SectionText>Delete all {spellAmount} Gear?</SectionText>
+              <SectionText>Delete all {gearAmount} Gear?</SectionText>
               <IconButton
                 icon={faTrashAlt}
                 onClick={() => deleteAll("gears")}
