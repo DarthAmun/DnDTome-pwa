@@ -2,11 +2,15 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useTheme } from "../Theme/MyThemeProvider";
 import { darkTheme, lightTheme } from "../Theme/Theme";
-import { importFiles } from "./OptionService";
+import { importFiles, exportAll } from "./OptionService";
 import { deleteAll, reciveCount } from "../../Database/DbService";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFileImport, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
+import {
+  faFileImport,
+  faTrashAlt,
+  faFileExport,
+} from "@fortawesome/free-solid-svg-icons";
 import { faPatreon, faDiscord } from "@fortawesome/free-brands-svg-icons";
 import AppWrapper from "../AppWrapper";
 import TabBar from "../GeneralElements/TabBar";
@@ -18,23 +22,11 @@ const Options = () => {
   const [activeTab, setTab] = useState<string>("General");
 
   const [spellAmount, setSpellAmount] = useState<number>(0);
-  // const [itemFiles, setItemFiles] = useState([]);
-  // const [gearFiles, setGearFiles] = useState([]);
-  // const [monsterFiles, setMonsterFiles] = useState([]);
 
   useEffect(() => {
     reciveCount("spells", (result: number) => {
       setSpellAmount(result);
     });
-    // reciveItemFiles(function (result) {
-    //   setItemFiles(result);
-    // });
-    // reciveGearFiles(function (result) {
-    //   setGearFiles(result);
-    // });
-    // reciveMonsterFiles(function (result) {
-    //   setMonsterFiles(result);
-    // });
   }, []);
 
   const toggleTheme = () => {
@@ -96,8 +88,24 @@ const Options = () => {
             />
           </OptionSection>
           <OptionSection>
+            <SelectionTitle>Export</SelectionTitle>
+            <SectionRow>
+              <SectionText>Export all Spells?</SectionText>
+              <IconButton
+                icon={faFileExport}
+                onClick={() => exportAll("spells", "DnDTome_spells.json")}
+              />
+            </SectionRow>
+          </OptionSection>
+          <OptionSection>
             <SelectionTitle>Delete</SelectionTitle>
-            Delete {spellAmount} Spells? <IconButton icon={faTrashAlt} onClick={() => deleteAll("spells")} /> 
+            <SectionRow>
+              <SectionText>Delete all {spellAmount} Spells?</SectionText>
+              <IconButton
+                icon={faTrashAlt}
+                onClick={() => deleteAll("spells")}
+              />
+            </SectionRow>
           </OptionSection>
         </Spells>
       )}
@@ -185,4 +193,19 @@ const SelectionTitle = styled.div`
   border-radius: 5px;
   color: ${({ theme }) => theme.input.color};
   background-color: ${({ theme }) => theme.input.backgroundColor};
+`;
+
+const SectionRow = styled.div`
+  flex: 1 1 auto;
+  margin: 5px;
+  min-width: calc(100% - 10px);
+
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  align-content: flex-start;
+`;
+
+const SectionText = styled.div`
+  flex: 1 1 auto;
 `;

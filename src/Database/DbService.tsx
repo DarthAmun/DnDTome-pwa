@@ -38,6 +38,24 @@ export const remove = (tableName: string, id: number | undefined) => {
   }
 };
 
+export const reciveAll = (
+  tableName: string,
+  callback: (data: IndexableType[]) => void
+) => {
+  const db = new MyAppDatabase();
+  db.open()
+    .then(function () {
+      db.table(tableName)
+        .toArray()
+        .then((array) => {
+          callback(array);
+        });
+    })
+    .finally(function () {
+      db.close();
+    });
+};
+
 export const reciveAttributeSelection = (
   tableName: string,
   attribute: string,
@@ -93,10 +111,9 @@ export const reciveCount = (
   const db = new MyAppDatabase();
   db.open()
     .then(function () {
-      db.table(tableName)
-        .count((count) => {
-          callback(count);
-        });
+      db.table(tableName).count((count) => {
+        callback(count);
+      });
     })
     .finally(function () {
       db.close();
