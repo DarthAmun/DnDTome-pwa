@@ -4,7 +4,23 @@ import styled from "styled-components";
 import Monster from "../../../Data/Monster";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faLink, faRunning } from "@fortawesome/free-solid-svg-icons";
+import {
+  faLink,
+  faRunning,
+  faShieldAlt,
+} from "@fortawesome/free-solid-svg-icons";
+import {
+  GiResize,
+  GiAngelOutfit,
+  GiLifeBar,
+  GiWeightLiftingUp,
+  GiRunningNinja,
+  GiMuscleFat,
+  GiBrain,
+  GiWisdom,
+  GiDiscussion,
+} from "react-icons/gi";
+import { MdRecordVoiceOver, MdRemoveRedEye } from "react-icons/md";
 
 interface $Props {
   monster: Monster;
@@ -84,32 +100,69 @@ const MonsterView = ({ monster }: $Props) => {
         )}
 
         <PropWrapper>
-          <Prop>{monster.size}</Prop>
-          <Prop>{monster.alignment}</Prop>
+          <Prop>
+            <GiResize />
+            {monster.size}
+          </Prop>
+          <Prop>
+            <GiAngelOutfit />
+            {monster.alignment}
+          </Prop>
           <Prop>
             <Icon icon={faRunning} />
             {monster.speed}
           </Prop>
-          <Prop>{monster.senses}</Prop>
-          <Prop>{monster.lang}</Prop>
-          <Prop>{monster.ac}</Prop>
-          <Prop>{monster.hp}</Prop>
-          <Prop>{monster.ac}</Prop>
-          <Prop>{monster.str}</Prop>
-          <Prop>{monster.dex}</Prop>
-          <Prop>{monster.con}</Prop>
-          <Prop>{monster.int}</Prop>
-          <Prop>{monster.wis}</Prop>
-          <Prop>{monster.cha}</Prop>
-          <Prop>{monster.savingThrows}</Prop>
-          <Prop>{monster.skills}</Prop>
-          <Prop>{monster.dmgVulnerabilitie}</Prop>
-          <Prop>{monster.dmgResistance}</Prop>
-          <Prop>{monster.dmgImmunities}</Prop>
-          <Prop>{monster.conImmunities}</Prop>
-          <Text>{formatText(monster.ablt)}</Text>
-          <Text>{formatText(monster.sAblt)}</Text>
-          <Text>{formatText(monster.lAblt)}</Text>
+          <Prop>
+            <MdRemoveRedEye />
+            {monster.senses}
+          </Prop>
+          <Prop>
+            <MdRecordVoiceOver />
+            {monster.lang}
+          </Prop>
+          <Prop>
+            <Icon icon={faShieldAlt} />
+            {monster.ac}
+          </Prop>
+          <Prop>
+            <GiLifeBar />
+            {monster.hp}
+          </Prop>
+          <Prop>
+            <GiWeightLiftingUp />
+            {monster.str}
+          </Prop>
+          <Prop>
+            <GiRunningNinja />
+            {monster.dex}
+          </Prop>
+          <Prop>
+            <GiMuscleFat />
+            {monster.con}
+          </Prop>
+          <Prop>
+            <GiBrain />
+            {monster.int}
+          </Prop>
+          <Prop>
+            <GiWisdom />
+            {monster.wis}
+          </Prop>
+          <Prop>
+            <GiDiscussion />
+            {monster.cha}
+          </Prop>
+          {monster.savingThrows && <Prop>{monster.savingThrows}</Prop>}
+          {monster.skills && <Prop>{monster.skills}</Prop>}
+          {monster.dmgVulnerabilitie && (
+            <Prop>{monster.dmgVulnerabilitie}</Prop>
+          )}
+          {monster.dmgResistance && <Prop>{monster.dmgResistance}</Prop>}
+          {monster.dmgImmunities && <Prop>{monster.dmgImmunities}</Prop>}
+          {monster.conImmunities && <Prop>{monster.conImmunities}</Prop>}
+          {monster.ablt && <Text>{formatText(monster.ablt)}</Text>}
+          {monster.sAblt && <Text>{formatText(monster.sAblt)}</Text>}
+          {monster.lAblt && <Text>{formatText(monster.lAblt)}</Text>}
           <Prop>
             <Icon icon={faLink} />
             {monster.sources}
@@ -214,6 +267,14 @@ const Prop = styled.div`
   padding: 10px;
   border-radius: 5px;
   background-color: ${({ theme }) => theme.tile.backgroundColor};
+
+  svg {
+    margin-right: 5px;
+    height: auto;
+    border-radius: 150px;
+    transition: color 0.2s;
+    color: ${({ theme }) => theme.main.highlight};
+  }
 `;
 
 const Text = styled.div`

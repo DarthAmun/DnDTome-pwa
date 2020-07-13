@@ -6,9 +6,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faMeteor,
   faCog,
-  faBriefcase,
   faDragon,
 } from "@fortawesome/free-solid-svg-icons";
+import { GiBackpack } from "react-icons/gi";
 
 interface $Props {
   open: boolean;
@@ -38,7 +38,7 @@ const NavMenu = ({ open }: $Props) => {
           location.pathname === "/gear-overview" ? "menuItemActiv" : ""
         }
       >
-        <FontAwesomeIcon icon={faBriefcase} />
+        <GiBackpack />
         Gear
       </Link>
       <Link

@@ -6,15 +6,9 @@ import Monster from "../../Data/Monster";
 import { LoadingSpinner } from "../Loading";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faHourglassHalf,
-  faMortarPestle,
-  faHistory,
-  faPowerOff,
-  faUser,
-  faLink,
-  faRunning,
-} from "@fortawesome/free-solid-svg-icons";
+import { faLink, faRunning } from "@fortawesome/free-solid-svg-icons";
+import { GiResize, GiAngelOutfit } from "react-icons/gi";
+import { MdRecordVoiceOver } from "react-icons/md";
 
 interface $Props {
   monster: Monster;
@@ -45,7 +39,7 @@ const MonsterTile = ({ monster }: $Props) => {
       <Suspense fallback={<LoadingSpinner />}>
         <Type>
           {monster.type}{" "}
-          {monster.subtype.trim() !== "" ? "(" + monster.subtype+")" : ""}
+          {monster.subtype.trim() !== "" ? "(" + monster.subtype + ")" : ""}
         </Type>
 
         <Flag>
@@ -67,13 +61,20 @@ const MonsterTile = ({ monster }: $Props) => {
         )}
 
         <PropWrapper>
-          <Prop>{monster.size}</Prop>
-          <Prop>{monster.alignment}</Prop>
+          <Prop>
+            <GiResize />
+            {monster.size}
+          </Prop>
+          <Prop>
+            <GiAngelOutfit />
+            {monster.alignment}
+          </Prop>
           <WideProp>
             <Icon icon={faRunning} />
             {monster.speed}
           </WideProp>
           <WideProp>
+            <MdRecordVoiceOver />
             {monster.lang}
           </WideProp>
           <WideProp>
@@ -176,6 +177,13 @@ const Prop = styled.div`
 
   &:nth-child(odd) {
   margin: 0 0 5px 0px;
+  }
+
+  svg {
+  margin-right: 5px;
+  height: auto;
+  border-radius: 150px;
+  color: ${({ theme }) => theme.main.highlight};
   }
 }
 `;
