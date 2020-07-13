@@ -2,24 +2,20 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Filter from "../../Data/Filter";
 import ReactDOM from "react-dom";
-import StringField from "../FormElements/StringField";
-import CheckField from "../FormElements/CheckField";
+import { reciveAttributeSelection } from "../../Database/DbService";
 
 import {
-  faHourglassHalf,
-  faMortarPestle,
-  faHistory,
-  faPowerOff,
-  faUser,
   faLink,
-  faBookOpen,
   faSearch,
   faRedoAlt,
+  faCoins,
+  faWeightHanging,
+  faCrosshairs,
 } from "@fortawesome/free-solid-svg-icons";
-import IconButton from "../FormElements/IconButton";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import MultipleSelectField from "../FormElements/MultipleSelectField";
-import { reciveAttributeSelection } from "../../Database/DbService";
+import StringField from "../FormElements/StringField";
+import IconButton from "../FormElements/IconButton";
 
 interface $Props {
   onSend: (filters: Filter[]) => void;
@@ -29,21 +25,27 @@ const GearSearchBar = ({ onSend }: $Props) => {
   const [open, setOpen] = useState(false);
 
   const [name, setName] = useState<string>("");
-  // const [school, setSchool] = useState<string[]>([]);
-  // const [schoolList, setSchoolList] = useState<
-  //   { value: string; label: string }[]
-  // >([]);
+  const [cost, setCost] = useState<string>("");
+  const [weight, setWeight] = useState<string>("");
+  const [type, setType] = useState<string[]>([]);
+  const [typeList, setTypeList] = useState<{ value: string; label: string }[]>(
+    []
+  );
+  const [properties, setProperties] = useState<string>("");
+  const [damage, setDamage] = useState<string>("");
+  const [sources, setSources] = useState<string>("");
+  const [description, setDescription] = useState<string>("");
 
   useEffect(() => {
-    // reciveAttributeSelection("gears", "school", function (result) {
-    //   let schools = result.map((school) => {
-    //     if (school === "") {
-    //       return { value: school.toString(), label: "Empty" };
-    //     }
-    //     return { value: school.toString(), label: school.toString() };
-    //   });
-    //   setSchoolList(schools);
-    // });
+    reciveAttributeSelection("gears", "type", function (result) {
+      let types = result.map((type) => {
+        if (type === "") {
+          return { value: type.toString(), label: "Empty" };
+        }
+        return { value: type.toString(), label: type.toString() };
+      });
+      setTypeList(types);
+    });
   }, []);
 
   const search = () => {
@@ -51,10 +53,27 @@ const GearSearchBar = ({ onSend }: $Props) => {
     if (name !== "") {
       newFilters = [...newFilters, new Filter("name", name)];
     }
-
-    // if (school.length !== 0) {
-    //   newFilters = [...newFilters, new Filter("school", school)];
-    // }
+    if (cost !== "") {
+      newFilters = [...newFilters, new Filter("cost", cost)];
+    }
+    if (weight !== "") {
+      newFilters = [...newFilters, new Filter("weight", weight)];
+    }
+    if (properties !== "") {
+      newFilters = [...newFilters, new Filter("properties", properties)];
+    }
+    if (damage !== "") {
+      newFilters = [...newFilters, new Filter("damage", damage)];
+    }
+    if (sources !== "") {
+      newFilters = [...newFilters, new Filter("sources", sources)];
+    }
+    if (description !== "") {
+      newFilters = [...newFilters, new Filter("description", description)];
+    }
+    if (type.length !== 0) {
+      newFilters = [...newFilters, new Filter("type", type)];
+    }
     setOpen(false);
     onSend(newFilters);
   };
@@ -62,8 +81,13 @@ const GearSearchBar = ({ onSend }: $Props) => {
   const reset = () => {
     ReactDOM.unstable_batchedUpdates(() => {
       setName("");
-      // setSchool([]);
-
+      setCost("");
+      setWeight("");
+      setProperties("");
+      setDamage("");
+      setSources("");
+      setType([]);
+      setDescription("");
       setOpen(false);
     });
     onSend([]);
@@ -76,11 +100,46 @@ const GearSearchBar = ({ onSend }: $Props) => {
         label="Name"
         onChange={(name: string) => setName(name)}
       />
-      {/* <MultipleSelectField
-        options={schoolList}
-        label="School"
-        onChange={(schools: string[]) => setSchool(schools)}
-      /> */}
+      <StringField
+        value={cost}
+        label="Cost"
+        icon={faCoins}
+        onChange={(cost) => setCost(cost)}
+      />
+      <StringField
+        value={weight}
+        label="Weight"
+        icon={faWeightHanging}
+        onChange={(weight) => setWeight(weight)}
+      />
+      <StringField
+        value={damage}
+        label="Damage"
+        icon={faCrosshairs}
+        onChange={(damage) => setDamage(damage)}
+      />
+      <StringField
+        value={properties}
+        label="Properties"
+        onChange={(properties) => setProperties(properties)}
+      />
+      <MultipleSelectField
+        options={typeList}
+        label="Types"
+        onChange={(types: string[]) => setType(types)}
+      />
+      <StringField
+        value={description}
+        label="Text"
+        icon={faLink}
+        onChange={(description) => setDescription(description)}
+      />
+      <StringField
+        value={sources}
+        label="Sources"
+        icon={faLink}
+        onChange={(sources) => setSources(sources)}
+      />
       <IconButton onClick={() => search()} icon={faSearch} />
       <IconButton onClick={() => reset()} icon={faRedoAlt} />
 
@@ -136,11 +195,4 @@ const SearchBarButton = styled.button`
   height: 20px;
   line-height: 20px;
   cursor: pointer;
-`;
-
-const FieldGroup = styled.div`
-  flex: 2 1 auto;
-  display: flex;
-  flex-wrap: nowrap;
-  justify-content: space-around;
 `;
