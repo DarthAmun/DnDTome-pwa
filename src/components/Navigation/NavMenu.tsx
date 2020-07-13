@@ -3,7 +3,12 @@ import styled from "styled-components";
 import { Link, useLocation } from "react-router-dom";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMeteor, faCog, faBriefcase } from "@fortawesome/free-solid-svg-icons";
+import {
+  faMeteor,
+  faCog,
+  faBriefcase,
+  faDragon,
+} from "@fortawesome/free-solid-svg-icons";
 
 interface $Props {
   open: boolean;
@@ -36,11 +41,17 @@ const NavMenu = ({ open }: $Props) => {
         <FontAwesomeIcon icon={faBriefcase} />
         Gear
       </Link>
+      <Link
+        to="/monster-overview"
+        className={
+          location.pathname === "/monster-overview" ? "menuItemActiv" : ""
+        }
+      >
+        <FontAwesomeIcon icon={faDragon} />
+        Monsters
+      </Link>
       {/* // <Link  to="/char-overview" className={location.pathname === "/char-overview" ? "menuItemActiv" : ""}>
       //   <FontAwesomeIcon icon={faIdCard} />
-      // </Link>
-      // <Link  to="/monster-overview" className={location.pathname === "/monster-overview" ? "menuItemActiv" : ""}>
-      //   <FontAwesomeIcon icon={faDragon} />
       // </Link>
       // <Link  to="/encounter" className={location.pathname === "/encounter" ? "menuItemActiv" : ""}>
       //   <img alt="" src={encounterIcon} style={{ width: '20px', marginTop: '10px', marginRight: '5px', float: 'left' }} />

@@ -23,6 +23,7 @@ const Options = () => {
 
   const [spellAmount, setSpellAmount] = useState<number>(0);
   const [gearAmount, setGearAmount] = useState<number>(0);
+  const [monsterAmount, setMonsterAmount] = useState<number>(0);
 
   useEffect(() => {
     reciveCount("spells", (result: number) => {
@@ -30,6 +31,9 @@ const Options = () => {
     });
     reciveCount("gears", (result: number) => {
       setGearAmount(result);
+    });
+    reciveCount("monsters", (result: number) => {
+      setMonsterAmount(result);
     });
   }, []);
 
@@ -46,7 +50,7 @@ const Options = () => {
   return (
     <AppWrapper>
       <TabBar
-        children={["General", "Spells", "Gears"]}
+        children={["General", "Spells", "Gears", "Monsters"]}
         onChange={(tab: string) => setTab(tab)}
       />
       {activeTab === "General" && (
@@ -82,7 +86,7 @@ const Options = () => {
         </General>
       )}
       {activeTab === "Spells" && (
-        <Spells>
+        <OptionTab>
           <OptionSection>
             <SelectionTitle>Import</SelectionTitle>
             <FileField
@@ -111,10 +115,10 @@ const Options = () => {
               />
             </SectionRow>
           </OptionSection>
-        </Spells>
+        </OptionTab>
       )}
       {activeTab === "Gears" && (
-        <Spells>
+        <OptionTab>
           <OptionSection>
             <SelectionTitle>Import</SelectionTitle>
             <FileField
@@ -143,7 +147,39 @@ const Options = () => {
               />
             </SectionRow>
           </OptionSection>
-        </Spells>
+        </OptionTab>
+      )}
+      {activeTab === "Monsters" && (
+        <OptionTab>
+          <OptionSection>
+            <SelectionTitle>Import</SelectionTitle>
+            <FileField
+              label="Select DnDTome Json"
+              icon={faFileImport}
+              onChange={(file) => importFiles(file)}
+            />
+          </OptionSection>
+          <OptionSection>
+            <SelectionTitle>Export</SelectionTitle>
+            <SectionRow>
+              <SectionText>Export all Monsters?</SectionText>
+              <IconButton
+                icon={faFileExport}
+                onClick={() => exportAll("monsters", "DnDTome_monsters.json")}
+              />
+            </SectionRow>
+          </OptionSection>
+          <OptionSection>
+            <SelectionTitle>Delete</SelectionTitle>
+            <SectionRow>
+              <SectionText>Delete all {monsterAmount} Monsters?</SectionText>
+              <IconButton
+                icon={faTrashAlt}
+                onClick={() => deleteAll("monsters")}
+              />
+            </SectionRow>
+          </OptionSection>
+        </OptionTab>
       )}
     </AppWrapper>
   );
@@ -160,7 +196,7 @@ const General = styled.div`
   align-content: flex-start;
 `;
 
-const Spells = styled(General)`
+const OptionTab = styled(General)`
   flex: 1 1 auto;
 `;
 

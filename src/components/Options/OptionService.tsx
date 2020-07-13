@@ -2,6 +2,7 @@ import { saveNewFromList, reciveAll } from "../../Database/DbService";
 import { IndexableType } from "dexie";
 import Spell, { isSpell } from "../../Data/Spell";
 import Gear, { isGear } from "../../Data/Gear";
+import Monster, { isMonster } from "../../Data/Monster";
 
 export const importFiles = (fileList: FileList | null) => {
   if (fileList !== null) {
@@ -18,6 +19,8 @@ export const importFiles = (fileList: FileList | null) => {
               saveNewFromList("spells", json as Spell[], file.name);
             } else if (isGear(json[0])) {
               saveNewFromList("gears", json as Gear[], file.name);
+            } else if (isMonster(json[0])) {
+              saveNewFromList("monsters", json as Monster[], file.name);
             }
           }
           //   saveNewSpells(spellsJson, file.name);

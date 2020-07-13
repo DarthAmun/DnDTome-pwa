@@ -3,6 +3,7 @@ import { IndexableType } from "dexie";
 import IEntity from "../Data/IEntity";
 import Spell from "../Data/Spell";
 import Gear from "../Data/Gear";
+import Monster from "../Data/Monster";
 
 export const update = (tableName: string, data: IEntity) => {
   const db = new MyAppDatabase();
@@ -78,13 +79,13 @@ export const reciveAttributeSelection = (
 
 export const saveNewFromList = (
   tableName: string,
-  entities: Spell[] | Gear[],
+  entities: Spell[] | Gear[] | Monster[],
   filename: string
 ) => {
   const db = new MyAppDatabase();
   db.open()
     .then(function () {
-      const refinedEntities = (entities as (Spell|Gear)[]).map((entity: Spell | Gear) => {
+      const refinedEntities = (entities as (Spell|Gear|Monster)[]).map((entity: Spell | Gear | Monster) => {
         return { ...entity, filename: filename };
       });
       db.table(tableName).bulkPut(refinedEntities);
