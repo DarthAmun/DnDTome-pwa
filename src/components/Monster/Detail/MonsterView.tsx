@@ -13,12 +13,6 @@ import {
   GiResize,
   GiAngelOutfit,
   GiLifeBar,
-  GiWeightLiftingUp,
-  GiRunningNinja,
-  GiMuscleFat,
-  GiBrain,
-  GiWisdom,
-  GiDiscussion,
 } from "react-icons/gi";
 import { MdRecordVoiceOver, MdRemoveRedEye } from "react-icons/md";
 
@@ -129,40 +123,75 @@ const MonsterView = ({ monster }: $Props) => {
             {monster.hp}
           </Prop>
           <Prop>
-            <GiWeightLiftingUp />
+            <PropTitle>Str:</PropTitle>
             {monster.str}
           </Prop>
           <Prop>
-            <GiRunningNinja />
+            <PropTitle>Dex:</PropTitle>
             {monster.dex}
           </Prop>
           <Prop>
-            <GiMuscleFat />
+            <PropTitle>Con:</PropTitle>
             {monster.con}
           </Prop>
           <Prop>
-            <GiBrain />
+            <PropTitle>Int:</PropTitle>
             {monster.int}
           </Prop>
           <Prop>
-            <GiWisdom />
+            <PropTitle>Wis:</PropTitle>
             {monster.wis}
           </Prop>
           <Prop>
-            <GiDiscussion />
+            <PropTitle>Cha:</PropTitle>
             {monster.cha}
           </Prop>
           {monster.savingThrows && <Prop>{monster.savingThrows}</Prop>}
-          {monster.skills && <Prop>{monster.skills}</Prop>}
+          {monster.skills && (
+            <Prop>
+              <PropTitle>Skills:</PropTitle>
+              {monster.skills}
+            </Prop>
+          )}
           {monster.dmgVulnerabilitie && (
             <Prop>{monster.dmgVulnerabilitie}</Prop>
           )}
-          {monster.dmgResistance && <Prop>{monster.dmgResistance}</Prop>}
-          {monster.dmgImmunities && <Prop>{monster.dmgImmunities}</Prop>}
-          {monster.conImmunities && <Prop>{monster.conImmunities}</Prop>}
-          {monster.ablt && <Text>{formatText(monster.ablt)}</Text>}
-          {monster.sAblt && <Text>{formatText(monster.sAblt)}</Text>}
-          {monster.lAblt && <Text>{formatText(monster.lAblt)}</Text>}
+          {monster.dmgResistance && (
+            <Prop>
+              <PropTitle>Resistance:</PropTitle>
+              {monster.dmgResistance}
+            </Prop>
+          )}
+          {monster.dmgImmunities && (
+            <Prop>
+              <PropTitle>Immunities:</PropTitle>
+              {monster.dmgImmunities}
+            </Prop>
+          )}
+          {monster.conImmunities && (
+            <Prop>
+              <PropTitle>Immunities:</PropTitle>
+              {monster.conImmunities}
+            </Prop>
+          )}
+          {monster.ablt && (
+            <Text>
+              <PropTitle>Abilities:</PropTitle>
+              {formatText(monster.ablt)}
+            </Text>
+          )}
+          {monster.sAblt && (
+            <Text>
+              <PropTitle>Spezial Abilities:</PropTitle>
+              {formatText(monster.sAblt)}
+            </Text>
+          )}
+          {monster.lAblt && (
+            <Text>
+              <PropTitle>Legendary Abilities:</PropTitle>
+              {formatText(monster.lAblt)}
+            </Text>
+          )}
           <Prop>
             <Icon icon={faLink} />
             {monster.sources}
@@ -288,12 +317,17 @@ const Text = styled.div`
   background-color: ${({ theme }) => theme.tile.backgroundColor};
 `;
 
-const Link = styled.span`
+const PropTitle = styled.span`
   display: inline-block;
-  background-color: ${({ theme }) => theme.tile.backgroundColorLink};
-  border-radius: 5px;
+  color: ${({ theme }) => theme.tile.backgroundColorLink};
   text-decoration: none;
+  margin: 0px 5px 0px 5px;
+`;
+
+const Link = styled(PropTitle)`
+  background-color: ${({ theme }) => theme.tile.backgroundColorLink};
   color: ${({ theme }) => theme.tile.backgroundColor};
+  border-radius: 5px;
   font-size: 10px;
   padding: 0px 5px 0px 5px;
   cursor: pointer;
