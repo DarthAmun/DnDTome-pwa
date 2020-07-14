@@ -19,8 +19,26 @@ export class MyAppDatabase extends Dexie {
         "++id, name, sources, pic, description, type, cost, damage, weight, properties, filename",
       monsters:
         "++id, name, type, subtype, cr, ac, hp, str, dex, con, int, wis, cha, senses, lang, speed, source, skills, savingThrows, dmgImmunities, dmgResistance, dmgVulnerabilitie, conImmunities, sAblt, ablt, lAblt, pic, size, alignment",
+    });
+    this.version(2).stores({
+      spells:
+        "++id, name, classes, sources, level, school, time, range, components, duration, ritual, text, pic",
+      gears:
+        "++id, name, sources, pic, description, type, cost, damage, weight, properties, filename",
+      monsters:
+        "++id, name, type, subtype, cr, ac, hp, str, dex, con, int, wis, cha, senses, lang, speed, source, skills, savingThrows, dmgImmunities, dmgResistance, dmgVulnerabilitie, conImmunities, sAblt, ablt, lAblt, pic, size, alignment",
       races:
         "++id, name, abilityScores, age, alignment, size, speed, lang, traits, sources, pic, filename",
+    });
+    this.version(3).stores({
+      spells:
+        "++id, name, classes, sources, level, school, time, range, components, duration, ritual, text, pic",
+      gears:
+        "++id, name, sources, pic, description, type, cost, damage, weight, properties, filename",
+      monsters:
+        "++id, name, type, subtype, cr, ac, hp, str, dex, con, int, wis, cha, senses, lang, speed, source, skills, savingThrows, dmgImmunities, dmgResistance, dmgVulnerabilitie, conImmunities, sAblt, ablt, lAblt, pic, size, alignment",
+      races:
+        "++id, name, type, abilityScores, age, alignment, size, speed, lang, traits, sources, pic, filename",
     });
     this.spells = this.table("spells");
     this.gears = this.table("gears");

@@ -7,6 +7,7 @@ import { LoadingSpinner } from "../../Loading";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLink } from "@fortawesome/free-solid-svg-icons";
+import { GiUpgrade } from "react-icons/gi";
 
 interface $Props {
   race: Race;
@@ -26,6 +27,8 @@ const RaceTile = ({ race }: $Props) => {
   return (
     <Tile to={"/race-detail/id/" + race.id}>
       <Suspense fallback={<LoadingSpinner />}>
+        <Type>{race.type}</Type>
+
         {getPicture() !== "" ? (
           <ImageName>
             <Image pic={getPicture()}></Image>
@@ -38,7 +41,10 @@ const RaceTile = ({ race }: $Props) => {
         )}
 
         <PropWrapper>
-          <WideProp>{race.abilityScores}</WideProp>
+          <WideProp>
+            <GiUpgrade />
+            {race.abilityScores}
+          </WideProp>
           <WideProp>
             <Icon icon={faLink} />
             {race.sources}
@@ -60,6 +66,17 @@ const Tile = styled(Link)`
   box-shadow: ${({ theme }) => theme.tile.boxShadow};
   overflow: hidden;
   cursor: pointer;
+`;
+
+const Type = styled.div`
+  height: auto;
+  float: left;
+  padding: 5px 10px 7px 10px;
+  font-size: 12px;
+  line-height: 30px;
+  border-radius: 0px 0px 10px 0px;
+  box-shadow: inset -2px -2px 5px 0px rgba(0, 0, 0, 0.3);
+  background-color: ${({ theme }) => theme.tile.backgroundColor};
 `;
 
 const Name = styled.div`
@@ -113,6 +130,14 @@ const Prop = styled.div`
 
   &:nth-child(odd) {
   margin: 0 0 5px 0px;
+  }
+
+  svg {
+    margin-right: 5px;
+    height: auto;
+    border-radius: 150px;
+    transition: color 0.2s;
+    color: ${({ theme }) => theme.main.highlight};
   }
 }
 `;

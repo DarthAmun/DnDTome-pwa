@@ -4,6 +4,7 @@ import IEntity from "../Data/IEntity";
 import Spell from "../Data/Spell";
 import Gear from "../Data/Gear";
 import Monster from "../Data/Monster";
+import Race from "../Data/Race";
 
 export const update = (tableName: string, data: IEntity) => {
   const db = new MyAppDatabase();
@@ -79,13 +80,18 @@ export const reciveAttributeSelection = (
 
 export const saveNewFromList = (
   tableName: string,
-  entities: Spell[] | Gear[] | Monster[],
+  entities: Spell[] | Gear[] | Monster[] | Race[],
   filename: string
 ) => {
   const db = new MyAppDatabase();
   db.open()
     .then(function () {
-      const refinedEntities = (entities as (Spell|Gear|Monster)[]).map((entity: Spell | Gear | Monster) => {
+      const refinedEntities = (entities as (
+        | Spell
+        | Gear
+        | Monster
+        | Race
+      )[]).map((entity: Spell | Gear | Monster | Race) => {
         return { ...entity, filename: filename };
       });
       db.table(tableName).bulkPut(refinedEntities);

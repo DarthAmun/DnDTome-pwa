@@ -4,12 +4,9 @@ import Race from "../../../../Data/Race";
 import styled from "styled-components";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faLink,
-  faCoins,
-  faWeightHanging,
-  faCrosshairs,
-} from "@fortawesome/free-solid-svg-icons";
+import { faLink } from "@fortawesome/free-solid-svg-icons";
+import { GiUpgrade } from "react-icons/gi";
+
 interface $Props {
   race: Race;
 }
@@ -17,28 +14,30 @@ interface $Props {
 const RaceView = ({ race }: $Props) => {
   let history = useHistory();
 
-  const formatText = useCallback(() => {
-    if (race !== undefined) {
-      let text = race.speed;
-      let parts: string[] = text.split("[[");
-      return parts.map((part: string, index: number) => {
-        if (part.includes("]]")) {
-          const codePart: string[] = part.split("]]");
-          const linkParts: string[] = codePart[0].split(".");
-          const link: string = "/race-detail/name/" + linkParts[1];
-          return (
-            <span key={index}>
-              <Link onClick={() => history.push(link)}>{linkParts[1]}</Link>
-              {codePart[1]}
-            </span>
-          );
-        } else {
-          return <span key={index}>{part}</span>;
-        }
-      });
-    }
-    return "";
-  }, [race, history]);
+  const formatText = useCallback(
+    (text: String) => {
+      if (race !== undefined) {
+        let parts: string[] = text.split("[[");
+        return parts.map((part: string, index: number) => {
+          if (part.includes("]]")) {
+            const codePart: string[] = part.split("]]");
+            const linkParts: string[] = codePart[0].split(".");
+            const link: string = "/race-detail/name/" + linkParts[1];
+            return (
+              <span key={index}>
+                <Link onClick={() => history.push(link)}>{linkParts[1]}</Link>
+                {codePart[1]}
+              </span>
+            );
+          } else {
+            return <span key={index}>{part}</span>;
+          }
+        });
+      }
+      return "";
+    },
+    [race, history]
+  );
 
   const getPicture = useCallback(() => {
     if (race !== undefined) {
@@ -53,6 +52,8 @@ const RaceView = ({ race }: $Props) => {
   return (
     <CenterWrapper>
       <View>
+        <Type>{race.type}</Type>
+
         {getPicture() !== "" ? (
           <ImageName>
             <Image pic={getPicture()}></Image>
@@ -66,17 +67,29 @@ const RaceView = ({ race }: $Props) => {
 
         <PropWrapper>
           <Prop>
-            <Icon icon={faCoins} />
+            <GiUpgrade />
             {race.abilityScores}
           </Prop>
-          <Prop>
-            <Icon icon={faWeightHanging} />
-            {race.age}
-          </Prop>
-          <Prop>{race.alignment}</Prop>
-          <Prop>{race.size}</Prop>
-          <Prop>{race.speed}</Prop>
-          <Prop>{race.lang}</Prop>
+          <Text>
+            <PropTitle>Age:</PropTitle>
+            {formatText(race.age)}
+          </Text>
+          <Text>
+            <PropTitle>Alignment:</PropTitle>
+            {formatText(race.alignment)}
+          </Text>
+          <Text>
+            <PropTitle>Size:</PropTitle>
+            {formatText(race.size)}
+          </Text>
+          <Text>
+            <PropTitle>Speed:</PropTitle>
+            {formatText(race.speed)}
+          </Text>
+          <Text>
+            <PropTitle>Language:</PropTitle>
+            {formatText(race.lang)}
+          </Text>
           <Prop>
             <Icon icon={faLink} />
             {race.sources}
@@ -102,6 +115,16 @@ const View = styled.div`
   padding: 5px;
   margin-left: auto;
   margin-right: auto;
+`;
+
+const Type = styled.div`
+  height: auto;
+  float: left;
+  padding: 5px 10px 7px 10px;
+  font-size: 12px;
+  line-height: 30px;
+  border-radius:5px;
+  background-color: ${({ theme }) => theme.tile.backgroundColor};
 `;
 
 const Name = styled.div`
@@ -147,12 +170,27 @@ const Prop = styled.div`
   padding: 10px;
   border-radius: 5px;
   background-color: ${({ theme }) => theme.tile.backgroundColor};
+
+  svg {
+    margin-right: 5px;
+    height: auto;
+    border-radius: 150px;
+    transition: color 0.2s;
+    color: ${({ theme }) => theme.main.highlight};
+  }
+`;
+
+const PropTitle = styled.span`
+  display: inline-block;
+  color: ${({ theme }) => theme.tile.backgroundColorLink};
+  text-decoration: none;
+  margin: 0px 5px 0px 5px;
 `;
 
 const Text = styled.div`
   height: auto;
-  width: calc(100% - 30px);
-  margin: 10px 5px 5px 5px;
+  width: calc(100% - 24px);
+  margin: 2px;
   float: left;
   line-height: 18px;
   padding: 10px;

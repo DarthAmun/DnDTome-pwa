@@ -24,6 +24,7 @@ const Options = () => {
   const [spellAmount, setSpellAmount] = useState<number>(0);
   const [gearAmount, setGearAmount] = useState<number>(0);
   const [monsterAmount, setMonsterAmount] = useState<number>(0);
+  const [raceAmount, setRaceAmount] = useState<number>(0);
 
   useEffect(() => {
     reciveCount("spells", (result: number) => {
@@ -34,6 +35,9 @@ const Options = () => {
     });
     reciveCount("monsters", (result: number) => {
       setMonsterAmount(result);
+    });
+    reciveCount("races", (result: number) => {
+      setRaceAmount(result);
     });
   }, []);
 
@@ -50,7 +54,7 @@ const Options = () => {
   return (
     <AppWrapper>
       <TabBar
-        children={["General", "Spells", "Gears", "Monsters"]}
+        children={["General", "Spells", "Gears", "Monsters", "Races"]}
         onChange={(tab: string) => setTab(tab)}
       />
       {activeTab === "General" && (
@@ -176,6 +180,38 @@ const Options = () => {
               <IconButton
                 icon={faTrashAlt}
                 onClick={() => deleteAll("monsters")}
+              />
+            </SectionRow>
+          </OptionSection>
+        </OptionTab>
+      )}
+      {activeTab === "Races" && (
+        <OptionTab>
+          <OptionSection>
+            <SelectionTitle>Import</SelectionTitle>
+            <FileField
+              label="Select DnDTome Json"
+              icon={faFileImport}
+              onChange={(file) => importFiles(file)}
+            />
+          </OptionSection>
+          <OptionSection>
+            <SelectionTitle>Export</SelectionTitle>
+            <SectionRow>
+              <SectionText>Export all Races?</SectionText>
+              <IconButton
+                icon={faFileExport}
+                onClick={() => exportAll("races", "DnDTome_races.json")}
+              />
+            </SectionRow>
+          </OptionSection>
+          <OptionSection>
+            <SelectionTitle>Delete</SelectionTitle>
+            <SectionRow>
+              <SectionText>Delete all {raceAmount} Races?</SectionText>
+              <IconButton
+                icon={faTrashAlt}
+                onClick={() => deleteAll("races")}
               />
             </SectionRow>
           </OptionSection>
