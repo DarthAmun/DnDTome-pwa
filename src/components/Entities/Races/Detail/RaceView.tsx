@@ -124,8 +124,8 @@ const View = styled.div`
   font-size: 16px;
   max-width: 800px;
   padding: 5px;
-  margin-left: auto;
   margin-right: auto;
+  margin-left: auto;
 `;
 
 const Type = styled.div`
@@ -198,15 +198,7 @@ const PropTitle = styled.span`
   margin: 0px 5px 0px 5px;
 `;
 
-const TraitWrapper = styled(PropWrapper)`
-  height: auto;
-  width: calc(100% - 6px);
-  float: left;
-  padding: 3px;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-around;
-`;
+const TraitWrapper = styled(PropWrapper)``;
 const TraitName = styled.div`
   background-color: ${({ theme }) => theme.tile.backgroundColor};
   padding: 10px;
