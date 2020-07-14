@@ -2,84 +2,46 @@ import React, { useCallback, Suspense } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 
-import Monster from "../../../Data/Monster";
+import Race from "../../../Data/Race";
 import { LoadingSpinner } from "../../Loading";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faLink, faRunning } from "@fortawesome/free-solid-svg-icons";
-import { GiResize, GiAngelOutfit } from "react-icons/gi";
-import { MdRecordVoiceOver } from "react-icons/md";
+import { faLink } from "@fortawesome/free-solid-svg-icons";
 
 interface $Props {
-  monster: Monster;
+  race: Race;
 }
 
-const MonsterTile = ({ monster }: $Props) => {
-  const isLegendary = useCallback(() => {
-    if (monster !== undefined) {
-      if (monster.lAblt.trim() !== "" || monster.sAblt.includes("Legendary")) {
-        return "L";
-      }
-    }
-    return "";
-  }, [monster]);
-
+const RaceTile = ({ race }: $Props) => {
   const getPicture = useCallback(() => {
-    if (monster !== undefined) {
-      if (monster.pic === "" || monster.pic === null) {
+    if (race !== undefined) {
+      if (race.pic === "" || race.pic === null) {
         return "";
       }
-      return monster.pic;
+      return race.pic;
     }
     return "";
-  }, [monster]);
+  }, [race]);
 
   return (
-    <Tile to={"/monster-detail/id/" + monster.id}>
+    <Tile to={"/race-detail/id/" + race.id}>
       <Suspense fallback={<LoadingSpinner />}>
-        <Type>
-          {monster.type}{" "}
-          {monster.subtype.trim() !== "" ? "(" + monster.subtype + ")" : ""}
-        </Type>
-
-        <Flag>
-          <b>{isLegendary()}</b>
-        </Flag>
-
-        <CR>
-          <b>{monster.cr}</b>
-        </CR>
         {getPicture() !== "" ? (
           <ImageName>
             <Image pic={getPicture()}></Image>
-            <b>{monster.name}</b>
+            <b>{race.name}</b>
           </ImageName>
         ) : (
           <Name>
-            <b>{monster.name}</b>
+            <b>{race.name}</b>
           </Name>
         )}
 
         <PropWrapper>
-          <Prop>
-            <GiResize />
-            {monster.size}
-          </Prop>
-          <Prop>
-            <GiAngelOutfit />
-            {monster.alignment}
-          </Prop>
-          <WideProp>
-            <Icon icon={faRunning} />
-            {monster.speed}
-          </WideProp>
-          <WideProp>
-            <MdRecordVoiceOver />
-            {monster.lang}
-          </WideProp>
+          <WideProp>{race.abilityScores}</WideProp>
           <WideProp>
             <Icon icon={faLink} />
-            {monster.sources}
+            {race.sources}
           </WideProp>
         </PropWrapper>
       </Suspense>
@@ -87,7 +49,7 @@ const MonsterTile = ({ monster }: $Props) => {
   );
 };
 
-export default MonsterTile;
+export default RaceTile;
 
 const Tile = styled(Link)`
   flex: 1 1 15em;
@@ -100,37 +62,11 @@ const Tile = styled(Link)`
   cursor: pointer;
 `;
 
-const CR = styled.div`
-  height: auto;
-  float: left;
-  padding: 10px;
-  width: 20px;
-  height: 20px;
-  line-height: 20px;
-  float: right;
-  text-align: center;
-  border-top-right-radius: 3px;
-  box-shadow: inset 0px 0px 10px -2px rgba(0, 0, 0, 0.4);
-  border-radius: 30px;
-  margin: 5px;
-`;
-
-const Type = styled.div`
-  height: auto;
-  float: left;
-  padding: 5px 10px 7px 10px;
-  font-size: 12px;
-  line-height: 30px;
-  border-radius: 0px 0px 10px 0px;
-  box-shadow: inset -2px -2px 5px 0px rgba(0, 0, 0, 0.3);
-  background-color: ${({ theme }) => theme.tile.backgroundColor};
-`;
-
 const Name = styled.div`
   height: auto;
   float: left;
   padding: 10px;
-  margin: 0 5px 5px 5px;
+  margin: 5px;
   font-size: 14px;
   width: calc(100% - 30px);
   color: var(--card-title-color);
@@ -143,7 +79,7 @@ const ImageName = styled.div`
   height: 30px;
   float: left;
   padding: 10px;
-  margin: 0 5px 5px 5px;
+  margin: 5px;
   font-size: 14px;
   width: calc(100% - 30px);
   color: var(--card-title-color);
@@ -178,13 +114,6 @@ const Prop = styled.div`
   &:nth-child(odd) {
   margin: 0 0 5px 0px;
   }
-
-  svg {
-  margin-right: 5px;
-  height: auto;
-  border-radius: 150px;
-  color: ${({ theme }) => theme.main.highlight};
-  }
 }
 `;
 
@@ -199,18 +128,6 @@ const Icon = styled(FontAwesomeIcon)`
   height: auto;
   border-radius: 150px;
   color: ${({ theme }) => theme.main.highlight};
-`;
-
-const Flag = styled.div`
-  height: auto;
-  float: left;
-  padding: 5px 10px 7px 10px;
-  margin-left: 5px;
-  font-size: 12px;
-  line-height: 30px;
-  border-radius: 0px 0px 10px 10px;
-  box-shadow: inset 0px 0px 5px 0px rgba(0, 0, 0, 0.3);
-  background-color: ${({ theme }) => theme.tile.backgroundColor};
 `;
 
 interface $ImageProps {

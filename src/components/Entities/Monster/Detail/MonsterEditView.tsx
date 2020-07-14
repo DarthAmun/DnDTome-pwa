@@ -1,10 +1,10 @@
 import React from "react";
 import styled from "styled-components";
-import Monster from "../../../Data/Monster";
+import Monster from "../../../../Data/Monster";
 
-import StringField from "../../FormElements/StringField";
-import NumberField from "../../FormElements/NumberField";
-import TextField from "../../FormElements/TextField";
+import StringField from "../../../FormElements/StringField";
+import NumberField from "../../../FormElements/NumberField";
+import TextField from "../../../FormElements/TextField";
 
 import { faLink, faBookOpen, faImage } from "@fortawesome/free-solid-svg-icons";
 

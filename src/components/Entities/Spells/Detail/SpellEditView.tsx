@@ -1,11 +1,11 @@
 import React from "react";
 import styled from "styled-components";
-import Spell from "../../../Data/Spell";
+import Spell from "../../../../Data/Spell";
 
-import StringField from "../../FormElements/StringField";
-import NumberField from "../../FormElements/NumberField";
-import TextField from "../../FormElements/TextField";
-import CheckField from "../../FormElements/CheckField";
+import StringField from "../../../FormElements/StringField";
+import NumberField from "../../../FormElements/NumberField";
+import TextField from "../../../FormElements/TextField";
+import CheckField from "../../../FormElements/CheckField";
 
 import {
   faHourglassHalf,

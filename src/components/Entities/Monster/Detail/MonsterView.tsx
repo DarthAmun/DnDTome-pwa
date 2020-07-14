@@ -1,7 +1,7 @@
 import React, { useCallback } from "react";
 import { useHistory } from "react-router";
 import styled from "styled-components";
-import Monster from "../../../Data/Monster";
+import Monster from "../../../../Data/Monster";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {

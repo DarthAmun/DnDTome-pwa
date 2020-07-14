@@ -1,63 +1,31 @@
 import React, { useCallback } from "react";
 import { useHistory } from "react-router";
+import Race from "../../../../Data/Race";
 import styled from "styled-components";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faHourglassHalf,
-  faMortarPestle,
-  faHistory,
-  faPowerOff,
-  faUser,
   faLink,
+  faCoins,
+  faWeightHanging,
+  faCrosshairs,
 } from "@fortawesome/free-solid-svg-icons";
-import Spell from "../../../../Data/Spell";
-
 interface $Props {
-  spell: Spell;
+  race: Race;
 }
 
-const SpellView = ({ spell }: $Props) => {
+const RaceView = ({ race }: $Props) => {
   let history = useHistory();
 
-  const formatLevel = useCallback(() => {
-    if (spell !== undefined) {
-      if (spell.level === 0) {
-        return "C";
-      }
-      return spell.level;
-    }
-    return "";
-  }, [spell]);
-
-  const hasRitual = useCallback(() => {
-    if (spell !== undefined) {
-      if (spell.ritual === 1) {
-        return <div className="icon">R</div>;
-      }
-    }
-    return "";
-  }, [spell]);
-
-  const hasConcentration = useCallback(() => {
-    if (spell !== undefined) {
-      let search = spell.duration.toLowerCase();
-      if (search.includes("concentration")) {
-        return <div className="icon">C</div>;
-      }
-    }
-    return "";
-  }, [spell]);
-
   const formatText = useCallback(() => {
-    if (spell !== undefined) {
-      let text = spell.text;
+    if (race !== undefined) {
+      let text = race.speed;
       let parts: string[] = text.split("[[");
       return parts.map((part: string, index: number) => {
         if (part.includes("]]")) {
           const codePart: string[] = part.split("]]");
           const linkParts: string[] = codePart[0].split(".");
-          const link: string = "/spell-detail/name/" + linkParts[1];
+          const link: string = "/race-detail/name/" + linkParts[1];
           return (
             <span key={index}>
               <Link onClick={() => history.push(link)}>{linkParts[1]}</Link>
@@ -70,78 +38,56 @@ const SpellView = ({ spell }: $Props) => {
       });
     }
     return "";
-  }, [spell, history]);
+  }, [race, history]);
 
   const getPicture = useCallback(() => {
-    if (spell !== undefined) {
-      if (spell.pic === "" || spell.pic === null) {
+    if (race !== undefined) {
+      if (race.pic === "" || race.pic === null) {
         return "";
       }
-      return spell.pic;
+      return race.pic;
     }
     return "";
-  }, [spell]);
+  }, [race]);
 
   return (
     <CenterWrapper>
       <View>
-        <School school={spell.school}>{spell.school}</School>
-
-        <Flag>
-          <b>{hasConcentration()}</b>
-        </Flag>
-        <Flag>
-          <b>{hasRitual()}</b>
-        </Flag>
-
-        <Level>
-          <b>{formatLevel()}</b>
-        </Level>
-
         {getPicture() !== "" ? (
           <ImageName>
             <Image pic={getPicture()}></Image>
-            <b>{spell.name}</b>
+            <b>{race.name}</b>
           </ImageName>
         ) : (
           <Name>
-            <b>{spell.name}</b>
+            <b>{race.name}</b>
           </Name>
         )}
 
         <PropWrapper>
           <Prop>
-            <Icon icon={faHistory} />
-            {spell.time}
+            <Icon icon={faCoins} />
+            {race.abilityScores}
           </Prop>
           <Prop>
-            <Icon icon={faHourglassHalf} />
-            {spell.duration}
+            <Icon icon={faWeightHanging} />
+            {race.age}
           </Prop>
-          <Prop>
-            <Icon icon={faPowerOff} transform={{ rotate: 42 }} />
-            {spell.range}
-          </Prop>
-          <Prop>
-            <Icon icon={faMortarPestle} />
-            {spell.components}
-          </Prop>
-          <Prop>
-            <Icon icon={faUser} />
-            {spell.classes}
-          </Prop>
+          <Prop>{race.alignment}</Prop>
+          <Prop>{race.size}</Prop>
+          <Prop>{race.speed}</Prop>
+          <Prop>{race.lang}</Prop>
           <Prop>
             <Icon icon={faLink} />
-            {spell.sources}
+            {race.sources}
           </Prop>
         </PropWrapper>
-        <Text>{formatText()}</Text>
       </View>
     </CenterWrapper>
   );
 };
 
-export default SpellView;
+export default RaceView;
 
 const CenterWrapper = styled.div`
   overflow: hidden;
@@ -156,54 +102,6 @@ const View = styled.div`
   padding: 5px;
   margin-left: auto;
   margin-right: auto;
-`;
-
-type SchoolType = {
-  school?: string;
-};
-
-const School = styled.div<SchoolType>`
-  height: auto;
-  float: left;
-  padding: 5px 10px 7px 10px;
-  line-height: 30px;
-  border-radius: 5px;
-  background-color: ${({ theme }) => theme.tile.backgroundColor};
-  color: ${(props) => {
-    if (props.school === "Necromancy") {
-      return "#bef28e";
-    } else if (props.school === "Conjuration") {
-      return "#fce97a";
-    } else if (props.school === "Evocation") {
-      return "#db5740";
-    } else if (props.school === "Divination") {
-      return "#9ebed2";
-    } else if (props.school === "Enchantment") {
-      return "#ce90ca";
-    } else if (props.school === "Transmutation") {
-      return "#e19c60";
-    } else if (props.school === "Abjuration") {
-      return "#278ae4";
-    } else if (props.school === "Illusion") {
-      return "#8b42f9";
-    } else {
-      return "white";
-    }
-  }};
-`;
-
-const Level = styled.div`
-  height: auto;
-  padding: 10px;
-  width: 20px;
-  height: 20px;
-  line-height: 20px;
-  float: left;
-  text-align: center;
-  border-top-right-radius: 3px;
-  border-radius: 30px;
-  margin: 0px 5px 5px 5px;
-  background-color: ${({ theme }) => theme.tile.backgroundColor};
 `;
 
 const Name = styled.div`
@@ -280,17 +178,6 @@ const Icon = styled(FontAwesomeIcon)`
   border-radius: 150px;
   transition: color 0.2s;
   color: ${({ theme }) => theme.main.highlight};
-`;
-
-const Flag = styled.div`
-  height: auto;
-  float: left;
-  padding: 5px 10px 7px 10px;
-  margin-left: 5px;
-  font-size: 12px;
-  line-height: 30px;
-  border-radius: 5px;
-  background-color: ${({ theme }) => theme.tile.backgroundColor};
 `;
 
 interface $ImageProps {

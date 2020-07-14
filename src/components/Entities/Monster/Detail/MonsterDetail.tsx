@@ -9,10 +9,10 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import MonsterView from "./MonsterView";
 import MonsterEditView from "./MonsterEditView";
-import BackButton from "../../FormElements/BackButton";
-import Monster from "../../../Data/Monster";
-import IconButton from "../../FormElements/IconButton";
-import { update, remove } from "../../../Database/DbService";
+import BackButton from "../../../FormElements/BackButton";
+import Monster from "../../../../Data/Monster";
+import IconButton from "../../../FormElements/IconButton";
+import { update, remove } from "../../../../Database/DbService";
 
 interface $Props {
   monster: Monster;

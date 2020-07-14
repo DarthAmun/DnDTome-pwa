@@ -4,14 +4,14 @@ import { MyAppDatabase } from "../../../../../Database/MyDatabase";
 import { useItemByAttr } from "../../../../../Hooks/DexieHooks";
 import { LoadingSpinner } from "../../../../Loading";
 import AppWrapper from "../../../../AppWrapper";
-import SpellDetail from "../SpellDetail";
+import RaceDetail from "../RaceDetail";
 
 type TParams = { name: string };
 
-const NameToSpell = ({ match }: RouteComponentProps<TParams>) => {
+const NameToRace = ({ match }: RouteComponentProps<TParams>) => {
   const db = new MyAppDatabase();
-  const [spell, loading, error] = useItemByAttr(
-    db.spells,
+  const [race, loading, error] = useItemByAttr(
+    db.races,
     "name",
     match.params.name
   );
@@ -20,8 +20,8 @@ const NameToSpell = ({ match }: RouteComponentProps<TParams>) => {
     <AppWrapper>
       {!error && loading && <LoadingSpinner />}
       {error && !loading && <>Fail by Name</>}
-      {!error && !loading && spell !== undefined ? (
-        <SpellDetail spell={spell} />
+      {!error && !loading && race !== undefined ? (
+        <RaceDetail race={race} />
       ) : (
         ""
       )}
@@ -29,4 +29,4 @@ const NameToSpell = ({ match }: RouteComponentProps<TParams>) => {
   );
 };
 
-export default NameToSpell;
+export default NameToRace;

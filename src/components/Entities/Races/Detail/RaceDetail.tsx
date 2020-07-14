@@ -7,24 +7,24 @@ import {
   faSave,
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
-import SpellView from "./SpellView";
-import SpellEditView from "./SpellEditView";
+import RaceView from "./RaceView";
+import RaceEditView from "./RaceEditView";
 import BackButton from "../../../FormElements/BackButton";
-import Spell from "../../../../Data/Spell";
+import Race from "../../../../Data/Race";
 import IconButton from "../../../FormElements/IconButton";
 import { update, remove } from "../../../../Database/DbService";
 
 interface $Props {
-  spell: Spell;
+  race: Race;
 }
 
-const SpellDetail = ({ spell }: $Props) => {
+const RaceDetail = ({ race }: $Props) => {
   const [editMode, setMode] = useState<boolean>(false);
-  const [spellObj, editSpell] = useState<Spell>(spell);
+  const [raceObj, editRace] = useState<Race>(race);
   let history = useHistory();
 
-  const deleteSpell = (spellId: number | undefined) => {
-    remove("spells", spellId);
+  const deleteRace = (raceId: number | undefined) => {
+    remove("races", raceId);
     history.goBack();
   };
 
@@ -39,26 +39,26 @@ const SpellDetail = ({ spell }: $Props) => {
         {editMode && (
           <>
             <IconButton
-              onClick={() => update("spells", spellObj)}
+              onClick={() => update("races", raceObj)}
               icon={faSave}
             />
             <IconButton
-              onClick={() => deleteSpell(spellObj.id)}
+              onClick={() => deleteRace(raceObj.id)}
               icon={faTrash}
             />
           </>
         )}
       </TopBar>
       {editMode ? (
-        <SpellEditView spell={spellObj} onEdit={(value) => editSpell(value)} />
+        <RaceEditView race={raceObj} onEdit={(value) => editRace(value)} />
       ) : (
-        <SpellView spell={spellObj} />
+        <RaceView race={raceObj} />
       )}
     </>
   );
 };
 
-export default SpellDetail;
+export default RaceDetail;
 
 const TopBar = styled.div`
   color: ${({ theme }) => theme.tile.color};

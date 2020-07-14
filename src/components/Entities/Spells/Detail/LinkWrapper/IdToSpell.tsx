@@ -1,9 +1,9 @@
 import React from "react";
 import { RouteComponentProps } from "react-router";
-import { MyAppDatabase } from "../../../../Database/MyDatabase";
-import { useItem } from "../../../../Hooks/DexieHooks";
-import { LoadingSpinner } from "../../../Loading";
-import AppWrapper from "../../../AppWrapper";
+import { MyAppDatabase } from "../../../../../Database/MyDatabase";
+import { useItem } from "../../../../../Hooks/DexieHooks";
+import { LoadingSpinner } from "../../../../Loading";
+import AppWrapper from "../../../../AppWrapper";
 import SpellDetail from "../SpellDetail";
 
 type TParams = { id: string };

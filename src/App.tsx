@@ -12,13 +12,16 @@ import GearOverview from "./components/Entities/Gear/GearOverview";
 import MonsterOverview from "./components/Entities/Monster/MonsterOverview";
 import NameToMonster from "./components/Entities/Monster/Detail/LinkWrapper/NameToMonster";
 import IdToMonster from "./components/Entities/Monster/Detail/LinkWrapper/IdToMonster";
+import NameToRace from "./components/Entities/Races/Detail/LinkWrapper/NameToRace";
+import IdToRace from "./components/Entities/Races/Detail/LinkWrapper/IdToRace";
+import RaceOverview from "./components/Entities/Races/RaceOverview";
 
 const App = () => {
   return (
     <MyThemeProvider>
       <MemoryRouter>
         <Switch>
-          <Route exact path="/" component={MonsterOverview}></Route>
+          <Route exact path="/" component={RaceOverview}></Route>
           <Route path="/spell-detail/name/:name" component={NameToSpell}></Route>
           <Route path="/spell-detail/id/:id" component={IdToSpell}></Route>
           <Route path="/spell-overview" component={SpellOverview}></Route>
@@ -28,6 +31,9 @@ const App = () => {
           <Route path="/monster-detail/name/:name" component={NameToMonster}></Route>
           <Route path="/monster-detail/id/:id" component={IdToMonster}></Route>
           <Route path="/monster-overview" component={MonsterOverview}></Route>
+          <Route path="/race-detail/name/:name" component={NameToRace}></Route>
+          <Route path="/race-detail/id/:id" component={IdToRace}></Route>
+          <Route path="/race-overview" component={RaceOverview}></Route>
           <Route path="/options" component={Options}></Route>
         </Switch>
       </MemoryRouter>

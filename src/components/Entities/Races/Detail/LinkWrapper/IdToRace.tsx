@@ -4,20 +4,20 @@ import { MyAppDatabase } from "../../../../../Database/MyDatabase";
 import { useItem } from "../../../../../Hooks/DexieHooks";
 import { LoadingSpinner } from "../../../../Loading";
 import AppWrapper from "../../../../AppWrapper";
-import MonsterDetail from "../MonsterDetail";
+import RaceDetail from "../RaceDetail";
 
 type TParams = { id: string };
 
-const IdToMonster = ({ match }: RouteComponentProps<TParams>) => {
+const IdToRace = ({ match }: RouteComponentProps<TParams>) => {
   const db = new MyAppDatabase();
-  const [monster, loading, error] = useItem(db.monsters, +match.params.id);
+  const [race, loading, error] = useItem(db.races, +match.params.id);
 
   return (
     <AppWrapper>
       {!error && loading && <LoadingSpinner />}
       {error && !loading && <>Fail by Id</>}
-      {!error && !loading && monster !== undefined ? (
-        <MonsterDetail monster={monster} />
+      {!error && !loading && race !== undefined ? (
+        <RaceDetail race={race} />
       ) : (
         ""
       )}
@@ -25,4 +25,4 @@ const IdToMonster = ({ match }: RouteComponentProps<TParams>) => {
   );
 };
 
-export default IdToMonster;
+export default IdToRace;

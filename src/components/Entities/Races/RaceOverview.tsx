@@ -3,37 +3,37 @@ import styled from "styled-components";
 import { MyAppDatabase } from "../../../Database/MyDatabase";
 import { useTableByFilter } from "../../../Hooks/DexieHooks";
 import Filter from "../../../Data/Filter";
-import Spell from "../../../Data/Spell";
+import Race from "../../../Data/Race";
 
 import { LoadingSpinner } from "../../Loading";
-import SpellTile from "./SpellTile";
+import RaceTile from "./RaceTile";
 import AppWrapper from "../../AppWrapper";
-import SpellSearchBar from "./SpellSearchBar";
+import RaceSearchBar from "./RaceSearchBar";
 
-const SpellOverview = () => {
+const RaceOverview = () => {
   const db = new MyAppDatabase();
   const [filters, setFilter] = useState<Filter[]>([]);
-  const [allSpells, loading, error] = useTableByFilter(db.spells, filters);
+  const [allRace, loading, error] = useTableByFilter(db.races, filters);
 
   return (
     <AppWrapper>
-      <SpellSearchBar onSend={(filterArray) => setFilter(filterArray)} />
-      <SpellContainer>
+      <RaceSearchBar onSend={(filterArray) => setFilter(filterArray)} />
+      <RaceContainer>
         {!error && loading && <LoadingSpinner />}
         {!error &&
           !loading &&
-          allSpells!.map((spell: Spell, index: number) => {
-            return <SpellTile key={index} spell={spell}></SpellTile>;
+          allRace!.map((race: Race, index: number) => {
+            return <RaceTile key={index} race={race}></RaceTile>;
           })}
         {error && <>Fail</>}
-      </SpellContainer>
+      </RaceContainer>
     </AppWrapper>
   );
 };
 
-export default SpellOverview;
+export default RaceOverview;
 
-const SpellContainer = styled.div`
+const RaceContainer = styled.div`
   margin-top: 50px;
   width: 100%;
   display: flex;

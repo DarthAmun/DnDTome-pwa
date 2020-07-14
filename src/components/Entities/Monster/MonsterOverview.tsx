@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { MyAppDatabase } from "../../Database/MyDatabase";
-import { useTableByFilter } from "../../Hooks/DexieHooks";
-import Filter from "../../Data/Filter";
-import Monster from "../../Data/Monster";
+import { MyAppDatabase } from "../../../Database/MyDatabase";
+import { useTableByFilter } from "../../../Hooks/DexieHooks";
+import Filter from "../../../Data/Filter";
+import Monster from "../../../Data/Monster";
 
-import { LoadingSpinner } from "../Loading";
+import { LoadingSpinner } from "../../Loading";
 import MonsterTile from "./MonsterTile";
-import AppWrapper from "../AppWrapper";
+import AppWrapper from "../../AppWrapper";
 import MonsterSearchBar from "./MonsterSearchBar";
 
 const MonsterOverview = () => {
