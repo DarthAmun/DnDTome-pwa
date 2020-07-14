@@ -41,14 +41,14 @@ const RaceTile = ({ race }: $Props) => {
         )}
 
         <PropWrapper>
-          <WideProp>
+          <Prop>
             <GiUpgrade />
             {race.abilityScores}
-          </WideProp>
-          <WideProp>
+          </Prop>
+          <Prop>
             <Icon icon={faLink} />
             {race.sources}
-          </WideProp>
+          </Prop>
         </PropWrapper>
       </Suspense>
     </Tile>

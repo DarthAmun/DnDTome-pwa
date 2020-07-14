@@ -65,7 +65,7 @@ const Input = styled.textarea`
   padding: 5px;
   box-sizing: border-box;
   border: none;
-  min-height: 6vh;
+  min-height: 8vh;
   background-color: ${({ theme }) => theme.input.backgroundColor};
   color: ${({ theme }) => theme.input.color};
   border-radius: 5px;

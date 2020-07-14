@@ -6,6 +6,7 @@ import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLink } from "@fortawesome/free-solid-svg-icons";
 import { GiUpgrade } from "react-icons/gi";
+import Trait from "../../../../Data/Trait";
 
 interface $Props {
   race: Race;
@@ -94,6 +95,16 @@ const RaceView = ({ race }: $Props) => {
             <Icon icon={faLink} />
             {race.sources}
           </Prop>
+
+          {race.traits.map((trait: Trait, index: number) => {
+            return (
+              <TraitWrapper key={index}>
+                <TraitName>{trait.name}</TraitName>
+                <TraitLevel>{trait.level}</TraitLevel>
+                <TraitText>{trait.text}</TraitText>
+              </TraitWrapper>
+            );
+          })}
         </PropWrapper>
       </View>
     </CenterWrapper>
@@ -123,7 +134,7 @@ const Type = styled.div`
   padding: 5px 10px 7px 10px;
   font-size: 12px;
   line-height: 30px;
-  border-radius:5px;
+  border-radius: 5px;
   background-color: ${({ theme }) => theme.tile.backgroundColor};
 `;
 
@@ -185,6 +196,29 @@ const PropTitle = styled.span`
   color: ${({ theme }) => theme.tile.backgroundColorLink};
   text-decoration: none;
   margin: 0px 5px 0px 5px;
+`;
+
+const TraitWrapper = styled(PropWrapper)`
+  height: auto;
+  width: calc(100% - 6px);
+  float: left;
+  padding: 3px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+`;
+const TraitName = styled.div`
+  background-color: ${({ theme }) => theme.tile.backgroundColor};
+  padding: 10px;
+  border-radius: 5px;
+  margin: 2px;
+  flex: 3 3 auto;
+`;
+const TraitLevel = styled(TraitName)`
+  flex: 1 1 auto;
+`;
+const TraitText = styled(TraitName)`
+  flex: 4 4 auto;
 `;
 
 const Text = styled.div`
