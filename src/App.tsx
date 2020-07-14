@@ -3,15 +3,15 @@ import { MemoryRouter, Switch, Route } from "react-router";
 import { MyThemeProvider } from "./components/Theme/MyThemeProvider";
 
 import Options from "./components/Options/Options";
-import SpellOverview from "./components/Spells/SpellOverview";
-import IdToSpell from "./components/Spells/Detail/LinkWrapper/IdToSpell";
-import NameToSpell from "./components/Spells/Detail/LinkWrapper/NameToSpell";
-import NameToGear from "./components/Gear/Detail/LinkWrapper/NameToGear";
-import IdToGear from "./components/Gear/Detail/LinkWrapper/IdToGear";
-import GearOverview from "./components/Gear/GearOverview";
-import MonsterOverview from "./components/Monster/MonsterOverview";
-import NameToMonster from "./components/Monster/Detail/LinkWrapper/NameToMonster";
-import IdToMonster from "./components/Monster/Detail/LinkWrapper/IdToMonster";
+import SpellOverview from "./components/Entities/Spells/SpellOverview";
+import IdToSpell from "./components/Entities/Spells/Detail/LinkWrapper/IdToSpell";
+import NameToSpell from "./components/Entities/Spells/Detail/LinkWrapper/NameToSpell";
+import NameToGear from "./components/Entities/Gear/Detail/LinkWrapper/NameToGear";
+import IdToGear from "./components/Entities/Gear/Detail/LinkWrapper/IdToGear";
+import GearOverview from "./components/Entities/Gear/GearOverview";
+import MonsterOverview from "./components/Entities/Monster/MonsterOverview";
+import NameToMonster from "./components/Entities/Monster/Detail/LinkWrapper/NameToMonster";
+import IdToMonster from "./components/Entities/Monster/Detail/LinkWrapper/IdToMonster";
 
 const App = () => {
   return (

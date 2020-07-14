@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { MyAppDatabase } from "../../Database/MyDatabase";
-import { useTableByFilter } from "../../Hooks/DexieHooks";
-import Filter from "../../Data/Filter";
-import Gear from "../../Data/Gear";
+import { MyAppDatabase } from "../../../Database/MyDatabase";
+import { useTableByFilter } from "../../../Hooks/DexieHooks";
+import Filter from "../../../Data/Filter";
+import Gear from "../../../Data/Gear";
 
-import { LoadingSpinner } from "../Loading";
+import { LoadingSpinner } from "../../Loading";
 import GearTile from "./GearTile";
-import AppWrapper from "../AppWrapper";
+import AppWrapper from "../../AppWrapper";
 import GearSearchBar from "./GearSearchBar";
 
 const GearOverview = () => {

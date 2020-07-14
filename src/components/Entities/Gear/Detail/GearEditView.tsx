@@ -1,9 +1,9 @@
 import React from "react";
 import styled from "styled-components";
-import Gear from "../../../Data/Gear";
+import Gear from "../../../../Data/Gear";
 
-import StringField from "../../FormElements/StringField";
-import TextField from "../../FormElements/TextField";
+import StringField from "../../../FormElements/StringField";
+import TextField from "../../../FormElements/TextField";
 
 import {
   faLink,

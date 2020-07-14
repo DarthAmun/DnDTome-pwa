@@ -2,8 +2,8 @@ import React, { useCallback, Suspense } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 
-import Gear from "../../Data/Gear";
-import { LoadingSpinner } from "../Loading";
+import Gear from "../../../Data/Gear";
+import { LoadingSpinner } from "../../Loading";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {

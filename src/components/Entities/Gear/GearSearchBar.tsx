@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import Filter from "../../Data/Filter";
+import Filter from "../../../Data/Filter";
 import ReactDOM from "react-dom";
-import { reciveAttributeSelection } from "../../Database/DbService";
+import { reciveAttributeSelection } from "../../../Database/DbService";
 
 import {
   faLink,
@@ -13,9 +13,9 @@ import {
   faCrosshairs,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import MultipleSelectField from "../FormElements/MultipleSelectField";
-import StringField from "../FormElements/StringField";
-import IconButton from "../FormElements/IconButton";
+import MultipleSelectField from "../../FormElements/MultipleSelectField";
+import StringField from "../../FormElements/StringField";
+import IconButton from "../../FormElements/IconButton";
 
 interface $Props {
   onSend: (filters: Filter[]) => void;
