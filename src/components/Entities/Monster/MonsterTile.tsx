@@ -140,7 +140,7 @@ const Name = styled.div`
 `;
 
 const ImageName = styled.div`
-  height: 30px;
+  height: 40px;
   float: left;
   padding: 10px;
   margin: 0 5px 5px 5px;
@@ -234,8 +234,8 @@ const Image = ({ pic }: $ImageProps) => {
 
 const ImageElm = styled.div`
   margin: -10px 5px -10px -10px;
-  height: 47px;
-  width: 47px;
+  height: 57px;
+  width: 57px;
   float: left;
   border-radius: 100px;
   border: 3px solid ${({ theme }) => theme.main.highlight};

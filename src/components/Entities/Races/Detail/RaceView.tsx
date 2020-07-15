@@ -52,20 +52,13 @@ const RaceView = ({ race }: $Props) => {
 
   return (
     <CenterWrapper>
+      <ImageView>
+        {getPicture() !== "" ? <Image pic={getPicture()}></Image> : ""}
+      </ImageView>
       <View>
-        <Type>{race.type}</Type>
-
-        {getPicture() !== "" ? (
-          <ImageName>
-            <Image pic={getPicture()}></Image>
-            <b>{race.name}</b>
-          </ImageName>
-        ) : (
-          <Name>
-            <b>{race.name}</b>
-          </Name>
-        )}
-
+        <Name>
+          <b>{race.name}</b>
+        </Name>
         <PropWrapper>
           <Prop>
             <GiUpgrade />
@@ -95,7 +88,10 @@ const RaceView = ({ race }: $Props) => {
             <Icon icon={faLink} />
             {race.sources}
           </Prop>
-
+        </PropWrapper>
+      </View>
+      <View>
+        <PropWrapper>
           {race.traits.map((trait: Trait, index: number) => {
             return (
               <TraitWrapper key={index}>
@@ -117,25 +113,30 @@ const CenterWrapper = styled.div`
   overflow: hidden;
   width: 100%;
   height: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
 `;
 
 const View = styled.div`
   color: ${({ theme }) => theme.tile.color};
   font-size: 16px;
-  max-width: 800px;
+  flex: 1 1 auto;
+  max-width: 600px;
   padding: 5px;
-  margin-right: auto;
-  margin-left: auto;
+  margin: 5px;
+  height: 100%;
+
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-items: flex-start;
+  align-content: flex-start;
 `;
 
-const Type = styled.div`
-  height: auto;
-  float: left;
-  padding: 5px 10px 7px 10px;
-  font-size: 12px;
-  line-height: 30px;
-  border-radius: 5px;
-  background-color: ${({ theme }) => theme.tile.backgroundColor};
+const ImageView = styled(View)`
+  justify-content: flex-end;
+  flex: 1 1 300px;
 `;
 
 const Name = styled.div`
@@ -147,18 +148,6 @@ const Name = styled.div`
   color: var(--card-title-color);
   text-align: center;
   border-radius: 5px;
-  background-color: ${({ theme }) => theme.tile.backgroundColor};
-`;
-
-const ImageName = styled.div`
-  height: 30px;
-  float: left;
-  padding: 10px;
-  margin: 5px 5px 10px 5px;
-  width: calc(100% - 30px);
-  color: var(--card-title-color);
-  text-align: center;
-  border-radius: 50px 5px 5px 50px;
   background-color: ${({ theme }) => theme.tile.backgroundColor};
 `;
 
@@ -249,28 +238,15 @@ interface $ImageProps {
 }
 
 const Image = ({ pic }: $ImageProps) => {
-  const style = {
-    backgroundImage: `url(${pic})`,
-    backgroundPosition: "center",
-    backgroundSize: "cover",
-    backgroundRepeat: "no-repeat",
-  };
-
   if (pic !== "") {
-    return <ImageElm style={style}></ImageElm>;
+    return <ImageElm src={pic}></ImageElm>;
   } else {
     return <Empty />;
   }
 };
 
-const ImageElm = styled.div`
-  margin: -10px 5px -10px -10px;
-  height: 47px;
-  width: 47px;
-  float: left;
-  border-radius: 100px;
-  border: 3px solid ${({ theme }) => theme.main.highlight};
-  background-color: white;
-  overflow: hidden;
+const ImageElm = styled.img`
+  margin: 5px;
+  max-height: 60vh;
 `;
 const Empty = styled.div``;

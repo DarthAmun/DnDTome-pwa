@@ -27,18 +27,10 @@ const RaceTile = ({ race }: $Props) => {
   return (
     <Tile to={"/race-detail/id/" + race.id}>
       <Suspense fallback={<LoadingSpinner />}>
-        <Type>{race.type}</Type>
-
-        {getPicture() !== "" ? (
-          <ImageName>
-            <Image pic={getPicture()}></Image>
-            <b>{race.name}</b>
-          </ImageName>
-        ) : (
-          <Name>
-            <b>{race.name}</b>
-          </Name>
-        )}
+        {getPicture() !== "" ? <Image pic={getPicture()}></Image> : ""}
+        <Name>
+          <b>{race.name}</b>
+        </Name>
 
         <PropWrapper>
           <Prop>
@@ -68,17 +60,6 @@ const Tile = styled(Link)`
   cursor: pointer;
 `;
 
-const Type = styled.div`
-  height: auto;
-  float: left;
-  padding: 5px 10px 7px 10px;
-  font-size: 12px;
-  line-height: 30px;
-  border-radius: 0px 0px 10px 0px;
-  box-shadow: inset -2px -2px 5px 0px rgba(0, 0, 0, 0.3);
-  background-color: ${({ theme }) => theme.tile.backgroundColor};
-`;
-
 const Name = styled.div`
   height: auto;
   float: left;
@@ -89,19 +70,6 @@ const Name = styled.div`
   color: var(--card-title-color);
   text-align: center;
   border-radius: 5px;
-  box-shadow: inset 0px 0px 5px 0px rgba(0, 0, 0, 0.3);
-`;
-
-const ImageName = styled.div`
-  height: 30px;
-  float: left;
-  padding: 10px;
-  margin: 5px;
-  font-size: 14px;
-  width: calc(100% - 30px);
-  color: var(--card-title-color);
-  text-align: center;
-  border-radius: 50px 5px 5px 50px;
   box-shadow: inset 0px 0px 5px 0px rgba(0, 0, 0, 0.3);
 `;
 
@@ -155,29 +123,15 @@ interface $ImageProps {
 }
 
 const Image = ({ pic }: $ImageProps) => {
-  const style = {
-    backgroundImage: `url(${pic})`,
-    backgroundPosition: "center",
-    backgroundSize: "cover",
-    backgroundRepeat: "no-repeat",
-  };
-
   if (pic !== "") {
-    return <ImageElm style={style}></ImageElm>;
+    return <ImageElm src={pic}></ImageElm>;
   } else {
     return <Empty />;
   }
 };
 
-const ImageElm = styled.div`
-  margin: -10px 5px -10px -10px;
-  height: 47px;
-  width: 47px;
-  float: left;
-  border-radius: 100px;
-  border: 3px solid ${({ theme }) => theme.main.highlight};
-  box-shadow: 0px 0px 10px 0px rgba(172, 172, 172, 0.2);
-  background-color: white;
-  overflow: hidden;
+const ImageElm = styled.img`
+  margin: 5px;
+  flex: 1 1 auto;
 `;
 const Empty = styled.div``;

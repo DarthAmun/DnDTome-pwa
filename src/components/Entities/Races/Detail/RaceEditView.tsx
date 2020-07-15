@@ -161,6 +161,7 @@ const RaceView = styled.div`
   flex: 1 1 600px;
   padding: 5px;
   margin: 5px;
+  height: 100%;
 
   display: flex;
   flex-wrap: wrap;

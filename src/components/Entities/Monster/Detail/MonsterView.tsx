@@ -9,11 +9,7 @@ import {
   faRunning,
   faShieldAlt,
 } from "@fortawesome/free-solid-svg-icons";
-import {
-  GiResize,
-  GiAngelOutfit,
-  GiLifeBar,
-} from "react-icons/gi";
+import { GiResize, GiAngelOutfit, GiLifeBar } from "react-icons/gi";
 import { MdRecordVoiceOver, MdRemoveRedEye } from "react-icons/md";
 
 interface $Props {
@@ -69,6 +65,9 @@ const MonsterView = ({ monster }: $Props) => {
 
   return (
     <CenterWrapper>
+      <ImageView>
+        {getPicture() !== "" ? <Image pic={getPicture()}></Image> : ""}
+      </ImageView>
       <View>
         <Type>
           {monster.type}{" "}
@@ -82,16 +81,9 @@ const MonsterView = ({ monster }: $Props) => {
         <CR>
           <b>{monster.cr}</b>
         </CR>
-        {getPicture() !== "" ? (
-          <ImageName>
-            <Image pic={getPicture()}></Image>
-            <b>{monster.name}</b>
-          </ImageName>
-        ) : (
-          <Name>
-            <b>{monster.name}</b>
-          </Name>
-        )}
+        <Name>
+          <b>{monster.name}</b>
+        </Name>
 
         <PropWrapper>
           <Prop>
@@ -174,6 +166,14 @@ const MonsterView = ({ monster }: $Props) => {
               {monster.conImmunities}
             </Prop>
           )}
+          <Prop>
+            <Icon icon={faLink} />
+            {monster.sources}
+          </Prop>
+        </PropWrapper>
+      </View>
+      <View>
+        <PropWrapper>
           {monster.ablt && (
             <Text>
               <PropTitle>Abilities:</PropTitle>
@@ -192,10 +192,6 @@ const MonsterView = ({ monster }: $Props) => {
               {formatText(monster.lAblt)}
             </Text>
           )}
-          <Prop>
-            <Icon icon={faLink} />
-            {monster.sources}
-          </Prop>
         </PropWrapper>
       </View>
     </CenterWrapper>
@@ -208,15 +204,30 @@ const CenterWrapper = styled.div`
   overflow: hidden;
   width: 100%;
   height: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
 `;
 
 const View = styled.div`
   color: ${({ theme }) => theme.tile.color};
   font-size: 16px;
-  max-width: 800px;
+  flex: 1 1 auto;
+  max-width: 600px;
   padding: 5px;
-  margin-left: auto;
-  margin-right: auto;
+  margin: 5px;
+  height: 100%;
+
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-items: flex-start;
+  align-content: flex-start;
+`;
+
+const ImageView = styled(View)`
+  justify-content: flex-end;
+  flex: 1 1 300px;
 `;
 
 const Name = styled.div`
@@ -228,18 +239,6 @@ const Name = styled.div`
   color: var(--card-title-color);
   text-align: center;
   border-radius: 5px;
-  background-color: ${({ theme }) => theme.tile.backgroundColor};
-`;
-
-const ImageName = styled.div`
-  height: 30px;
-  float: left;
-  padding: 10px;
-  margin: 5px 5px 10px 5px;
-  width: calc(100% - 30px);
-  color: var(--card-title-color);
-  text-align: center;
-  border-radius: 50px 5px 5px 50px;
   background-color: ${({ theme }) => theme.tile.backgroundColor};
 `;
 
@@ -279,8 +278,8 @@ const Type = styled.div`
 
 const PropWrapper = styled.div`
   height: auto;
-  width: calc(100% - 6px);
   float: left;
+  width: calc(100% - 6px);
   padding: 3px;
   display: flex;
   flex-wrap: wrap;
@@ -347,28 +346,17 @@ interface $ImageProps {
 }
 
 const Image = ({ pic }: $ImageProps) => {
-  const style = {
-    backgroundImage: `url(${pic})`,
-    backgroundPosition: "center",
-    backgroundSize: "cover",
-    backgroundRepeat: "no-repeat",
-  };
-
   if (pic !== "") {
-    return <ImageElm style={style}></ImageElm>;
+    return <ImageElm src={pic}></ImageElm>;
   } else {
     return <Empty />;
   }
 };
 
-const ImageElm = styled.div`
-  margin: -10px 5px -10px -10px;
-  height: 47px;
-  width: 47px;
-  float: left;
-  border-radius: 100px;
-  border: 3px solid ${({ theme }) => theme.main.highlight};
-  background-color: white;
-  overflow: hidden;
+const ImageElm = styled.img`
+  margin: 5px;
+  max-height: 30vh;
+  margin-left: auto;
+  margin-right: auto;
 `;
 const Empty = styled.div``;
