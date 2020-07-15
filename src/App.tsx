@@ -14,6 +14,8 @@ import NameToMonster from "./components/Entities/Monster/Detail/LinkWrapper/Name
 import IdToMonster from "./components/Entities/Monster/Detail/LinkWrapper/IdToMonster";
 import NameToRace from "./components/Entities/Races/Detail/LinkWrapper/NameToRace";
 import IdToRace from "./components/Entities/Races/Detail/LinkWrapper/IdToRace";
+import NameToSubrace from "./components/Entities/Subraces/Detail/LinkWrapper/NameToSubrace";
+import IdToSubrace from "./components/Entities/Subraces/Detail/LinkWrapper/IdToSubrace";
 import RaceOverview from "./components/Entities/Races/RaceOverview";
 
 const App = () => {
@@ -34,6 +36,8 @@ const App = () => {
           <Route path="/race-detail/name/:name" component={NameToRace}></Route>
           <Route path="/race-detail/id/:id" component={IdToRace}></Route>
           <Route path="/race-overview" component={RaceOverview}></Route>
+          <Route path="/subrace-detail/name/:name" component={NameToSubrace}></Route>
+          <Route path="/subrace-detail/id/:id" component={IdToSubrace}></Route>
           <Route path="/options" component={Options}></Route>
         </Switch>
       </MemoryRouter>

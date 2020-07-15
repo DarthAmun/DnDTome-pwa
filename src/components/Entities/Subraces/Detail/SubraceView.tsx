@@ -1,7 +1,5 @@
-import React, { useCallback, useState, useEffect } from "react";
+import React, { useCallback } from "react";
 import { useHistory } from "react-router";
-import { reciveAllFiltered } from "../../../../Database/DbService";
-import Race from "../../../../Data/Race";
 import Trait from "../../../../Data/Trait";
 import Subrace from "../../../../Data/Subrace";
 import styled from "styled-components";
@@ -11,26 +9,15 @@ import { faLink } from "@fortawesome/free-solid-svg-icons";
 import { GiUpgrade } from "react-icons/gi";
 
 interface $Props {
-  race: Race;
+ subrace: Subrace;
 }
 
-const RaceView = ({ race }: $Props) => {
-  const [subraces, setSubraces] = useState<Subrace[]>([]);
+const RaceView = ({ subrace }: $Props) => {
   let history = useHistory();
-
-  useEffect(() => {
-    reciveAllFiltered(
-      "subraces",
-      [{ fieldName: "type", value: race.name }],
-      (results: any[]) => {
-        setSubraces(results);
-      }
-    );
-  }, [race]);
 
   const formatText = useCallback(
     (text: String) => {
-      if (race !== undefined) {
+      if (subrace !== undefined) {
         let parts: string[] = text.split("[[");
         return parts.map((part: string, index: number) => {
           if (part.includes("]]")) {
@@ -51,79 +38,32 @@ const RaceView = ({ race }: $Props) => {
       }
       return "";
     },
-    [race, history]
+    [subrace, history]
   );
-
-  const getPicture = useCallback(() => {
-    if (race !== undefined) {
-      if (race.pic === "" || race.pic === null) {
-        return "";
-      }
-      return race.pic;
-    }
-    return "";
-  }, [race]);
-
   return (
     <CenterWrapper>
-      {getPicture() !== "" ? (
-        <ImageView>
-          <Image pic={getPicture()}></Image>
-        </ImageView>
-      ) : (
-        ""
-      )}
       <View>
         <Name>
-          <b>{race.name}</b>
+          <b>{subrace.name}</b>
         </Name>
         <PropWrapper>
           <Prop>
             <GiUpgrade />
-            {race.abilityScores}
+            {subrace.abilityScores}
           </Prop>
-          <Text>
-            <PropTitle>Age:</PropTitle>
-            {formatText(race.age)}
-          </Text>
-          <Text>
-            <PropTitle>Alignment:</PropTitle>
-            {formatText(race.alignment)}
-          </Text>
-          <Text>
-            <PropTitle>Size:</PropTitle>
-            {formatText(race.size)}
-          </Text>
-          <Text>
-            <PropTitle>Speed:</PropTitle>
-            {formatText(race.speed)}
-          </Text>
-          <Text>
-            <PropTitle>Language:</PropTitle>
-            {formatText(race.lang)}
-          </Text>
-          {subraces !== [] && (
-            <Text>
-              <PropTitle>Subraces:</PropTitle>
-              {subraces.map((subrace: Subrace, index: number) => {
-                const link: string = "/subrace-detail/id/" + subrace.id;
-                return (
-                  <SubraceLink key={index} onClick={() => history.push(link)}>
-                    {subrace.name}
-                  </SubraceLink>
-                );
-              })}
-            </Text>
-          )}
+          <Prop>
+            <PropTitle>Race:</PropTitle>
+            {subrace.type}
+          </Prop>
           <Prop>
             <Icon icon={faLink} />
-            {race.sources}
+            {subrace.sources}
           </Prop>
         </PropWrapper>
       </View>
       <View>
         <PropWrapper>
-          {race.traits.map((trait: Trait, index: number) => {
+          {subrace.traits.map((trait: Trait, index: number) => {
             return (
               <TraitWrapper key={index}>
                 <TraitName>{trait.name}</TraitName>
@@ -163,11 +103,6 @@ const View = styled.div`
   justify-content: flex-start;
   align-items: flex-start;
   align-content: flex-start;
-`;
-
-const ImageView = styled(View)`
-  justify-content: flex-end;
-  flex: 1 1 300px;
 `;
 
 const Name = styled.div`
@@ -233,17 +168,6 @@ const TraitText = styled(TraitName)`
   flex: 4 4 auto;
 `;
 
-const Text = styled.div`
-  height: auto;
-  width: calc(100% - 24px);
-  margin: 2px;
-  float: left;
-  line-height: 18px;
-  padding: 10px;
-  border-radius: 5px;
-  background-color: ${({ theme }) => theme.tile.backgroundColor};
-`;
-
 const Link = styled.span`
   display: inline-block;
   background-color: ${({ theme }) => theme.tile.backgroundColorLink};
@@ -255,13 +179,6 @@ const Link = styled.span`
   cursor: pointer;
 `;
 
-const SubraceLink = styled(Link)`
-  font-size: 16px;
-  margin: 5px;
-  padding: 5px;
-  cursor: pointer;
-`;
-
 const Icon = styled(FontAwesomeIcon)`
   margin-right: 5px;
   width: 20px;
@@ -270,21 +187,3 @@ const Icon = styled(FontAwesomeIcon)`
   transition: color 0.2s;
   color: ${({ theme }) => theme.main.highlight};
 `;
-
-interface $ImageProps {
-  pic: string;
-}
-
-const Image = ({ pic }: $ImageProps) => {
-  if (pic !== "") {
-    return <ImageElm src={pic}></ImageElm>;
-  } else {
-    return <Empty />;
-  }
-};
-
-const ImageElm = styled.img`
-  margin: 5px;
-  max-height: 60vh;
-`;
-const Empty = styled.div``;
