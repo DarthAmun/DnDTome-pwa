@@ -64,11 +64,6 @@ const RaceEditView = ({ race, onEdit }: $Props) => {
           onChange={(name) => onEdit({ ...race, name: name })}
         />
         <StringField
-          value={race.type}
-          label="Type"
-          onChange={(type) => onEdit({ ...race, type: type })}
-        />
-        <StringField
           value={race.abilityScores}
           label="Ability Scores"
           onChange={(abilityScores) =>

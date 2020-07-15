@@ -25,7 +25,8 @@ const GearView = ({ gear }: $Props) => {
         if (part.includes("]]")) {
           const codePart: string[] = part.split("]]");
           const linkParts: string[] = codePart[0].split(".");
-          const link: string = "/gear-detail/name/" + linkParts[1];
+          const link: string =
+            "/" + linkParts[0] + "-detail/name/" + linkParts[1];
           return (
             <span key={index}>
               <Link onClick={() => history.push(link)}>{linkParts[1]}</Link>

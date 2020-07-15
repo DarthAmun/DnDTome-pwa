@@ -103,16 +103,16 @@ export const useTableByFilter = <T, U>(
               if (typeof filter.value === "string") {
                 test.push(
                   // @ts-ignore
-                  obj[filter.filedName]
+                  obj[filter.fieldName]
                     .toLowerCase()
                     .includes(filter.value.toLowerCase())
                 );
               } else if (typeof filter.value === "number") {
                 // @ts-ignore
-                test.push(obj[filter.filedName] === filter.value);
+                test.push(obj[filter.fieldName] === filter.value);
               } else if (typeof filter.value === "boolean") {
                 // @ts-ignore
-                test.push(obj[filter.filedName] === filter.value);
+                test.push(obj[filter.fieldName] === filter.value);
               } else if (filter.value instanceof Array) {
                 let arrayTest: boolean = false;
                 filter.value.forEach(
@@ -120,18 +120,18 @@ export const useTableByFilter = <T, U>(
                     if (typeof filterPart === "string") {
                       if (
                         // @ts-ignore
-                        obj[filter.filedName]
+                        obj[filter.fieldName]
                           .toLowerCase()
                           .includes(filterPart.toLowerCase())
                       )
                         arrayTest = true;
                     } else if (typeof filterPart === "number") {
                       // @ts-ignore
-                      if (obj[filter.filedName] === filterPart)
+                      if (obj[filter.fieldName] === filterPart)
                         arrayTest = true;
                     } else if (typeof filterPart === "boolean") {
                       // @ts-ignore
-                      if (obj[filter.filedName] === filterPart)
+                      if (obj[filter.fieldName] === filterPart)
                         arrayTest = true;
                     }
                   }

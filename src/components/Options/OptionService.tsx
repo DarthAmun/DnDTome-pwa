@@ -4,6 +4,7 @@ import Spell, { isSpell } from "../../Data/Spell";
 import Gear, { isGear } from "../../Data/Gear";
 import Monster, { isMonster } from "../../Data/Monster";
 import Race, { isRace } from "../../Data/Race";
+import Subrace, { isSubrace } from "../../Data/Subrace";
 
 export const importFiles = (fileList: FileList | null) => {
   if (fileList !== null) {
@@ -24,6 +25,8 @@ export const importFiles = (fileList: FileList | null) => {
               saveNewFromList("monsters", json as Monster[], file.name);
             } else if (isRace(json[0])) {
               saveNewFromList("races", json as Race[], file.name);
+            } else if (isSubrace(json[0])) {
+              saveNewFromList("subraces", json as Subrace[], file.name);
             }
           }
           //   saveNewSpells(spellsJson, file.name);

@@ -36,7 +36,8 @@ const MonsterView = ({ monster }: $Props) => {
           if (part.includes("]]")) {
             const codePart: string[] = part.split("]]");
             const linkParts: string[] = codePart[0].split(".");
-            const link: string = "/monster-detail/name/" + linkParts[1];
+            const link: string =
+              "/" + linkParts[0] + "-detail/name/" + linkParts[1];
             return (
               <span key={index}>
                 <Link onClick={() => history.push(link)}>{linkParts[1]}</Link>
@@ -91,34 +92,6 @@ const MonsterView = ({ monster }: $Props) => {
 
         <PropWrapper>
           <Prop>
-            <GiResize />
-            {monster.size}
-          </Prop>
-          <Prop>
-            <GiAngelOutfit />
-            {monster.alignment}
-          </Prop>
-          <Prop>
-            <Icon icon={faRunning} />
-            {monster.speed}
-          </Prop>
-          <Prop>
-            <MdRemoveRedEye />
-            {monster.senses}
-          </Prop>
-          <Prop>
-            <MdRecordVoiceOver />
-            {monster.lang}
-          </Prop>
-          <Prop>
-            <Icon icon={faShieldAlt} />
-            {monster.ac}
-          </Prop>
-          <Prop>
-            <GiLifeBar />
-            {monster.hp}
-          </Prop>
-          <Prop>
             <PropTitle>Str:</PropTitle>
             {monster.str}
           </Prop>
@@ -141,6 +114,34 @@ const MonsterView = ({ monster }: $Props) => {
           <Prop>
             <PropTitle>Cha:</PropTitle>
             {monster.cha}
+          </Prop>
+          <Prop>
+            <Icon icon={faShieldAlt} />
+            {monster.ac}
+          </Prop>
+          <Prop>
+            <GiLifeBar />
+            {monster.hp}
+          </Prop>
+          <Prop>
+            <GiResize />
+            {monster.size}
+          </Prop>
+          <Prop>
+            <GiAngelOutfit />
+            {monster.alignment}
+          </Prop>
+          <Prop>
+            <Icon icon={faRunning} />
+            {monster.speed}
+          </Prop>
+          <Prop>
+            <MdRemoveRedEye />
+            {monster.senses}
+          </Prop>
+          <Prop>
+            <MdRecordVoiceOver />
+            {monster.lang}
           </Prop>
           {monster.savingThrows && <Prop>{monster.savingThrows}</Prop>}
           {monster.skills && (

@@ -5,6 +5,8 @@ import Spell from "../Data/Spell";
 import Gear from "../Data/Gear";
 import Monster from "../Data/Monster";
 import Race from "../Data/Race";
+import Subrace from "../Data/Subrace";
+import Filter from "../Data/Filter";
 
 export const update = (tableName: string, data: IEntity) => {
   const db = new MyAppDatabase();
@@ -59,6 +61,70 @@ export const reciveAll = (
     });
 };
 
+export const reciveAllFiltered = (
+  tableName: string,
+  filters: Filter[],
+  callback: (data: IndexableType[]) => void
+) => {
+  const db = new MyAppDatabase();
+  db.open()
+    .then(function () {
+      db.table(tableName)
+        .filter((obj) => {
+          let test: boolean[] = [];
+          filters.forEach((filter) => {
+            if (typeof filter.value === "string") {
+              test.push(
+                // @ts-ignore
+                obj[filter.fieldName]
+                  .toLowerCase()
+                  .includes(filter.value.toLowerCase())
+              );
+            } else if (typeof filter.value === "number") {
+              // @ts-ignore
+              test.push(obj[filter.fieldName] === filter.value);
+            } else if (typeof filter.value === "boolean") {
+              // @ts-ignore
+              test.push(obj[filter.fieldName] === filter.value);
+            } else if (filter.value instanceof Array) {
+              let arrayTest: boolean = false;
+              filter.value.forEach((filterPart: string | boolean | number) => {
+                if (typeof filterPart === "string") {
+                  if (
+                    // @ts-ignore
+                    obj[filter.fieldName]
+                      .toLowerCase()
+                      .includes(filterPart.toLowerCase())
+                  )
+                    arrayTest = true;
+                } else if (typeof filterPart === "number") {
+                  // @ts-ignore
+                  if (obj[filter.fieldName] === filterPart) arrayTest = true;
+                } else if (typeof filterPart === "boolean") {
+                  // @ts-ignore
+                  if (obj[filter.fieldName] === filterPart) arrayTest = true;
+                }
+              });
+              test.push(arrayTest);
+            }
+          });
+
+          let result = true;
+          test.forEach((val) => {
+            if (!val) result = false;
+          });
+          return result;
+        })
+        .toArray()
+        .then((data) => {
+          callback(data);
+        });
+    })
+    .finally(function () {
+      db.close();
+    });
+};
+
 export const reciveAttributeSelection = (
   tableName: string,
   attribute: string,
@@ -80,7 +146,7 @@ export const reciveAttributeSelection = (
 
 export const saveNewFromList = (
   tableName: string,
-  entities: Spell[] | Gear[] | Monster[] | Race[],
+  entities: Spell[] | Gear[] | Monster[] | Race[] | Subrace[],
   filename: string
 ) => {
   const db = new MyAppDatabase();
@@ -91,7 +157,8 @@ export const saveNewFromList = (
         | Gear
         | Monster
         | Race
-      )[]).map((entity: Spell | Gear | Monster | Race) => {
+        | Subrace
+      )[]).map((entity: Spell | Gear | Monster | Race | Subrace) => {
         return { ...entity, filename: filename };
       });
       db.table(tableName).bulkPut(refinedEntities);

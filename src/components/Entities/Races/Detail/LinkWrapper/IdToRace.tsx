@@ -11,7 +11,6 @@ type TParams = { id: string };
 const IdToRace = ({ match }: RouteComponentProps<TParams>) => {
   const db = new MyAppDatabase();
   const [race, loading, error] = useItem(db.races, +match.params.id);
-
   return (
     <AppWrapper>
       {!error && loading && <LoadingSpinner />}

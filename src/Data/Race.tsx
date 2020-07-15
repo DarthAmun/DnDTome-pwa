@@ -4,7 +4,6 @@ import Trait, { isTrait } from "./Trait";
 export default class Race implements IEntity {
   id?: number;
   name: string;
-  type: string;
   abilityScores: string;
   age: string;
   alignment: string;
@@ -19,7 +18,6 @@ export default class Race implements IEntity {
   constructor(
     name: string,
     id: number,
-    type: string,
     filename: string,
     pic: string,
     abilityScores: string,
@@ -32,7 +30,6 @@ export default class Race implements IEntity {
     sources: string
   ) {
     this.name = name;
-    this.type = type;
     this.id = id;
     this.filename = filename;
     this.pic = pic;
@@ -49,7 +46,6 @@ export default class Race implements IEntity {
 
 export function isRace(arg: any): arg is Race {
   const nameCheck = arg.name !== undefined && typeof arg.name == "string";
-  const typeCheck = arg.type !== undefined && typeof arg.type == "string";
   const picCheck = arg.pic !== undefined && typeof arg.pic == "string";
   const abilityScoresCheck =
     arg.abilityScores !== undefined && typeof arg.abilityScores == "string";
@@ -68,7 +64,6 @@ export function isRace(arg: any): arg is Race {
   return (
     arg &&
     nameCheck &&
-    typeCheck &&
     picCheck &&
     abilityScoresCheck &&
     ageCheck &&

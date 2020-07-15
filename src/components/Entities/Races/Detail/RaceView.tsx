@@ -1,19 +1,28 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useState, useEffect } from "react";
 import { useHistory } from "react-router";
+import { reciveAllFiltered } from "../../../../Database/DbService";
 import Race from "../../../../Data/Race";
+import Trait from "../../../../Data/Trait";
+import Subrace from "../../../../Data/Subrace";
 import styled from "styled-components";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLink } from "@fortawesome/free-solid-svg-icons";
 import { GiUpgrade } from "react-icons/gi";
-import Trait from "../../../../Data/Trait";
 
 interface $Props {
   race: Race;
 }
 
 const RaceView = ({ race }: $Props) => {
+  const [subraces, setSubraces] = useState<Subrace[]>([]);
   let history = useHistory();
+
+  useEffect(() => {
+    reciveAllFiltered("subraces", [{fieldName: "type", value:race.name}], (results: any[]) => {
+      setSubraces(results);
+    })
+  },[race]);
 
   const formatText = useCallback(
     (text: String) => {
@@ -23,7 +32,8 @@ const RaceView = ({ race }: $Props) => {
           if (part.includes("]]")) {
             const codePart: string[] = part.split("]]");
             const linkParts: string[] = codePart[0].split(".");
-            const link: string = "/race-detail/name/" + linkParts[1];
+            const link: string =
+              "/" + linkParts[0] + "-detail/name/" + linkParts[1];
             return (
               <span key={index}>
                 <Link onClick={() => history.push(link)}>{linkParts[1]}</Link>
@@ -107,6 +117,18 @@ const RaceView = ({ race }: $Props) => {
           })}
         </PropWrapper>
       </View>
+      {subraces !== [] && (
+        <View>
+          <PropWrapper>
+            {subraces.map((subrace: Subrace, index: number) => {
+              const link: string = "/subrace-detail/id/" + subrace.id;
+              return (
+                <Link key={index} onClick={() => history.push(link)}>{subrace.name}</Link>
+              );
+            })}
+          </PropWrapper>
+        </View>
+      )}
     </CenterWrapper>
   );
 };

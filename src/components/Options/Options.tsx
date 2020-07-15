@@ -25,6 +25,7 @@ const Options = () => {
   const [gearAmount, setGearAmount] = useState<number>(0);
   const [monsterAmount, setMonsterAmount] = useState<number>(0);
   const [raceAmount, setRaceAmount] = useState<number>(0);
+  const [subraceAmount, setSubraceAmount] = useState<number>(0);
 
   useEffect(() => {
     reciveCount("spells", (result: number) => {
@@ -38,6 +39,9 @@ const Options = () => {
     });
     reciveCount("races", (result: number) => {
       setRaceAmount(result);
+    });
+    reciveCount("subraces", (result: number) => {
+      setSubraceAmount(result);
     });
   }, []);
 
@@ -204,6 +208,13 @@ const Options = () => {
                 onClick={() => exportAll("races", "DnDTome_races.json")}
               />
             </SectionRow>
+            <SectionRow>
+              <SectionText>Export all Subraces?</SectionText>
+              <IconButton
+                icon={faFileExport}
+                onClick={() => exportAll("subraces", "DnDTome_subraces.json")}
+              />
+            </SectionRow>
           </OptionSection>
           <OptionSection>
             <SelectionTitle>Delete</SelectionTitle>
@@ -212,6 +223,13 @@ const Options = () => {
               <IconButton
                 icon={faTrashAlt}
                 onClick={() => deleteAll("races")}
+              />
+            </SectionRow>
+            <SectionRow>
+              <SectionText>Delete all {subraceAmount} Subraces?</SectionText>
+              <IconButton
+                icon={faTrashAlt}
+                onClick={() => deleteAll("subraces")}
               />
             </SectionRow>
           </OptionSection>
