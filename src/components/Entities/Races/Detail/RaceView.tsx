@@ -52,9 +52,13 @@ const RaceView = ({ race }: $Props) => {
 
   return (
     <CenterWrapper>
-      <ImageView>
-        {getPicture() !== "" ? <Image pic={getPicture()}></Image> : ""}
-      </ImageView>
+      {getPicture() !== "" ? (
+        <ImageView>
+          <Image pic={getPicture()}></Image>
+        </ImageView>
+      ) : (
+        ""
+      )}
       <View>
         <Name>
           <b>{race.name}</b>

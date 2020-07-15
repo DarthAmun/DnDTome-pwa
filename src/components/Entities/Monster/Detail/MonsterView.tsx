@@ -65,9 +65,13 @@ const MonsterView = ({ monster }: $Props) => {
 
   return (
     <CenterWrapper>
-      <ImageView>
-        {getPicture() !== "" ? <Image pic={getPicture()}></Image> : ""}
-      </ImageView>
+      {getPicture() !== "" ? (
+        <ImageView>
+          <Image pic={getPicture()}></Image>
+        </ImageView>
+      ) : (
+        ""
+      )}
       <View>
         <Type>
           {monster.type}{" "}
@@ -271,6 +275,7 @@ const Type = styled.div`
   height: auto;
   float: left;
   padding: 5px 10px 7px 10px;
+  margin-left: 5px;
   line-height: 30px;
   border-radius: 5px;
   background-color: ${({ theme }) => theme.tile.backgroundColor};
