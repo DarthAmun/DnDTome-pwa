@@ -142,11 +142,6 @@ const Prop = styled.div`
 }
 `;
 
-const WideProp = styled(Prop)`
-  margin: 0 0 5px 0px;
-  width: calc(100% - 20px);
-`;
-
 const Icon = styled(FontAwesomeIcon)`
   margin-right: 5px;
   width: 20px;

@@ -114,7 +114,6 @@ const RaceEditView = ({ race, onEdit }: $Props) => {
         />
       </RaceView>
       <TraitView>
-        <IconButton icon={faPlus} onClick={() => addNewTrait()} />
         {race.traits.map((trait: Trait, index: number) => {
           return (
             <TraitWrapper key={index}>
@@ -137,6 +136,9 @@ const RaceEditView = ({ race, onEdit }: $Props) => {
             </TraitWrapper>
           );
         })}
+        <TraitWrapper>
+          <IconButton icon={faPlus} onClick={() => addNewTrait()} />
+        </TraitWrapper>
       </TraitView>
     </CenterWrapper>
   );
