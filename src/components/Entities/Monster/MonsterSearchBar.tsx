@@ -4,7 +4,7 @@ import Filter from "../../../Data/Filter";
 import ReactDOM from "react-dom";
 import { reciveAttributeSelection } from "../../../Database/DbService";
 
-import { faSearch, faRedoAlt } from "@fortawesome/free-solid-svg-icons";
+import { faSearch, faRedoAlt, faLink } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import MultipleSelectField from "../../FormElements/MultipleSelectField";
 import StringField from "../../FormElements/StringField";
@@ -225,6 +225,7 @@ const MonsterSearchBar = ({ onSend }: $Props) => {
       <StringField
         value={sources}
         label="Sources"
+        icon={faLink}
         onChange={(sources: string) => setSources(sources)}
       />
       <IconButton onClick={() => search()} icon={faSearch} />

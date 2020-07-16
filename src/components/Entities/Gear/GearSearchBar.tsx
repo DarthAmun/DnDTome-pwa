@@ -11,6 +11,7 @@ import {
   faCoins,
   faWeightHanging,
   faCrosshairs,
+  faBook,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import MultipleSelectField from "../../FormElements/MultipleSelectField";
@@ -131,7 +132,7 @@ const GearSearchBar = ({ onSend }: $Props) => {
       <StringField
         value={description}
         label="Text"
-        icon={faLink}
+        icon={faBook}
         onChange={(description) => setDescription(description)}
       />
       <StringField

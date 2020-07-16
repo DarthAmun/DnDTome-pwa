@@ -4,7 +4,7 @@ import Filter from "../../../Data/Filter";
 import ReactDOM from "react-dom";
 import { reciveAttributeSelection } from "../../../Database/DbService";
 
-import { faLink, faSearch, faRedoAlt } from "@fortawesome/free-solid-svg-icons";
+import { faLink, faSearch, faRedoAlt, faBook } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import MultipleSelectField from "../../FormElements/MultipleSelectField";
 import StringField from "../../FormElements/StringField";
@@ -136,7 +136,7 @@ const ItemSearchBar = ({ onSend }: $Props) => {
       <StringField
         value={description}
         label="Text"
-        icon={faLink}
+        icon={faBook}
         onChange={(description) => setDescription(description)}
       />
       <StringField

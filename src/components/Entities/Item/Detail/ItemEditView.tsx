@@ -42,6 +42,11 @@ const ItemEditView = ({ item, onEdit }: $Props) => {
           onChange={(type) => onEdit({ ...item, type: type })}
         />
         <StringField
+          value={item.rarity}
+          label="Rarity"
+          onChange={(rarity) => onEdit({ ...item, rarity: rarity })}
+        />
+        <StringField
           value={item.pic}
           label="Picture"
           icon={faImage}
