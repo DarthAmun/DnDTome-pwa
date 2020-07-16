@@ -27,14 +27,14 @@ const Bar = styled.div`
   background-color: ${({ theme }) => theme.tile.backgroundColor};
   font-size: 16px;
   overflow: hidden;
-  height: 30px;
   min-width: calc(100% - 20px);
   flex: 1 1 auto;
-  padding: 5px;
+  padding: 3px;
   margin: 5px;
   border-radius: 5px;
 
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
   align-items: baseline;
 `;
@@ -48,7 +48,7 @@ const Tab = styled.div`
   border: none;
   background-color: ${({ theme }) => theme.input.backgroundColor};
   color: ${({ theme }) => theme.input.color};
-  margin-left: 5px;
+  margin: 2px;
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.2s;

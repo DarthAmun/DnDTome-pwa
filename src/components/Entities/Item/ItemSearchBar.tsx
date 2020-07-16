@@ -9,6 +9,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import MultipleSelectField from "../../FormElements/MultipleSelectField";
 import StringField from "../../FormElements/StringField";
 import IconButton from "../../FormElements/IconButton";
+import CheckField from "../../FormElements/CheckField";
 
 interface $Props {
   onSend: (filters: Filter[]) => void;
@@ -18,14 +19,19 @@ const ItemSearchBar = ({ onSend }: $Props) => {
   const [open, setOpen] = useState(false);
 
   const [name, setName] = useState<string>("");
-  const [cost, setCost] = useState<string>("");
-  const [weight, setWeight] = useState<string>("");
   const [type, setType] = useState<string[]>([]);
   const [typeList, setTypeList] = useState<{ value: string; label: string }[]>(
     []
   );
-  const [properties, setProperties] = useState<string>("");
-  const [damage, setDamage] = useState<string>("");
+  const [rarity, setRarity] = useState<string[]>([]);
+  const [rarityList, setRarityList] = useState<{ value: string; label: string }[]>(
+    []
+  );
+  const [base, setBase] = useState<string[]>([]);
+  const [baseList, setBaseList] = useState<{ value: string; label: string }[]>(
+    []
+  );
+  const [attunment, setAttunment] = useState<number>(0);
   const [sources, setSources] = useState<string>("");
   const [description, setDescription] = useState<string>("");
 
@@ -39,24 +45,30 @@ const ItemSearchBar = ({ onSend }: $Props) => {
       });
       setTypeList(types);
     });
+    reciveAttributeSelection("items", "rarity", function (result) {
+      let rarities = result.map((rarity) => {
+        if (rarity === "") {
+          return { value: rarity.toString(), label: "Empty" };
+        }
+        return { value: rarity.toString(), label: rarity.toString() };
+      });
+      setRarityList(rarities);
+    });
+    reciveAttributeSelection("items", "base", function (result) {
+      let bases = result.map((base) => {
+        if (base === "") {
+          return { value: base.toString(), label: "Empty" };
+        }
+        return { value: base.toString(), label: base.toString() };
+      });
+      setBaseList(bases);
+    });
   }, []);
 
   const search = () => {
     let newFilters: Filter[] = [];
     if (name !== "") {
       newFilters = [...newFilters, new Filter("name", name)];
-    }
-    if (cost !== "") {
-      newFilters = [...newFilters, new Filter("cost", cost)];
-    }
-    if (weight !== "") {
-      newFilters = [...newFilters, new Filter("weight", weight)];
-    }
-    if (properties !== "") {
-      newFilters = [...newFilters, new Filter("properties", properties)];
-    }
-    if (damage !== "") {
-      newFilters = [...newFilters, new Filter("damage", damage)];
     }
     if (sources !== "") {
       newFilters = [...newFilters, new Filter("sources", sources)];
@@ -67,6 +79,15 @@ const ItemSearchBar = ({ onSend }: $Props) => {
     if (type.length !== 0) {
       newFilters = [...newFilters, new Filter("type", type)];
     }
+    if (rarity.length !== 0) {
+      newFilters = [...newFilters, new Filter("rarity", rarity)];
+    }
+    if (base.length !== 0) {
+      newFilters = [...newFilters, new Filter("base", base)];
+    }
+    if (attunment) {
+      newFilters = [...newFilters, new Filter("attunment", attunment)];
+    }
     setOpen(false);
     onSend(newFilters);
   };
@@ -74,12 +95,11 @@ const ItemSearchBar = ({ onSend }: $Props) => {
   const reset = () => {
     ReactDOM.unstable_batchedUpdates(() => {
       setName("");
-      setCost("");
-      setWeight("");
-      setProperties("");
-      setDamage("");
       setSources("");
       setType([]);
+      setRarity([]);
+      setBase([]);
+      setAttunment(0);
       setDescription("");
       setOpen(false);
     });
@@ -97,6 +117,21 @@ const ItemSearchBar = ({ onSend }: $Props) => {
         options={typeList}
         label="Types"
         onChange={(types: string[]) => setType(types)}
+      />
+      <MultipleSelectField
+        options={rarityList}
+        label="Rarities"
+        onChange={(rarities: string[]) => setRarity(rarities)}
+      />
+      <MultipleSelectField
+        options={baseList}
+        label="Bases"
+        onChange={(bases: string[]) => setBase(bases)}
+      />
+      <CheckField
+        value={!!attunment}
+        label="Attunment"
+        onChange={(attunment) => setAttunment(attunment ? 1 : 0)}
       />
       <StringField
         value={description}

@@ -1,16 +1,30 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useState, useEffect } from "react";
 import { useHistory } from "react-router";
 import Item from "../../../../Data/Item";
+import Gear from "../../../../Data/Gear";
+import { reciveAllFiltered } from "../../../../Database/DbService";
 import styled from "styled-components";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLink } from "@fortawesome/free-solid-svg-icons";
+
 interface $Props {
   item: Item;
 }
 
 const ItemView = ({ item }: $Props) => {
+  const [itemBase, setItemBase] = useState<Gear>();
   let history = useHistory();
+
+  useEffect(() => {
+    reciveAllFiltered(
+      "gears",
+      [{ fieldName: "name", value: item.base }],
+      (results: any[]) => {
+        setItemBase(results[0]);
+      }
+    );
+  }, [item]);
 
   const hasAttunment = useCallback(() => {
     if (item !== undefined) {
@@ -81,7 +95,13 @@ const ItemView = ({ item }: $Props) => {
             <Icon icon={faLink} />
             {item.sources}
           </Prop>
-          {item.base && <Prop>{item.base}</Prop>}
+          {item.base && itemBase && (
+            <>
+              <Prop>{item.base}</Prop>
+              <Prop>{itemBase.damage}</Prop>
+              <Prop>{itemBase.properties}</Prop>
+            </>
+          )}
           <Text>{formatText()}</Text>
         </PropWrapper>
       </View>

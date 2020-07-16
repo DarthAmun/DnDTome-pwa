@@ -1,13 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import Filter from "../../../Data/Filter";
 import ReactDOM from "react-dom";
 
-import {
-  faLink,
-  faSearch,
-  faRedoAlt,
-} from "@fortawesome/free-solid-svg-icons";
+import { faLink, faSearch, faRedoAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import StringField from "../../FormElements/StringField";
 import IconButton from "../../FormElements/IconButton";
@@ -20,32 +16,20 @@ const RaceSearchBar = ({ onSend }: $Props) => {
   const [open, setOpen] = useState(false);
 
   const [name, setName] = useState<string>("");
-  // const [type, setType] = useState<string[]>([]);
-  // const [typeList, setTypeList] = useState<{ value: string; label: string }[]>(
-  //   []
-  // );
+  const [abilityScores, setAbilityScores] = useState<string>("");
   const [sources, setSources] = useState<string>("");
-
-  useEffect(() => {
-    // reciveAttributeSelection("races", "type", function (result) {
-    //   let types = result.map((type) => {
-    //     if (type === "") {
-    //       return { value: type.toString(), label: "Empty" };
-    //     }
-    //     return { value: type.toString(), label: type.toString() };
-    //   });
-    //   setTypeList(types);
-    // });
-  }, []);
 
   const search = () => {
     let newFilters: Filter[] = [];
     if (name !== "") {
       newFilters = [...newFilters, new Filter("name", name)];
     }
-    // if (type.length !== 0) {
-    //   newFilters = [...newFilters, new Filter("type", type)];
-    // }
+    if (abilityScores !== "") {
+      newFilters = [...newFilters, new Filter("abilityScores", abilityScores)];
+    }
+    if (sources !== "") {
+      newFilters = [...newFilters, new Filter("sources", sources)];
+    }
     setOpen(false);
     onSend(newFilters);
   };
@@ -53,6 +37,7 @@ const RaceSearchBar = ({ onSend }: $Props) => {
   const reset = () => {
     ReactDOM.unstable_batchedUpdates(() => {
       setName("");
+      setAbilityScores("");
       setSources("");
       setOpen(false);
     });
@@ -65,6 +50,11 @@ const RaceSearchBar = ({ onSend }: $Props) => {
         value={name}
         label="Name"
         onChange={(name: string) => setName(name)}
+      />
+      <StringField
+        value={abilityScores}
+        label="Ability Scores"
+        onChange={(abilityScores: string) => setAbilityScores(abilityScores)}
       />
       <StringField
         value={sources}
