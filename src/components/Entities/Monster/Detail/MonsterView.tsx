@@ -39,13 +39,13 @@ const MonsterView = ({ monster }: $Props) => {
             const link: string =
               "/" + linkParts[0] + "-detail/name/" + linkParts[1];
             return (
-              <span key={index}>
+              <TextPart key={index}>
                 <Link onClick={() => history.push(link)}>{linkParts[1]}</Link>
                 {codePart[1]}
-              </span>
+              </TextPart>
             );
           } else {
-            return <span key={index}>{part}</span>;
+            return <TextPart key={index}>{part}</TextPart>;
           }
         });
       }
@@ -228,6 +228,10 @@ const View = styled.div`
   justify-content: flex-start;
   align-items: flex-start;
   align-content: flex-start;
+`;
+
+const TextPart = styled.span`
+  white-space: pre-line;
 `;
 
 const ImageView = styled(View)`

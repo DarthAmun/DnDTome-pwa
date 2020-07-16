@@ -3,6 +3,7 @@ import { IndexableType } from "dexie";
 import IEntity from "../Data/IEntity";
 import Spell from "../Data/Spell";
 import Gear from "../Data/Gear";
+import Item from "../Data/Item";
 import Monster from "../Data/Monster";
 import Race from "../Data/Race";
 import Subrace from "../Data/Subrace";
@@ -146,7 +147,7 @@ export const reciveAttributeSelection = (
 
 export const saveNewFromList = (
   tableName: string,
-  entities: Spell[] | Gear[] | Monster[] | Race[] | Subrace[],
+  entities: Spell[] | Gear[] | Monster[] | Race[] | Subrace[] | Item[],
   filename: string
 ) => {
   const db = new MyAppDatabase();
@@ -155,10 +156,11 @@ export const saveNewFromList = (
       const refinedEntities = (entities as (
         | Spell
         | Gear
+        | Item
         | Monster
         | Race
         | Subrace
-      )[]).map((entity: Spell | Gear | Monster | Race | Subrace) => {
+      )[]).map((entity: Spell | Gear | Item | Monster | Race | Subrace) => {
         delete entity['id'];
         return { ...entity, filename: filename };
       });

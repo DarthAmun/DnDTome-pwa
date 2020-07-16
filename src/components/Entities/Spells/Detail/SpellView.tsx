@@ -60,13 +60,13 @@ const SpellView = ({ spell }: $Props) => {
           const link: string =
             "/" + linkParts[0] + "-detail/name/" + linkParts[1];
           return (
-            <span key={index}>
+            <TextPart key={index}>
               <Link onClick={() => history.push(link)}>{linkParts[1]}</Link>
               {codePart[1]}
-            </span>
+            </TextPart>
           );
         } else {
-          return <span key={index}>{part}</span>;
+          return <TextPart key={index}>{part}</TextPart>;
         }
       });
     }
@@ -217,6 +217,10 @@ const Name = styled.div`
   text-align: center;
   border-radius: 5px;
   background-color: ${({ theme }) => theme.tile.backgroundColor};
+`;
+
+const TextPart = styled.span`
+  white-space: pre-line;
 `;
 
 const ImageName = styled.div`

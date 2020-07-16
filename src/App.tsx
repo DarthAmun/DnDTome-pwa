@@ -17,6 +17,9 @@ import IdToRace from "./components/Entities/Races/Detail/LinkWrapper/IdToRace";
 import NameToSubrace from "./components/Entities/Subraces/Detail/LinkWrapper/NameToSubrace";
 import IdToSubrace from "./components/Entities/Subraces/Detail/LinkWrapper/IdToSubrace";
 import RaceOverview from "./components/Entities/Races/RaceOverview";
+import NameToItem from "./components/Entities/Item/Detail/LinkWrapper/NameToItem";
+import IdToItem from "./components/Entities/Item/Detail/LinkWrapper/IdToItem";
+import ItemOverview from "./components/Entities/Item/ItemOverview";
 
 const App = () => {
   return (
@@ -30,6 +33,9 @@ const App = () => {
           <Route path="/gear-detail/name/:name" component={NameToGear}></Route>
           <Route path="/gear-detail/id/:id" component={IdToGear}></Route>
           <Route path="/gear-overview" component={GearOverview}></Route>
+          <Route path="/item-detail/name/:name" component={NameToItem}></Route>
+          <Route path="/item-detail/id/:id" component={IdToItem}></Route>
+          <Route path="/item-overview" component={ItemOverview}></Route>
           <Route path="/monster-detail/name/:name" component={NameToMonster}></Route>
           <Route path="/monster-detail/id/:id" component={IdToMonster}></Route>
           <Route path="/monster-overview" component={MonsterOverview}></Route>

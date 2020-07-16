@@ -1,25 +1,29 @@
 import React, { useCallback } from "react";
 import { useHistory } from "react-router";
-import Gear from "../../../../Data/Gear";
+import Item from "../../../../Data/Item";
 import styled from "styled-components";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faLink,
-  faCoins,
-  faWeightHanging,
-  faCrosshairs,
-} from "@fortawesome/free-solid-svg-icons";
+import { faLink } from "@fortawesome/free-solid-svg-icons";
 interface $Props {
-  gear: Gear;
+  item: Item;
 }
 
-const GearView = ({ gear }: $Props) => {
+const ItemView = ({ item }: $Props) => {
   let history = useHistory();
 
+  const hasAttunment = useCallback(() => {
+    if (item !== undefined) {
+      if (!!item.attunment) {
+        return <div className="icon">A</div>;
+      }
+    }
+    return "";
+  }, [item]);
+
   const formatText = useCallback(() => {
-    if (gear !== undefined) {
-      let text = gear.description;
+    if (item !== undefined) {
+      let text = item.description;
       let parts: string[] = text.split("[[");
       return parts.map((part: string, index: number) => {
         if (part.includes("]]")) {
@@ -39,53 +43,45 @@ const GearView = ({ gear }: $Props) => {
       });
     }
     return "";
-  }, [gear, history]);
+  }, [item, history]);
 
   const getPicture = useCallback(() => {
-    if (gear !== undefined) {
-      if (gear.pic === "" || gear.pic === null) {
+    if (item !== undefined) {
+      if (item.pic === "" || item.pic === null) {
         return "";
       }
-      return gear.pic;
+      return item.pic;
     }
     return "";
-  }, [gear]);
+  }, [item]);
 
   return (
     <CenterWrapper>
       <View>
+        <Rarity rarity={item.rarity}>{item.rarity}</Rarity>
+
+        <Flag>
+          <b>{hasAttunment()}</b>
+        </Flag>
+
         {getPicture() !== "" ? (
           <ImageName>
             <Image pic={getPicture()}></Image>
-            <b>{gear.name}</b>
+            <b>{item.name}</b>
           </ImageName>
         ) : (
           <Name>
-            <b>{gear.name}</b>
+            <b>{item.name}</b>
           </Name>
         )}
 
         <PropWrapper>
-          <Prop>
-            <Icon icon={faCoins} />
-            {gear.cost}
-          </Prop>
-          <Prop>
-            <Icon icon={faWeightHanging} />
-            {gear.weight}
-          </Prop>
-          <Prop>{gear.type}</Prop>
+          <Prop>{item.type}</Prop>
           <Prop>
             <Icon icon={faLink} />
-            {gear.sources}
+            {item.sources}
           </Prop>
-          {gear.damage && (
-            <Prop>
-              <Icon icon={faCrosshairs} />
-              {gear.damage}
-            </Prop>
-          )}
-          {gear.properties && <Prop>{gear.properties}</Prop>}
+          {item.base && <Prop>{item.base}</Prop>}
           <Text>{formatText()}</Text>
         </PropWrapper>
       </View>
@@ -93,7 +89,7 @@ const GearView = ({ gear }: $Props) => {
   );
 };
 
-export default GearView;
+export default ItemView;
 
 const CenterWrapper = styled.div`
   overflow: hidden;
@@ -108,6 +104,39 @@ const View = styled.div`
   padding: 5px;
   margin-left: auto;
   margin-right: auto;
+`;
+
+const TextPart = styled.span`
+  white-space: pre-line;
+`;
+
+type RarityType = {
+  rarity?: string;
+};
+
+const Rarity = styled.div<RarityType>`
+  height: auto;
+  float: left;
+  padding: 5px 10px 7px 10px;
+  line-height: 30px;
+  border-radius: 5px;
+  background-color: ${({ theme }) => theme.tile.backgroundColor};
+  color: ${(props) => {
+    const rarity = props.rarity?.toLowerCase().trim();
+    if (rarity === "artifact") {
+      return "#f74646";
+    } else if (rarity === "legendary") {
+      return "#f7ce46";
+    } else if (rarity === "very rare") {
+      return "#8000ff";
+    } else if (rarity === "rare") {
+      return "#4675f7";
+    } else if (rarity === "uncommon") {
+      return "#4dbd56";
+    } else {
+      return "inherit";
+    }
+  }};
 `;
 
 const Name = styled.div`
@@ -132,10 +161,6 @@ const ImageName = styled.div`
   text-align: center;
   border-radius: 50px 5px 5px 50px;
   background-color: ${({ theme }) => theme.tile.backgroundColor};
-`;
-
-const TextPart = styled.span`
-  white-space: pre-line;
 `;
 
 const PropWrapper = styled.div`
@@ -179,6 +204,17 @@ const Link = styled.span`
   font-size: 10px;
   padding: 0px 5px 0px 5px;
   cursor: pointer;
+`;
+
+const Flag = styled.div`
+  height: auto;
+  float: left;
+  padding: 5px 10px 7px 10px;
+  margin-left: 5px;
+  font-size: 12px;
+  line-height: 30px;
+  border-radius: 5px;
+  background-color: ${({ theme }) => theme.tile.backgroundColor};
 `;
 
 const Icon = styled(FontAwesomeIcon)`
