@@ -159,6 +159,7 @@ export const saveNewFromList = (
         | Race
         | Subrace
       )[]).map((entity: Spell | Gear | Monster | Race | Subrace) => {
+        delete entity['id'];
         return { ...entity, filename: filename };
       });
       db.table(tableName).bulkPut(refinedEntities);

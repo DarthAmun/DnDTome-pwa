@@ -132,6 +132,8 @@ const Image = ({ pic }: $ImageProps) => {
 
 const ImageElm = styled.img`
   margin: 5px;
-  flex: 1 1 auto;
+  max-width: 200px;
+  max-height: 300px;
+  float: left;
 `;
 const Empty = styled.div``;

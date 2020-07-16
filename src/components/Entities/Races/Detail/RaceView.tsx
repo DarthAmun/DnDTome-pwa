@@ -102,7 +102,7 @@ const RaceView = ({ race }: $Props) => {
             <PropTitle>Language:</PropTitle>
             {formatText(race.lang)}
           </Text>
-          {subraces !== [] && (
+          {subraces.length !== 0 && (
             <Text>
               <PropTitle>Subraces:</PropTitle>
               {subraces.map((subrace: Subrace, index: number) => {
