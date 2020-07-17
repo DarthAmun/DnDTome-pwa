@@ -20,13 +20,16 @@ import RaceOverview from "./components/Entities/Races/RaceOverview";
 import NameToItem from "./components/Entities/Item/Detail/LinkWrapper/NameToItem";
 import IdToItem from "./components/Entities/Item/Detail/LinkWrapper/IdToItem";
 import ItemOverview from "./components/Entities/Item/ItemOverview";
+import NameToClass from "./components/Entities/Classes/Detail/LinkWrapper/NameToClass";
+import IdToClass from "./components/Entities/Classes/Detail/LinkWrapper/IdToClass";
+import ClassOverview from "./components/Entities/Classes/ClassOverview";
 
 const App = () => {
   return (
     <MyThemeProvider>
       <MemoryRouter>
         <Switch>
-          <Route exact path="/" component={RaceOverview}></Route>
+          <Route exact path="/" component={ClassOverview}></Route>
           <Route path="/spell-detail/name/:name" component={NameToSpell}></Route>
           <Route path="/spell-detail/id/:id" component={IdToSpell}></Route>
           <Route path="/spell-overview" component={SpellOverview}></Route>
@@ -44,6 +47,9 @@ const App = () => {
           <Route path="/race-overview" component={RaceOverview}></Route>
           <Route path="/subrace-detail/name/:name" component={NameToSubrace}></Route>
           <Route path="/subrace-detail/id/:id" component={IdToSubrace}></Route>
+          <Route path="/class-detail/name/:name" component={NameToClass}></Route>
+          <Route path="/class-detail/id/:id" component={IdToClass}></Route>
+          <Route path="/class-overview" component={ClassOverview}></Route>
           <Route path="/options" component={Options}></Route>
         </Switch>
       </MemoryRouter>

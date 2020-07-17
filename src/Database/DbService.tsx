@@ -8,6 +8,7 @@ import Monster from "../Data/Monster";
 import Race from "../Data/Race";
 import Subrace from "../Data/Subrace";
 import Filter from "../Data/Filter";
+import Class from "../Data/Class";
 
 export const update = (tableName: string, data: IEntity) => {
   const db = new MyAppDatabase();
@@ -147,7 +148,7 @@ export const reciveAttributeSelection = (
 
 export const saveNewFromList = (
   tableName: string,
-  entities: Spell[] | Gear[] | Monster[] | Race[] | Subrace[] | Item[],
+  entities: Spell[] | Gear[] | Monster[] | Race[] | Subrace[] | Item[] | Class[],
   filename: string
 ) => {
   const db = new MyAppDatabase();
@@ -160,7 +161,8 @@ export const saveNewFromList = (
         | Monster
         | Race
         | Subrace
-      )[]).map((entity: Spell | Gear | Item | Monster | Race | Subrace) => {
+        | Class
+      )[]).map((entity: Spell | Gear | Item | Monster | Race | Subrace | Class) => {
         delete entity['id'];
         return { ...entity, filename: filename };
       });

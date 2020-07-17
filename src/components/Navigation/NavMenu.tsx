@@ -4,7 +4,7 @@ import { Link, useLocation } from "react-router-dom";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMeteor, faCog, faDragon } from "@fortawesome/free-solid-svg-icons";
-import { GiBackpack, GiWomanElfFace, GiCrystalWand } from "react-icons/gi";
+import { GiBackpack, GiWomanElfFace, GiCrystalWand, GiPlagueDoctorProfile } from "react-icons/gi";
 
 interface $Props {
   open: boolean;
@@ -50,6 +50,15 @@ const NavMenu = ({ open }: $Props) => {
       >
         <GiWomanElfFace />
         Races
+      </Link>
+      <Link
+        to="/class-overview"
+        className={
+          location.pathname === "/class-overview" ? "menuItemActiv" : ""
+        }
+      >
+        <GiPlagueDoctorProfile />
+        Classes
       </Link>
       <Link
         to="/monster-overview"
