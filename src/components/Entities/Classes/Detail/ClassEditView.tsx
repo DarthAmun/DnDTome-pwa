@@ -11,9 +11,12 @@ import {
   faPlus,
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
-import Trait from "../../../../Data/Trait";
 import NumberField from "../../../FormElements/NumberField";
 import IconButton from "../../../FormElements/IconButton";
+import TextField from "../../../FormElements/TextField";
+import FeatureSet from "../../../../Data/FeatureSet";
+import NumberArrayField from "../../../FormElements/NumberArrayField";
+import Boni from "../../../../Data/Boni";
 
 interface $Props {
   classe: Class;
@@ -21,34 +24,34 @@ interface $Props {
 }
 
 const ClassEditView = ({ classe, onEdit }: $Props) => {
-  // const onTraitChange = (
-  //   oldTrait: Trait,
-  //   field: string,
-  //   value: string | number
-  // ) => {
-  //   let traits = classe.traits.map((trait: Trait) => {
-  //     if (trait === oldTrait) {
-  //       return {
-  //         ...trait,
-  //         [field]: value,
-  //       };
-  //     } else {
-  //       return trait;
-  //     }
-  //   });
-  //   onEdit({ ...classe, traits: traits });
-  // };
+  const onFeatureChange = (
+    oldFeature: FeatureSet,
+    field: string,
+    value: string | number | any[]
+  ) => {
+    let features = classe.featureSets.map((featureSet: FeatureSet) => {
+      if (featureSet === oldFeature) {
+        return {
+          ...featureSet,
+          [field]: value,
+        };
+      } else {
+        return featureSet;
+      }
+    });
+    onEdit({ ...classe, featureSets: features });
+  };
 
-  // const addNewTrait = () => {
+  // const addNewFeature = () => {
   //   onEdit({
   //     ...classe,
-  //     traits: [...classe.traits, { name: "New Trait", level: 1, text: "" }],
+  //     traits: [...classe.traits, { name: "New Feature", level: 1, text: "" }],
   //   });
   // };
 
-  // const removeTrait = (oldTrait: Trait) => {
+  // const removeFeature = (oldFeature: Feature) => {
   //   let traits = classe.traits;
-  //   const index: number = traits.indexOf(oldTrait);
+  //   const index: number = traits.indexOf(oldFeature);
   //   if (index !== -1) {
   //     traits.splice(index, 1);
   //     onEdit({ ...classe, traits: traits });
@@ -64,6 +67,11 @@ const ClassEditView = ({ classe, onEdit }: $Props) => {
           onChange={(name) => onEdit({ ...classe, name: name })}
         />
         <StringField
+          value={classe.hitDices}
+          label="Hit Dice"
+          onChange={(hitDices) => onEdit({ ...classe, hitDices: hitDices })}
+        />
+        <StringField
           value={classe.pic}
           label="Picture"
           icon={faImage}
@@ -75,34 +83,88 @@ const ClassEditView = ({ classe, onEdit }: $Props) => {
           icon={faLink}
           onChange={(sources) => onEdit({ ...classe, sources: sources })}
         />
+        <TextField
+          value={classe.proficiencies}
+          label="Proficiencies"
+          onChange={(proficiencies) =>
+            onEdit({ ...classe, proficiencies: proficiencies })
+          }
+        />
+        <TextField
+          value={classe.equipment}
+          label="Equipment"
+          onChange={(equipment) => onEdit({ ...classe, equipment: equipment })}
+        />
       </ClassView>
-      {/* <TraitView>
-        {classe.traits.map((trait: Trait, index: number) => {
+      <FeatureView>
+        {classe.featureSets.map((featureSet: FeatureSet, index: number) => {
           return (
-            <TraitWrapper key={index}>
-              <TraitName
-                value={trait.name}
-                label="Name"
-                onChange={(name) => onTraitChange(trait, "name", name)}
-              />
-              <TraitLevel
-                value={trait.level}
+            <FeatureWrapper key={index}>
+              <FeatureNumber
+                value={featureSet.level}
                 label="Level"
-                onChange={(level) => onTraitChange(trait, "level", level)}
+                onChange={(level) =>
+                  onFeatureChange(featureSet, "level", level)
+                }
               />
-              <IconButton icon={faTrash} onClick={() => removeTrait(trait)} />
-              <TraitText
-                value={trait.text}
-                label="Text"
-                onChange={(text) => onTraitChange(trait, "text", text)}
+              <FeatureNumber
+                value={featureSet.profBonus}
+                label="Prof. Bonus"
+                onChange={(profBonus) =>
+                  onFeatureChange(featureSet, "profBonus", profBonus)
+                }
               />
-            </TraitWrapper>
+              <FeatureNumberArray
+                values={featureSet.spellslots ? featureSet.spellslots : []}
+                label="Spellslots"
+                onChange={(spellslots) =>
+                  onFeatureChange(featureSet, "spellslots", spellslots)
+                }
+              />
+              {/* {featureSet.bonis && featureSet.bonis.map((boni: Boni, index: number) => {
+                <FeatureString
+                  value={boni.name}
+                  label="Boni Name"
+                  onChange={(name) =>
+                    onFeatureChange(boni, "name", name)
+                  }
+                />;
+              })} */}
+              {/* <IconButton icon={faTrash} onClick={() => removeFeature(trait)} /> */}
+            </FeatureWrapper>
           );
         })}
-        <TraitWrapper>
-          <IconButton icon={faPlus} onClick={() => addNewTrait()} />
-        </TraitWrapper>
-      </TraitView> */}
+        <FeatureWrapper>
+          {/* <IconButton icon={faPlus} onClick={() => addNewFeature()} /> */}
+        </FeatureWrapper>
+      </FeatureView>
+      {/* <FeatureView>
+        {classe.traits.map((trait: Feature, index: number) => {
+          return (
+            <FeatureWrapper key={index}>
+              <FeatureName
+                value={trait.name}
+                label="Name"
+                onChange={(name) => onFeatureChange(trait, "name", name)}
+              />
+              <FeatureLevel
+                value={trait.level}
+                label="Level"
+                onChange={(level) => onFeatureChange(trait, "level", level)}
+              />
+              <IconButton icon={faTrash} onClick={() => removeFeature(trait)} />
+              <FeatureText
+                value={trait.text}
+                label="Text"
+                onChange={(text) => onFeatureChange(trait, "text", text)}
+              />
+            </FeatureWrapper>
+          );
+        })}
+        <FeatureWrapper>
+          <IconButton icon={faPlus} onClick={() => addNewFeature()} />
+        </FeatureWrapper>
+      </FeatureView> */}
     </CenterWrapper>
   );
 };
@@ -133,9 +195,9 @@ const ClassView = styled.div`
   align-content: flex-start;
 `;
 
-const TraitView = styled(ClassView)``;
+const FeatureView = styled(ClassView)``;
 
-const TraitWrapper = styled.div`
+const FeatureWrapper = styled.div`
   flex: 1 1 600px;
   height: auto;
   width: calc(100% - 6px);
@@ -145,25 +207,12 @@ const TraitWrapper = styled.div`
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
+
+  label {
+    margin: 2px;
+  }
 `;
-const TraitName = styled(StringField)`
-  background-color: ${({ theme }) => theme.tile.backgroundColor};
-  padding: 10px;
-  border-radius: 5px;
-  margin: 2px;
-  flex: 3 3 auto;
-`;
-const TraitLevel = styled(NumberField)`
-  background-color: ${({ theme }) => theme.tile.backgroundColor};
-  padding: 10px;
-  border-radius: 5px;
-  margin: 2px;
-  flex: 1 1 auto;
-`;
-const TraitText = styled(ShortTextField)`
-  background-color: ${({ theme }) => theme.tile.backgroundColor};
-  padding: 10px;
-  border-radius: 5px;
-  margin: 2px;
-  flex: 4 4 auto;
-`;
+const FeatureString = styled(StringField)``;
+const FeatureNumber = styled(NumberField)``;
+const FeatureText = styled(ShortTextField)``;
+const FeatureNumberArray = styled(NumberArrayField)``;
