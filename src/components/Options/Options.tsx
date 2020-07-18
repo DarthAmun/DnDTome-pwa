@@ -27,6 +27,7 @@ const Options = () => {
   const [monsterAmount, setMonsterAmount] = useState<number>(0);
   const [raceAmount, setRaceAmount] = useState<number>(0);
   const [subraceAmount, setSubraceAmount] = useState<number>(0);
+  const [classAmount, setClassAmount] = useState<number>(0);
 
   useEffect(() => {
     reciveCount("spells", (result: number) => {
@@ -47,6 +48,9 @@ const Options = () => {
     reciveCount("subraces", (result: number) => {
       setSubraceAmount(result);
     });
+    reciveCount("classes", (result: number) => {
+      setClassAmount(result);
+    });
   }, []);
 
   const toggleTheme = () => {
@@ -62,7 +66,15 @@ const Options = () => {
   return (
     <AppWrapper>
       <TabBar
-        children={["General", "Spells", "Gears", "Magic Items", "Monsters", "Races"]}
+        children={[
+          "General",
+          "Spells",
+          "Gears",
+          "Magic Items",
+          "Monsters",
+          "Races",
+          "Classes",
+        ]}
         onChange={(tab: string) => setTab(tab)}
       />
       {activeTab === "General" && (
@@ -268,6 +280,54 @@ const Options = () => {
                 onClick={() => deleteAll("subraces")}
               />
             </SectionRow>
+          </OptionSection>
+        </OptionTab>
+      )}
+      {activeTab === "Classes" && (
+        <OptionTab>
+          <OptionSection>
+            <SelectionTitle>Import</SelectionTitle>
+            <FileField
+              label="Select DnDTome Json"
+              icon={faFileImport}
+              onChange={(file) => importFiles(file)}
+            />
+          </OptionSection>
+          <OptionSection>
+            <SelectionTitle>Export</SelectionTitle>
+            <SectionRow>
+              <SectionText>Export all Classes?</SectionText>
+              <IconButton
+                icon={faFileExport}
+                onClick={() => exportAll("classes", "DnDTome_classes.json")}
+              />
+            </SectionRow>
+            {/* <SectionRow>
+              <SectionText>Export all Subclasses?</SectionText>
+              <IconButton
+                icon={faFileExport}
+                onClick={() =>
+                  exportAll("subclasses", "DnDTome_subclasses.json")
+                }
+              />
+            </SectionRow> */}
+          </OptionSection>
+          <OptionSection>
+            <SelectionTitle>Delete</SelectionTitle>
+            <SectionRow>
+              <SectionText>Delete all {classAmount} Classes?</SectionText>
+              <IconButton
+                icon={faTrashAlt}
+                onClick={() => deleteAll("classes")}
+              />
+            </SectionRow>
+            {/* <SectionRow>
+              <SectionText>Delete all {subclassAmount} Subclasses?</SectionText>
+              <IconButton
+                icon={faTrashAlt}
+                onClick={() => deleteAll("subclasses")}
+              />
+            </SectionRow> */}
           </OptionSection>
         </OptionTab>
       )}

@@ -17,6 +17,7 @@ import TextField from "../../../FormElements/TextField";
 import FeatureSet from "../../../../Data/FeatureSet";
 import NumberArrayField from "../../../FormElements/NumberArrayField";
 import Boni from "../../../../Data/Boni";
+import Feature from "../../../../Data/Feature";
 
 interface $Props {
   classe: Class;
@@ -24,7 +25,7 @@ interface $Props {
 }
 
 const ClassEditView = ({ classe, onEdit }: $Props) => {
-  const onFeatureChange = (
+  const onFeatureSetChange = (
     oldFeature: FeatureSet,
     field: string,
     value: string | number | any[]
@@ -35,6 +36,58 @@ const ClassEditView = ({ classe, onEdit }: $Props) => {
           ...featureSet,
           [field]: value,
         };
+      } else {
+        return featureSet;
+      }
+    });
+    onEdit({ ...classe, featureSets: features });
+  };
+
+  const onBoniChange = (
+    oldFeature: FeatureSet,
+    oldBoni: Boni,
+    field: string,
+    value: string
+  ) => {
+    let features = classe.featureSets.map((featureSet: FeatureSet) => {
+      if (featureSet === oldFeature && featureSet.bonis !== undefined) {
+        let bonis = featureSet.bonis.map((boni: Boni) => {
+          if (boni === oldBoni) {
+            return {
+              ...boni,
+              [field]: value,
+            };
+          } else {
+            return boni;
+          }
+        });
+        return { ...featureSet, bonis: bonis };
+      } else {
+        return featureSet;
+      }
+    });
+    onEdit({ ...classe, featureSets: features });
+  };
+
+  const onFeatureChange = (
+    oldFeatureSet: FeatureSet,
+    oldFeature: Feature,
+    field: string,
+    value: string
+  ) => {
+    let features = classe.featureSets.map((featureSet: FeatureSet) => {
+      if (featureSet === oldFeatureSet && featureSet.features !== undefined) {
+        let features = featureSet.features.map((feature: Feature) => {
+          if (feature === oldFeature) {
+            return {
+              ...feature,
+              [field]: value,
+            };
+          } else {
+            return feature;
+          }
+        });
+        return { ...featureSet, features: features };
       } else {
         return featureSet;
       }
@@ -104,39 +157,69 @@ const ClassEditView = ({ classe, onEdit }: $Props) => {
                 value={featureSet.level}
                 label="Level"
                 onChange={(level) =>
-                  onFeatureChange(featureSet, "level", level)
+                  onFeatureSetChange(featureSet, "level", level)
                 }
               />
               <FeatureNumber
                 value={featureSet.profBonus}
                 label="Prof. Bonus"
                 onChange={(profBonus) =>
-                  onFeatureChange(featureSet, "profBonus", profBonus)
+                  onFeatureSetChange(featureSet, "profBonus", profBonus)
                 }
               />
               <FeatureNumberArray
                 values={featureSet.spellslots ? featureSet.spellslots : []}
                 label="Spellslots"
                 onChange={(spellslots) =>
-                  onFeatureChange(featureSet, "spellslots", spellslots)
+                  onFeatureSetChange(featureSet, "spellslots", spellslots)
                 }
               />
-              {/* {featureSet.bonis && featureSet.bonis.map((boni: Boni, index: number) => {
-                <FeatureString
-                  value={boni.name}
-                  label="Boni Name"
-                  onChange={(name) =>
-                    onFeatureChange(boni, "name", name)
-                  }
-                />;
-              })} */}
-              {/* <IconButton icon={faTrash} onClick={() => removeFeature(trait)} /> */}
+              {featureSet.bonis &&
+                featureSet.bonis.map((boni: Boni) => {
+                  return (
+                    <BoniContainer>
+                      <FeatureString
+                        value={boni.name}
+                        label="Boni Name"
+                        onChange={(name) =>
+                          onBoniChange(featureSet, boni, "name", name)
+                        }
+                      />
+                      <FeatureString
+                        value={boni.value}
+                        label="Boni Value"
+                        onChange={(value) =>
+                          onBoniChange(featureSet, boni, "value", value)
+                        }
+                      />
+                    </BoniContainer>
+                  );
+                })}
+              {featureSet.features &&
+                featureSet.features.map((feature: Feature) => {
+                  return (
+                    <FeatureContainer>
+                      <FeatureString
+                        value={feature.name}
+                        label="Feature Name"
+                        onChange={(name) =>
+                          onFeatureChange(featureSet, feature, "name", name)
+                        }
+                      />
+                      <FeatureText
+                        value={feature.text}
+                        label="Beature Text"
+                        onChange={(text) =>
+                          onFeatureChange(featureSet, feature, "text", text)
+                        }
+                      />
+                    </FeatureContainer>
+                  );
+                })}
             </FeatureWrapper>
           );
         })}
-        <FeatureWrapper>
-          {/* <IconButton icon={faPlus} onClick={() => addNewFeature()} /> */}
-        </FeatureWrapper>
+        <FeatureWrapper></FeatureWrapper>
       </FeatureView>
       {/* <FeatureView>
         {classe.traits.map((trait: Feature, index: number) => {
@@ -203,6 +286,9 @@ const FeatureWrapper = styled.div`
   width: calc(100% - 6px);
   float: left;
   padding: 3px;
+  margin-bottom: 5px;
+  border-radius: 5px;
+  background-color: ${({ theme }) => theme.tile.backgroundColor};
 
   display: flex;
   flex-wrap: wrap;
@@ -216,3 +302,17 @@ const FeatureString = styled(StringField)``;
 const FeatureNumber = styled(NumberField)``;
 const FeatureText = styled(ShortTextField)``;
 const FeatureNumberArray = styled(NumberArrayField)``;
+
+const FeatureContainer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  flex: 1 1 600px;
+  border-top: none;
+  border-bottom: 2px solid ${({ theme }) => theme.input.backgroundColor};
+
+  &:last-child {
+    border-bottom: none;
+  }
+`;
+const BoniContainer = styled(FeatureContainer)``;

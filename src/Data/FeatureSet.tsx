@@ -1,7 +1,7 @@
-import Feature from "./Feature";
+import Feature, { isFeature } from "./Feature";
 import Boni from "./Boni";
 
-export default class FeatureSet{
+export default class FeatureSet {
   level: number;
   profBonus: number;
   features: Feature[];
@@ -24,8 +24,12 @@ export default class FeatureSet{
 }
 
 export function isFeatureSet(arg: any): arg is FeatureSet {
-  const nameCheck = arg.name !== undefined && typeof arg.name == "string";
-  const sourcesCheck =
-    arg.sources !== undefined && typeof arg.sources == "string";
-  return arg && nameCheck && sourcesCheck;
+  const levelCheck = arg.level !== undefined && typeof arg.level == "number";
+  const profBonusCheck =
+    arg.profBonus !== undefined && typeof arg.profBonus == "number";
+  const featuresCheck =
+    arg.features !== undefined &&
+    Array.isArray(arg.features) &&
+    isFeature(arg.features[0]);
+  return arg && levelCheck && profBonusCheck && featuresCheck;
 }

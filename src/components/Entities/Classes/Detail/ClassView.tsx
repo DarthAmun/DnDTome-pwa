@@ -115,7 +115,7 @@ const ClassView = ({ classe }: $Props) => {
               <thead>
                 <FeatureRow>
                   <FeatureHeadProp
-                    colSpan={classe.featureSets[0].spellslots.length}
+                    colSpan={classe.featureSets[0].spellslots.length+1}
                   >
                     Spellslots
                   </FeatureHeadProp>
@@ -124,7 +124,10 @@ const ClassView = ({ classe }: $Props) => {
               <tbody>
                 <FeatureRow>
                   {classe.featureSets[0].spellslots.length >= 1 && (
-                    <SpellProp>1st</SpellProp>
+                    <>
+                      <SpellProp>Level</SpellProp>
+                      <SpellProp>1st</SpellProp>
+                    </>
                   )}
                   {classe.featureSets[0].spellslots.length >= 2 && (
                     <SpellProp>2nd</SpellProp>
@@ -154,14 +157,18 @@ const ClassView = ({ classe }: $Props) => {
                 {classe.featureSets.map((featureSet) => {
                   return (
                     <FeatureRow>
-                      {featureSet.spellslots &&
-                        featureSet.spellslots.map((spellslot) => {
-                          return (
-                            <SpellProp>
-                              {spellslot === 0 ? "-" : spellslot}
-                            </SpellProp>
-                          );
-                        })}
+                      {featureSet.spellslots && (
+                        <>
+                          <SpellProp>{featureSet.level}</SpellProp>
+                          {featureSet.spellslots.map((spellslot) => {
+                            return (
+                              <SpellProp>
+                                {spellslot === 0 ? "-" : spellslot}
+                              </SpellProp>
+                            );
+                          })}
+                        </>
+                      )}
                     </FeatureRow>
                   );
                 })}

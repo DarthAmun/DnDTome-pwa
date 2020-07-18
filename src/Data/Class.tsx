@@ -1,5 +1,5 @@
 import IEntity from "./IEntity";
-import FeatureSet from "./FeatureSet";
+import FeatureSet, { isFeatureSet } from "./FeatureSet";
 
 export default class Class implements IEntity {
   id?: number;
@@ -37,7 +37,25 @@ export default class Class implements IEntity {
 
 export function isClass(arg: any): arg is Class {
   const nameCheck = arg.name !== undefined && typeof arg.name == "string";
+  const featureSetsCheck =
+    arg.featureSets !== undefined &&
+    Array.isArray(arg.featureSets) &&
+    isFeatureSet(arg.featureSets[0]);
+  const hitDicesCheck =
+    arg.hitDices !== undefined && typeof arg.hitDices == "string";
+  const proficienciesCheck =
+    arg.proficiencies !== undefined && typeof arg.proficiencies == "string";
+  const equipmentCheck =
+    arg.equipment !== undefined && typeof arg.equipment == "string";
   const sourcesCheck =
     arg.sources !== undefined && typeof arg.sources == "string";
-  return arg && nameCheck && sourcesCheck;
+  return (
+    arg &&
+    nameCheck &&
+    sourcesCheck &&
+    featureSetsCheck &&
+    hitDicesCheck &&
+    proficienciesCheck &&
+    equipmentCheck
+  );
 }
