@@ -6,13 +6,15 @@ import {
   faArrowLeft,
   faSave,
   faTrash,
+  faExclamationTriangle,
 } from "@fortawesome/free-solid-svg-icons";
 import ClassView from "./ClassView";
 import ClassEditView from "./ClassEditView";
 import BackButton from "../../../FormElements/BackButton";
 import Class from "../../../../Data/Class";
 import IconButton from "../../../FormElements/IconButton";
-import { update, remove } from "../../../../Database/DbService";
+import { remove, updateWithCallback } from "../../../../Database/DbService";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 interface $Props {
   classe: Class;
@@ -20,46 +22,60 @@ interface $Props {
 
 const ClassDetail = ({ classe }: $Props) => {
   const [editMode, setMode] = useState<boolean>(false);
-  const [classeObj, editClass] = useState<Class>(classe);
+  const [message, setMessage] = useState<string>("");
+  const [unsavedChanges, setUnsavedChanges] = useState<boolean>(false);
+  const [classObj, editClass] = useState<Class>(classe);
   let history = useHistory();
-
-  useEffect(() => {
-    console.log("saved")
-  }, [classeObj]);
 
   const deleteClass = (classeId: number | undefined) => {
     remove("classes", classeId);
     history.goBack();
   };
 
+  useEffect(() => {
+    if (classObj !== classe) {
+      setUnsavedChanges(true);
+    }
+  }, [classObj]);
+
+  const updateClass = (tableName: string, classObj: Class) => {
+    updateWithCallback(tableName, classObj, (result) => {
+      if (result > 0) {
+        setUnsavedChanges(false);
+        setMessage("Saved successful!");
+      } else {
+        setMessage("Something went wrong!");
+      }
+    });
+  };
+
   return (
     <>
       <TopBar>
+        {message && <Message>{message}</Message>}
         <BackButton icon={faArrowLeft} action={() => history.goBack()} />
         <EditToggle mode={editMode.toString()}>
           <ToggleLeft onClick={() => setMode(false)}>View</ToggleLeft>
           <ToggleRight onClick={() => setMode(true)}>Edit</ToggleRight>
         </EditToggle>
+        {unsavedChanges && <Icon icon={faExclamationTriangle} />}
         {editMode && (
           <>
             <IconButton
-              onClick={() => update("classes", classeObj)}
+              onClick={() => updateClass("classes", classObj)}
               icon={faSave}
             />
             <IconButton
-              onClick={() => deleteClass(classeObj.id)}
+              onClick={() => deleteClass(classObj.id)}
               icon={faTrash}
             />
           </>
         )}
       </TopBar>
       {editMode ? (
-        <ClassEditView
-          classe={classeObj}
-          onEdit={(value) => editClass(value)}
-        />
+        <ClassEditView classe={classObj} onEdit={(value) => editClass(value)} />
       ) : (
-        <ClassView classe={classeObj} />
+        <ClassView classe={classObj} />
       )}
     </>
   );
@@ -134,4 +150,14 @@ const EditToggle = styled.div<EditMode>`
     }}}
     ;
   }
+`;
+
+const Message = styled.div``;
+
+const Icon = styled(FontAwesomeIcon)`
+  float: right;
+  line-height: 30px;
+  display: block;
+  height: 30px;
+  padding: 10px;
 `;

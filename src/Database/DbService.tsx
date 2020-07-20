@@ -21,6 +21,25 @@ export const update = (tableName: string, data: IEntity) => {
     });
 };
 
+export const updateWithCallback = (
+  tableName: string,
+  data: IEntity,
+  callback: (data: number) => void
+) => {
+  const db = new MyAppDatabase();
+  db.open()
+    .then(function () {
+      db.table(tableName)
+        .update(data.id, data)
+        .then((result: number) => {
+          callback(result);
+        });
+    })
+    .finally(function () {
+      db.close();
+    });
+};
+
 export const save = (tableName: string, data: IEntity) => {
   const db = new MyAppDatabase();
   db.open()
@@ -148,7 +167,14 @@ export const reciveAttributeSelection = (
 
 export const saveNewFromList = (
   tableName: string,
-  entities: Spell[] | Gear[] | Monster[] | Race[] | Subrace[] | Item[] | Class[],
+  entities:
+    | Spell[]
+    | Gear[]
+    | Monster[]
+    | Race[]
+    | Subrace[]
+    | Item[]
+    | Class[],
   filename: string
 ) => {
   const db = new MyAppDatabase();
@@ -162,10 +188,12 @@ export const saveNewFromList = (
         | Race
         | Subrace
         | Class
-      )[]).map((entity: Spell | Gear | Item | Monster | Race | Subrace | Class) => {
-        delete entity['id'];
-        return { ...entity, filename: filename };
-      });
+      )[]).map(
+        (entity: Spell | Gear | Item | Monster | Race | Subrace | Class) => {
+          delete entity["id"];
+          return { ...entity, filename: filename };
+        }
+      );
       db.table(tableName).bulkPut(refinedEntities);
     })
     .finally(function () {
