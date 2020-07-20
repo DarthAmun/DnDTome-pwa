@@ -14,10 +14,10 @@ const Header = () => {
 export default Header;
 
 const Bar = styled.div`
-  width: calc(100% - 3rem);
-  height: 2rem;
-  line-height: 40px;
-  padding: 1rem 1rem 1rem 2rem;
+width: calc(100% - 60px);
+height: 30px;
+line-height: 30px;
+padding: 10px 10px 10px 50px;
   background-color: ${({ theme }) => theme.buttons.backgroundColor};
   color: ${({ theme }) => theme.buttons.color};
   box-shadow: 0px 5px 5px 0px rgba(0, 0, 0, 0.75);
@@ -31,19 +31,18 @@ const Bar = styled.div`
 `;
 
 const Name = styled.div`
-  width: 200px;
-  height: 2rem;
-  font-size: 1.5rem;
+  width: 80px;
+  height: 30px;
+  font-size: 20px;
   font-family: "Quicksand", sans-serif;
   -webkit-font-smoothing: antialiased;
   text-shadow: none;
   line-height: 30px;
-  text-align: center;
 `;
 
 const HomeCredits = styled.div`
   width: 60px;
-  height: 2rem;
+  height: 30px;
   font-size: 10px;
   font-family: "Quicksand", sans-serif;
   -webkit-font-smoothing: antialiased;

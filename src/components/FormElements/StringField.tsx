@@ -36,7 +36,7 @@ const Field = styled.label`
   font-size: 16px;
   overflow: hidden;
   height: 38px;
-  line-height: 38px;
+  line-height: 30px;
   flex: 1 1 auto;
   padding: 5px;
   margin: 5px;

@@ -101,7 +101,7 @@ export const Menu = styled.div<MenuType>`
   text-align: left;
   padding: 2rem;
   position: fixed;
-  z-index: 10;
+  z-index: 950;
   top: 0;
   left: 0;
   transition: transform 0.3s ease-in-out;
