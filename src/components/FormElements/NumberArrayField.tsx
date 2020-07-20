@@ -38,6 +38,7 @@ const NumberArrayField = ({
         return (
           <Input
             type="text"
+            key={index}
             value={value}
             onChange={(e) => handleValueChange(index, +e.target.value)}
           ></Input>

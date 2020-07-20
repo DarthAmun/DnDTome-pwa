@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router";
 import styled from "styled-components";
 
@@ -22,6 +22,10 @@ const ClassDetail = ({ classe }: $Props) => {
   const [editMode, setMode] = useState<boolean>(false);
   const [classeObj, editClass] = useState<Class>(classe);
   let history = useHistory();
+
+  useEffect(() => {
+    console.log("saved")
+  }, [classeObj]);
 
   const deleteClass = (classeId: number | undefined) => {
     remove("classes", classeId);
@@ -50,7 +54,10 @@ const ClassDetail = ({ classe }: $Props) => {
         )}
       </TopBar>
       {editMode ? (
-        <ClassEditView classe={classeObj} onEdit={(value) => editClass(value)} />
+        <ClassEditView
+          classe={classeObj}
+          onEdit={(value) => editClass(value)}
+        />
       ) : (
         <ClassView classe={classeObj} />
       )}

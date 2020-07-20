@@ -264,8 +264,8 @@ const ClassEditView = ({ classe, onEdit }: $Props) => {
       </ClassView>
       {classe.featureSets.map((featureSet: FeatureSet, index: number) => {
         return (
-          <FeatureView>
-            <FeatureWrapper key={index}>
+          <FeatureView key={index}>
+            <FeatureWrapper>
               <FeatureNumber
                 value={featureSet.level}
                 label="Level"
@@ -300,9 +300,9 @@ const ClassEditView = ({ classe, onEdit }: $Props) => {
                 onClick={() => addNewSpellslot(featureSet)}
               />
               {featureSet.bonis &&
-                featureSet.bonis.map((boni: Boni) => {
+                featureSet.bonis.map((boni: Boni, index: number) => {
                   return (
-                    <BoniContainer>
+                    <BoniContainer key={index}>
                       <BoniName
                         value={boni.name}
                         label="Boni"
@@ -334,9 +334,9 @@ const ClassEditView = ({ classe, onEdit }: $Props) => {
             </FeatureWrapper>
             <FeatureWrapper>
               {featureSet.features &&
-                featureSet.features.map((feature: Feature) => {
+                featureSet.features.map((feature: Feature, index: number) => {
                   return (
-                    <FeatureContainer>
+                    <FeatureContainer key={index}>
                       <FeatureName
                         value={feature.name}
                         label="Feature"

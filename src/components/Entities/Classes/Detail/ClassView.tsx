@@ -59,8 +59,8 @@ const ClassView = ({ classe }: $Props) => {
     for (let i = 0; i < count; i++) {
       levels.push(i + 4);
     }
-    return levels.map((level) => {
-      return <SpellProp>{level}th</SpellProp>;
+    return levels.map((level: number, index: number) => {
+      return <SpellProp key={index}>{level}th</SpellProp>;
     });
   };
 
@@ -193,9 +193,9 @@ const ClassView = ({ classe }: $Props) => {
                   </FeatureRow>
                 </thead>
                 <tbody>
-                  {classe.featureSets.map((featureSet) => {
+                  {classe.featureSets.map((featureSet, index: number) => {
                     return (
-                      <FeatureRow>
+                      <FeatureRow key={index}>
                         <FeatureProp>{featureSet.level}</FeatureProp>
                         <FeatureProp>{featureSet.profBonus}</FeatureProp>
                         <FeatureProp>
@@ -203,8 +203,10 @@ const ClassView = ({ classe }: $Props) => {
                             return feature.name + ", ";
                           })}
                         </FeatureProp>
-                        {featureSet.bonis?.map((boni) => {
-                          return <FeatureProp>{boni.value}</FeatureProp>;
+                        {featureSet.bonis?.map((boni, index: number) => {
+                          return (
+                            <FeatureProp key={index}>{boni.value}</FeatureProp>
+                          );
                         })}
                       </FeatureRow>
                     );
@@ -218,9 +220,9 @@ const ClassView = ({ classe }: $Props) => {
       <CenterWrapper>
         <View>
           {classe.featureSets.map((featureSet) => {
-            return featureSet.features.map((feature) => {
+            return featureSet.features.map((feature, index: number) => {
               return (
-                <Text>
+                <Text key={index}>
                   <PropTitle>{feature.name}:</PropTitle>
                   {formatText(feature.text)}
                 </Text>
@@ -398,11 +400,3 @@ const ImageElm = styled.img`
   max-height: 60vh;
 `;
 const Empty = styled.div``;
-
-const FeatureName = styled.div`
-  background-color: ${({ theme }) => theme.tile.backgroundColor};
-  padding: 10px;
-  border-radius: 5px;
-  margin: 2px;
-  flex: 3 3 auto;
-`;
