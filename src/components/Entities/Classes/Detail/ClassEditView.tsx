@@ -19,6 +19,7 @@ import FeatureSet from "../../../../Data/FeatureSet";
 import NumberArrayField from "../../../FormElements/NumberArrayField";
 import Boni from "../../../../Data/Boni";
 import Feature from "../../../../Data/Feature";
+import TextButton from "../../../FormElements/TextButton";
 
 interface $Props {
   classe: Class;
@@ -62,6 +63,16 @@ const ClassEditView = ({ classe, onEdit }: $Props) => {
           }
         });
         return { ...featureSet, bonis: bonis };
+      } else {
+        return featureSet;
+      }
+    });
+    onEdit({ ...classe, featureSets: features });
+  };
+  const onSpellslotChange = (oldFeature: FeatureSet, value: number[]) => {
+    let features = classe.featureSets.map((featureSet: FeatureSet) => {
+      if (featureSet === oldFeature && featureSet.spellslots !== undefined) {
+        return { ...featureSet, spellslots: value } as FeatureSet;
       } else {
         return featureSet;
       }
@@ -129,34 +140,89 @@ const ClassEditView = ({ classe, onEdit }: $Props) => {
   };
   const removeSpellslot = (oldFeatureSet: FeatureSet) => {
     let featureSets = classe.featureSets.map((featureSet) => {
-      let spellslots = featureSet.spellslots;
-      if (spellslots !== undefined && featureSet === oldFeatureSet) {
-        spellslots.pop();
-        return { ...featureSet, spellslots: spellslots };
+      if (featureSet.spellslots !== undefined && featureSet === oldFeatureSet) {
+        return {
+          ...featureSet,
+          spellslots: [...featureSet.spellslots].slice(
+            0,
+            featureSet.spellslots.length - 1
+          ),
+        };
       }
       return featureSet;
     });
     onEdit({ ...classe, featureSets: featureSets });
   };
 
-  const addSpellslot = (oldFeatureSet: FeatureSet) => {
+  const addNewSpellslot = (oldFeatureSet: FeatureSet) => {
     let featureSets = classe.featureSets.map((featureSet) => {
-      let spellslots = featureSet.spellslots;
-      if (spellslots !== undefined && featureSet === oldFeatureSet) {
-        spellslots.push(0);
-        return { ...featureSet, spellslots: spellslots };
+      if (featureSet.spellslots !== undefined && featureSet === oldFeatureSet) {
+        return { ...featureSet, spellslots: [...featureSet.spellslots, 0] };
       }
       return featureSet;
     });
     onEdit({ ...classe, featureSets: featureSets });
   };
-
-  // const addNewFeature = () => {
-  //   onEdit({
-  //     ...classe,
-  //     traits: [...classe.traits, { name: "New Feature", level: 1, text: "" }],
-  //   });
-  // };
+  const addNewBoni = (oldFeatureSet: FeatureSet) => {
+    let featureSets = classe.featureSets.map((featureSet) => {
+      if (featureSet.bonis !== undefined && featureSet === oldFeatureSet) {
+        const newBoni = {
+          name: "",
+          value: "",
+        };
+        return { ...featureSet, bonis: [...featureSet.bonis, newBoni] };
+      }
+      return featureSet;
+    });
+    onEdit({ ...classe, featureSets: featureSets });
+  };
+  const addNewFeature = (oldFeatureSet: FeatureSet) => {
+    let featureSets = classe.featureSets.map((featureSet) => {
+      let features = featureSet.features;
+      if (features !== undefined && featureSet === oldFeatureSet) {
+        features.push({
+          name: "",
+          text: "",
+        });
+        return { ...featureSet, features: features };
+      }
+      return featureSet;
+    });
+    onEdit({ ...classe, featureSets: featureSets });
+  };
+  const addNewFeatureSet = () => {
+    if (classe.featureSets.length - 1 >= 0) {
+      onEdit({
+        ...classe,
+        featureSets: [
+          ...classe.featureSets,
+          {
+            level: classe.featureSets.length + 1,
+            profBonus:
+              classe.featureSets[classe.featureSets.length - 1].profBonus,
+            features: [],
+            bonis: classe.featureSets[classe.featureSets.length - 1].bonis,
+            spellslots:
+              classe.featureSets[classe.featureSets.length - 1].spellslots,
+          },
+        ],
+      });
+    } else {
+      onEdit({
+        ...classe,
+        featureSets: [
+          ...classe.featureSets,
+          {
+            level: classe.featureSets.length + 1,
+            profBonus: 0,
+            features: [],
+            bonis: [],
+            spellslots: [],
+          },
+        ],
+      });
+    }
+  };
 
   return (
     <CenterWrapper>
@@ -222,7 +288,7 @@ const ClassEditView = ({ classe, onEdit }: $Props) => {
                 values={featureSet.spellslots ? featureSet.spellslots : []}
                 label="Spellslots"
                 onChange={(spellslots) =>
-                  onFeatureSetChange(featureSet, "spellslots", spellslots)
+                  onSpellslotChange(featureSet, spellslots)
                 }
               />
               <IconButton
@@ -231,13 +297,13 @@ const ClassEditView = ({ classe, onEdit }: $Props) => {
               />
               <IconButton
                 icon={faPlus}
-                onClick={() => addSpellslot(featureSet)}
+                onClick={() => addNewSpellslot(featureSet)}
               />
               {featureSet.bonis &&
                 featureSet.bonis.map((boni: Boni) => {
                   return (
                     <BoniContainer>
-                      <FeatureString
+                      <BoniName
                         value={boni.name}
                         label="Boni"
                         onChange={(name) =>
@@ -258,11 +324,20 @@ const ClassEditView = ({ classe, onEdit }: $Props) => {
                     </BoniContainer>
                   );
                 })}
+            </FeatureWrapper>
+            <FeatureWrapper>
+              <TextButton
+                text={"Add new Boni"}
+                icon={faPlus}
+                onClick={() => addNewBoni(featureSet)}
+              />
+            </FeatureWrapper>
+            <FeatureWrapper>
               {featureSet.features &&
                 featureSet.features.map((feature: Feature) => {
                   return (
                     <FeatureContainer>
-                      <FeatureString
+                      <FeatureName
                         value={feature.name}
                         label="Feature"
                         onChange={(name) =>
@@ -284,9 +359,23 @@ const ClassEditView = ({ classe, onEdit }: $Props) => {
                   );
                 })}
             </FeatureWrapper>
+            <FeatureWrapper>
+              <TextButton
+                text={"Add new Feature"}
+                icon={faPlus}
+                onClick={() => addNewFeature(featureSet)}
+              />
+            </FeatureWrapper>
           </FeatureView>
         );
       })}
+      <FeatureView>
+        <TextButton
+          text={"Add new Level"}
+          icon={faPlus}
+          onClick={() => addNewFeatureSet()}
+        />
+      </FeatureView>
     </CenterWrapper>
   );
 };
@@ -354,4 +443,7 @@ const FeatureContainer = styled.div`
     border-bottom: none;
   }
 `;
+const FeatureName = styled(StringField)``;
+
 const BoniContainer = styled(FeatureContainer)``;
+const BoniName = styled(FeatureString)``;

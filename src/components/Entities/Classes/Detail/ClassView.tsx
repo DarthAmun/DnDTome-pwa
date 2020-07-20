@@ -120,11 +120,11 @@ const ClassView = ({ classe }: $Props) => {
             </Text>
           </PropWrapper>
         </View>
-        <View>
-          <PropWrapper>
-            {classe.featureSets.length !== 0 &&
-              classe.featureSets[0].spellslots &&
-              classe.featureSets[0].spellslots.length > 0 && (
+        {classe.featureSets.length !== 0 &&
+          classe.featureSets[0].spellslots &&
+          classe.featureSets[0].spellslots.length > 0 && (
+            <View>
+              <PropWrapper>
                 <FeatureWrapper>
                   <thead>
                     <FeatureRow>
@@ -137,12 +137,8 @@ const ClassView = ({ classe }: $Props) => {
                   </thead>
                   <tbody>
                     <FeatureRow>
-                      {classe.featureSets[0].spellslots.length >= 1 && (
-                        <>
-                          <SpellProp>Level</SpellProp>
-                          <SpellProp>1st</SpellProp>
-                        </>
-                      )}
+                      <SpellProp>Level</SpellProp>
+                      <SpellProp>1st</SpellProp>
                       {classe.featureSets[0].spellslots.length >= 2 && (
                         <SpellProp>2nd</SpellProp>
                       )}
@@ -177,9 +173,9 @@ const ClassView = ({ classe }: $Props) => {
                     })}
                   </tbody>
                 </FeatureWrapper>
-              )}
-          </PropWrapper>
-        </View>
+              </PropWrapper>
+            </View>
+          )}
         <View>
           <PropWrapper>
             {classe.featureSets.length !== 0 && (
@@ -189,9 +185,11 @@ const ClassView = ({ classe }: $Props) => {
                     <FeatureHeadProp>Level</FeatureHeadProp>
                     <FeatureHeadProp>Prof. Bonus</FeatureHeadProp>
                     <FeatureHeadProp>Features</FeatureHeadProp>
-                    {classe.featureSets[0].bonis?.map((boni) => {
-                      return <FeatureHeadProp>{boni.name}</FeatureHeadProp>;
-                    })}
+                    {classe.featureSets[0].bonis &&
+                      classe.featureSets[0].bonis.length > 0 &&
+                      classe.featureSets[0].bonis?.map((boni) => {
+                        return <FeatureHeadProp>{boni.name}</FeatureHeadProp>;
+                      })}
                   </FeatureRow>
                 </thead>
                 <tbody>
@@ -222,10 +220,10 @@ const ClassView = ({ classe }: $Props) => {
           {classe.featureSets.map((featureSet) => {
             return featureSet.features.map((feature) => {
               return (
-                <PropWrapper>
-                  <FeatureName>{feature.name}</FeatureName>
-                  <FeatureText>{formatText(feature.text)}</FeatureText>
-                </PropWrapper>
+                <Text>
+                  <PropTitle>{feature.name}:</PropTitle>
+                  {formatText(feature.text)}
+                </Text>
               );
             });
           })}
@@ -407,8 +405,4 @@ const FeatureName = styled.div`
   border-radius: 5px;
   margin: 2px;
   flex: 3 3 auto;
-`;
-
-const FeatureText = styled(FeatureName)`
-  flex: 4 4 auto;
 `;
