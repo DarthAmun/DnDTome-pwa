@@ -149,9 +149,9 @@ const ClassEditView = ({ classe, onEdit }: $Props) => {
           onChange={(equipment) => onEdit({ ...classe, equipment: equipment })}
         />
       </ClassView>
-      <FeatureView>
-        {classe.featureSets.map((featureSet: FeatureSet, index: number) => {
-          return (
+      {classe.featureSets.map((featureSet: FeatureSet, index: number) => {
+        return (
+          <FeatureView>
             <FeatureWrapper key={index}>
               <FeatureNumber
                 value={featureSet.level}
@@ -217,10 +217,9 @@ const ClassEditView = ({ classe, onEdit }: $Props) => {
                   );
                 })}
             </FeatureWrapper>
-          );
-        })}
-        <FeatureWrapper></FeatureWrapper>
-      </FeatureView>
+          </FeatureView>
+        );
+      })}
       {/* <FeatureView>
         {classe.traits.map((trait: Feature, index: number) => {
           return (
@@ -275,7 +274,7 @@ const ClassView = styled.div`
   flex-wrap: wrap;
   justify-content: space-around;
   align-items: flex-start;
-  align-content: flex-start;
+  align-content: stretch;
 `;
 
 const FeatureView = styled(ClassView)``;
@@ -288,11 +287,11 @@ const FeatureWrapper = styled.div`
   padding: 3px;
   margin-bottom: 5px;
   border-radius: 5px;
-  background-color: ${({ theme }) => theme.tile.backgroundColor};
 
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-around;
+  justify-content: flex-start;
+  align-items: flex-start;
 
   label {
     margin: 2px;

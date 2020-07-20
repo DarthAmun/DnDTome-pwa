@@ -64,20 +64,21 @@ const ClassView = ({ classe }: $Props) => {
   }, [classe]);
 
   return (
-    <CenterWrapper>
-      {getPicture() !== "" ? (
-        <ImageView>
-          <Image pic={getPicture()}></Image>
-        </ImageView>
-      ) : (
-        ""
-      )}
-      <View>
-        <Name>
-          <b>{classe.name}</b>
-        </Name>
-        <PropWrapper>
-          {/* {subclasses.length !== 0 && (
+    <>
+      <CenterWrapper>
+        {getPicture() !== "" ? (
+          <ImageView>
+            <Image pic={getPicture()}></Image>
+          </ImageView>
+        ) : (
+          ""
+        )}
+        <View>
+          <Name>
+            <b>{classe.name}</b>
+          </Name>
+          <PropWrapper>
+            {/* {subclasses.length !== 0 && (
             <Text>
               <PropTitle>Subclasses:</PropTitle>
               {subclasses.map((subclasse: Subclasse, index: number) => {
@@ -90,131 +91,133 @@ const ClassView = ({ classe }: $Props) => {
               })}
             </Text>
           )} */}
-          <Prop>
-            <GiDiceEightFacesEight />
-            {classe.hitDices}
-          </Prop>
-          <Prop>
-            <Icon icon={faLink} />
-            {classe.sources}
-          </Prop>
-          <Text>
-            <PropTitle>Proficiencies:</PropTitle>
-            {formatText(classe.proficiencies)}
-          </Text>
-          <Text>
-            <PropTitle>Equipment:</PropTitle>
-            {formatText(classe.equipment)}
-          </Text>
-        </PropWrapper>
-      </View>
-      <View>
-        <PropWrapper>
-          {classe.featureSets.length !== 0 && classe.featureSets[0].spellslots && (
-            <FeatureWrapper>
-              <thead>
-                <FeatureRow>
-                  <FeatureHeadProp
-                    colSpan={classe.featureSets[0].spellslots.length+1}
-                  >
-                    Spellslots
-                  </FeatureHeadProp>
-                </FeatureRow>
-              </thead>
-              <tbody>
-                <FeatureRow>
-                  {classe.featureSets[0].spellslots.length >= 1 && (
-                    <>
-                      <SpellProp>Level</SpellProp>
-                      <SpellProp>1st</SpellProp>
-                    </>
-                  )}
-                  {classe.featureSets[0].spellslots.length >= 2 && (
-                    <SpellProp>2nd</SpellProp>
-                  )}
-                  {classe.featureSets[0].spellslots.length >= 3 && (
-                    <SpellProp>3rd</SpellProp>
-                  )}
-                  {classe.featureSets[0].spellslots.length >= 4 && (
-                    <SpellProp>4th</SpellProp>
-                  )}
-                  {classe.featureSets[0].spellslots.length >= 5 && (
-                    <SpellProp>5th</SpellProp>
-                  )}
-                  {classe.featureSets[0].spellslots.length >= 6 && (
-                    <SpellProp>6th</SpellProp>
-                  )}
-                  {classe.featureSets[0].spellslots.length >= 7 && (
-                    <SpellProp>7th</SpellProp>
-                  )}
-                  {classe.featureSets[0].spellslots.length >= 8 && (
-                    <SpellProp>8th</SpellProp>
-                  )}
-                  {classe.featureSets[0].spellslots.length >= 9 && (
-                    <SpellProp>9th</SpellProp>
-                  )}
-                </FeatureRow>
-                {classe.featureSets.map((featureSet) => {
-                  return (
+            <Prop>
+              <GiDiceEightFacesEight />
+              {classe.hitDices}
+            </Prop>
+            <Prop>
+              <Icon icon={faLink} />
+              {classe.sources}
+            </Prop>
+            <Text>
+              <PropTitle>Proficiencies:</PropTitle>
+              {formatText(classe.proficiencies)}
+            </Text>
+            <Text>
+              <PropTitle>Equipment:</PropTitle>
+              {formatText(classe.equipment)}
+            </Text>
+          </PropWrapper>
+        </View>
+        <View>
+          <PropWrapper>
+            {classe.featureSets.length !== 0 &&
+              classe.featureSets[0].spellslots && (
+                <FeatureWrapper>
+                  <thead>
                     <FeatureRow>
-                      {featureSet.spellslots && (
+                      <FeatureHeadProp
+                        colSpan={classe.featureSets[0].spellslots.length + 1}
+                      >
+                        Spellslots
+                      </FeatureHeadProp>
+                    </FeatureRow>
+                  </thead>
+                  <tbody>
+                    <FeatureRow>
+                      {classe.featureSets[0].spellslots.length >= 1 && (
                         <>
-                          <SpellProp>{featureSet.level}</SpellProp>
-                          {featureSet.spellslots.map((spellslot) => {
-                            return (
-                              <SpellProp>
-                                {spellslot === 0 ? "-" : spellslot}
-                              </SpellProp>
-                            );
-                          })}
+                          <SpellProp>Level</SpellProp>
+                          <SpellProp>1st</SpellProp>
                         </>
                       )}
+                      {classe.featureSets[0].spellslots.length >= 2 && (
+                        <SpellProp>2nd</SpellProp>
+                      )}
+                      {classe.featureSets[0].spellslots.length >= 3 && (
+                        <SpellProp>3rd</SpellProp>
+                      )}
+                      {classe.featureSets[0].spellslots.length >= 4 && (
+                        <SpellProp>4th</SpellProp>
+                      )}
+                      {classe.featureSets[0].spellslots.length >= 5 && (
+                        <SpellProp>5th</SpellProp>
+                      )}
+                      {classe.featureSets[0].spellslots.length >= 6 && (
+                        <SpellProp>6th</SpellProp>
+                      )}
+                      {classe.featureSets[0].spellslots.length >= 7 && (
+                        <SpellProp>7th</SpellProp>
+                      )}
+                      {classe.featureSets[0].spellslots.length >= 8 && (
+                        <SpellProp>8th</SpellProp>
+                      )}
+                      {classe.featureSets[0].spellslots.length >= 9 && (
+                        <SpellProp>9th</SpellProp>
+                      )}
                     </FeatureRow>
-                  );
-                })}
-              </tbody>
-            </FeatureWrapper>
-          )}
-        </PropWrapper>
-      </View>
-      <View>
-        <PropWrapper>
-          {classe.featureSets.length !== 0 && (
-            <FeatureWrapper>
-              <thead>
-                <FeatureRow>
-                  <FeatureHeadProp>Level</FeatureHeadProp>
-                  <FeatureHeadProp>Prof. Bonus</FeatureHeadProp>
-                  <FeatureHeadProp>Features</FeatureHeadProp>
-                  {classe.featureSets[0].bonis?.map((boni) => {
-                    return <FeatureHeadProp>{boni.name}</FeatureHeadProp>;
-                  })}
-                </FeatureRow>
-              </thead>
-              <tbody>
-                {classe.featureSets.map((featureSet) => {
-                  return (
-                    <FeatureRow>
-                      <FeatureProp>{featureSet.level}</FeatureProp>
-                      <FeatureProp>{featureSet.profBonus}</FeatureProp>
-                      <FeatureProp>
-                        {featureSet.features.map((feature) => {
-                          return feature.name + ", ";
+                    {classe.featureSets.map((featureSet) => {
+                      return (
+                        <FeatureRow>
+                          {featureSet.spellslots && (
+                            <>
+                              <SpellProp>{featureSet.level}</SpellProp>
+                              {featureSet.spellslots.map((spellslot) => {
+                                return (
+                                  <SpellProp>
+                                    {spellslot === 0 ? "-" : spellslot}
+                                  </SpellProp>
+                                );
+                              })}
+                            </>
+                          )}
+                        </FeatureRow>
+                      );
+                    })}
+                  </tbody>
+                </FeatureWrapper>
+              )}
+          </PropWrapper>
+        </View>
+        <View>
+          <PropWrapper>
+            {classe.featureSets.length !== 0 && (
+              <FeatureWrapper>
+                <thead>
+                  <FeatureRow>
+                    <FeatureHeadProp>Level</FeatureHeadProp>
+                    <FeatureHeadProp>Prof. Bonus</FeatureHeadProp>
+                    <FeatureHeadProp>Features</FeatureHeadProp>
+                    {classe.featureSets[0].bonis?.map((boni) => {
+                      return <FeatureHeadProp>{boni.name}</FeatureHeadProp>;
+                    })}
+                  </FeatureRow>
+                </thead>
+                <tbody>
+                  {classe.featureSets.map((featureSet) => {
+                    return (
+                      <FeatureRow>
+                        <FeatureProp>{featureSet.level}</FeatureProp>
+                        <FeatureProp>{featureSet.profBonus}</FeatureProp>
+                        <FeatureProp>
+                          {featureSet.features.map((feature) => {
+                            return feature.name + ", ";
+                          })}
+                        </FeatureProp>
+                        {featureSet.bonis?.map((boni) => {
+                          return <FeatureProp>{boni.value}</FeatureProp>;
                         })}
-                      </FeatureProp>
-                      {featureSet.bonis?.map((boni) => {
-                        return <FeatureProp>{boni.value}</FeatureProp>;
-                      })}
-                    </FeatureRow>
-                  );
-                })}
-              </tbody>
-            </FeatureWrapper>
-          )}
-        </PropWrapper>
-      </View>
-      <View>
-        <PropWrapper>
+                      </FeatureRow>
+                    );
+                  })}
+                </tbody>
+              </FeatureWrapper>
+            )}
+          </PropWrapper>
+        </View>
+      </CenterWrapper>
+      <CenterWrapper>
+        <View>
           {classe.featureSets.map((featureSet) => {
             return featureSet.features.map((feature) => {
               return (
@@ -225,9 +228,9 @@ const ClassView = ({ classe }: $Props) => {
               );
             });
           })}
-        </PropWrapper>
-      </View>
-    </CenterWrapper>
+        </View>
+      </CenterWrapper>
+    </>
   );
 };
 
@@ -246,10 +249,11 @@ const View = styled.div`
   color: ${({ theme }) => theme.tile.color};
   font-size: 16px;
   flex: 1 1 auto;
-  max-width: 600px;
   padding: 5px;
   margin: 5px;
   height: 100%;
+  width: min-content;
+  min-width: 300px;
 
   display: flex;
   flex-wrap: wrap;
@@ -280,7 +284,6 @@ const Name = styled.div`
 `;
 
 const PropWrapper = styled.div`
-  height: auto;
   width: calc(100% - 6px);
   float: left;
   padding: 3px;
