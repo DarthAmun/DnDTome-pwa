@@ -42,6 +42,7 @@ const Bar = styled.div`
 const Tab = styled.div`
   flex: 3 1 auto;
   height: 30px;
+  line-height: 20px;
   padding: 5px;
   box-sizing: border-box;
   text-align: center;

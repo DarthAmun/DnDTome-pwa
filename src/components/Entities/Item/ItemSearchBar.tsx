@@ -163,7 +163,7 @@ type SearchMode = {
 
 const Bar = styled.div<SearchMode>`
   position: absolute;
-  top: 4rem;
+  top: 50px;
   left: 0px;
   z-index: 900;
 

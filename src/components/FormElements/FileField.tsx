@@ -58,6 +58,7 @@ const LabelText = styled.div`
 const Input = styled.input`
   flex: 3 1 auto;
   height: 38px;
+  line-height: 30px;
   padding: 5px;
   box-sizing: border-box;
   border: none;

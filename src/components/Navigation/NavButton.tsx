@@ -24,13 +24,13 @@ type ButtonType = {
 
 const Button = styled.button<ButtonType>`
   position: fixed;
-  top: 1rem;
-  left: 1rem;
+  top: 15px;
+  left: 20px;
   display: flex;
   flex-direction: column;
   justify-content: space-around;
-  width: 2rem;
-  height: 2rem;
+  width: 20px;
+  height: 20px;
   background: transparent;
   border: none;
   cursor: pointer;
@@ -42,8 +42,8 @@ const Button = styled.button<ButtonType>`
   }
 
   div {
-    width: 2rem;
-    height: 0.25rem;
+    width: 20px;
+    height: 2px;
     background: ${({ theme }) => theme.buttons.color};
     border-radius: 10px;
     transition: all 0.3s linear;
