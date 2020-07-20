@@ -53,6 +53,17 @@ const ClassView = ({ classe }: $Props) => {
     [classe, history]
   );
 
+  const printSpellslots = (length: number) => {
+    let count = length - 3;
+    let levels = [];
+    for (let i = 0; i < count; i++) {
+      levels.push(i + 4);
+    }
+    return levels.map((level) => {
+      return <SpellProp>{level}th</SpellProp>;
+    });
+  };
+
   const getPicture = useCallback(() => {
     if (classe !== undefined) {
       if (classe.pic === "" || classe.pic === null) {
@@ -112,7 +123,8 @@ const ClassView = ({ classe }: $Props) => {
         <View>
           <PropWrapper>
             {classe.featureSets.length !== 0 &&
-              classe.featureSets[0].spellslots && (
+              classe.featureSets[0].spellslots &&
+              classe.featureSets[0].spellslots.length > 0 && (
                 <FeatureWrapper>
                   <thead>
                     <FeatureRow>
@@ -138,22 +150,11 @@ const ClassView = ({ classe }: $Props) => {
                         <SpellProp>3rd</SpellProp>
                       )}
                       {classe.featureSets[0].spellslots.length >= 4 && (
-                        <SpellProp>4th</SpellProp>
-                      )}
-                      {classe.featureSets[0].spellslots.length >= 5 && (
-                        <SpellProp>5th</SpellProp>
-                      )}
-                      {classe.featureSets[0].spellslots.length >= 6 && (
-                        <SpellProp>6th</SpellProp>
-                      )}
-                      {classe.featureSets[0].spellslots.length >= 7 && (
-                        <SpellProp>7th</SpellProp>
-                      )}
-                      {classe.featureSets[0].spellslots.length >= 8 && (
-                        <SpellProp>8th</SpellProp>
-                      )}
-                      {classe.featureSets[0].spellslots.length >= 9 && (
-                        <SpellProp>9th</SpellProp>
+                        <>
+                          {printSpellslots(
+                            classe.featureSets[0].spellslots.length
+                          )}
+                        </>
                       )}
                     </FeatureRow>
                     {classe.featureSets.map((featureSet) => {

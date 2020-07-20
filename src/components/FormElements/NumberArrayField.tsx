@@ -61,6 +61,7 @@ const Field = styled.label`
   border-radius: 5px;
 
   display: flex;
+  flex-wrap: wrap;
   justify-content: flex-start;
   align-items: baseline;
 `;

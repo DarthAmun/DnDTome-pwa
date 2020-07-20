@@ -121,19 +121,17 @@ const RaceView = ({ race }: $Props) => {
           </Prop>
         </PropWrapper>
       </View>
-      <View>
-        <PropWrapper>
-          {race.traits.map((trait: Trait, index: number) => {
-            return (
-              <TraitWrapper key={index}>
-                <TraitName>{trait.name}</TraitName>
-                <TraitLevel>{trait.level}</TraitLevel>
-                <TraitText>{formatText(trait.text)}</TraitText>
-              </TraitWrapper>
-            );
-          })}
-        </PropWrapper>
-      </View>
+      {race.traits.map((trait: Trait, index: number) => {
+        return (
+          <View>
+            <TraitWrapper key={index}>
+              <TraitName>{trait.name}</TraitName>
+              <TraitLevel>{trait.level}</TraitLevel>
+              <TraitText>{formatText(trait.text)}</TraitText>
+            </TraitWrapper>
+          </View>
+        );
+      })}
     </CenterWrapper>
   );
 };

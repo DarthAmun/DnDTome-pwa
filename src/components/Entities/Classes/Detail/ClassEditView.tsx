@@ -10,6 +10,7 @@ import {
   faImage,
   faPlus,
   faTrash,
+  faMinus,
 } from "@fortawesome/free-solid-svg-icons";
 import NumberField from "../../../FormElements/NumberField";
 import IconButton from "../../../FormElements/IconButton";
@@ -42,7 +43,6 @@ const ClassEditView = ({ classe, onEdit }: $Props) => {
     });
     onEdit({ ...classe, featureSets: features });
   };
-
   const onBoniChange = (
     oldFeature: FeatureSet,
     oldBoni: Boni,
@@ -68,7 +68,6 @@ const ClassEditView = ({ classe, onEdit }: $Props) => {
     });
     onEdit({ ...classe, featureSets: features });
   };
-
   const onFeatureChange = (
     oldFeatureSet: FeatureSet,
     oldFeature: Feature,
@@ -95,20 +94,68 @@ const ClassEditView = ({ classe, onEdit }: $Props) => {
     onEdit({ ...classe, featureSets: features });
   };
 
+  const removeFeatureSet = (oldFeatureSet: FeatureSet) => {
+    let featureSets = classe.featureSets;
+    const index: number = featureSets.indexOf(oldFeatureSet);
+    if (index !== -1) {
+      featureSets.splice(index, 1);
+      onEdit({ ...classe, featureSets: featureSets });
+    }
+  };
+  const removeBoni = (oldBoni: Boni) => {
+    let featureSets = classe.featureSets.map((featureSet) => {
+      let bonis = featureSet.bonis;
+      if (bonis !== undefined) {
+        const index: number = bonis.indexOf(oldBoni);
+        if (index !== -1) {
+          bonis.splice(index, 1);
+        }
+        return { ...featureSet, bonis: bonis };
+      }
+      return featureSet;
+    });
+    onEdit({ ...classe, featureSets: featureSets });
+  };
+  const removeFeature = (oldFeature: Feature) => {
+    let featureSets = classe.featureSets.map((featureSet) => {
+      let features = featureSet.features;
+      const index: number = features.indexOf(oldFeature);
+      if (index !== -1) {
+        features.splice(index, 1);
+      }
+      return { ...featureSet, features: features };
+    });
+    onEdit({ ...classe, featureSets: featureSets });
+  };
+  const removeSpellslot = (oldFeatureSet: FeatureSet) => {
+    let featureSets = classe.featureSets.map((featureSet) => {
+      let spellslots = featureSet.spellslots;
+      if (spellslots !== undefined && featureSet === oldFeatureSet) {
+        spellslots.pop();
+        return { ...featureSet, spellslots: spellslots };
+      }
+      return featureSet;
+    });
+    onEdit({ ...classe, featureSets: featureSets });
+  };
+
+  const addSpellslot = (oldFeatureSet: FeatureSet) => {
+    let featureSets = classe.featureSets.map((featureSet) => {
+      let spellslots = featureSet.spellslots;
+      if (spellslots !== undefined && featureSet === oldFeatureSet) {
+        spellslots.push(0);
+        return { ...featureSet, spellslots: spellslots };
+      }
+      return featureSet;
+    });
+    onEdit({ ...classe, featureSets: featureSets });
+  };
+
   // const addNewFeature = () => {
   //   onEdit({
   //     ...classe,
   //     traits: [...classe.traits, { name: "New Feature", level: 1, text: "" }],
   //   });
-  // };
-
-  // const removeFeature = (oldFeature: Feature) => {
-  //   let traits = classe.traits;
-  //   const index: number = traits.indexOf(oldFeature);
-  //   if (index !== -1) {
-  //     traits.splice(index, 1);
-  //     onEdit({ ...classe, traits: traits });
-  //   }
   // };
 
   return (
@@ -167,6 +214,10 @@ const ClassEditView = ({ classe, onEdit }: $Props) => {
                   onFeatureSetChange(featureSet, "profBonus", profBonus)
                 }
               />
+              <IconButton
+                icon={faTrash}
+                onClick={() => removeFeatureSet(featureSet)}
+              />
               <FeatureNumberArray
                 values={featureSet.spellslots ? featureSet.spellslots : []}
                 label="Spellslots"
@@ -174,16 +225,28 @@ const ClassEditView = ({ classe, onEdit }: $Props) => {
                   onFeatureSetChange(featureSet, "spellslots", spellslots)
                 }
               />
+              <IconButton
+                icon={faMinus}
+                onClick={() => removeSpellslot(featureSet)}
+              />
+              <IconButton
+                icon={faPlus}
+                onClick={() => addSpellslot(featureSet)}
+              />
               {featureSet.bonis &&
                 featureSet.bonis.map((boni: Boni) => {
                   return (
                     <BoniContainer>
                       <FeatureString
                         value={boni.name}
-                        label="Boni Name"
+                        label="Boni"
                         onChange={(name) =>
                           onBoniChange(featureSet, boni, "name", name)
                         }
+                      />
+                      <IconButton
+                        icon={faTrash}
+                        onClick={() => removeBoni(boni)}
                       />
                       <FeatureString
                         value={boni.value}
@@ -201,14 +264,18 @@ const ClassEditView = ({ classe, onEdit }: $Props) => {
                     <FeatureContainer>
                       <FeatureString
                         value={feature.name}
-                        label="Feature Name"
+                        label="Feature"
                         onChange={(name) =>
                           onFeatureChange(featureSet, feature, "name", name)
                         }
                       />
+                      <IconButton
+                        icon={faTrash}
+                        onClick={() => removeFeature(feature)}
+                      />
                       <FeatureText
                         value={feature.text}
-                        label="Beature Text"
+                        label="Feature Text"
                         onChange={(text) =>
                           onFeatureChange(featureSet, feature, "text", text)
                         }
@@ -220,33 +287,6 @@ const ClassEditView = ({ classe, onEdit }: $Props) => {
           </FeatureView>
         );
       })}
-      {/* <FeatureView>
-        {classe.traits.map((trait: Feature, index: number) => {
-          return (
-            <FeatureWrapper key={index}>
-              <FeatureName
-                value={trait.name}
-                label="Name"
-                onChange={(name) => onFeatureChange(trait, "name", name)}
-              />
-              <FeatureLevel
-                value={trait.level}
-                label="Level"
-                onChange={(level) => onFeatureChange(trait, "level", level)}
-              />
-              <IconButton icon={faTrash} onClick={() => removeFeature(trait)} />
-              <FeatureText
-                value={trait.text}
-                label="Text"
-                onChange={(text) => onFeatureChange(trait, "text", text)}
-              />
-            </FeatureWrapper>
-          );
-        })}
-        <FeatureWrapper>
-          <IconButton icon={faPlus} onClick={() => addNewFeature()} />
-        </FeatureWrapper>
-      </FeatureView> */}
     </CenterWrapper>
   );
 };
