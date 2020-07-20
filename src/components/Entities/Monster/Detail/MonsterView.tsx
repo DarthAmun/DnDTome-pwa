@@ -178,26 +178,28 @@ const MonsterView = ({ monster }: $Props) => {
         </PropWrapper>
       </View>
       <View>
-        <PropWrapper>
           {monster.ablt && (
             <Text>
               <PropTitle>Abilities:</PropTitle>
               {formatText(monster.ablt)}
             </Text>
           )}
+      </View>
+      <View>
           {monster.sAblt && (
             <Text>
               <PropTitle>Spezial Abilities:</PropTitle>
               {formatText(monster.sAblt)}
             </Text>
           )}
+      </View>
+      <View>
           {monster.lAblt && (
             <Text>
               <PropTitle>Legendary Abilities:</PropTitle>
               {formatText(monster.lAblt)}
             </Text>
           )}
-        </PropWrapper>
       </View>
     </CenterWrapper>
   );
