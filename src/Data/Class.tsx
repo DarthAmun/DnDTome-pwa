@@ -15,7 +15,7 @@ export default class Class implements IEntity {
   constructor(
     id: number,
     name: string,
-    levels: FeatureSet[],
+    featureSets: FeatureSet[],
     hitDices: string,
     proficiencies: string,
     equipment: string,
@@ -25,7 +25,7 @@ export default class Class implements IEntity {
   ) {
     this.id = id;
     this.name = name;
-    this.featureSets = levels;
+    this.featureSets = featureSets;
     this.hitDices = hitDices;
     this.proficiencies = proficiencies;
     this.equipment = equipment;

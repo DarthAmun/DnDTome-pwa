@@ -9,6 +9,7 @@ import Race from "../Data/Race";
 import Subrace from "../Data/Subrace";
 import Filter from "../Data/Filter";
 import Class from "../Data/Class";
+import Subclass from "../Data/Subclass";
 
 export const update = (tableName: string, data: IEntity) => {
   const db = new MyAppDatabase();
@@ -174,7 +175,8 @@ export const saveNewFromList = (
     | Race[]
     | Subrace[]
     | Item[]
-    | Class[],
+    | Class[]
+    | Subclass[],
   filename: string
 ) => {
   const db = new MyAppDatabase();
@@ -188,8 +190,9 @@ export const saveNewFromList = (
         | Race
         | Subrace
         | Class
+        | Subclass
       )[]).map(
-        (entity: Spell | Gear | Item | Monster | Race | Subrace | Class) => {
+        (entity: Spell | Gear | Item | Monster | Race | Subrace | Class | Subclass) => {
           delete entity["id"];
           return { ...entity, filename: filename };
         }

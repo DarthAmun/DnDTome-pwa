@@ -1,31 +1,31 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useState, useEffect } from "react";
 import { useHistory } from "react-router";
-// import { reciveAllFiltered } from "../../../../Database/DbService";
+import { reciveAllFiltered } from "../../../../Database/DbService";
 import Class from "../../../../Data/Class";
-// import Subclasse from "../../../../Data/Subclasse";
 import styled from "styled-components";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLink } from "@fortawesome/free-solid-svg-icons";
 import { GiDiceEightFacesEight } from "react-icons/gi";
+import Subclass from "../../../../Data/Subclass";
 
 interface $Props {
   classe: Class;
 }
 
 const ClassView = ({ classe }: $Props) => {
-  // const [subclasses, setSubclasses] = useState<Subclasse[]>([]);
+  const [subclasses, setSubclasses] = useState<Subclass[]>([]);
   let history = useHistory();
 
-  // useEffect(() => {
-  //   reciveAllFiltered(
-  //     "subclasses",
-  //     [{ fieldName: "type", value: classe.name }],
-  //     (results: any[]) => {
-  //       setSubclasses(results);
-  //     }
-  //   );
-  // }, [classe]);
+  useEffect(() => {
+    reciveAllFiltered(
+      "subclasses",
+      [{ fieldName: "type", value: classe.name }],
+      (results: any[]) => {
+        setSubclasses(results);
+      }
+    );
+  }, [classe]);
 
   const formatText = useCallback(
     (text: String) => {
@@ -89,19 +89,6 @@ const ClassView = ({ classe }: $Props) => {
             <b>{classe.name}</b>
           </Name>
           <PropWrapper>
-            {/* {subclasses.length !== 0 && (
-            <Text>
-              <PropTitle>Subclasses:</PropTitle>
-              {subclasses.map((subclasse: Subclasse, index: number) => {
-                const link: string = "/subclasse-detail/id/" + subclasse.id;
-                return (
-                  <SubclasseLink key={index} onClick={() => history.push(link)}>
-                    {subclasse.name}
-                  </SubclasseLink>
-                );
-              })}
-            </Text>
-          )} */}
             <Prop>
               <GiDiceEightFacesEight />
               {classe.hitDices}
@@ -118,6 +105,19 @@ const ClassView = ({ classe }: $Props) => {
               <PropTitle>Equipment:</PropTitle>
               {formatText(classe.equipment)}
             </Text>
+            {subclasses.length !== 0 && (
+            <Text>
+              <PropTitle>Subclasses:</PropTitle>
+              {subclasses.map((subclass: Subclass, index: number) => {
+                const link: string = "/subclass-detail/id/" + subclass.id;
+                return (
+                  <SubclasseLink key={index} onClick={() => history.push(link)}>
+                    {subclass.name}
+                  </SubclasseLink>
+                );
+              })}
+            </Text>
+            )}
           </PropWrapper>
         </View>
         {classe.featureSets.length !== 0 &&
@@ -153,15 +153,15 @@ const ClassView = ({ classe }: $Props) => {
                         </>
                       )}
                     </FeatureRow>
-                    {classe.featureSets.map((featureSet) => {
+                    {classe.featureSets.map((featureSet, index:number) => {
                       return (
-                        <FeatureRow>
+                        <FeatureRow key={index}>
                           {featureSet.spellslots && (
                             <>
                               <SpellProp>{featureSet.level}</SpellProp>
-                              {featureSet.spellslots.map((spellslot) => {
+                              {featureSet.spellslots.map((spellslot, index:number) => {
                                 return (
-                                  <SpellProp>
+                                  <SpellProp key={index}>
                                     {spellslot === 0 ? "-" : spellslot}
                                   </SpellProp>
                                 );
@@ -187,8 +187,8 @@ const ClassView = ({ classe }: $Props) => {
                     <FeatureHeadProp>Features</FeatureHeadProp>
                     {classe.featureSets[0].bonis &&
                       classe.featureSets[0].bonis.length > 0 &&
-                      classe.featureSets[0].bonis?.map((boni) => {
-                        return <FeatureHeadProp>{boni.name}</FeatureHeadProp>;
+                      classe.featureSets[0].bonis?.map((boni, index:number) => {
+                        return <FeatureHeadProp key={index}>{boni.name}</FeatureHeadProp>;
                       })}
                   </FeatureRow>
                 </thead>

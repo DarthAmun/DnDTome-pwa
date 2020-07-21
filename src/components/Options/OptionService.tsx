@@ -7,6 +7,7 @@ import Race, { isRace } from "../../Data/Race";
 import Subrace, { isSubrace } from "../../Data/Subrace";
 import Item, { isItem } from "../../Data/Item";
 import Class, { isClass } from "../../Data/Class";
+import Subclass, { isSubclass } from "../../Data/Subclass";
 
 export const importFiles = (fileList: FileList | null) => {
   if (fileList !== null) {
@@ -19,20 +20,22 @@ export const importFiles = (fileList: FileList | null) => {
         if (content !== null) {
           let json = JSON.parse(content.toString());
           if (Array.isArray(json)) {
-            if (isSpell(json[0])) {
+            if (isClass(json[0])) {
+              saveNewFromList("classes", json as Class[], file.name);
+            } else if (isSubclass(json[0])) {
+              saveNewFromList("subclasses", json as Subclass[], file.name);
+            } else if (isRace(json[0])) {
+              saveNewFromList("races", json as Race[], file.name);
+            } else if (isSubrace(json[0])) {
+              saveNewFromList("subraces", json as Subrace[], file.name);
+            } else if (isMonster(json[0])) {
+              saveNewFromList("monsters", json as Monster[], file.name);
+            } else if (isSpell(json[0])) {
               saveNewFromList("spells", json as Spell[], file.name);
             } else if (isGear(json[0])) {
               saveNewFromList("gears", json as Gear[], file.name);
             } else if (isItem(json[0])) {
               saveNewFromList("items", json as Item[], file.name);
-            } else if (isMonster(json[0])) {
-              saveNewFromList("monsters", json as Monster[], file.name);
-            } else if (isRace(json[0])) {
-              saveNewFromList("races", json as Race[], file.name);
-            } else if (isSubrace(json[0])) {
-              saveNewFromList("subraces", json as Subrace[], file.name);
-            } else if (isClass(json[0])) {
-              saveNewFromList("classes", json as Class[], file.name);
             }
           }
           //   saveNewSpells(spellsJson, file.name);

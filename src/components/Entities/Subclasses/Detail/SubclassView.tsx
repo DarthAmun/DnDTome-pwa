@@ -1,23 +1,22 @@
 import React, { useCallback } from "react";
 import { useHistory } from "react-router";
-import Trait from "../../../../Data/Trait";
-import Subrace from "../../../../Data/Subrace";
 import styled from "styled-components";
+import Subclass from "../../../../Data/Subclass";
+import Trait from "../../../../Data/Trait";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLink } from "@fortawesome/free-solid-svg-icons";
-import { GiUpgrade } from "react-icons/gi";
 
 interface $Props {
- subrace: Subrace;
+  subclass: Subclass;
 }
 
-const SubraceView = ({ subrace }: $Props) => {
+const SubclassView = ({ subclass }: $Props) => {
   let history = useHistory();
 
   const formatText = useCallback(
     (text: String) => {
-      if (subrace !== undefined) {
+      if (subclass !== undefined) {
         let parts: string[] = text.split("[[");
         return parts.map((part: string, index: number) => {
           if (part.includes("]]")) {
@@ -27,48 +26,56 @@ const SubraceView = ({ subrace }: $Props) => {
               "/" + linkParts[0] + "-detail/name/" + linkParts[1];
             return (
               <span key={index}>
-                <Link onClick={() => history.push(link)}>{linkParts[1]}</Link>
+                <Link onClick={() => history.push(link)}>
+                  {linkParts[1]}
+                </Link>
                 {codePart[1]}
               </span>
             );
           } else {
-            return <span key={index}>{part}</span>;
+            return (
+              <span key={index}>
+                {part}
+              </span>
+            );
           }
         });
       }
       return "";
     },
-    [subrace, history]
+    [subclass, history]
   );
   return (
     <CenterWrapper>
       <View>
         <Name>
-          <b>{subrace.name}</b>
+          <b>
+            {subclass.name}
+          </b>
         </Name>
         <PropWrapper>
-          <Prop>
-            <GiUpgrade />
-            {subrace.abilityScores}
-          </Prop>
-          <Prop>
-            <PropTitle>Race:</PropTitle>
-            {subrace.type}
+        <Prop>
+            <PropTitle>Class:</PropTitle>
+            {subclass.type}
           </Prop>
           <Prop>
             <Icon icon={faLink} />
-            {subrace.sources}
+            {subclass.sources}
           </Prop>
         </PropWrapper>
       </View>
       <View>
         <PropWrapper>
-          {subrace.traits.map((trait: Trait, index: number) => {
+          {subclass.features.map((feature: Trait, index: number) => {
             return (
               <TraitWrapper key={index}>
-                <TraitName>{trait.name}</TraitName>
-                <TraitLevel>{trait.level}</TraitLevel>
-                <TraitText>{formatText(trait.text)}</TraitText>
+                <TraitName>
+                  {feature.name}
+                </TraitName>
+                <TraitLevel>{feature.level}</TraitLevel>
+                <TraitText>
+                  {formatText(feature.text)}
+                </TraitText>
               </TraitWrapper>
             );
           })}
@@ -78,7 +85,7 @@ const SubraceView = ({ subrace }: $Props) => {
   );
 };
 
-export default SubraceView;
+export default SubclassView;
 
 const CenterWrapper = styled.div`
   overflow: hidden;

@@ -28,6 +28,7 @@ const Options = () => {
   const [raceAmount, setRaceAmount] = useState<number>(0);
   const [subraceAmount, setSubraceAmount] = useState<number>(0);
   const [classAmount, setClassAmount] = useState<number>(0);
+  const [subclassAmount, setSubclassAmount] = useState<number>(0);
 
   useEffect(() => {
     reciveCount("spells", (result: number) => {
@@ -50,6 +51,9 @@ const Options = () => {
     });
     reciveCount("classes", (result: number) => {
       setClassAmount(result);
+    });
+    reciveCount("subclasses", (result: number) => {
+      setSubclassAmount(result);
     });
   }, []);
 
@@ -302,7 +306,7 @@ const Options = () => {
                 onClick={() => exportAll("classes", "DnDTome_classes.json")}
               />
             </SectionRow>
-            {/* <SectionRow>
+            <SectionRow>
               <SectionText>Export all Subclasses?</SectionText>
               <IconButton
                 icon={faFileExport}
@@ -310,7 +314,7 @@ const Options = () => {
                   exportAll("subclasses", "DnDTome_subclasses.json")
                 }
               />
-            </SectionRow> */}
+            </SectionRow>
           </OptionSection>
           <OptionSection>
             <SelectionTitle>Delete</SelectionTitle>
@@ -321,13 +325,13 @@ const Options = () => {
                 onClick={() => deleteAll("classes")}
               />
             </SectionRow>
-            {/* <SectionRow>
+            <SectionRow>
               <SectionText>Delete all {subclassAmount} Subclasses?</SectionText>
               <IconButton
                 icon={faTrashAlt}
                 onClick={() => deleteAll("subclasses")}
               />
-            </SectionRow> */}
+            </SectionRow>
           </OptionSection>
         </OptionTab>
       )}

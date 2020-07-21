@@ -23,6 +23,8 @@ import ItemOverview from "./components/Entities/Item/ItemOverview";
 import NameToClass from "./components/Entities/Classes/Detail/LinkWrapper/NameToClass";
 import IdToClass from "./components/Entities/Classes/Detail/LinkWrapper/IdToClass";
 import ClassOverview from "./components/Entities/Classes/ClassOverview";
+import NameToSubclass from "./components/Entities/Subclasses/Detail/LinkWrapper/NameToSubclass";
+import IdToSubclass from "./components/Entities/Subclasses/Detail/LinkWrapper/IdToSubclass";
 
 const App = () => {
   return (
@@ -50,6 +52,8 @@ const App = () => {
           <Route path="/class-detail/name/:name" component={NameToClass}></Route>
           <Route path="/class-detail/id/:id" component={IdToClass}></Route>
           <Route path="/class-overview" component={ClassOverview}></Route>
+          <Route path="/subclass-detail/name/:name" component={NameToSubclass}></Route>
+          <Route path="/subclass-detail/id/:id" component={IdToSubclass}></Route>
           <Route path="/options" component={Options}></Route>
         </Switch>
       </MemoryRouter>
