@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router";
 import styled from "styled-components";
 
@@ -6,13 +6,15 @@ import {
   faArrowLeft,
   faSave,
   faTrash,
+  faExclamationTriangle,
 } from "@fortawesome/free-solid-svg-icons";
 import GearView from "./GearView";
 import GearEditView from "./GearEditView";
 import BackButton from "../../../FormElements/BackButton";
 import Gear from "../../../../Data/Gear";
 import IconButton from "../../../FormElements/IconButton";
-import { update, remove } from "../../../../Database/DbService";
+import { remove, updateWithCallback } from "../../../../Database/DbService";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 interface $Props {
   gear: Gear;
@@ -21,11 +23,36 @@ interface $Props {
 const GearDetail = ({ gear }: $Props) => {
   const [editMode, setMode] = useState<boolean>(false);
   const [gearObj, editGear] = useState<Gear>(gear);
+  const [showAlert, setAlert] = useState<boolean>(false);
+  const [message, setMessage] = useState<string>("");
+  const [unsavedChanges, setUnsavedChanges] = useState<boolean>(false);
   let history = useHistory();
 
   const deleteGear = (gearId: number | undefined) => {
     remove("gears", gearId);
     history.goBack();
+  };
+
+  useEffect(() => {
+    if (gearObj !== gear) {
+      setUnsavedChanges(true);
+    }
+  }, [gearObj, gear]);
+
+  const updateGear = (tableName: string, gearObj: Gear) => {
+    updateWithCallback(tableName, gearObj, (result) => {
+      if (result > 0) {
+        setUnsavedChanges(false);
+        setMessage("Saved successful!");
+        setAlert(true);
+      } else {
+        setMessage("Something went wrong!");
+        setAlert(true);
+      }
+      setTimeout(() => {
+        setAlert(false);
+      }, 3000);
+    });
   };
 
   return (
@@ -36,16 +63,18 @@ const GearDetail = ({ gear }: $Props) => {
           <ToggleLeft onClick={() => setMode(false)}>View</ToggleLeft>
           <ToggleRight onClick={() => setMode(true)}>Edit</ToggleRight>
         </EditToggle>
+        {unsavedChanges && <Icon icon={faExclamationTriangle} />}
         {editMode && (
           <>
             <IconButton
-              onClick={() => update("gears", gearObj)}
+              onClick={() => updateGear("gears", gearObj)}
               icon={faSave}
             />
             <IconButton
               onClick={() => deleteGear(gearObj.id)}
               icon={faTrash}
             />
+            {message && showAlert && <Message>{message}</Message>}
           </>
         )}
       </TopBar>
@@ -127,4 +156,22 @@ const EditToggle = styled.div<EditMode>`
     }}}
     ;
   }
+`;
+
+const Message = styled.div`
+  padding: 5px;
+  width: 150px;
+  height: 30px;
+  line-height: 30px;
+  border-radius: 5px;
+  float: right;
+`;
+
+const Icon = styled(FontAwesomeIcon)`
+  float: right;
+  line-height: 30px;
+  display: block;
+  height: 30px;
+  padding: 10px;
+  color: ${({ theme }) => theme.main.highlight};
 `;

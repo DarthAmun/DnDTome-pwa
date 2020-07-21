@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router";
 import styled from "styled-components";
 
@@ -6,13 +6,15 @@ import {
   faArrowLeft,
   faSave,
   faTrash,
+  faExclamationTriangle,
 } from "@fortawesome/free-solid-svg-icons";
 import ItemView from "./ItemView";
 import ItemEditView from "./ItemEditView";
 import BackButton from "../../../FormElements/BackButton";
 import Item from "../../../../Data/Item";
 import IconButton from "../../../FormElements/IconButton";
-import { update, remove } from "../../../../Database/DbService";
+import { remove, updateWithCallback } from "../../../../Database/DbService";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 interface $Props {
   item: Item;
@@ -21,6 +23,9 @@ interface $Props {
 const ItemDetail = ({ item }: $Props) => {
   const [editMode, setMode] = useState<boolean>(false);
   const [itemObj, editItem] = useState<Item>(item);
+  const [showAlert, setAlert] = useState<boolean>(false);
+  const [message, setMessage] = useState<string>("");
+  const [unsavedChanges, setUnsavedChanges] = useState<boolean>(false);
   let history = useHistory();
 
   const deleteItem = (itemId: number | undefined) => {
@@ -28,6 +33,28 @@ const ItemDetail = ({ item }: $Props) => {
     history.goBack();
   };
 
+  useEffect(() => {
+    if (itemObj !== item) {
+      setUnsavedChanges(true);
+    }
+  }, [itemObj,item]);
+
+  const updateItem = (tableName: string, itemObj: Item) => {
+    updateWithCallback(tableName, itemObj, (result) => {
+      if (result > 0) {
+        setUnsavedChanges(false);
+        setMessage("Saved successful!");
+        setAlert(true);
+      } else {
+        setMessage("Something went wrong!");
+        setAlert(true);
+      }
+      setTimeout(() => {
+        setAlert(false);
+      }, 3000);
+    });
+  };
+  
   return (
     <>
       <TopBar>
@@ -36,16 +63,18 @@ const ItemDetail = ({ item }: $Props) => {
           <ToggleLeft onClick={() => setMode(false)}>View</ToggleLeft>
           <ToggleRight onClick={() => setMode(true)}>Edit</ToggleRight>
         </EditToggle>
+        {unsavedChanges && <Icon icon={faExclamationTriangle} />}
         {editMode && (
           <>
             <IconButton
-              onClick={() => update("items", itemObj)}
+              onClick={() => updateItem("items", itemObj)}
               icon={faSave}
             />
             <IconButton
               onClick={() => deleteItem(itemObj.id)}
               icon={faTrash}
             />
+            {message && showAlert && <Message>{message}</Message>}
           </>
         )}
       </TopBar>
@@ -127,4 +156,22 @@ const EditToggle = styled.div<EditMode>`
     }}}
     ;
   }
+`;
+
+const Message = styled.div`
+  padding: 5px;
+  width: 150px;
+  height: 30px;
+  line-height: 30px;
+  border-radius: 5px;
+  float: right;
+`;
+
+const Icon = styled(FontAwesomeIcon)`
+  float: right;
+  line-height: 30px;
+  display: block;
+  height: 30px;
+  padding: 10px;
+  color: ${({ theme }) => theme.main.highlight};
 `;

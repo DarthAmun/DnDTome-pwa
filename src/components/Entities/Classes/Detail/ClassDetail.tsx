@@ -22,9 +22,10 @@ interface $Props {
 
 const ClassDetail = ({ classe }: $Props) => {
   const [editMode, setMode] = useState<boolean>(false);
+  const [classObj, editClass] = useState<Class>(classe);
+  const [showAlert, setAlert] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
   const [unsavedChanges, setUnsavedChanges] = useState<boolean>(false);
-  const [classObj, editClass] = useState<Class>(classe);
   let history = useHistory();
 
   const deleteClass = (classeId: number | undefined) => {
@@ -36,23 +37,27 @@ const ClassDetail = ({ classe }: $Props) => {
     if (classObj !== classe) {
       setUnsavedChanges(true);
     }
-  }, [classObj]);
+  }, [classObj, classe]);
 
   const updateClass = (tableName: string, classObj: Class) => {
     updateWithCallback(tableName, classObj, (result) => {
       if (result > 0) {
         setUnsavedChanges(false);
         setMessage("Saved successful!");
+        setAlert(true);
       } else {
         setMessage("Something went wrong!");
+        setAlert(true);
       }
+      setTimeout(() => {
+        setAlert(false);
+      }, 3000);
     });
   };
 
   return (
     <>
       <TopBar>
-        {message && <Message>{message}</Message>}
         <BackButton icon={faArrowLeft} action={() => history.goBack()} />
         <EditToggle mode={editMode.toString()}>
           <ToggleLeft onClick={() => setMode(false)}>View</ToggleLeft>
@@ -69,6 +74,7 @@ const ClassDetail = ({ classe }: $Props) => {
               onClick={() => deleteClass(classObj.id)}
               icon={faTrash}
             />
+            {message && showAlert && <Message>{message}</Message>}
           </>
         )}
       </TopBar>
@@ -152,7 +158,14 @@ const EditToggle = styled.div<EditMode>`
   }
 `;
 
-const Message = styled.div``;
+const Message = styled.div`
+  padding: 5px;
+  width: 150px;
+  height: 30px;
+  line-height: 30px;
+  border-radius: 5px;
+  float: right;
+`;
 
 const Icon = styled(FontAwesomeIcon)`
   float: right;
@@ -160,4 +173,5 @@ const Icon = styled(FontAwesomeIcon)`
   display: block;
   height: 30px;
   padding: 10px;
+  color: ${({ theme }) => theme.main.highlight};
 `;

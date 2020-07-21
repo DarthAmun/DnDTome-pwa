@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router";
 import styled from "styled-components";
 
@@ -6,13 +6,15 @@ import {
   faArrowLeft,
   faSave,
   faTrash,
+  faExclamationTriangle,
 } from "@fortawesome/free-solid-svg-icons";
 import SpellView from "./SpellView";
 import SpellEditView from "./SpellEditView";
 import BackButton from "../../../FormElements/BackButton";
 import Spell from "../../../../Data/Spell";
 import IconButton from "../../../FormElements/IconButton";
-import { update, remove } from "../../../../Database/DbService";
+import { remove, updateWithCallback } from "../../../../Database/DbService";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 interface $Props {
   spell: Spell;
@@ -21,11 +23,36 @@ interface $Props {
 const SpellDetail = ({ spell }: $Props) => {
   const [editMode, setMode] = useState<boolean>(false);
   const [spellObj, editSpell] = useState<Spell>(spell);
+  const [showAlert, setAlert] = useState<boolean>(false);
+  const [message, setMessage] = useState<string>("");
+  const [unsavedChanges, setUnsavedChanges] = useState<boolean>(false);
   let history = useHistory();
 
   const deleteSpell = (spellId: number | undefined) => {
     remove("spells", spellId);
     history.goBack();
+  };
+
+  useEffect(() => {
+    if (spellObj !== spell) {
+      setUnsavedChanges(true);
+    }
+  }, [spellObj,spell]);
+
+  const updateSpell = (tableName: string, spellObj: Spell) => {
+    updateWithCallback(tableName, spellObj, (result) => {
+      if (result > 0) {
+        setUnsavedChanges(false);
+        setMessage("Saved successful!");
+        setAlert(true);
+      } else {
+        setMessage("Something went wrong!");
+        setAlert(true);
+      }
+      setTimeout(() => {
+        setAlert(false);
+      }, 3000);
+    });
   };
 
   return (
@@ -36,16 +63,18 @@ const SpellDetail = ({ spell }: $Props) => {
           <ToggleLeft onClick={() => setMode(false)}>View</ToggleLeft>
           <ToggleRight onClick={() => setMode(true)}>Edit</ToggleRight>
         </EditToggle>
+        {unsavedChanges && <Icon icon={faExclamationTriangle} />}
         {editMode && (
           <>
             <IconButton
-              onClick={() => update("spells", spellObj)}
+              onClick={() => updateSpell("spells", spellObj)}
               icon={faSave}
             />
             <IconButton
               onClick={() => deleteSpell(spellObj.id)}
               icon={faTrash}
             />
+            {message && showAlert && <Message>{message}</Message>}
           </>
         )}
       </TopBar>
@@ -127,4 +156,22 @@ const EditToggle = styled.div<EditMode>`
     }}}
     ;
   }
+`;
+
+const Message = styled.div`
+  padding: 5px;
+  width: 150px;
+  height: 30px;
+  line-height: 30px;
+  border-radius: 5px;
+  float: right;
+`;
+
+const Icon = styled(FontAwesomeIcon)`
+  float: right;
+  line-height: 30px;
+  display: block;
+  height: 30px;
+  padding: 10px;
+  color: ${({ theme }) => theme.main.highlight};
 `;

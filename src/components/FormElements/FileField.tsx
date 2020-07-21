@@ -39,7 +39,7 @@ const Field = styled.label`
 
   display: flex;
   justify-content: center;
-  align-items: baseline;
+  align-items: center;
 `;
 
 const Icon = styled(FontAwesomeIcon)`

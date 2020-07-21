@@ -116,14 +116,14 @@ export const Menu = styled.div<MenuType>`
   }
 
   a {
-    font-size: 2rem;
-    padding: 2rem 0;
+    font-size: 20px;
+    padding: 1rem 0;
     color: ${({ theme }) => theme.main.highlight};
     text-decoration: none;
     transition: color 0.3s linear;
 
     @media (max-width: 576px) {
-      font-size: 1.5rem;
+      font-size: 16px;
       text-align: center;
     }
 

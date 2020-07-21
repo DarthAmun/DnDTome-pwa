@@ -55,16 +55,17 @@ const Field = styled.label`
   background-color: ${({ theme }) => theme.tile.backgroundColor};
   font-size: 16px;
   overflow: hidden;
-  line-height: 38px;
+  min-height: 38px;
+  line-height: 30px;
   flex: 1 1 auto;
-  padding: 5px 5px 0px 5px;
+  padding: 5px 5px 5px 5px;
   margin: 5px;
   border-radius: 5px;
 
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
-  align-items: baseline;
+  align-items: center;
 `;
 
 const Icon = styled(FontAwesomeIcon)`
@@ -83,13 +84,12 @@ const LabelText = styled.div`
 const Input = styled.input`
   flex: 1 1 1rem;
   max-width: 2em;
-  height: 38px;
+  height: 34px;
   padding: 5px;
   box-sizing: border-box;
   border: none;
   background-color: ${({ theme }) => theme.input.backgroundColor};
   color: ${({ theme }) => theme.input.color};
-  margin-left: 5px;
-  margin-bottom: 5px;
   border-radius: 5px;
+  margin: 2px;
 `;
