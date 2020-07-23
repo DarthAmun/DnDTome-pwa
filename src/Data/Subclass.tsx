@@ -1,11 +1,11 @@
 import IEntity from "./IEntity";
-import Trait, { isTrait } from "./Trait";
+import FeatureSet, { isFeatureSet } from "./FeatureSet";
 
 export default class Subclass implements IEntity {
   id?: number;
   name: string;
   type: string;
-  features: Trait[];
+  features: FeatureSet[];
   sources: string;
   filename: string;
 
@@ -13,7 +13,7 @@ export default class Subclass implements IEntity {
     id: number,
     name: string,
     type: string,
-    features: Trait[],
+    features: FeatureSet[],
     filename: string,
     sources: string,
   ) {
@@ -32,7 +32,7 @@ export function isSubclass(arg: any): arg is Subclass {
   const featuresCheck =
     arg.features !== undefined &&
     Array.isArray(arg.features) &&
-    isTrait(arg.features[0]);
+    isFeatureSet(arg.features[0]);
   const sourcesCheck =
     arg.sources !== undefined && typeof arg.sources == "string";
   return (

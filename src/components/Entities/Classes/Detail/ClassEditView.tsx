@@ -44,6 +44,7 @@ const ClassEditView = ({ classe, onEdit }: $Props) => {
     });
     onEdit({ ...classe, featureSets: features });
   };
+  
   const onBoniChange = (
     oldFeature: FeatureSet,
     oldBoni: Boni,

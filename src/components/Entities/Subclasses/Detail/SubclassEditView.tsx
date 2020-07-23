@@ -1,14 +1,23 @@
 import React from "react";
 import styled from "styled-components";
 import Subclass from "../../../../Data/Subclass";
-import Trait from "../../../../Data/Trait";
+import FeatureSet from "../../../../Data/FeatureSet";
+import Boni from "../../../../Data/Boni";
+import Feature from "../../../../Data/Feature";
 
 import StringField from "../../../FormElements/StringField";
 import ShortTextField from "../../../FormElements/ShortTextField";
 import NumberField from "../../../FormElements/NumberField";
-
-import { faLink, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
+import NumberArrayField from "../../../FormElements/NumberArrayField";
 import IconButton from "../../../FormElements/IconButton";
+import TextButton from "../../../FormElements/TextButton";
+
+import {
+  faLink,
+  faPlus,
+  faTrash,
+  faMinus
+} from "@fortawesome/free-solid-svg-icons";
 
 interface $Props {
   subclass: Subclass;
@@ -16,40 +25,200 @@ interface $Props {
 }
 
 const SubclassEditView = ({ subclass, onEdit }: $Props) => {
-  const onFeatureChange = (
-    oldFeature: Trait,
+  const onFeatureSetChange = (
+    oldFeature: FeatureSet,
     field: string,
-    value: string | number
+    value: string | number | any[]
   ) => {
-    let features = subclass.features.map((feature: Trait) => {
-      if (feature === oldFeature) {
+    let features = subclass.features.map((featureSet: FeatureSet) => {
+      if (featureSet === oldFeature) {
         return {
-          ...feature,
+          ...featureSet,
           [field]: value
         };
       } else {
-        return feature;
+        return featureSet;
       }
     });
     onEdit({ ...subclass, features: features });
   };
 
-  const addNewFeature = () => {
-    onEdit({
-      ...subclass,
-      features: [
-        ...subclass.features,
-        { name: "New Feature", level: 1, text: "" }
-      ]
+  const onBoniChange = (
+    oldFeature: FeatureSet,
+    oldBoni: Boni,
+    field: string,
+    value: string
+  ) => {
+    let features = subclass.features.map((featureSet: FeatureSet) => {
+      if (featureSet === oldFeature && featureSet.bonis !== undefined) {
+        let bonis = featureSet.bonis.map((boni: Boni) => {
+          if (boni === oldBoni) {
+            return {
+              ...boni,
+              [field]: value
+            };
+          } else {
+            return boni;
+          }
+        });
+        return { ...featureSet, bonis: bonis };
+      } else {
+        return featureSet;
+      }
     });
+    onEdit({ ...subclass, features: features });
+  };
+  const onSpellslotChange = (oldFeature: FeatureSet, value: number[]) => {
+    let features = subclass.features.map((featureSet: FeatureSet) => {
+      if (featureSet === oldFeature && featureSet.spellslots !== undefined) {
+        return { ...featureSet, spellslots: value } as FeatureSet;
+      } else {
+        return featureSet;
+      }
+    });
+    onEdit({ ...subclass, features: features });
+  };
+  const onFeatureChange = (
+    oldFeatureSet: FeatureSet,
+    oldFeature: Feature,
+    field: string,
+    value: string
+  ) => {
+    let features = subclass.features.map((featureSet: FeatureSet) => {
+      if (featureSet === oldFeatureSet && featureSet.features !== undefined) {
+        let features = featureSet.features.map((feature: Feature) => {
+          if (feature === oldFeature) {
+            return {
+              ...feature,
+              [field]: value
+            };
+          } else {
+            return feature;
+          }
+        });
+        return { ...featureSet, features: features };
+      } else {
+        return featureSet;
+      }
+    });
+    onEdit({ ...subclass, features: features });
   };
 
-  const removeFeature = (oldFeature: Trait) => {
+  const removeFeatureSet = (oldFeatureSet: FeatureSet) => {
     let features = subclass.features;
-    const index: number = features.indexOf(oldFeature);
+    const index: number = features.indexOf(oldFeatureSet);
     if (index !== -1) {
       features.splice(index, 1);
       onEdit({ ...subclass, features: features });
+    }
+  };
+  const removeBoni = (oldBoni: Boni) => {
+    let features = subclass.features.map(featureSet => {
+      let bonis = featureSet.bonis;
+      if (bonis !== undefined) {
+        const index: number = bonis.indexOf(oldBoni);
+        if (index !== -1) {
+          bonis.splice(index, 1);
+        }
+        return { ...featureSet, bonis: bonis };
+      }
+      return featureSet;
+    });
+    onEdit({ ...subclass, features: features });
+  };
+  const removeFeature = (oldFeature: Feature) => {
+    let features = subclass.features.map(featureSet => {
+      let features = featureSet.features;
+      const index: number = features.indexOf(oldFeature);
+      if (index !== -1) {
+        features.splice(index, 1);
+      }
+      return { ...featureSet, features: features };
+    });
+    onEdit({ ...subclass, features: features });
+  };
+  const removeSpellslot = (oldFeatureSet: FeatureSet) => {
+    let features = subclass.features.map(featureSet => {
+      if (featureSet.spellslots !== undefined && featureSet === oldFeatureSet) {
+        return {
+          ...featureSet,
+          spellslots: [...featureSet.spellslots].slice(
+            0,
+            featureSet.spellslots.length - 1
+          )
+        };
+      }
+      return featureSet;
+    });
+    onEdit({ ...subclass, features: features });
+  };
+
+  const addNewSpellslot = (oldFeatureSet: FeatureSet) => {
+    let features = subclass.features.map(featureSet => {
+      if (featureSet.spellslots !== undefined && featureSet === oldFeatureSet) {
+        return { ...featureSet, spellslots: [...featureSet.spellslots, 0] };
+      }
+      return featureSet;
+    });
+    onEdit({ ...subclass, features: features });
+  };
+  const addNewBoni = (oldFeatureSet: FeatureSet) => {
+    let features = subclass.features.map(featureSet => {
+      if (featureSet.bonis !== undefined && featureSet === oldFeatureSet) {
+        const newBoni = {
+          name: "",
+          value: ""
+        };
+        return { ...featureSet, bonis: [...featureSet.bonis, newBoni] };
+      }
+      return featureSet;
+    });
+    onEdit({ ...subclass, features: features });
+  };
+  const addNewFeature = (oldFeatureSet: FeatureSet) => {
+    let features = subclass.features.map(featureSet => {
+      let features = featureSet.features;
+      if (features !== undefined && featureSet === oldFeatureSet) {
+        features.push({
+          name: "",
+          text: ""
+        });
+        return { ...featureSet, features: features };
+      }
+      return featureSet;
+    });
+    onEdit({ ...subclass, features: features });
+  };
+  const addNewFeatureSet = () => {
+    if (subclass.features.length - 1 >= 0) {
+      onEdit({
+        ...subclass,
+        features: [
+          ...subclass.features,
+          {
+            level: subclass.features.length + 1,
+            profBonus: 0,
+            features: [],
+            bonis: subclass.features[subclass.features.length - 1].bonis,
+            spellslots:
+              subclass.features[subclass.features.length - 1].spellslots
+          }
+        ]
+      });
+    } else {
+      onEdit({
+        ...subclass,
+        features: [
+          ...subclass.features,
+          {
+            level: subclass.features.length + 1,
+            profBonus: 0,
+            features: [],
+            bonis: [],
+            spellslots: []
+          }
+        ]
+      });
     }
   };
 
@@ -64,9 +233,7 @@ const SubclassEditView = ({ subclass, onEdit }: $Props) => {
         <StringField
           value={subclass.type}
           label="Class"
-          onChange={(type) =>
-            onEdit({ ...subclass, type: type })
-          }
+          onChange={type => onEdit({ ...subclass, type: type })}
         />
         <StringField
           value={subclass.sources}
@@ -75,36 +242,107 @@ const SubclassEditView = ({ subclass, onEdit }: $Props) => {
           onChange={sources => onEdit({ ...subclass, sources: sources })}
         />
       </SubclassView>
-      <TraitView>
-        {subclass.features.map((feature: Trait, index: number) => {
-          return (
-            <TraitWrapper key={index}>
-              <TraitName
-                value={feature.name}
-                label="Name"
-                onChange={name => onFeatureChange(feature, "name", name)}
-              />
-              <TraitLevel
-                value={feature.level}
+      {subclass.features.map((featureSet: FeatureSet, index: number) => {
+        return (
+          <FeatureView key={index}>
+            <FeatureWrapper>
+              <FeatureNumber
+                value={featureSet.level}
                 label="Level"
-                onChange={level => onFeatureChange(feature, "level", level)}
+                onChange={level =>
+                  onFeatureSetChange(featureSet, "level", level)}
               />
               <IconButton
                 icon={faTrash}
-                onClick={() => removeFeature(feature)}
+                onClick={() => removeFeatureSet(featureSet)}
               />
-              <TraitText
-                value={feature.text}
-                label="Text"
-                onChange={text => onFeatureChange(feature, "text", text)}
+              <FeatureNumberArray
+                values={featureSet.spellslots ? featureSet.spellslots : []}
+                label="Spellslots"
+                onChange={(spellslots: number[]) =>
+                  onSpellslotChange(featureSet, spellslots)}
               />
-            </TraitWrapper>
-          );
-        })}
-        <TraitWrapper>
-          <IconButton icon={faPlus} onClick={() => addNewFeature()} />
-        </TraitWrapper>
-      </TraitView>
+              <IconButton
+                icon={faMinus}
+                onClick={() => removeSpellslot(featureSet)}
+              />
+              <IconButton
+                icon={faPlus}
+                onClick={() => addNewSpellslot(featureSet)}
+              />
+              {featureSet.bonis &&
+                featureSet.bonis.map((boni: Boni, index: number) => {
+                  return (
+                    <BoniContainer key={index}>
+                      <BoniName
+                        value={boni.name}
+                        label="Boni"
+                        onChange={name =>
+                          onBoniChange(featureSet, boni, "name", name)}
+                      />
+                      <IconButton
+                        icon={faTrash}
+                        onClick={() => removeBoni(boni)}
+                      />
+                      <FeatureString
+                        value={boni.value}
+                        label="Boni Value"
+                        onChange={value =>
+                          onBoniChange(featureSet, boni, "value", value)}
+                      />
+                    </BoniContainer>
+                  );
+                })}
+            </FeatureWrapper>
+            <FeatureWrapper>
+              <TextButton
+                text={"Add new Boni"}
+                icon={faPlus}
+                onClick={() => addNewBoni(featureSet)}
+              />
+            </FeatureWrapper>
+            <FeatureWrapper>
+              {featureSet.features &&
+                featureSet.features.map((feature: Feature, index: number) => {
+                  return (
+                    <FeatureContainer key={index}>
+                      <FeatureName
+                        value={feature.name}
+                        label="Feature"
+                        onChange={name =>
+                          onFeatureChange(featureSet, feature, "name", name)}
+                      />
+                      <IconButton
+                        icon={faTrash}
+                        onClick={() => removeFeature(feature)}
+                      />
+                      <FeatureText
+                        value={feature.text}
+                        label="Feature Text"
+                        onChange={text =>
+                          onFeatureChange(featureSet, feature, "text", text)}
+                      />
+                    </FeatureContainer>
+                  );
+                })}
+            </FeatureWrapper>
+            <FeatureWrapper>
+              <TextButton
+                text={"Add new Feature"}
+                icon={faPlus}
+                onClick={() => addNewFeature(featureSet)}
+              />
+            </FeatureWrapper>
+          </FeatureView>
+        );
+      })}
+      <FeatureView>
+        <TextButton
+          text={"Add new Level"}
+          icon={faPlus}
+          onClick={() => addNewFeatureSet()}
+        />
+      </FeatureView>
     </CenterWrapper>
   );
 };
@@ -134,38 +372,44 @@ const SubclassView = styled.div`
   align-items: flex-start;
   align-content: flex-start;
 `;
+const FeatureView = styled(SubclassView)``;
 
-const TraitView = styled(SubclassView)``;
-
-const TraitWrapper = styled.div`
+const FeatureWrapper = styled.div`
   flex: 1 1 600px;
   height: auto;
   width: calc(100% - 6px);
   float: left;
   padding: 3px;
+  margin-bottom: 5px;
+  border-radius: 5px;
 
   display: flex;
   flex-wrap: wrap;
+  justify-content: flex-start;
+  align-items: flex-start;
+
+  label {
+    margin: 2px;
+  }
+`;
+const FeatureString = styled(StringField)``;
+const FeatureNumber = styled(NumberField)``;
+const FeatureText = styled(ShortTextField)``;
+const FeatureNumberArray = styled(NumberArrayField)``;
+
+const FeatureContainer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
   justify-content: space-around;
+  flex: 1 1 600px;
+  border-top: none;
+  border-bottom: 2px solid ${({ theme }) => theme.input.backgroundColor};
+
+  &:last-child {
+    border-bottom: none;
+  }
 `;
-const TraitName = styled(StringField)`
-  background-color: ${({ theme }) => theme.tile.backgroundColor};
-  padding: 10px;
-  border-radius: 5px;
-  margin: 2px;
-  flex: 3 3 auto;
-`;
-const TraitLevel = styled(NumberField)`
-  background-color: ${({ theme }) => theme.tile.backgroundColor};
-  padding: 10px;
-  border-radius: 5px;
-  margin: 2px;
-  flex: 1 1 auto;
-`;
-const TraitText = styled(ShortTextField)`
-  background-color: ${({ theme }) => theme.tile.backgroundColor};
-  padding: 10px;
-  border-radius: 5px;
-  margin: 2px;
-  flex: 4 4 auto;
-`;
+const FeatureName = styled(StringField)``;
+
+const BoniContainer = styled(FeatureContainer)``;
+const BoniName = styled(FeatureString)``;
