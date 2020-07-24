@@ -82,7 +82,7 @@ const Options = () => {
           "Monsters",
           "Races",
           "Classes",
-          "chars"
+          "Chars",
         ]}
         onChange={(tab: string) => setTab(tab)}
       />
@@ -340,7 +340,7 @@ const Options = () => {
           </OptionSection>
         </OptionTab>
       )}
-            {activeTab === "Chars" && (
+      {activeTab === "Chars" && (
         <OptionTab>
           <OptionSection>
             <SelectionTitle>Import</SelectionTitle>

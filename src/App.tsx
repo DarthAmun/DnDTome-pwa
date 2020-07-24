@@ -25,13 +25,16 @@ import IdToClass from "./components/Entities/Classes/Detail/LinkWrapper/IdToClas
 import ClassOverview from "./components/Entities/Classes/ClassOverview";
 import NameToSubclass from "./components/Entities/Subclasses/Detail/LinkWrapper/NameToSubclass";
 import IdToSubclass from "./components/Entities/Subclasses/Detail/LinkWrapper/IdToSubclass";
+import NameToChar from "./components/Entities/Chars/Detail/LinkWrapper/NameToChar";
+import IdToChar from "./components/Entities/Chars/Detail/LinkWrapper/IdToChar";
+import CharOverview from "./components/Entities/Chars/CharOverview";
 
 const App = () => {
   return (
     <MyThemeProvider>
       <MemoryRouter>
         <Switch>
-          <Route exact path="/" component={ClassOverview}></Route>
+          <Route exact path="/" component={CharOverview}></Route>
           <Route path="/spell-detail/name/:name" component={NameToSpell}></Route>
           <Route path="/spell-detail/id/:id" component={IdToSpell}></Route>
           <Route path="/spell-overview" component={SpellOverview}></Route>
@@ -54,6 +57,9 @@ const App = () => {
           <Route path="/class-overview" component={ClassOverview}></Route>
           <Route path="/subclass-detail/name/:name" component={NameToSubclass}></Route>
           <Route path="/subclass-detail/id/:id" component={IdToSubclass}></Route>
+          <Route path="/char-detail/name/:name" component={NameToChar}></Route>
+          <Route path="/char-detail/id/:id" component={IdToChar}></Route>
+          <Route path="/char-overview" component={CharOverview}></Route>
           <Route path="/options" component={Options}></Route>
         </Switch>
       </MemoryRouter>
