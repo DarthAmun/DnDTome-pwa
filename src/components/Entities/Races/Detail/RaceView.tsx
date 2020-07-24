@@ -1,9 +1,9 @@
 import React, { useCallback, useState, useEffect } from "react";
 import { useHistory } from "react-router";
 import { reciveAllFiltered } from "../../../../Database/DbService";
-import Race from "../../../../Data/Race";
-import Trait from "../../../../Data/Trait";
-import Subrace from "../../../../Data/Subrace";
+import Race from "../../../../Data/Races/Race";
+import Trait from "../../../../Data/Races/Trait";
+import Subrace from "../../../../Data/Races/Subrace";
 import styled from "styled-components";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

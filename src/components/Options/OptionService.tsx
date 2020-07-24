@@ -3,11 +3,12 @@ import { IndexableType } from "dexie";
 import Spell, { isSpell } from "../../Data/Spell";
 import Gear, { isGear } from "../../Data/Gear";
 import Monster, { isMonster } from "../../Data/Monster";
-import Race, { isRace } from "../../Data/Race";
-import Subrace, { isSubrace } from "../../Data/Subrace";
+import Race, { isRace } from "../../Data/Races/Race";
+import Subrace, { isSubrace } from "../../Data/Races/Subrace";
 import Item, { isItem } from "../../Data/Item";
-import Class, { isClass } from "../../Data/Class";
-import Subclass, { isSubclass } from "../../Data/Subclass";
+import Class, { isClass } from "../../Data/Classes/Class";
+import Subclass, { isSubclass } from "../../Data/Classes/Subclass";
+import Char, { isChar } from "../../Data/Chars/Char";
 
 export const importFiles = (fileList: FileList | null) => {
   if (fileList !== null) {
@@ -36,6 +37,8 @@ export const importFiles = (fileList: FileList | null) => {
               saveNewFromList("gears", json as Gear[], file.name);
             } else if (isItem(json[0])) {
               saveNewFromList("items", json as Item[], file.name);
+            } else if (isChar(json[0])) {
+              saveNewFromList("chars", json as Char[], file.name);
             }
           }
           //   saveNewSpells(spellsJson, file.name);

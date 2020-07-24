@@ -1,7 +1,7 @@
 import React, { useCallback } from "react";
 import { useHistory } from "react-router";
-import Trait from "../../../../Data/Trait";
-import Subrace from "../../../../Data/Subrace";
+import Trait from "../../../../Data/Races/Trait";
+import Subrace from "../../../../Data/Races/Subrace";
 import styled from "styled-components";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

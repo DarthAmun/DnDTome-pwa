@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import Class from "../../../../Data/Class";
+import Class from "../../../../Data/Classes/Class";
 
 import StringField from "../../../FormElements/StringField";
 import ShortTextField from "../../../FormElements/ShortTextField";
@@ -15,10 +15,10 @@ import {
 import NumberField from "../../../FormElements/NumberField";
 import IconButton from "../../../FormElements/IconButton";
 import TextField from "../../../FormElements/TextField";
-import FeatureSet from "../../../../Data/FeatureSet";
+import FeatureSet from "../../../../Data/Classes/FeatureSet";
 import NumberArrayField from "../../../FormElements/NumberArrayField";
-import Boni from "../../../../Data/Boni";
-import Feature from "../../../../Data/Feature";
+import Boni from "../../../../Data/Classes/Boni";
+import Feature from "../../../../Data/Classes/Feature";
 import TextButton from "../../../FormElements/TextButton";
 
 interface $Props {

@@ -29,6 +29,7 @@ const Options = () => {
   const [subraceAmount, setSubraceAmount] = useState<number>(0);
   const [classAmount, setClassAmount] = useState<number>(0);
   const [subclassAmount, setSubclassAmount] = useState<number>(0);
+  const [charAmount, setCharAmount] = useState<number>(0);
 
   useEffect(() => {
     reciveCount("spells", (result: number) => {
@@ -55,6 +56,9 @@ const Options = () => {
     reciveCount("subclasses", (result: number) => {
       setSubclassAmount(result);
     });
+    reciveCount("chars", (result: number) => {
+      setCharAmount(result);
+    });
   }, []);
 
   const toggleTheme = () => {
@@ -78,6 +82,7 @@ const Options = () => {
           "Monsters",
           "Races",
           "Classes",
+          "chars"
         ]}
         onChange={(tab: string) => setTab(tab)}
       />
@@ -330,6 +335,38 @@ const Options = () => {
               <IconButton
                 icon={faTrashAlt}
                 onClick={() => deleteAll("subclasses")}
+              />
+            </SectionRow>
+          </OptionSection>
+        </OptionTab>
+      )}
+            {activeTab === "Chars" && (
+        <OptionTab>
+          <OptionSection>
+            <SelectionTitle>Import</SelectionTitle>
+            <FileField
+              label="Select DnDTome Json"
+              icon={faFileImport}
+              onChange={(file) => importFiles(file)}
+            />
+          </OptionSection>
+          <OptionSection>
+            <SelectionTitle>Export</SelectionTitle>
+            <SectionRow>
+              <SectionText>Export all Chars?</SectionText>
+              <IconButton
+                icon={faFileExport}
+                onClick={() => exportAll("chars", "DnDTome_chars.json")}
+              />
+            </SectionRow>
+          </OptionSection>
+          <OptionSection>
+            <SelectionTitle>Delete</SelectionTitle>
+            <SectionRow>
+              <SectionText>Delete all {charAmount} Chars?</SectionText>
+              <IconButton
+                icon={faTrashAlt}
+                onClick={() => deleteAll("chars")}
               />
             </SectionRow>
           </OptionSection>

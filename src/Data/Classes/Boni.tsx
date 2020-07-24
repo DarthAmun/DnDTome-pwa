@@ -1,4 +1,4 @@
-import IEntity from "./IEntity";
+import IEntity from "../IEntity";
 
 export default class Boni implements IEntity {
   name: string;

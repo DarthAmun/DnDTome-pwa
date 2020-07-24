@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { MyAppDatabase } from "../../../Database/MyDatabase";
 import { useTableByFilter } from "../../../Hooks/DexieHooks";
 import Filter from "../../../Data/Filter";
-import Race from "../../../Data/Race";
+import Race from "../../../Data/Races/Race";
 
 import { LoadingSpinner } from "../../Loading";
 import RaceTile from "./RaceTile";

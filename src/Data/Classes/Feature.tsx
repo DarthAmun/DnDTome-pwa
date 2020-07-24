@@ -1,4 +1,4 @@
-import IEntity from "./IEntity";
+import IEntity from "../IEntity";
 
 export default class Feature implements IEntity {
   name: string;

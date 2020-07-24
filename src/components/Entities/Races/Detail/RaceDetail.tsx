@@ -11,7 +11,7 @@ import {
 import RaceView from "./RaceView";
 import RaceEditView from "./RaceEditView";
 import BackButton from "../../../FormElements/BackButton";
-import Race from "../../../../Data/Race";
+import Race from "../../../../Data/Races/Race";
 import IconButton from "../../../FormElements/IconButton";
 import { remove, updateWithCallback } from "../../../../Database/DbService";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

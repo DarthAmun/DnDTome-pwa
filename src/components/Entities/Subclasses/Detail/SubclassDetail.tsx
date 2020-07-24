@@ -11,7 +11,7 @@ import {
 import SubclassView from "./SubclassView";
 import SubclassEditView from "./SubclassEditView";
 import BackButton from "../../../FormElements/BackButton";
-import Subclass from "../../../../Data/Subclass";
+import Subclass from "../../../../Data/Classes/Subclass";
 import IconButton from "../../../FormElements/IconButton";
 import { remove, updateWithCallback } from "../../../../Database/DbService";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

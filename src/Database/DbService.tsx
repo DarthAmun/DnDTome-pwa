@@ -1,15 +1,7 @@
 import { MyAppDatabase } from "./MyDatabase";
 import { IndexableType } from "dexie";
 import IEntity from "../Data/IEntity";
-import Spell from "../Data/Spell";
-import Gear from "../Data/Gear";
-import Item from "../Data/Item";
-import Monster from "../Data/Monster";
-import Race from "../Data/Race";
-import Subrace from "../Data/Subrace";
 import Filter from "../Data/Filter";
-import Class from "../Data/Class";
-import Subclass from "../Data/Subclass";
 
 export const update = (tableName: string, data: IEntity) => {
   const db = new MyAppDatabase();
@@ -168,35 +160,16 @@ export const reciveAttributeSelection = (
 
 export const saveNewFromList = (
   tableName: string,
-  entities:
-    | Spell[]
-    | Gear[]
-    | Monster[]
-    | Race[]
-    | Subrace[]
-    | Item[]
-    | Class[]
-    | Subclass[],
+  entities: IEntity[],
   filename: string
 ) => {
   const db = new MyAppDatabase();
   db.open()
     .then(function () {
-      const refinedEntities = (entities as (
-        | Spell
-        | Gear
-        | Item
-        | Monster
-        | Race
-        | Subrace
-        | Class
-        | Subclass
-      )[]).map(
-        (entity: Spell | Gear | Item | Monster | Race | Subrace | Class | Subclass) => {
-          delete entity["id"];
-          return { ...entity, filename: filename };
-        }
-      );
+      const refinedEntities = (entities as IEntity[]).map((entity: IEntity) => {
+        delete entity["id"];
+        return { ...entity, filename: filename };
+      });
       db.table(tableName).bulkPut(refinedEntities);
     })
     .finally(function () {

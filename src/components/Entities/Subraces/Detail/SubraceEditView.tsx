@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import Subrace from "../../../../Data/Subrace";
+import Subrace from "../../../../Data/Races/Subrace";
 
 import StringField from "../../../FormElements/StringField";
 import ShortTextField from "../../../FormElements/ShortTextField";
@@ -10,7 +10,7 @@ import {
   faPlus,
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
-import Trait from "../../../../Data/Trait";
+import Trait from "../../../../Data/Races/Trait";
 import NumberField from "../../../FormElements/NumberField";
 import IconButton from "../../../FormElements/IconButton";
 

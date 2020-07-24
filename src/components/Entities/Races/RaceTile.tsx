@@ -2,7 +2,7 @@ import React, { useCallback, Suspense } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 
-import Race from "../../../Data/Race";
+import Race from "../../../Data/Races/Race";
 import { LoadingSpinner } from "../../Loading";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

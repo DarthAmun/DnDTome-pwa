@@ -1,9 +1,9 @@
 import React from "react";
 import styled from "styled-components";
-import Subclass from "../../../../Data/Subclass";
-import FeatureSet from "../../../../Data/FeatureSet";
-import Boni from "../../../../Data/Boni";
-import Feature from "../../../../Data/Feature";
+import Subclass from "../../../../Data/Classes/Subclass";
+import FeatureSet from "../../../../Data/Classes/FeatureSet";
+import Boni from "../../../../Data/Classes/Boni";
+import Feature from "../../../../Data/Classes/Feature";
 
 import StringField from "../../../FormElements/StringField";
 import ShortTextField from "../../../FormElements/ShortTextField";

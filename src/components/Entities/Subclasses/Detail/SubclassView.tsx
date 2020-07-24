@@ -1,7 +1,7 @@
 import React, { useCallback } from "react";
 import { useHistory } from "react-router";
 import styled from "styled-components";
-import Subclass from "../../../../Data/Subclass";
+import Subclass from "../../../../Data/Classes/Subclass";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLink } from "@fortawesome/free-solid-svg-icons";

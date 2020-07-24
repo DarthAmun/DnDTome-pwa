@@ -11,7 +11,7 @@ import {
 import ClassView from "./ClassView";
 import ClassEditView from "./ClassEditView";
 import BackButton from "../../../FormElements/BackButton";
-import Class from "../../../../Data/Class";
+import Class from "../../../../Data/Classes/Class";
 import IconButton from "../../../FormElements/IconButton";
 import { remove, updateWithCallback } from "../../../../Database/DbService";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

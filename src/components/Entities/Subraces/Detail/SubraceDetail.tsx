@@ -11,7 +11,7 @@ import {
 import SubraceView from "./SubraceView";
 import SubraceEditView from "./SubraceEditView";
 import BackButton from "../../../FormElements/BackButton";
-import Subrace from "../../../../Data/Subrace";
+import Subrace from "../../../../Data/Races/Subrace";
 import IconButton from "../../../FormElements/IconButton";
 import { remove, updateWithCallback } from "../../../../Database/DbService";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

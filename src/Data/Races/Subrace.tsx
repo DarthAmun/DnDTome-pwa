@@ -1,4 +1,4 @@
-import IEntity from "./IEntity";
+import IEntity from "../IEntity";
 import Trait, { isTrait } from "./Trait";
 
 export default class Subrace implements IEntity {

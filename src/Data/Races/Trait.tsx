@@ -1,4 +1,4 @@
-import IEntity from "./IEntity";
+import IEntity from "../IEntity";
 
 export default class Trait implements IEntity {
   name: string;

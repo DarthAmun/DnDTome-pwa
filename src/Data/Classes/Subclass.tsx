@@ -1,4 +1,4 @@
-import IEntity from "./IEntity";
+import IEntity from "../IEntity";
 import FeatureSet, { isFeatureSet } from "./FeatureSet";
 
 export default class Subclass implements IEntity {
