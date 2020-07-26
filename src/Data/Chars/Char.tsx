@@ -2,6 +2,7 @@ import Skills from "./Skills";
 import Saves from "./Saves";
 import Money from "./Money";
 import IEntity from "../IEntity";
+import ClassSet from "./ClassSet";
 
 export default class Char implements IEntity {
   id?: number;
@@ -10,8 +11,7 @@ export default class Char implements IEntity {
   prof: string;
   level: number;
   pic: string;
-  classes: string;
-  subclasses: string;
+  classes: ClassSet[];
   race: string;
   background: string;
   ac: number;
@@ -53,8 +53,7 @@ export default class Char implements IEntity {
     prof: string,
     level: number,
     pic: string,
-    classes: string,
-    subclasses: string,
+    classes: ClassSet[],
     race: string,
     background: string,
     ac: number,
@@ -96,7 +95,6 @@ export default class Char implements IEntity {
     this.level = level;
     this.pic = pic;
     this.classes = classes;
-    this.subclasses = subclasses;
     this.race = race;
     this.background = background;
     this.ac = ac;

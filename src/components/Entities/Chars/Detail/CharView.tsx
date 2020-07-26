@@ -2,11 +2,20 @@ import React, { useCallback, useState, useEffect } from "react";
 import { useHistory } from "react-router";
 import { reciveAllFiltered } from "../../../../Database/DbService";
 import Char from "../../../../Data/Chars/Char";
+import ClassSet from "../../../../Data/Chars/ClassSet";
 import styled from "styled-components";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLink } from "@fortawesome/free-solid-svg-icons";
 import { GiDiceEightFacesEight } from "react-icons/gi";
+
+import {
+  Radar,
+  RadarChart,
+  PolarGrid,
+  PolarAngleAxis,
+  PolarRadiusAxis,
+} from "recharts";
 
 interface $Props {
   char: Char;
@@ -76,6 +85,98 @@ const CharView = ({ char }: $Props) => {
           <Name>
             <b>{char.name}</b>
           </Name>
+
+          <PropWrapper>
+            <Prop>
+              <PropTitle>Level:</PropTitle>
+              {char.level}
+            </Prop>
+            <Prop>
+              <PropTitle>Player:</PropTitle>
+              {char.player}
+            </Prop>
+            <Prop>
+              <PropTitle>Race:</PropTitle>
+              {char.race}
+            </Prop>
+            {char.classes &&
+              char.classes.map((classSet: ClassSet) => {
+                return (
+                  <PropWrapper>
+                    <Prop>{classSet.level}</Prop>
+                    <Prop>{classSet.classe}</Prop>
+                    <Prop>{classSet.subclasse}</Prop>
+                  </PropWrapper>
+                );
+              })}
+            <Prop>
+              <PropTitle>Background:</PropTitle>
+              {char.background}
+            </Prop>
+            <Prop>
+              <PropTitle>Alignment:</PropTitle>
+              {char.alignment}
+            </Prop>
+          </PropWrapper>
+          <PropWrapper>
+            <Prop>
+              <RadarChart
+                cx={150}
+                cy={150}
+                outerRadius={80}
+                width={300}
+                height={300}
+                data={[
+                  {
+                    subject: "Str",
+                    A: char.str,
+                    fullMark: 40,
+                  },
+                  {
+                    subject: "Dex",
+                    A: char.dex,
+                    fullMark: 40,
+                  },
+                  {
+                    subject: "Con",
+                    A: char.con,
+                    fullMark: 40,
+                  },
+                  {
+                    subject: "Int",
+                    A: char.int,
+                    fullMark: 40,
+                  },
+                  {
+                    subject: "Wis",
+                    A: char.wis,
+                    fullMark: 40,
+                  },
+                  {
+                    subject: "Cha",
+                    A: char.cha,
+                    fullMark: 40,
+                  },
+                ]}
+              >
+                <PolarGrid />
+                <PolarAngleAxis dataKey="subject" tick={{ fill: "#8000ff" }} />
+                <PolarRadiusAxis
+                  angle={90}
+                  domain={[0, "dataMax"]}
+                  axisLine={false}
+                  tick={false}
+                />
+                <Radar
+                  name="Mike"
+                  dataKey="A"
+                  stroke="#8884d8"
+                  fill="#8884d8"
+                  fillOpacity={0.6}
+                />
+              </RadarChart>
+            </Prop>
+          </PropWrapper>
         </View>
       </CenterWrapper>
     </>
@@ -116,7 +217,7 @@ const TextPart = styled.span`
 
 const ImageView = styled(View)`
   justify-content: flex-end;
-  flex: 1 1 300px;
+  flex: 1 1 100px;
 `;
 
 const Name = styled.div`
@@ -127,6 +228,17 @@ const Name = styled.div`
   width: calc(100% - 30px);
   color: var(--card-title-color);
   text-align: center;
+  border-radius: 5px;
+  background-color: ${({ theme }) => theme.tile.backgroundColor};
+`;
+
+const Flag = styled.div`
+  height: auto;
+  float: left;
+  padding: 5px 10px 7px 10px;
+  margin-left: 5px;
+  font-size: 12px;
+  line-height: 30px;
   border-radius: 5px;
   background-color: ${({ theme }) => theme.tile.backgroundColor};
 `;

@@ -8,6 +8,7 @@ import { LoadingSpinner } from "../../Loading";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLink } from "@fortawesome/free-solid-svg-icons";
 import { GiDiceEightFacesEight } from "react-icons/gi";
+import ClassSet from "../../../Data/Chars/ClassSet";
 
 interface $Props {
   char: Char;
@@ -33,8 +34,23 @@ const CharTile = ({ char }: $Props) => {
         </Name>
 
         <PropWrapper>
-          <Prop>{char.level}</Prop>
-          <Prop>{char.player}</Prop>
+          <PropRowWrapper>
+            <RowProp>{char.level}</RowProp>
+            <RowProp>{char.player}</RowProp>
+            <RowProp>{char.race}</RowProp>
+          </PropRowWrapper>
+          {char.classes &&
+            char.classes.map((classSet: ClassSet) => {
+              return (
+                <PropRowWrapper>
+                  <RowProp>{classSet.level}</RowProp>
+                  <RowProp>{classSet.classe}</RowProp>
+                  <RowProp>{classSet.subclasse}</RowProp>
+                </PropRowWrapper>
+              );
+            })}
+          <Prop>{char.background}</Prop>
+          <Prop>{char.alignment}</Prop>
         </PropWrapper>
       </Suspense>
     </Tile>
@@ -76,10 +92,16 @@ const PropWrapper = styled.div`
   flex-wrap: wrap;
 `;
 
-const Prop = styled.div`
+const PropRowWrapper = styled(PropWrapper)`
+  flex-wrap: nowrap;
+  padding: 0 0 5px 0;
+  width: 100%;
+`;
+
+const RowProp = styled.div`
   height: 12px;
   width: calc(50% - 22.5px);
-  margin: 0 0 5px 5px;
+  margin: 0 5px 0 0;
   float: left;
   line-height: 10px;
   padding: 10px;
@@ -90,16 +112,19 @@ const Prop = styled.div`
   text-overflow: ellipsis;
   overflow: hidden;
 
-  &:nth-child(odd) {
-  margin: 0 0 5px 0px;
-  }
-
   svg {
     margin-right: 5px;
     height: auto;
     border-radius: 150px;
     transition: color 0.2s;
     color: ${({ theme }) => theme.main.highlight};
+  }
+}
+`;
+
+const Prop = styled(RowProp)`
+  &:nth-child(odd) {
+  margin: 0 0 5px 0px;
   }
 }
 `;

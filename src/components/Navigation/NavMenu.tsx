@@ -3,8 +3,13 @@ import styled from "styled-components";
 import { Link, useLocation } from "react-router-dom";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMeteor, faCog, faDragon } from "@fortawesome/free-solid-svg-icons";
-import { GiBackpack, GiWomanElfFace, GiCrystalWand, GiPlagueDoctorProfile } from "react-icons/gi";
+import { faMeteor, faCog, faDragon, faIdCard } from "@fortawesome/free-solid-svg-icons";
+import {
+  GiBackpack,
+  GiWomanElfFace,
+  GiCrystalWand,
+  GiPlagueDoctorProfile,
+} from "react-icons/gi";
 
 interface $Props {
   open: boolean;
@@ -69,12 +74,30 @@ const NavMenu = ({ open }: $Props) => {
         <FontAwesomeIcon icon={faDragon} />
         Monsters
       </Link>
-      {/* // <Link  to="/char-overview" className={location.pathname === "/char-overview" ? "menuItemActiv" : ""}>
-      //   <FontAwesomeIcon icon={faIdCard} />
-      // </Link>
-      // <Link  to="/encounter" className={location.pathname === "/encounter" ? "menuItemActiv" : ""}>
-      //   <img alt="" src={encounterIcon} style={{ width: '20px', marginTop: '10px', marginRight: '5px', float: 'left' }} />
-      // </Link> */}
+      <Link
+        to="/char-overview"
+        className={
+          location.pathname === "/char-overview" ? "menuItemActiv" : ""
+        }
+      >
+        <FontAwesomeIcon icon={faIdCard} />
+        Chars
+      </Link>
+      {/* <Link
+        to="/encounter"
+        className={location.pathname === "/encounter" ? "menuItemActiv" : ""}
+      >
+        <img
+          alt=""
+          src={encounterIcon}
+          style={{
+            width: "20px",
+            marginTop: "10px",
+            marginRight: "5px",
+            float: "left",
+          }}
+        />
+      </Link> */}
       <Link
         to="/options"
         className={location.pathname === "/options" ? "menuItemActiv" : ""}
