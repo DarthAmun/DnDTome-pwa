@@ -2,7 +2,7 @@ import Skills from "./Skills";
 import Saves from "./Saves";
 import Money from "./Money";
 import IEntity from "../IEntity";
-import ClassSet from "./ClassSet";
+import ClassSet, { isClassSet } from "./ClassSet";
 
 export default class Char implements IEntity {
   id?: number;
@@ -133,5 +133,35 @@ export default class Char implements IEntity {
 
 export function isChar(arg: any): arg is Char {
   const nameCheck = arg.name !== undefined && typeof arg.name == "string";
-  return arg && nameCheck;
+  const playerCheck = arg.player !== undefined && typeof arg.player == "string";
+  const profCheck = arg.prof !== undefined && typeof arg.prof == "number";
+  const levelCheck = arg.level !== undefined && typeof arg.level == "number";
+  const picCheck = arg.pic !== undefined && typeof arg.pic == "string";
+  const raceCheck = arg.race !== undefined && typeof arg.race == "string";
+  const backgroundCheck =
+    arg.background !== undefined && typeof arg.background == "string";
+  const acCheck = arg.ac !== undefined && typeof arg.ac == "number";
+  const hpCheck = arg.hp !== undefined && typeof arg.hp == "number";
+  const currentHpCheck =
+    arg.currentHp !== undefined && typeof arg.currentHp == "number";
+  const initCheck = arg.init !== undefined && typeof arg.init == "number";
+  const classesCheck =
+    arg.classes !== undefined &&
+    Array.isArray(arg.classes) &&
+    isClassSet(arg.classes[0]);
+  return (
+    arg &&
+    nameCheck &&
+    playerCheck &&
+    profCheck &&
+    levelCheck &&
+    picCheck &&
+    raceCheck &&
+    backgroundCheck &&
+    acCheck &&
+    hpCheck &&
+    currentHpCheck &&
+    initCheck &&
+    classesCheck
+  );
 }

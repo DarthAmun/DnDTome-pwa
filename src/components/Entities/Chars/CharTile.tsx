@@ -2,13 +2,9 @@ import React, { useCallback, Suspense } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import Char from "../../../Data/Chars/Char";
+import ClassSet from "../../../Data/Chars/ClassSet";
 
 import { LoadingSpinner } from "../../Loading";
-
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faLink } from "@fortawesome/free-solid-svg-icons";
-import { GiDiceEightFacesEight } from "react-icons/gi";
-import ClassSet from "../../../Data/Chars/ClassSet";
 
 interface $Props {
   char: Char;
@@ -29,20 +25,20 @@ const CharTile = ({ char }: $Props) => {
     <Tile to={"/char-detail/id/" + char.id}>
       <Suspense fallback={<LoadingSpinner />}>
         {getPicture() !== "" ? <Image pic={getPicture()}></Image> : ""}
-        <Name>
-          <b>{char.name}</b>
-        </Name>
-
         <PropWrapper>
+          <Name>
+            <b>{char.name}</b>
+          </Name>
+
           <PropRowWrapper>
             <RowProp>{char.level}</RowProp>
             <RowProp>{char.player}</RowProp>
             <RowProp>{char.race}</RowProp>
           </PropRowWrapper>
           {char.classes &&
-            char.classes.map((classSet: ClassSet) => {
+            char.classes.map((classSet: ClassSet, index:number) => {
               return (
-                <PropRowWrapper>
+                <PropRowWrapper key={index}>
                   <RowProp>{classSet.level}</RowProp>
                   <RowProp>{classSet.classe}</RowProp>
                   <RowProp>{classSet.subclasse}</RowProp>
@@ -68,25 +64,29 @@ const Tile = styled(Link)`
   box-shadow: ${({ theme }) => theme.tile.boxShadow};
   overflow: hidden;
   cursor: pointer;
+  text-decoration: none;
+
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
 `;
 
 const Name = styled.div`
   height: auto;
-  float: left;
+  flex: 1 1 auto;
   padding: 10px;
-  margin: 5px;
+  margin: 5px 5px 5px 0;
   font-size: 14px;
-  width: calc(100% - 30px);
-  color: var(--card-title-color);
   text-align: center;
   border-radius: 5px;
-  box-shadow: inset 0px 0px 5px 0px rgba(0, 0, 0, 0.3);
+  box-shadow: inset 0 0 5px 0 rgba(0, 0, 0, 0.3);
 `;
 
 const PropWrapper = styled.div`
   height: auto;
-  width: calc(100% - 10px);
-  float: left;
+  flex: 1 1 auto;
   padding: 5px 5px 0 5px;
   display: flex;
   flex-wrap: wrap;
@@ -95,14 +95,14 @@ const PropWrapper = styled.div`
 const PropRowWrapper = styled(PropWrapper)`
   flex-wrap: nowrap;
   padding: 0 0 5px 0;
+  flex: 1 1 auto;
   width: 100%;
 `;
 
 const RowProp = styled.div`
   height: 12px;
-  width: calc(50% - 22.5px);
   margin: 0 5px 0 0;
-  float: left;
+  flex: 1 1 auto;
   line-height: 10px;
   padding: 10px;
   font-size: 12px;
@@ -124,17 +124,9 @@ const RowProp = styled.div`
 
 const Prop = styled(RowProp)`
   &:nth-child(odd) {
-  margin: 0 0 5px 0px;
+    margin: 0 5px 5px 0;
   }
 }
-`;
-
-const Icon = styled(FontAwesomeIcon)`
-  margin-right: 5px;
-  width: 20px;
-  height: auto;
-  border-radius: 150px;
-  color: ${({ theme }) => theme.main.highlight};
 `;
 
 interface $ImageProps {
@@ -143,16 +135,21 @@ interface $ImageProps {
 
 const Image = ({ pic }: $ImageProps) => {
   if (pic !== "") {
-    return <ImageElm src={pic}></ImageElm>;
+    return (
+      <ImgContainer>
+        <ImageElm src={pic}></ImageElm>
+      </ImgContainer>
+    );
   } else {
     return <Empty />;
   }
 };
 
-const ImageElm = styled.img`
+const ImgContainer = styled.div`
   margin: 5px;
+`;
+const ImageElm = styled.img`
   max-width: 200px;
-  max-height: 300px;
-  float: left;
+  max-height: 200px;
 `;
 const Empty = styled.div``;

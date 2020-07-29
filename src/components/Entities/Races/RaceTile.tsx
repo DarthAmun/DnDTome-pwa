@@ -28,11 +28,11 @@ const RaceTile = ({ race }: $Props) => {
     <Tile to={"/race-detail/id/" + race.id}>
       <Suspense fallback={<LoadingSpinner />}>
         {getPicture() !== "" ? <Image pic={getPicture()}></Image> : ""}
-        <Name>
-          <b>{race.name}</b>
-        </Name>
-
         <PropWrapper>
+          <Name>
+            <b>{race.name}</b>
+          </Name>
+
           <Prop>
             <GiUpgrade />
             {race.abilityScores}
@@ -58,19 +58,25 @@ const Tile = styled(Link)`
   box-shadow: ${({ theme }) => theme.tile.boxShadow};
   overflow: hidden;
   cursor: pointer;
+  text-decoration: none;
+
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
 `;
 
 const Name = styled.div`
   height: auto;
-  float: left;
+  flex: 1 1 auto;
+  width: 100%;
   padding: 10px;
-  margin: 5px;
+  margin: 5px 0 5px 0;
   font-size: 14px;
-  width: calc(100% - 30px);
-  color: var(--card-title-color);
   text-align: center;
   border-radius: 5px;
-  box-shadow: inset 0px 0px 5px 0px rgba(0, 0, 0, 0.3);
+  box-shadow: inset 0 0 5px 0 rgba(0, 0, 0, 0.3);
 `;
 
 const PropWrapper = styled.div`
@@ -84,11 +90,12 @@ const PropWrapper = styled.div`
 
 const Prop = styled.div`
   height: 12px;
-  width: calc(50% - 22.5px);
-  margin: 0 0 5px 5px;
+  flex: 1 1 auto;
+  margin: 0 0 5px 0;
   float: left;
   line-height: 10px;
   padding: 10px;
+  margin: 0 0 5px 0;
   font-size: 12px;
   border-radius: 5px;
   box-shadow: inset 0px 0px 5px 0px rgba(0, 0, 0, 0.3);
@@ -97,7 +104,7 @@ const Prop = styled.div`
   overflow: hidden;
 
   &:nth-child(odd) {
-  margin: 0 0 5px 0px;
+  margin: 0 0 5px 5px;
   }
 
   svg {
@@ -124,16 +131,21 @@ interface $ImageProps {
 
 const Image = ({ pic }: $ImageProps) => {
   if (pic !== "") {
-    return <ImageElm src={pic}></ImageElm>;
+    return (
+      <ImgContainer>
+        <ImageElm src={pic}></ImageElm>
+      </ImgContainer>
+    );
   } else {
     return <Empty />;
   }
 };
 
-const ImageElm = styled.img`
+const ImgContainer = styled.div`
   margin: 5px;
+`;
+const ImageElm = styled.img`
   max-width: 200px;
-  max-height: 300px;
-  float: left;
+  max-height: 200px;
 `;
 const Empty = styled.div``;
