@@ -33,7 +33,8 @@ const CharTile = ({ char }: $Props) => {
           <PropRowWrapper>
             <RowProp>{char.level}</RowProp>
             <RowProp>{char.player}</RowProp>
-            <RowProp>{char.race}</RowProp>
+            <RowProp>{char.race.race}</RowProp>
+            <RowProp>{char.race.subrace}</RowProp>
           </PropRowWrapper>
           {char.classes &&
             char.classes.map((classSet: ClassSet, index:number) => {

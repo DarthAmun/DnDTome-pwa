@@ -3,6 +3,7 @@ import Saves from "./Saves";
 import Money from "./Money";
 import IEntity from "../IEntity";
 import ClassSet, { isClassSet } from "./ClassSet";
+import RaceSet, { isRaceSet } from "./RaceSet";
 
 export default class Char implements IEntity {
   id?: number;
@@ -12,7 +13,7 @@ export default class Char implements IEntity {
   level: number;
   pic: string;
   classes: ClassSet[];
-  race: string;
+  race: RaceSet;
   background: string;
   ac: number;
   hp: number;
@@ -54,7 +55,7 @@ export default class Char implements IEntity {
     level: number,
     pic: string,
     classes: ClassSet[],
-    race: string,
+    race: RaceSet,
     background: string,
     ac: number,
     hp: number,
@@ -137,7 +138,7 @@ export function isChar(arg: any): arg is Char {
   const profCheck = arg.prof !== undefined && typeof arg.prof == "number";
   const levelCheck = arg.level !== undefined && typeof arg.level == "number";
   const picCheck = arg.pic !== undefined && typeof arg.pic == "string";
-  const raceCheck = arg.race !== undefined && typeof arg.race == "string";
+  const raceCheck = arg.race !== undefined && isRaceSet(arg.race);
   const backgroundCheck =
     arg.background !== undefined && typeof arg.background == "string";
   const acCheck = arg.ac !== undefined && typeof arg.ac == "number";

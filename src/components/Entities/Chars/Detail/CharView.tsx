@@ -8,6 +8,8 @@ import Class from "../../../../Data/Classes/Class";
 import Subclass from "../../../../Data/Classes/Subclass";
 import Feature from "../../../../Data/Classes/Feature";
 import FeatureSet from "../../../../Data/Classes/FeatureSet";
+import Race from "../../../../Data/Races/Race";
+import Subrace from "../../../../Data/Races/Subrace";
 import TabBar from "../../../GeneralElements/TabBar";
 
 import {
@@ -17,6 +19,7 @@ import {
   PolarAngleAxis,
   PolarRadiusAxis,
 } from "recharts";
+import Trait from "../../../../Data/Races/Trait";
 
 interface $Props {
   char: Char;
@@ -26,6 +29,9 @@ const CharView = ({ char }: $Props) => {
   const [classes, setClasses] = useState<Class[]>([]);
   const [subclasses, setSubclasses] = useState<Subclass[]>([]);
   const [classesFeatures, setClassesFeatures] = useState<FeatureSet[]>([]);
+  const [race, setRace] = useState<Race>();
+  const [subrace, setSubrace] = useState<Subrace>();
+  const [raceFeatures, setRaceFeatures] = useState<Trait[]>([]);
   const [activeTab, setTab] = useState<string>("General");
   let history = useHistory();
 
@@ -71,6 +77,30 @@ const CharView = ({ char }: $Props) => {
               setClassesFeatures((c) => [...c, featureSet]);
             }
           });
+        });
+      }
+    );
+    reciveAllFiltered(
+      "races",
+      [{ fieldName: "name", value: char.race.race }],
+      (results: any) => {
+        setRace(results[0]);
+        results[0].traits.forEach((trait: Trait) => {
+          if (trait.level <= char.level) {
+            setRaceFeatures((c) => [...c, trait]);
+          }
+        });
+      }
+    );
+    reciveAllFiltered(
+      "subraces",
+      [{ fieldName: "name", value: char.race.subrace }],
+      (results: any) => {
+        setRace(results[0]);
+        results[0].traits.forEach((trait: Trait) => {
+          if (trait.level <= char.level) {
+            setRaceFeatures((c) => [...c, trait]);
+          }
         });
       }
     );
@@ -138,8 +168,12 @@ const CharView = ({ char }: $Props) => {
             </Prop>
             <Prop>
               <PropTitle>Race:</PropTitle>
-              {char.race}
+              {char.race.race}
             </Prop>
+            {char.race.subrace && <Prop>
+              <PropTitle>Subrace:</PropTitle>
+              {char.race.subrace}
+            </Prop>}
             {char.classes &&
               char.classes.map((classSet: ClassSet, index: number) => {
                 return (
@@ -246,15 +280,7 @@ const CharView = ({ char }: $Props) => {
           </StatProp>
         </MinView>
         <TabBar
-          children={[
-            "General",
-            "Race",
-            "Classes",
-            "Spells",
-            "Gears",
-            "Magic Items",
-            "Monsters",
-          ]}
+          children={["General", "Race", "Classes", "Spells", "Items"]}
           onChange={(tab: string) => setTab(tab)}
         />
         {activeTab === "Classes" && (
@@ -273,6 +299,24 @@ const CharView = ({ char }: $Props) => {
                           </Text>
                         );
                       }
+                    );
+                  })}
+            </PropWrapper>
+          </View>
+        )}
+        {activeTab === "Race" && (
+          <View>
+            <PropWrapper>
+              {raceFeatures &&
+                raceFeatures
+                  .sort((f1, f2) => f1.level - f2.level)
+                  .map((trait: Trait, index: number) => {
+                    return (
+                      <TraitWrapper key={index}>
+                        <TraitName>{trait.name}</TraitName>
+                        <TraitLevel>{trait.level}</TraitLevel>
+                        <TraitText>{formatText(trait.text)}</TraitText>
+                      </TraitWrapper>
                     );
                   })}
             </PropWrapper>
@@ -385,6 +429,21 @@ const PropTitle = styled.span`
   color: ${({ theme }) => theme.tile.backgroundColorLink};
   text-decoration: none;
   margin: 0px 5px 0px 5px;
+`;
+
+const TraitWrapper = styled(PropWrapper)``;
+const TraitName = styled.div`
+  background-color: ${({ theme }) => theme.tile.backgroundColor};
+  padding: 10px;
+  border-radius: 5px;
+  margin: 2px;
+  flex: 3 3 auto;
+`;
+const TraitLevel = styled(TraitName)`
+  flex: 1 1 auto;
+`;
+const TraitText = styled(TraitName)`
+  flex: 4 4 auto;
 `;
 
 const Link = styled.span`
