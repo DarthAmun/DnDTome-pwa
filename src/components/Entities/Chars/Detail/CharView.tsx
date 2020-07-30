@@ -1,25 +1,29 @@
 import React, { useCallback, useState, useEffect } from "react";
 import { useHistory } from "react-router";
 import styled from "styled-components";
-import { reciveAllFiltered } from "../../../../Database/DbService";
+import {
+  reciveAllFiltered,
+  reciveByAttribute,
+} from "../../../../Database/DbService";
 import Char from "../../../../Data/Chars/Char";
-import ClassSet from "../../../../Data/Chars/ClassSet";
 import Class from "../../../../Data/Classes/Class";
 import Subclass from "../../../../Data/Classes/Subclass";
 import Feature from "../../../../Data/Classes/Feature";
 import FeatureSet from "../../../../Data/Classes/FeatureSet";
 import Race from "../../../../Data/Races/Race";
 import Subrace from "../../../../Data/Races/Subrace";
-import TabBar from "../../../GeneralElements/TabBar";
-
-import {
-  Radar,
-  RadarChart,
-  PolarGrid,
-  PolarAngleAxis,
-  PolarRadiusAxis,
-} from "recharts";
 import Trait from "../../../../Data/Races/Trait";
+import SpellTile from "../../Spells/SpellTile";
+import Spell, { isSpell } from "../../../../Data/Spell";
+import Item, { isItem } from "../../../../Data/Item";
+import Gear, { isGear } from "../../../../Data/Gear";
+
+import TabBar from "../../../GeneralElements/TabBar";
+import CharGeneral from "./DetailComponents/CharGeneral";
+import CharHeader from "./DetailComponents/CharHeader";
+import NumberArrayField from "../../../FormElements/NumberArrayField";
+import ItemTile from "../../Item/ItemTile";
+import GearTile from "../../Gear/GearTile";
 
 interface $Props {
   char: Char;
@@ -29,9 +33,19 @@ const CharView = ({ char }: $Props) => {
   const [classes, setClasses] = useState<Class[]>([]);
   const [subclasses, setSubclasses] = useState<Subclass[]>([]);
   const [classesFeatures, setClassesFeatures] = useState<FeatureSet[]>([]);
+
   const [race, setRace] = useState<Race>();
   const [subrace, setSubrace] = useState<Subrace>();
   const [raceFeatures, setRaceFeatures] = useState<Trait[]>([]);
+
+  const [spells, setSpells] = useState<Spell[]>([]);
+  const [spellSlots, setSpellSlots] = useState<
+    { name: string; slots: number[] }[]
+  >([]);
+
+  const [gears, setGears] = useState<Gear[]>([]);
+  const [items, setItems] = useState<Item[]>([]);
+
   const [activeTab, setTab] = useState<string>("General");
   let history = useHistory();
 
@@ -54,6 +68,20 @@ const CharView = ({ char }: $Props) => {
             if (featureSet.level <= classLevel) {
               setClassesFeatures((c) => [...c, featureSet]);
             }
+            if (
+              featureSet.level === classLevel &&
+              featureSet.spellslots !== undefined &&
+              featureSet.spellslots.length > 0
+            ) {
+              const slots = featureSet.spellslots;
+              setSpellSlots((s) => [
+                ...s,
+                {
+                  name: classe.name,
+                  slots: slots,
+                },
+              ]);
+            }
           });
         });
       }
@@ -75,6 +103,20 @@ const CharView = ({ char }: $Props) => {
           subclass.features.forEach((featureSet: FeatureSet) => {
             if (featureSet.level <= subclassLevel) {
               setClassesFeatures((c) => [...c, featureSet]);
+            }
+            if (
+              featureSet.level === subclassLevel &&
+              featureSet.spellslots !== undefined &&
+              featureSet.spellslots.length > 0
+            ) {
+              const slots = featureSet.spellslots;
+              setSpellSlots((s) => [
+                ...s,
+                {
+                  name: subclass.name,
+                  slots: slots,
+                },
+              ]);
             }
           });
         });
@@ -104,6 +146,28 @@ const CharView = ({ char }: $Props) => {
         });
       }
     );
+    char.spells.forEach((spell) => {
+      reciveByAttribute("spells", "name", spell, (result) => {
+        if (result && isSpell(result)) {
+          setSpells((s) => [...s, result]);
+        }
+      });
+    });
+
+    char.items.forEach((item) => {
+      reciveByAttribute("items", "name", item, (result) => {
+        if (result && isItem(result)) {
+          setItems((s) => [...s, result]);
+        }
+      });
+    });
+    char.items.forEach((item) => {
+      reciveByAttribute("gears", "name", item, (result) => {
+        if (result && isGear(result)) {
+          setGears((s) => [...s, result]);
+        }
+      });
+    });
   }, [char]);
 
   const formatText = useCallback(
@@ -132,157 +196,33 @@ const CharView = ({ char }: $Props) => {
     [char, history]
   );
 
-  const getPicture = useCallback(() => {
-    if (char !== undefined) {
-      if (char.pic === "" || char.pic === null) {
-        return "";
+  const onSpellslotChange = (
+    oldSlots: { name: string; slots: number[] },
+    value: number[]
+  ) => {
+    let features = spellSlots.map(
+      (slots: { name: string; slots: number[] }) => {
+        if (slots === oldSlots) {
+          return { name: oldSlots.name, slots: value };
+        } else {
+          return slots;
+        }
       }
-      return char.pic;
-    }
-    return "";
-  }, [char]);
+    );
+    setSpellSlots(features);
+  };
 
   return (
     <>
       <CenterWrapper>
-        {getPicture() !== "" ? (
-          <ImageView>
-            <Image pic={getPicture()}></Image>
-          </ImageView>
-        ) : (
-          ""
-        )}
-        <View>
-          <Name>
-            <b>{char.name}</b>
-          </Name>
-
-          <PropWrapper>
-            <Prop>
-              <PropTitle>Level:</PropTitle>
-              {char.level}
-            </Prop>
-            <Prop>
-              <PropTitle>Player:</PropTitle>
-              {char.player}
-            </Prop>
-            <Prop>
-              <PropTitle>Race:</PropTitle>
-              {char.race.race}
-            </Prop>
-            {char.race.subrace && <Prop>
-              <PropTitle>Subrace:</PropTitle>
-              {char.race.subrace}
-            </Prop>}
-            {char.classes &&
-              char.classes.map((classSet: ClassSet, index: number) => {
-                return (
-                  <PropWrapper key={index}>
-                    <Prop>{classSet.level}</Prop>
-                    <Prop>{classSet.classe}</Prop>
-                    <Prop>{classSet.subclasse}</Prop>
-                  </PropWrapper>
-                );
-              })}
-            <Prop>
-              <PropTitle>Background:</PropTitle>
-              {char.background}
-            </Prop>
-            <Prop>
-              <PropTitle>Alignment:</PropTitle>
-              {char.alignment}
-            </Prop>
-          </PropWrapper>
-          <PropWrapper>
-            <Prop>
-              <PropTitle>Str:</PropTitle>
-              {char.str}
-            </Prop>
-            <Prop>
-              <PropTitle>Dex:</PropTitle>
-              {char.dex}
-            </Prop>
-            <Prop>
-              <PropTitle>Con:</PropTitle>
-              {char.con}
-            </Prop>
-            <Prop>
-              <PropTitle>Int:</PropTitle>
-              {char.int}
-            </Prop>
-            <Prop>
-              <PropTitle>Wis:</PropTitle>
-              {char.wis}
-            </Prop>
-            <Prop>
-              <PropTitle>Cha:</PropTitle>
-              {char.cha}
-            </Prop>
-          </PropWrapper>
-        </View>
-        <MinView>
-          <StatProp>
-            <RadarChart
-              cx={120}
-              cy={120}
-              outerRadius={80}
-              width={240}
-              height={240}
-              data={[
-                {
-                  subject: "Str",
-                  A: char.str,
-                  fullMark: 40,
-                },
-                {
-                  subject: "Dex",
-                  A: char.dex,
-                  fullMark: 40,
-                },
-                {
-                  subject: "Con",
-                  A: char.con,
-                  fullMark: 40,
-                },
-                {
-                  subject: "Int",
-                  A: char.int,
-                  fullMark: 40,
-                },
-                {
-                  subject: "Wis",
-                  A: char.wis,
-                  fullMark: 40,
-                },
-                {
-                  subject: "Cha",
-                  A: char.cha,
-                  fullMark: 40,
-                },
-              ]}
-            >
-              <PolarGrid />
-              <PolarAngleAxis dataKey="subject" tick={{ fill: "#8000ff" }} />
-              <PolarRadiusAxis
-                angle={90}
-                domain={[0, "dataMax"]}
-                axisLine={false}
-                tick={false}
-              />
-              <Radar
-                name="Mike"
-                dataKey="A"
-                stroke="#8884d8"
-                fill="#8884d8"
-                fillOpacity={0.6}
-              />
-            </RadarChart>
-          </StatProp>
-        </MinView>
+        <CharHeader char={char} />
         <TabBar
           children={["General", "Race", "Classes", "Spells", "Items"]}
           onChange={(tab: string) => setTab(tab)}
         />
+        {activeTab === "General" && (
+          <CharGeneral char={char} classes={classes} />
+        )}
         {activeTab === "Classes" && (
           <View>
             <PropWrapper>
@@ -322,6 +262,42 @@ const CharView = ({ char }: $Props) => {
             </PropWrapper>
           </View>
         )}
+        {activeTab === "Spells" && (
+          <View>
+            <PropWrapper>
+              {spellSlots.map((classSlots) => {
+                return (
+                  <NumberArrayField
+                    values={classSlots.slots}
+                    max={classSlots.slots}
+                    label={classSlots.name}
+                    onChange={(slots) => onSpellslotChange(classSlots, slots)}
+                  />
+                );
+              })}
+            </PropWrapper>
+            <PropWrapper>
+              {spells &&
+                spells.map((spell, index: number) => {
+                  return <SpellTile key={index} spell={spell}></SpellTile>;
+                })}
+            </PropWrapper>
+          </View>
+        )}
+        {activeTab === "Items" && (
+          <View>
+            <PropWrapper>
+              {items &&
+                items.map((item, index: number) => {
+                  return <ItemTile key={index} item={item}></ItemTile>;
+                })}
+              {gears &&
+                gears.map((gear, index: number) => {
+                  return <GearTile key={index} gear={gear}></GearTile>;
+                })}
+            </PropWrapper>
+          </View>
+        )}
       </CenterWrapper>
     </>
   );
@@ -355,33 +331,6 @@ const View = styled.div`
   align-content: flex-start;
 `;
 
-const MinView = styled(View)`
-  min-width: 0;
-  max-width: max-content;
-`;
-
-const ImageView = styled(MinView)`
-  justify-content: center;
-  flex: 1 1 100px;
-  min-width: max-content;
-`;
-
-const TextPart = styled.span`
-  white-space: pre-line;
-`;
-
-const Name = styled.div`
-  height: auto;
-  float: left;
-  padding: 10px;
-  margin: 5px 5px 10px 5px;
-  width: calc(100% - 30px);
-  color: var(--card-title-color);
-  text-align: center;
-  border-radius: 5px;
-  background-color: ${({ theme }) => theme.tile.backgroundColor};
-`;
-
 const PropWrapper = styled.div`
   width: calc(100% - 6px);
   float: left;
@@ -409,8 +358,11 @@ const Prop = styled.div`
   }
 `;
 
-const StatProp = styled(Prop)`
-  max-width: max-content;
+const PropTitle = styled.span`
+  display: inline-block;
+  color: ${({ theme }) => theme.tile.backgroundColorLink};
+  text-decoration: none;
+  margin: 0px 5px 0px 5px;
 `;
 
 const Text = styled.div`
@@ -424,11 +376,8 @@ const Text = styled.div`
   background-color: ${({ theme }) => theme.tile.backgroundColor};
 `;
 
-const PropTitle = styled.span`
-  display: inline-block;
-  color: ${({ theme }) => theme.tile.backgroundColorLink};
-  text-decoration: none;
-  margin: 0px 5px 0px 5px;
+const TextPart = styled.span`
+  white-space: pre-line;
 `;
 
 const TraitWrapper = styled(PropWrapper)``;
@@ -463,20 +412,3 @@ const SubcharLink = styled(Link)`
   padding: 5px;
   cursor: pointer;
 `;
-
-interface $ImageProps {
-  pic: string;
-}
-
-const Image = ({ pic }: $ImageProps) => {
-  if (pic !== "") {
-    return <ImageElm src={pic}></ImageElm>;
-  } else {
-    return <Empty />;
-  }
-};
-const ImageElm = styled.img`
-  max-width: 200px;
-  max-height: 250px;
-`;
-const Empty = styled.div``;

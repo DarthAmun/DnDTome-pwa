@@ -15,6 +15,8 @@ export default class Char implements IEntity {
   classes: ClassSet[];
   race: RaceSet;
   background: string;
+  spells: string[];
+  items: string[];
   ac: number;
   hp: number;
   currentHp: number;
@@ -36,9 +38,6 @@ export default class Char implements IEntity {
   passivPerception: number;
   passivInsight: number;
   passivInvestigation: number;
-  notesOne: string;
-  notesTwo: string;
-  notesThree: string;
   money: Money;
   skills: Skills;
   spellNotes: string;
@@ -57,6 +56,8 @@ export default class Char implements IEntity {
     classes: ClassSet[],
     race: RaceSet,
     background: string,
+    spells: string[],
+    items: string[],
     ac: number,
     hp: number,
     currentHp: number,
@@ -78,9 +79,6 @@ export default class Char implements IEntity {
     passivPerception: number,
     passivInsight: number,
     passivInvestigation: number,
-    notesOne: string,
-    notesTwo: string,
-    notesThree: string,
     money: Money,
     skills: Skills,
     spellNotes: string,
@@ -98,6 +96,8 @@ export default class Char implements IEntity {
     this.classes = classes;
     this.race = race;
     this.background = background;
+    this.spells = spells;
+    this.items = items;
     this.ac = ac;
     this.hp = hp;
     this.currentHp = currentHp;
@@ -119,9 +119,6 @@ export default class Char implements IEntity {
     this.passivPerception = passivPerception;
     this.passivInsight = passivInsight;
     this.passivInvestigation = passivInvestigation;
-    this.notesOne = notesOne;
-    this.notesTwo = notesTwo;
-    this.notesThree = notesThree;
     this.money = money;
     this.skills = skills;
     this.spellNotes = spellNotes;

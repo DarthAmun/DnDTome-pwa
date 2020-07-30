@@ -7,6 +7,7 @@ import { Transform } from "@fortawesome/fontawesome-svg-core";
 
 interface $Props {
   values: number[];
+  max?: number[];
   label: string;
   icon?: IconDefinition;
   transform?: string | Transform;
@@ -18,6 +19,7 @@ const NumberArrayField = ({
   label,
   icon,
   transform,
+  max,
   onChange,
 }: $Props) => {
   const [array, setArray] = useState<number[]>(values);
@@ -35,14 +37,26 @@ const NumberArrayField = ({
         {icon ? <Icon icon={icon} transform={transform} /> : ""} {label}
       </LabelText>
       {values.map((value: number, index: number) => {
-        return (
-          <Input
-            type="text"
-            key={index}
-            value={value}
-            onChange={(e) => handleValueChange(index, +e.target.value)}
-          ></Input>
-        );
+        if (max !== undefined) {
+          return (
+            <Input
+              type="text"
+              key={index}
+              max={max[index]}
+              value={value}
+              onChange={(e) => handleValueChange(index, +e.target.value)}
+            ></Input>
+          );
+        } else {
+          return (
+            <Input
+              type="text"
+              key={index}
+              value={value}
+              onChange={(e) => handleValueChange(index, +e.target.value)}
+            ></Input>
+          );
+        }
       })}
     </Field>
   );

@@ -75,6 +75,28 @@ export const reciveAll = (
     });
 };
 
+export const reciveByAttribute = (
+  tableName: string,
+  name: string,
+  value: string,
+  callback: (data: IEntity) => void
+) => {
+  const db = new MyAppDatabase();
+  db.open()
+    .then(function () {
+      db.table(tableName)
+        .where(name)
+        .equalsIgnoreCase(value)
+        .toArray()
+        .then((array) => {
+          callback(array[0]);
+        });
+    })
+    .finally(function () {
+      db.close();
+    });
+};
+
 export const reciveAllFiltered = (
   tableName: string,
   filters: Filter[],
