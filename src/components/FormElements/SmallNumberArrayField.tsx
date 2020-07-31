@@ -14,7 +14,7 @@ interface $Props {
   onChange: (value: number[]) => void;
 }
 
-const NumberArrayField = ({
+const SmallNumberArrayField = ({
   values,
   label,
   icon,
@@ -62,7 +62,7 @@ const NumberArrayField = ({
   );
 };
 
-export default NumberArrayField;
+export default SmallNumberArrayField;
 
 const Field = styled.label`
   color: ${({ theme }) => theme.tile.color};
@@ -72,6 +72,7 @@ const Field = styled.label`
   min-height: 38px;
   line-height: 30px;
   flex: 1 1 auto;
+  max-width: max-content;
   padding: 5px 5px 5px 5px;
   margin: 5px;
   border-radius: 5px;
@@ -93,6 +94,7 @@ const Icon = styled(FontAwesomeIcon)`
 
 const LabelText = styled.div`
   flex: 1 1;
+  margin-right: 5px;
 `;
 
 const Input = styled.input`

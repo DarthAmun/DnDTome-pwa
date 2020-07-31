@@ -81,7 +81,7 @@ const CharDetail = ({ char }: $Props) => {
       {editMode ? (
         <CharEditView char={charObj} onEdit={(value) => editChar(value)} />
       ) : (
-        <CharView char={charObj} />
+        <CharView character={charObj} />
       )}
     </>
   );

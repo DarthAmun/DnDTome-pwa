@@ -1,4 +1,5 @@
 import React, { useCallback } from "react";
+import { useHistory } from "react-router";
 import styled from "styled-components";
 import Char from "../../../../../Data/Chars/Char";
 import ClassSet from "../../../../../Data/Chars/ClassSet";
@@ -16,6 +17,8 @@ interface $Props {
 }
 
 const CharHeader = ({ char }: $Props) => {
+  let history = useHistory();
+
   const formatScore = useCallback((score: number) => {
     let mod = Math.floor((score - 10) / 2);
     if (mod >= 0) {
@@ -60,12 +63,24 @@ const CharHeader = ({ char }: $Props) => {
           </Prop>
           <Prop>
             <PropTitle>Race:</PropTitle>
-            {char.race.race}
+            <MainLink
+              onClick={() =>
+                history.push(`/race-detail/name/${char.race.race}`)
+              }
+            >
+              {char.race.race}
+            </MainLink>
           </Prop>
           {char.race.subrace && (
             <Prop>
               <PropTitle>Subrace:</PropTitle>
-              {char.race.subrace}
+              <MainLink
+                onClick={() =>
+                  history.push(`/subrace-detail/name/${char.race.subrace}`)
+                }
+              >
+                {char.race.subrace}
+              </MainLink>
             </Prop>
           )}
           {char.classes &&
@@ -73,8 +88,26 @@ const CharHeader = ({ char }: $Props) => {
               return (
                 <PropWrapper key={index}>
                   <Prop>{classSet.level}</Prop>
-                  <Prop>{classSet.classe}</Prop>
-                  <Prop>{classSet.subclasse}</Prop>
+                  <Prop>
+                    <MainLink
+                      onClick={() =>
+                        history.push(`/class-detail/name/${classSet.classe}`)
+                      }
+                    >
+                      {classSet.classe}
+                    </MainLink>
+                  </Prop>
+                  <Prop>
+                    <MainLink
+                      onClick={() =>
+                        history.push(
+                          `/subclass-detail/name/${classSet.subclasse}`
+                        )
+                      }
+                    >
+                      {classSet.subclasse}
+                    </MainLink>
+                  </Prop>
                 </PropWrapper>
               );
             })}
@@ -319,10 +352,8 @@ const Link = styled.span`
   cursor: pointer;
 `;
 
-const SubcharLink = styled(Link)`
+const MainLink = styled(Link)`
   font-size: 16px;
-  margin: 5px;
-  padding: 5px;
   cursor: pointer;
 `;
 

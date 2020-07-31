@@ -3,6 +3,8 @@ import { useHistory } from "react-router";
 import styled from "styled-components";
 import Char from "../../../../../Data/Chars/Char";
 import Class from "../../../../../Data/Classes/Class";
+import Item from "../../../../../Data/Item";
+import Gear from "../../../../../Data/Gear";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -10,13 +12,17 @@ import {
   faAngleUp,
   faAngleDoubleUp,
 } from "@fortawesome/free-solid-svg-icons";
+import SmallNumberField from "../../../../FormElements/SmallNumberField";
 
 interface $Props {
   char: Char;
+  onChange: (character: Char) => void;
   classes: Class[];
+  items: Item[];
+  gears: Gear[];
 }
 
-const CharGeneral = ({ char, classes }: $Props) => {
+const CharGeneral = ({ char, classes, items, gears, onChange }: $Props) => {
   let history = useHistory();
 
   const formatText = useCallback(
@@ -54,6 +60,16 @@ const CharGeneral = ({ char, classes }: $Props) => {
       return faAngleDoubleUp;
     }
   }, []);
+
+  const changeMoney = (field: string, value: number) => {
+    const newChar = { ...char, money: { ...char.money, [field]: value } };
+    onChange(newChar);
+  };
+
+  const changeHp = (field: string, value: number) => {
+    const newChar = { ...char, [field]: value };
+    onChange(newChar);
+  };
 
   return (
     <>
@@ -306,10 +322,11 @@ const CharGeneral = ({ char, classes }: $Props) => {
             <PropTitle>Hit Points:</PropTitle>
             {char.hp}
           </Prop>
-          <Prop>
-            <PropTitle>Current Hit Points:</PropTitle>
-            {char.currentHp}
-          </Prop>
+          <SmallNumberField
+            value={char.currentHp}
+            label="Current Hp"
+            onChange={(currentHp) => changeHp("currentHp", currentHp)}
+          />
           <Prop>
             <PropTitle>Hit Die:</PropTitle>
             {char.classes.map((classe) => {
@@ -352,6 +369,64 @@ const CharGeneral = ({ char, classes }: $Props) => {
           </Text>
         </PropColumnWrapper>
       </MinView>
+      <MinView>
+        <PropColumnWrapper>
+          <SmallNumberField
+            value={char.money.copper}
+            label="Copper"
+            onChange={(copper) => changeMoney("copper", copper)}
+          />
+          <SmallNumberField
+            value={char.money.silver}
+            label="Silver"
+            onChange={(silver) => changeMoney("silver", silver)}
+          />
+          <SmallNumberField
+            value={char.money.gold}
+            label="Gold"
+            onChange={(gold) => changeMoney("gold", gold)}
+          />
+          <SmallNumberField
+            value={char.money.platinum}
+            label="Platinum"
+            onChange={(platinum) => changeMoney("platinum", platinum)}
+          />
+          <SmallNumberField
+            value={char.money.electrum}
+            label="Electrum"
+            onChange={(electrum) => changeMoney("electrum", electrum)}
+          />
+        </PropColumnWrapper>
+      </MinView>
+      {/* <MinView>
+        {gears &&
+          gears.map((gear, index: number) => {
+            const strBonus = Math.floor((char.str - 10) / 2);
+            const dexBonus = Math.floor((char.dex - 10) / 2);
+            if (gear.properties.toLocaleLowerCase().includes("finesse")) {
+              return (
+                <PropWrapper key={index}>
+                  <Prop>{gear.name}</Prop>
+                  <Prop>
+                    {strBonus > dexBonus ? <>+{strBonus + char.prof}</> : ""}
+                    {dexBonus > strBonus ? <>+{dexBonus + char.prof}</> : ""}
+                  </Prop>
+                  <Prop>{gear.damage}</Prop>
+                  <Prop>{gear.properties}</Prop>
+                </PropWrapper>
+              );
+            } else {
+              return (
+                <PropWrapper key={index}>
+                  <Prop>{gear.name}</Prop>
+                  <Prop>+{strBonus + char.prof}</Prop>
+                  <Prop>{gear.damage}</Prop>
+                  <Prop>{gear.properties}</Prop>
+                </PropWrapper>
+              );
+            }
+          })}
+      </MinView> */}
     </>
   );
 };
@@ -376,14 +451,13 @@ const View = styled.div`
 `;
 
 const MinView = styled(View)`
-  min-width: max-content;
   max-width: max-content;
 `;
 
 const PropWrapper = styled.div`
-  width: calc(100% - 6px);
-  float: left;
-  padding: 3px;
+  flex: 1 1 auto;
+  max-width: 100%;
+  height: auto;
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
@@ -454,7 +528,7 @@ const PropTitle = styled.span`
 const Text = styled.div`
   height: auto;
   width: calc(100% - 20px);
-  margin: 0 0 5px 0;
+  margin: 2px;
   float: left;
   line-height: 18px;
   padding: 10px;

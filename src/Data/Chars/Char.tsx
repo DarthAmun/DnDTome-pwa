@@ -16,6 +16,7 @@ export default class Char implements IEntity {
   race: RaceSet;
   background: string;
   spells: string[];
+  spellSlots: { origin: string; slots: number[]; max: number[] }[];
   items: string[];
   ac: number;
   hp: number;
@@ -57,6 +58,7 @@ export default class Char implements IEntity {
     race: RaceSet,
     background: string,
     spells: string[],
+    spellSlots: { origin: string; slots: number[]; max: number[] }[],
     items: string[],
     ac: number,
     hp: number,
@@ -97,6 +99,7 @@ export default class Char implements IEntity {
     this.race = race;
     this.background = background;
     this.spells = spells;
+    this.spellSlots = spellSlots;
     this.items = items;
     this.ac = ac;
     this.hp = hp;

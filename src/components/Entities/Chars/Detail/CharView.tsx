@@ -4,6 +4,7 @@ import styled from "styled-components";
 import {
   reciveAllFiltered,
   reciveByAttribute,
+  update,
 } from "../../../../Database/DbService";
 import Char from "../../../../Data/Chars/Char";
 import Class from "../../../../Data/Classes/Class";
@@ -21,15 +22,17 @@ import Gear, { isGear } from "../../../../Data/Gear";
 import TabBar from "../../../GeneralElements/TabBar";
 import CharGeneral from "./DetailComponents/CharGeneral";
 import CharHeader from "./DetailComponents/CharHeader";
-import NumberArrayField from "../../../FormElements/NumberArrayField";
 import ItemTile from "../../Item/ItemTile";
 import GearTile from "../../Gear/GearTile";
+import SmallNumberArrayField from "../../../FormElements/SmallNumberArrayField";
 
 interface $Props {
-  char: Char;
+  character: Char;
 }
 
-const CharView = ({ char }: $Props) => {
+const CharView = ({ character }: $Props) => {
+  const [char, setChar] = useState<Char>(character);
+
   const [classes, setClasses] = useState<Class[]>([]);
   const [subclasses, setSubclasses] = useState<Subclass[]>([]);
   const [classesFeatures, setClassesFeatures] = useState<FeatureSet[]>([]);
@@ -39,9 +42,6 @@ const CharView = ({ char }: $Props) => {
   const [raceFeatures, setRaceFeatures] = useState<Trait[]>([]);
 
   const [spells, setSpells] = useState<Spell[]>([]);
-  const [spellSlots, setSpellSlots] = useState<
-    { name: string; slots: number[] }[]
-  >([]);
 
   const [gears, setGears] = useState<Gear[]>([]);
   const [items, setItems] = useState<Item[]>([]);
@@ -52,14 +52,14 @@ const CharView = ({ char }: $Props) => {
   useEffect(() => {
     reciveAllFiltered(
       "classes",
-      char.classes.map((classe) => {
+      character.classes.map((classe) => {
         return { fieldName: "name", value: classe.classe };
       }),
       (results: any[]) => {
         setClasses(results);
         results.forEach((classe) => {
           let classLevel = 0;
-          char.classes.forEach((charClass) => {
+          character.classes.forEach((charClass) => {
             if (classe.name === charClass.classe) {
               classLevel = charClass.level;
             }
@@ -68,34 +68,20 @@ const CharView = ({ char }: $Props) => {
             if (featureSet.level <= classLevel) {
               setClassesFeatures((c) => [...c, featureSet]);
             }
-            if (
-              featureSet.level === classLevel &&
-              featureSet.spellslots !== undefined &&
-              featureSet.spellslots.length > 0
-            ) {
-              const slots = featureSet.spellslots;
-              setSpellSlots((s) => [
-                ...s,
-                {
-                  name: classe.name,
-                  slots: slots,
-                },
-              ]);
-            }
           });
         });
       }
     );
     reciveAllFiltered(
       "subclasses",
-      char.classes.map((classe) => {
+      character.classes.map((classe) => {
         return { fieldName: "name", value: classe.subclasse };
       }),
       (results: any[]) => {
         setSubclasses(results);
         results.forEach((subclass) => {
           let subclassLevel = 0;
-          char.classes.forEach((charClass) => {
+          character.classes.forEach((charClass) => {
             if (subclass.name === charClass.subclasse) {
               subclassLevel = charClass.level;
             }
@@ -104,31 +90,17 @@ const CharView = ({ char }: $Props) => {
             if (featureSet.level <= subclassLevel) {
               setClassesFeatures((c) => [...c, featureSet]);
             }
-            if (
-              featureSet.level === subclassLevel &&
-              featureSet.spellslots !== undefined &&
-              featureSet.spellslots.length > 0
-            ) {
-              const slots = featureSet.spellslots;
-              setSpellSlots((s) => [
-                ...s,
-                {
-                  name: subclass.name,
-                  slots: slots,
-                },
-              ]);
-            }
           });
         });
       }
     );
     reciveAllFiltered(
       "races",
-      [{ fieldName: "name", value: char.race.race }],
+      [{ fieldName: "name", value: character.race.race }],
       (results: any) => {
         setRace(results[0]);
         results[0].traits.forEach((trait: Trait) => {
-          if (trait.level <= char.level) {
+          if (trait.level <= character.level) {
             setRaceFeatures((c) => [...c, trait]);
           }
         });
@@ -136,17 +108,17 @@ const CharView = ({ char }: $Props) => {
     );
     reciveAllFiltered(
       "subraces",
-      [{ fieldName: "name", value: char.race.subrace }],
+      [{ fieldName: "name", value: character.race.subrace }],
       (results: any) => {
         setRace(results[0]);
         results[0].traits.forEach((trait: Trait) => {
-          if (trait.level <= char.level) {
+          if (trait.level <= character.level) {
             setRaceFeatures((c) => [...c, trait]);
           }
         });
       }
     );
-    char.spells.forEach((spell) => {
+    character.spells.forEach((spell) => {
       reciveByAttribute("spells", "name", spell, (result) => {
         if (result && isSpell(result)) {
           setSpells((s) => [...s, result]);
@@ -154,21 +126,21 @@ const CharView = ({ char }: $Props) => {
       });
     });
 
-    char.items.forEach((item) => {
+    character.items.forEach((item) => {
       reciveByAttribute("items", "name", item, (result) => {
         if (result && isItem(result)) {
           setItems((s) => [...s, result]);
         }
       });
     });
-    char.items.forEach((item) => {
+    character.items.forEach((item) => {
       reciveByAttribute("gears", "name", item, (result) => {
         if (result && isGear(result)) {
           setGears((s) => [...s, result]);
         }
       });
     });
-  }, [char]);
+  }, [character]);
 
   const formatText = useCallback(
     (text: String) => {
@@ -197,19 +169,24 @@ const CharView = ({ char }: $Props) => {
   );
 
   const onSpellslotChange = (
-    oldSlots: { name: string; slots: number[] },
+    oldSlots: { origin: string; slots: number[]; max: number[] },
     value: number[]
   ) => {
-    let features = spellSlots.map(
-      (slots: { name: string; slots: number[] }) => {
+    let newSpellSlots = char.spellSlots.map(
+      (slots: { origin: string; slots: number[]; max: number[] }) => {
         if (slots === oldSlots) {
-          return { name: oldSlots.name, slots: value };
+          return { ...slots, slots: value };
         } else {
           return slots;
         }
       }
     );
-    setSpellSlots(features);
+    saveChar({ ...char, spellSlots: newSpellSlots });
+  };
+
+  const saveChar = (char: Char) => {
+    setChar(char);
+    update("chars", char);
   };
 
   return (
@@ -221,7 +198,13 @@ const CharView = ({ char }: $Props) => {
           onChange={(tab: string) => setTab(tab)}
         />
         {activeTab === "General" && (
-          <CharGeneral char={char} classes={classes} />
+          <CharGeneral
+            char={char}
+            onChange={saveChar}
+            classes={classes}
+            items={items}
+            gears={gears}
+          />
         )}
         {activeTab === "Classes" && (
           <View>
@@ -265,16 +248,26 @@ const CharView = ({ char }: $Props) => {
         {activeTab === "Spells" && (
           <View>
             <PropWrapper>
-              {spellSlots.map((classSlots) => {
-                return (
-                  <NumberArrayField
-                    values={classSlots.slots}
-                    max={classSlots.slots}
-                    label={classSlots.name}
-                    onChange={(slots) => onSpellslotChange(classSlots, slots)}
-                  />
-                );
-              })}
+              {char.spellSlots.map(
+                (
+                  classSlots: {
+                    origin: string;
+                    slots: number[];
+                    max: number[];
+                  },
+                  index: number
+                ) => {
+                  return (
+                    <SmallNumberArrayField
+                      key={index}
+                      values={classSlots.slots}
+                      max={classSlots.max}
+                      label={classSlots.origin}
+                      onChange={(slots) => onSpellslotChange(classSlots, slots)}
+                    />
+                  );
+                }
+              )}
             </PropWrapper>
             <PropWrapper>
               {spells &&
@@ -403,12 +396,5 @@ const Link = styled.span`
   color: ${({ theme }) => theme.tile.backgroundColor};
   font-size: 10px;
   padding: 0px 5px 0px 5px;
-  cursor: pointer;
-`;
-
-const SubcharLink = styled(Link)`
-  font-size: 16px;
-  margin: 5px;
-  padding: 5px;
   cursor: pointer;
 `;
