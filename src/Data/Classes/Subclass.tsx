@@ -9,20 +9,21 @@ export default class Subclass implements IEntity {
   sources: string;
   filename: string;
 
+  constructor();
   constructor(
-    id: number,
-    name: string,
-    type: string,
-    features: FeatureSet[],
-    filename: string,
-    sources: string,
+    id?: number,
+    name?: string,
+    type?: string,
+    features?: FeatureSet[],
+    filename?: string,
+    sources?: string
   ) {
     this.id = id;
-    this.name = name;
-    this.type = type;
-    this.features = features;
-    this.filename = filename;
-    this.sources = sources;
+    this.name = name || "";
+    this.type = type || "";
+    this.features = features || [];
+    this.filename = filename || "";
+    this.sources = sources || "";
   }
 }
 
@@ -35,11 +36,5 @@ export function isSubclass(arg: any): arg is Subclass {
     isFeatureSet(arg.features[0]);
   const sourcesCheck =
     arg.sources !== undefined && typeof arg.sources == "string";
-  return (
-    arg &&
-    nameCheck &&
-    typeCheck &&
-    sourcesCheck &&
-    featuresCheck
-  );
+  return arg && nameCheck && typeCheck && sourcesCheck && featuresCheck;
 }

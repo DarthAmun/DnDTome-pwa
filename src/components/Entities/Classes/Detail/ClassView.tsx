@@ -1,12 +1,12 @@
 import React, { useCallback, useState, useEffect } from "react";
 import { useHistory } from "react-router";
-import { reciveAllFiltered } from "../../../../Database/DbService";
+import { reciveAllFiltered, createNewWithId } from "../../../../Database/DbService";
 import Class from "../../../../Data/Classes/Class";
 import Subclass from "../../../../Data/Classes/Subclass";
 import styled from "styled-components";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faLink } from "@fortawesome/free-solid-svg-icons";
+import { faLink, faPlusCircle } from "@fortawesome/free-solid-svg-icons";
 import { GiDiceEightFacesEight } from "react-icons/gi";
 
 interface $Props {
@@ -74,6 +74,15 @@ const ClassView = ({ classe }: $Props) => {
     return "";
   }, [classe]);
 
+  const createNewSubclass = () => {
+    let newSubclass = new Subclass();
+    delete newSubclass.id;
+    newSubclass.type = classe.name;
+    createNewWithId("subclasses", newSubclass, (id) => {
+      history.push(`/subclass-detail/id/${id}`);
+    });
+  };
+
   return (
     <>
       <CenterWrapper>
@@ -105,19 +114,24 @@ const ClassView = ({ classe }: $Props) => {
               <PropTitle>Equipment:</PropTitle>
               {formatText(classe.equipment)}
             </Text>
-            {subclasses.length !== 0 && (
             <Text>
               <PropTitle>Subclasses:</PropTitle>
-              {subclasses.map((subclass: Subclass, index: number) => {
-                const link: string = "/subclass-detail/id/" + subclass.id;
-                return (
-                  <SubclasseLink key={index} onClick={() => history.push(link)}>
-                    {subclass.name}
-                  </SubclasseLink>
-                );
-              })}
+              {subclasses.length !== 0 &&
+                subclasses.map((subclass: Subclass, index: number) => {
+                  const link: string = "/subclass-detail/id/" + subclass.id;
+                  return (
+                    <SubclasseLink
+                      key={index}
+                      onClick={() => history.push(link)}
+                    >
+                      {subclass.name}
+                    </SubclasseLink>
+                  );
+                })}
+              <CreateButton onClick={() => createNewSubclass()}>
+                <FontAwesomeIcon icon={faPlusCircle} />
+              </CreateButton>
             </Text>
-            )}
           </PropWrapper>
         </View>
         {classe.featureSets.length !== 0 &&
@@ -153,19 +167,21 @@ const ClassView = ({ classe }: $Props) => {
                         </>
                       )}
                     </FeatureRow>
-                    {classe.featureSets.map((featureSet, index:number) => {
+                    {classe.featureSets.map((featureSet, index: number) => {
                       return (
                         <FeatureRow key={index}>
                           {featureSet.spellslots && (
                             <>
                               <SpellProp>{featureSet.level}</SpellProp>
-                              {featureSet.spellslots.map((spellslot, index:number) => {
-                                return (
-                                  <SpellProp key={index}>
-                                    {spellslot === 0 ? "-" : spellslot}
-                                  </SpellProp>
-                                );
-                              })}
+                              {featureSet.spellslots.map(
+                                (spellslot, index: number) => {
+                                  return (
+                                    <SpellProp key={index}>
+                                      {spellslot === 0 ? "-" : spellslot}
+                                    </SpellProp>
+                                  );
+                                }
+                              )}
                             </>
                           )}
                         </FeatureRow>
@@ -187,9 +203,15 @@ const ClassView = ({ classe }: $Props) => {
                     <FeatureHeadProp>Features</FeatureHeadProp>
                     {classe.featureSets[0].bonis &&
                       classe.featureSets[0].bonis.length > 0 &&
-                      classe.featureSets[0].bonis?.map((boni, index:number) => {
-                        return <FeatureHeadProp key={index}>{boni.name}</FeatureHeadProp>;
-                      })}
+                      classe.featureSets[0].bonis?.map(
+                        (boni, index: number) => {
+                          return (
+                            <FeatureHeadProp key={index}>
+                              {boni.name}
+                            </FeatureHeadProp>
+                          );
+                        }
+                      )}
                   </FeatureRow>
                 </thead>
                 <tbody>
@@ -400,3 +422,18 @@ const ImageElm = styled.img`
   max-height: 60vh;
 `;
 const Empty = styled.div``;
+
+const CreateButton = styled.button`
+  background-color: ${({ theme }) => theme.tile.backgroundColorLink};
+  border-radius: 5px;
+  color: ${({ theme }) => theme.tile.backgroundColor};
+  font-size: 10px;
+  padding: 0px 5px 0px 5px;
+  margin: 5px;
+  border: none;
+  box-sizing: content-box;
+  height: 28px;
+  line-height: 28px;
+  float: right;
+  cursor: pointer;
+`;

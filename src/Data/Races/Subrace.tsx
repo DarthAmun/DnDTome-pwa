@@ -10,22 +10,23 @@ export default class Subrace implements IEntity {
   sources: string;
   filename: string;
 
+  constructor();
   constructor(
-    name: string,
-    id: number,
-    type: string,
-    filename: string,
-    abilityScores: string,
-    traits: Trait[],
-    sources: string
+    name?: string,
+    id?: number,
+    type?: string,
+    filename?: string,
+    abilityScores?: string,
+    traits?: Trait[],
+    sources?: string
   ) {
-    this.name = name;
+    this.name = name || "";
     this.id = id;
-    this.type = type;
-    this.filename = filename;
-    this.abilityScores = abilityScores;
-    this.traits = traits;
-    this.sources = sources;
+    this.type = type || "";
+    this.filename = filename || "";
+    this.abilityScores = abilityScores || "";
+    this.traits = traits || [];
+    this.sources = sources || "";
   }
 }
 

@@ -1,13 +1,16 @@
 import React, { useCallback, useState, useEffect } from "react";
 import { useHistory } from "react-router";
-import { reciveAllFiltered } from "../../../../Database/DbService";
+import {
+  reciveAllFiltered,
+  createNewWithId,
+} from "../../../../Database/DbService";
 import Race from "../../../../Data/Races/Race";
 import Trait from "../../../../Data/Races/Trait";
 import Subrace from "../../../../Data/Races/Subrace";
 import styled from "styled-components";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faLink } from "@fortawesome/free-solid-svg-icons";
+import { faLink, faPlusCircle } from "@fortawesome/free-solid-svg-icons";
 import { GiUpgrade } from "react-icons/gi";
 
 interface $Props {
@@ -64,6 +67,15 @@ const RaceView = ({ race }: $Props) => {
     return "";
   }, [race]);
 
+  const createNewSubrace = () => {
+    let newSubrace = new Subrace();
+    delete newSubrace.id;
+    newSubrace.type = race.name;
+    createNewWithId("subraces", newSubrace, (id) => {
+      history.push(`/subrace-detail/id/${id}`);
+    });
+  };
+
   return (
     <CenterWrapper>
       {getPicture() !== "" ? (
@@ -102,10 +114,10 @@ const RaceView = ({ race }: $Props) => {
             <PropTitle>Language:</PropTitle>
             {formatText(race.lang)}
           </Text>
-          {subraces.length !== 0 && (
-            <Text>
-              <PropTitle>Subraces:</PropTitle>
-              {subraces.map((subrace: Subrace, index: number) => {
+          <Text>
+            <PropTitle>Subraces:</PropTitle>
+            {subraces.length !== 0 &&
+              subraces.map((subrace: Subrace, index: number) => {
                 const link: string = "/subrace-detail/id/" + subrace.id;
                 return (
                   <SubraceLink key={index} onClick={() => history.push(link)}>
@@ -113,8 +125,10 @@ const RaceView = ({ race }: $Props) => {
                   </SubraceLink>
                 );
               })}
-            </Text>
-          )}
+            <CreateButton onClick={() => createNewSubrace()}>
+              <FontAwesomeIcon icon={faPlusCircle} />
+            </CreateButton>
+          </Text>
           <Prop>
             <Icon icon={faLink} />
             {race.sources}
@@ -290,3 +304,18 @@ const ImageElm = styled.img`
   max-height: 60vh;
 `;
 const Empty = styled.div``;
+
+const CreateButton = styled.button`
+  background-color: ${({ theme }) => theme.tile.backgroundColorLink};
+  border-radius: 5px;
+  color: ${({ theme }) => theme.tile.backgroundColor};
+  font-size: 10px;
+  padding: 0px 5px 0px 5px;
+  margin: 5px;
+  border: none;
+  box-sizing: content-box;
+  height: 28px;
+  line-height: 28px;
+  float: right;
+  cursor: pointer;
+`;
