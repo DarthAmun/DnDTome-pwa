@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+import { useHistory } from "react-router";
 import Filter from "../../../Data/Filter";
 import ReactDOM from "react-dom";
-import { reciveAttributeSelection } from "../../../Database/DbService";
+import { reciveAttributeSelection, createNewWithId } from "../../../Database/DbService";
 
-import { faSearch, faRedoAlt, faLink } from "@fortawesome/free-solid-svg-icons";
+import { faSearch, faRedoAlt, faLink, faPlusCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import MultipleSelectField from "../../FormElements/MultipleSelectField";
 import StringField from "../../FormElements/StringField";
 import IconButton from "../../FormElements/IconButton";
+import Monster from "../../../Data/Monster";
 
 interface $Props {
   onSend: (filters: Filter[]) => void;
@@ -16,6 +18,7 @@ interface $Props {
 
 const MonsterSearchBar = ({ onSend }: $Props) => {
   const [open, setOpen] = useState(false);
+  let history = useHistory();
 
   const [name, setName] = useState<string>("");
   const [cr, setCr] = useState<string>("");
@@ -144,6 +147,14 @@ const MonsterSearchBar = ({ onSend }: $Props) => {
     onSend([]);
   };
 
+  const createNewMonster = () => {
+    let newMonster = new Monster();
+    delete newMonster.id;
+    createNewWithId("monsters", newMonster, (id) => {
+      history.push(`/monster-detail/id/${id}`);
+    });
+  };
+
   return (
     <Bar open={open}>
       <StringField
@@ -234,6 +245,9 @@ const MonsterSearchBar = ({ onSend }: $Props) => {
       <SearchBarButton onClick={() => setOpen(!open)}>
         <FontAwesomeIcon icon={faSearch} /> Search
       </SearchBarButton>
+      <CreateButton onClick={() => createNewMonster()}>
+        <FontAwesomeIcon icon={faPlusCircle} /> Add Monster
+      </CreateButton>
     </Bar>
   );
 };
@@ -270,7 +284,7 @@ const Bar = styled.div<SearchMode>`
 const SearchBarButton = styled.button`
   position: absolute;
   bottom: -50px;
-  left: calc(50% - 50px);
+  left: calc(50% - 130px);
 
   background-color: ${({ theme }) => theme.buttons.backgroundColor};
   color: ${({ theme }) => theme.buttons.color};
@@ -283,4 +297,10 @@ const SearchBarButton = styled.button`
   height: 20px;
   line-height: 20px;
   cursor: pointer;
+`;
+
+const CreateButton = styled(SearchBarButton)`
+  left: 50%;
+  width: 110px;
+  text-decoration: none;
 `;

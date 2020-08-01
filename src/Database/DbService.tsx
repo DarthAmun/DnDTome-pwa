@@ -199,6 +199,25 @@ export const saveNewFromList = (
     });
 };
 
+export const createNewWithId = (
+  tableName: string,
+  entity: IEntity,
+  callback: (id: number) => void
+) => {
+  const db = new MyAppDatabase();
+  db.open()
+    .then(function () {
+      db.table(tableName)
+        .put(entity)
+        .then((id: number) => {
+          callback(id);
+        });
+    })
+    .finally(function () {
+      db.close();
+    });
+};
+
 export const deleteAll = (tableName: string) => {
   const db = new MyAppDatabase();
   db.open()

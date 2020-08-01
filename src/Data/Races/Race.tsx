@@ -15,32 +15,33 @@ export default class Race implements IEntity {
   filename: string;
   pic: string;
 
+  constructor();
   constructor(
-    name: string,
-    id: number,
-    filename: string,
-    pic: string,
-    abilityScores: string,
-    age: string,
-    alignment: string,
-    size: string,
-    speed: string,
-    lang: string,
-    traits: Trait[],
-    sources: string
+    name?: string,
+    id?: number,
+    filename?: string,
+    pic?: string,
+    abilityScores?: string,
+    age?: string,
+    alignment?: string,
+    size?: string,
+    speed?: string,
+    lang?: string,
+    traits?: Trait[],
+    sources?: string
   ) {
-    this.name = name;
+    this.name = name || "";
     this.id = id;
-    this.filename = filename;
-    this.pic = pic;
-    this.abilityScores = abilityScores;
-    this.age = age;
-    this.alignment = alignment;
-    this.size = size;
-    this.speed = speed;
-    this.lang = lang;
-    this.traits = traits;
-    this.sources = sources;
+    this.filename = filename || "";
+    this.pic = pic || "";
+    this.abilityScores = abilityScores || "";
+    this.age = age || "";
+    this.alignment = alignment || "";
+    this.size = size || "";
+    this.speed = speed || "";
+    this.lang = lang || "";
+    this.traits = traits || [];
+    this.sources = sources || "";
   }
 }
 

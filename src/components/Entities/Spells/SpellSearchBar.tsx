@@ -1,8 +1,12 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+import { useHistory } from "react-router";
 import Filter from "../../../Data/Filter";
 import ReactDOM from "react-dom";
-import { reciveAttributeSelection } from "../../../Database/DbService";
+import {
+  reciveAttributeSelection,
+  createNewWithId,
+} from "../../../Database/DbService";
 
 import {
   faHourglassHalf,
@@ -14,12 +18,14 @@ import {
   faBookOpen,
   faSearch,
   faRedoAlt,
+  faPlusCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import MultipleSelectField from "../../FormElements/MultipleSelectField";
 import StringField from "../../FormElements/StringField";
 import CheckField from "../../FormElements/CheckField";
 import IconButton from "../../FormElements/IconButton";
+import Spell from "../../../Data/Spell";
 
 interface $Props {
   onSend: (filters: Filter[]) => void;
@@ -27,6 +33,7 @@ interface $Props {
 
 const SpellSearchBar = ({ onSend }: $Props) => {
   const [open, setOpen] = useState(false);
+  let history = useHistory();
 
   const [name, setName] = useState<string>("");
   const [school, setSchool] = useState<string[]>([]);
@@ -124,6 +131,14 @@ const SpellSearchBar = ({ onSend }: $Props) => {
     onSend([]);
   };
 
+  const createNewSpell = () => {
+    let newSpell = new Spell();
+    delete newSpell.id;
+    createNewWithId("spells", newSpell, (id) => {
+      history.push(`/spell-detail/id/${id}`);
+    });
+  };
+
   return (
     <Bar open={open}>
       <StringField
@@ -203,6 +218,9 @@ const SpellSearchBar = ({ onSend }: $Props) => {
       <SearchBarButton onClick={() => setOpen(!open)}>
         <FontAwesomeIcon icon={faSearch} /> Search
       </SearchBarButton>
+      <CreateButton onClick={() => createNewSpell()}>
+        <FontAwesomeIcon icon={faPlusCircle} /> Add Spell
+      </CreateButton>
     </Bar>
   );
 };
@@ -239,7 +257,7 @@ const Bar = styled.div<SearchMode>`
 const SearchBarButton = styled.button`
   position: absolute;
   bottom: -50px;
-  left: calc(50% - 50px);
+  left: calc(50% - 130px);
 
   background-color: ${({ theme }) => theme.buttons.backgroundColor};
   color: ${({ theme }) => theme.buttons.color};
@@ -252,6 +270,12 @@ const SearchBarButton = styled.button`
   height: 20px;
   line-height: 20px;
   cursor: pointer;
+`;
+
+const CreateButton = styled(SearchBarButton)`
+  left: 50%;
+  width: 90px;
+  text-decoration: none;
 `;
 
 const FieldGroup = styled.div`

@@ -1,12 +1,15 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import { useHistory } from "react-router";
 import Filter from "../../../Data/Filter";
 import ReactDOM from "react-dom";
 
-import { faLink, faSearch, faRedoAlt } from "@fortawesome/free-solid-svg-icons";
+import { faLink, faSearch, faRedoAlt, faPlusCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import StringField from "../../FormElements/StringField";
 import IconButton from "../../FormElements/IconButton";
+import Race from "../../../Data/Races/Race";
+import { createNewWithId } from "../../../Database/DbService";
 
 interface $Props {
   onSend: (filters: Filter[]) => void;
@@ -14,6 +17,7 @@ interface $Props {
 
 const RaceSearchBar = ({ onSend }: $Props) => {
   const [open, setOpen] = useState(false);
+  let history = useHistory();
 
   const [name, setName] = useState<string>("");
   const [abilityScores, setAbilityScores] = useState<string>("");
@@ -44,6 +48,14 @@ const RaceSearchBar = ({ onSend }: $Props) => {
     onSend([]);
   };
 
+  const createNewRace = () => {
+    let newRace = new Race();
+    delete newRace.id;
+    createNewWithId("races", newRace, (id) => {
+      history.push(`/race-detail/id/${id}`);
+    });
+  };
+
   return (
     <Bar open={open}>
       <StringField
@@ -68,6 +80,9 @@ const RaceSearchBar = ({ onSend }: $Props) => {
       <SearchBarButton onClick={() => setOpen(!open)}>
         <FontAwesomeIcon icon={faSearch} /> Search
       </SearchBarButton>
+      <CreateButton onClick={() => createNewRace()}>
+        <FontAwesomeIcon icon={faPlusCircle} /> Add Race
+      </CreateButton>
     </Bar>
   );
 };
@@ -104,7 +119,7 @@ const Bar = styled.div<SearchMode>`
 const SearchBarButton = styled.button`
   position: absolute;
   bottom: -50px;
-  left: calc(50% - 50px);
+  left: calc(50% - 130px);
 
   background-color: ${({ theme }) => theme.buttons.backgroundColor};
   color: ${({ theme }) => theme.buttons.color};
@@ -118,3 +133,10 @@ const SearchBarButton = styled.button`
   line-height: 20px;
   cursor: pointer;
 `;
+
+const CreateButton = styled(SearchBarButton)`
+  left: 50%;
+  width: 90px;
+  text-decoration: none;
+`;
+

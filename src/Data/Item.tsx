@@ -1,5 +1,5 @@
 export default class Item {
-  id: number;
+  id?: number;
   name: string;
   sources: string;
   description: string;
@@ -10,28 +10,29 @@ export default class Item {
   type: string;
   filename: string;
 
+  constructor();
   constructor(
-    id: number,
-    name: string,
-    sources: string,
-    description: string,
-    pic: string,
-    rarity: string,
-    attunment: number,
-    base: string,
-    type: string,
-    filename: string
+    id?: number,
+    name?: string,
+    sources?: string,
+    description?: string,
+    pic?: string,
+    rarity?: string,
+    attunment?: number,
+    base?: string,
+    type?: string,
+    filename?: string
   ) {
-    this.name = name;
-    this.sources = sources;
-    this.description = description;
-    this.pic = pic;
-    this.rarity = rarity;
-    this.attunment = attunment;
-    this.base = base;
-    this.type = type;
+    this.name = name || "";
+    this.sources = sources || "";
+    this.description = description || "";
+    this.pic = pic || "";
+    this.rarity = rarity || "";
+    this.attunment = attunment || 0;
+    this.base = base || "";
+    this.type = type || "";
     this.id = id;
-    this.filename = filename;
+    this.filename = filename || "";
   }
 }
 

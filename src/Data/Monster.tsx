@@ -32,68 +32,69 @@ export default class Monster implements IEntity {
   ablt: string;
   lAblt: string;
 
+  constructor();
   constructor(
-    id: number,
-    name: string,
-    sources: string,
-    pic: string,
-    size: string,
-    type: string,
-    subtype: string,
-    alignment: string,
-    ac: number,
-    hp: string,
-    speed: string,
-    cr: string,
-    str: number,
-    dex: number,
-    con: number,
-    int: number,
-    wis: number,
-    cha: number,
-    savingThrows: string,
-    skills: string,
-    senses: string,
-    lang: string,
-    dmgVulnerabilitie: string,
-    dmgResistance: string,
-    dmgImmunities: string,
-    conImmunities: string,
-    sAblt: string,
-    ablt: string,
-    lAblt: string,
-    filename: string
+    id?: number,
+    name?: string,
+    sources?: string,
+    pic?: string,
+    size?: string,
+    type?: string,
+    subtype?: string,
+    alignment?: string,
+    ac?: number,
+    hp?: string,
+    speed?: string,
+    cr?: string,
+    str?: number,
+    dex?: number,
+    con?: number,
+    int?: number,
+    wis?: number,
+    cha?: number,
+    savingThrows?: string,
+    skills?: string,
+    senses?: string,
+    lang?: string,
+    dmgVulnerabilitie?: string,
+    dmgResistance?: string,
+    dmgImmunities?: string,
+    conImmunities?: string,
+    sAblt?: string,
+    ablt?: string,
+    lAblt?: string,
+    filename?: string
   ) {
-    this.name = name;
-    this.sources = sources;
+    this.name = name || "";
+    this.sources = sources || "";
     this.id = id;
-    this.pic = pic;
-    this.size = size;
-    this.type = type;
-    this.subtype = subtype;
-    this.alignment = alignment;
-    this.ac = ac;
-    this.hp = hp;
-    this.speed = speed;
-    this.cr = cr;
-    this.str = str;
-    this.dex = dex;
-    this.con = con;
-    this.int = int;
-    this.wis = wis;
-    this.cha = cha;
-    this.savingThrows = savingThrows;
-    this.skills = skills;
-    this.senses = senses;
-    this.lang = lang;
-    this.dmgVulnerabilitie = dmgVulnerabilitie;
-    this.dmgResistance = dmgResistance;
-    this.dmgImmunities = dmgImmunities;
-    this.conImmunities = conImmunities;
-    this.sAblt = sAblt;
-    this.ablt = ablt;
-    this.lAblt = lAblt;
-    this.filename = filename;
+    this.pic = pic || "";
+    this.size = size || "";
+    this.type = type || "";
+    this.subtype = subtype || "";
+    this.alignment = alignment || "";
+    this.ac = ac || 0;
+    this.hp = hp || "";
+    this.speed = speed || "";
+    this.cr = cr || "";
+    this.str = str || 0;
+    this.dex = dex || 0;
+    this.con = con || 0;
+    this.int = int || 0;
+    this.wis = wis || 0;
+    this.cha = cha || 0;
+    this.savingThrows = savingThrows || "";
+    this.skills = skills || "";
+    this.senses = senses || "";
+    this.lang = lang || "";
+    this.dmgVulnerabilitie = dmgVulnerabilitie || "";
+    this.dmgResistance = dmgResistance || "";
+    this.dmgImmunities = dmgImmunities || "";
+    this.conImmunities = conImmunities || "";
+    this.sAblt = sAblt || "";
+    this.ablt = ablt || "";
+    this.lAblt = lAblt || "";
+    this.filename = filename || "";
   }
 }
 

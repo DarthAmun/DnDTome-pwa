@@ -12,26 +12,27 @@ export default class Class implements IEntity {
   filename: string;
   pic: string;
 
+  constructor();
   constructor(
-    id: number,
-    name: string,
-    featureSets: FeatureSet[],
-    hitDices: string,
-    proficiencies: string,
-    equipment: string,
-    filename: string,
-    sources: string,
-    pic: string
+    id?: number,
+    name?: string,
+    featureSets?: FeatureSet[],
+    hitDices?: string,
+    proficiencies?: string,
+    equipment?: string,
+    filename?: string,
+    sources?: string,
+    pic?: string
   ) {
     this.id = id;
-    this.name = name;
-    this.featureSets = featureSets;
-    this.hitDices = hitDices;
-    this.proficiencies = proficiencies;
-    this.equipment = equipment;
-    this.filename = filename;
-    this.sources = sources;
-    this.pic = pic;
+    this.name = name || "";
+    this.featureSets = featureSets || [];
+    this.hitDices = hitDices || "";
+    this.proficiencies = proficiencies || "";
+    this.equipment = equipment || "";
+    this.filename = filename || "";
+    this.sources = sources || "";
+    this.pic = pic || "";
   }
 }
 

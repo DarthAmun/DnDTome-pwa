@@ -1,5 +1,5 @@
 export default class Gear {
-  id: number;
+  id?: number;
   name: string;
   sources: string;
   description: string;
@@ -11,30 +11,31 @@ export default class Gear {
   type: string;
   filename: string;
 
+  constructor();
   constructor(
-    id: number,
-    name: string,
-    sources: string,
-    description: string,
-    pic: string,
-    cost: string,
-    damage: string,
-    weight: string,
-    properties: string,
-    type: string,
-    filename: string
+    id?: number,
+    name?: string,
+    sources?: string,
+    description?: string,
+    pic?: string,
+    cost?: string,
+    damage?: string,
+    weight?: string,
+    properties?: string,
+    type?: string,
+    filename?: string
   ) {
-    this.name = name;
-    this.sources = sources;
-    this.description = description;
-    this.pic = pic;
-    this.cost = cost;
-    this.damage = damage;
-    this.weight = weight;
-    this.properties = properties;
-    this.type = type;
+    this.name = name || "";
+    this.sources = sources || "";
+    this.description = description || "";
+    this.pic = pic || "";
+    this.cost = cost || "";
+    this.damage = damage || "";
+    this.weight = weight || "";
+    this.properties = properties || "";
+    this.type = type || "";
     this.id = id;
-    this.filename = filename;
+    this.filename = filename || "";
   }
 }
 
