@@ -87,7 +87,10 @@ const CharHeader = ({ char }: $Props) => {
             char.classes.map((classSet: ClassSet, index: number) => {
               return (
                 <PropWrapper key={index}>
-                  <Prop>{classSet.level}</Prop>
+                  <Prop>
+                    <PropTitle>Class Level:</PropTitle>
+                    {classSet.level}
+                  </Prop>
                   <Prop>
                     <MainLink
                       onClick={() =>

@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import { useHistory } from "react-router";
 import styled from "styled-components";
 import Char from "../../../../../Data/Chars/Char";
@@ -11,6 +11,8 @@ import {
   faMinus,
   faAngleUp,
   faAngleDoubleUp,
+  faHeartBroken,
+  faHeartbeat,
 } from "@fortawesome/free-solid-svg-icons";
 import SmallNumberField from "../../../../FormElements/SmallNumberField";
 
@@ -23,6 +25,7 @@ interface $Props {
 }
 
 const CharGeneral = ({ char, classes, items, gears, onChange }: $Props) => {
+  const [deathSaves, setDeathSaves] = useState<number[]>([0, 0, 0, 0, 0, 0]);
   let history = useHistory();
 
   const formatText = useCallback(
@@ -69,6 +72,26 @@ const CharGeneral = ({ char, classes, items, gears, onChange }: $Props) => {
   const changeHp = (field: string, value: number) => {
     const newChar = { ...char, [field]: value };
     onChange(newChar);
+  };
+
+  const changeDeathIcon = (value: number) => {
+    if (value === undefined || value === 0) {
+      return faMinus;
+    } else {
+      return faHeartBroken;
+    }
+  };
+  const changeLifeIcon = (value: number) => {
+    if (value === undefined || value === 0) {
+      return faMinus;
+    } else {
+      return faHeartbeat;
+    }
+  };
+  const changeDeathSave = (index: number) => {
+    let newDeathSaves = [...deathSaves];
+    newDeathSaves[index] = (deathSaves[index] + 1) % 2;
+    setDeathSaves(newDeathSaves);
   };
 
   return (
@@ -398,35 +421,37 @@ const CharGeneral = ({ char, classes, items, gears, onChange }: $Props) => {
           />
         </PropColumnWrapper>
       </MinView>
-      {/* <MinView>
-        {gears &&
-          gears.map((gear, index: number) => {
-            const strBonus = Math.floor((char.str - 10) / 2);
-            const dexBonus = Math.floor((char.dex - 10) / 2);
-            if (gear.properties.toLocaleLowerCase().includes("finesse")) {
-              return (
-                <PropWrapper key={index}>
-                  <Prop>{gear.name}</Prop>
-                  <Prop>
-                    {strBonus > dexBonus ? <>+{strBonus + char.prof}</> : ""}
-                    {dexBonus > strBonus ? <>+{dexBonus + char.prof}</> : ""}
-                  </Prop>
-                  <Prop>{gear.damage}</Prop>
-                  <Prop>{gear.properties}</Prop>
-                </PropWrapper>
-              );
-            } else {
-              return (
-                <PropWrapper key={index}>
-                  <Prop>{gear.name}</Prop>
-                  <Prop>+{strBonus + char.prof}</Prop>
-                  <Prop>{gear.damage}</Prop>
-                  <Prop>{gear.properties}</Prop>
-                </PropWrapper>
-              );
-            }
-          })}
-      </MinView> */}
+      <MinView>
+        <PropColumnWrapper>
+          <Prop>
+            <PropTitle>Death Saves:</PropTitle>
+            <DeathSaveRow>
+              <DeathSaveRowHeader>Sucesses:</DeathSaveRowHeader>
+              <span onClick={(e) => changeDeathSave(0)}>
+                <FontAwesomeIcon icon={changeLifeIcon(deathSaves[0])} />
+              </span>
+              <span onClick={(e) => changeDeathSave(1)}>
+                <FontAwesomeIcon icon={changeLifeIcon(deathSaves[1])} />
+              </span>
+              <span onClick={(e) => changeDeathSave(2)}>
+                <FontAwesomeIcon icon={changeLifeIcon(deathSaves[2])} />
+              </span>
+            </DeathSaveRow>
+            <DeathSaveRow>
+              <DeathSaveRowHeader>Failures:</DeathSaveRowHeader>
+              <span onClick={(e) => changeDeathSave(3)}>
+                <FontAwesomeIcon icon={changeDeathIcon(deathSaves[3])} />
+              </span>
+              <span onClick={(e) => changeDeathSave(4)}>
+                <FontAwesomeIcon icon={changeDeathIcon(deathSaves[4])} />
+              </span>
+              <span onClick={(e) => changeDeathSave(5)}>
+                <FontAwesomeIcon icon={changeDeathIcon(deathSaves[5])} />
+              </span>
+            </DeathSaveRow>
+          </Prop>
+        </PropColumnWrapper>
+      </MinView>
     </>
   );
 };
@@ -557,4 +582,18 @@ const Link = styled.span`
   font-size: 10px;
   padding: 0px 5px 0px 5px;
   cursor: pointer;
+`;
+
+const DeathSaveRow = styled.div`
+  width: calc(100% - 10px);
+  padding: 5px;
+
+  & span svg {
+    margin-left: 5px;
+  }
+`;
+
+const DeathSaveRowHeader = styled.div`
+  width: 80px;
+  float: left;
 `;

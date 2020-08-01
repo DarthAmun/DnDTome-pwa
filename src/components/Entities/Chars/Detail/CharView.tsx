@@ -18,6 +18,7 @@ import SpellTile from "../../Spells/SpellTile";
 import Spell, { isSpell } from "../../../../Data/Spell";
 import Item, { isItem } from "../../../../Data/Item";
 import Gear, { isGear } from "../../../../Data/Gear";
+import Monster, { isMonster } from "../../../../Data/Monster";
 
 import TabBar from "../../../GeneralElements/TabBar";
 import CharGeneral from "./DetailComponents/CharGeneral";
@@ -25,6 +26,8 @@ import CharHeader from "./DetailComponents/CharHeader";
 import ItemTile from "../../Item/ItemTile";
 import GearTile from "../../Gear/GearTile";
 import SmallNumberArrayField from "../../../FormElements/SmallNumberArrayField";
+import CharCombat from "./DetailComponents/CharCombat";
+import MonsterTile from "../../Monster/MonsterTile";
 
 interface $Props {
   character: Char;
@@ -45,6 +48,7 @@ const CharView = ({ character }: $Props) => {
 
   const [gears, setGears] = useState<Gear[]>([]);
   const [items, setItems] = useState<Item[]>([]);
+  const [monsters, setMonsters] = useState<Monster[]>([]);
 
   const [activeTab, setTab] = useState<string>("General");
   let history = useHistory();
@@ -140,6 +144,13 @@ const CharView = ({ character }: $Props) => {
         }
       });
     });
+    character.monsters.forEach((monster) => {
+      reciveByAttribute("monsters", "name", monster, (result) => {
+        if (result && isMonster(result)) {
+          setMonsters((s) => [...s, result]);
+        }
+      });
+    });
   }, [character]);
 
   const formatText = useCallback(
@@ -194,7 +205,16 @@ const CharView = ({ character }: $Props) => {
       <CenterWrapper>
         <CharHeader char={char} />
         <TabBar
-          children={["General", "Race", "Classes", "Spells", "Items"]}
+          children={[
+            "General",
+            "Combat",
+            "Race",
+            "Classes",
+            "Spells",
+            "Items",
+            "Monster",
+            "Notes",
+          ]}
           onChange={(tab: string) => setTab(tab)}
         />
         {activeTab === "General" && (
@@ -205,6 +225,9 @@ const CharView = ({ character }: $Props) => {
             items={items}
             gears={gears}
           />
+        )}
+        {activeTab === "Combat" && (
+          <CharCombat char={char} items={items} gears={gears} />
         )}
         {activeTab === "Classes" && (
           <View>
@@ -246,8 +269,16 @@ const CharView = ({ character }: $Props) => {
           </View>
         )}
         {activeTab === "Spells" && (
-          <View>
+          <MinView>
             <PropWrapper>
+              <Prop>
+                <PropTitle>Casting Hit:</PropTitle>
+                {char.castingHit}
+              </Prop>
+              <Prop>
+                <PropTitle>Casting Dc:</PropTitle>
+                {char.castingDC}
+              </Prop>
               {char.spellSlots.map(
                 (
                   classSlots: {
@@ -272,22 +303,42 @@ const CharView = ({ character }: $Props) => {
             <PropWrapper>
               {spells &&
                 spells.map((spell, index: number) => {
-                  return <SpellTile key={index} spell={spell}></SpellTile>;
+                  return <SpellTile key={index} spell={spell} />;
                 })}
             </PropWrapper>
-          </View>
+          </MinView>
         )}
         {activeTab === "Items" && (
           <View>
             <PropWrapper>
               {items &&
                 items.map((item, index: number) => {
-                  return <ItemTile key={index} item={item}></ItemTile>;
+                  return <ItemTile key={index} item={item} />;
                 })}
               {gears &&
                 gears.map((gear, index: number) => {
-                  return <GearTile key={index} gear={gear}></GearTile>;
+                  return <GearTile key={index} gear={gear} />;
                 })}
+            </PropWrapper>
+          </View>
+        )}
+        {activeTab === "Monster" && (
+          <View>
+            <PropWrapper>
+              {monsters &&
+                monsters.map((monster, index: number) => {
+                  return <MonsterTile key={index} monster={monster} />;
+                })}
+            </PropWrapper>
+          </View>
+        )}
+        {activeTab === "Notes" && (
+          <View>
+            <PropWrapper>
+              <Text>
+                <PropTitle>Notes:</PropTitle>
+                {formatText(char.spellNotes)}
+              </Text>
             </PropWrapper>
           </View>
         )}
@@ -324,6 +375,10 @@ const View = styled.div`
   align-content: flex-start;
 `;
 
+const MinView = styled(View)`
+  max-width: max-content;
+`;
+
 const PropWrapper = styled.div`
   width: calc(100% - 6px);
   float: left;
@@ -335,7 +390,7 @@ const PropWrapper = styled.div`
 
 const Prop = styled.div`
   flex: 1 1 auto;
-  max-width: 100%;
+  max-width: max-content;
   height: auto;
   margin: 2px;
   padding: 10px;

@@ -73,8 +73,8 @@ const Field = styled.label`
   line-height: 30px;
   flex: 1 1 auto;
   max-width: max-content;
-  padding: 5px 5px 5px 5px;
-  margin: 5px;
+  padding: 2px 5px 2px 5px;
+  margin: 2px;
   border-radius: 5px;
 
   display: flex;

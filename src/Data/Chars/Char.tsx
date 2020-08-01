@@ -18,6 +18,7 @@ export default class Char implements IEntity {
   spells: string[];
   spellSlots: { origin: string; slots: number[]; max: number[] }[];
   items: string[];
+  monsters: string[];
   ac: number;
   hp: number;
   currentHp: number;
@@ -33,7 +34,6 @@ export default class Char implements IEntity {
   actions: string;
   bonusActions: string;
   reactions: string;
-  features: string;
   profsLangs: string;
   senses: string;
   passivPerception: number;
@@ -60,6 +60,7 @@ export default class Char implements IEntity {
     spells: string[],
     spellSlots: { origin: string; slots: number[]; max: number[] }[],
     items: string[],
+    monsters: string[],
     ac: number,
     hp: number,
     currentHp: number,
@@ -75,7 +76,6 @@ export default class Char implements IEntity {
     actions: string,
     bonusActions: string,
     reactions: string,
-    features: string,
     profsLangs: string,
     senses: string,
     passivPerception: number,
@@ -101,6 +101,7 @@ export default class Char implements IEntity {
     this.spells = spells;
     this.spellSlots = spellSlots;
     this.items = items;
+    this.monsters = monsters;
     this.ac = ac;
     this.hp = hp;
     this.currentHp = currentHp;
@@ -116,7 +117,6 @@ export default class Char implements IEntity {
     this.actions = actions;
     this.bonusActions = bonusActions;
     this.reactions = reactions;
-    this.features = features;
     this.profsLangs = profsLangs;
     this.senses = senses;
     this.passivPerception = passivPerception;
