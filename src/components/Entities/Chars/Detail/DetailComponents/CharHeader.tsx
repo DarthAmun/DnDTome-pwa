@@ -38,6 +38,14 @@ const CharHeader = ({ char }: $Props) => {
     return "";
   }, [char]);
 
+  const calcLevel = () => {
+    let level = 0;
+    char.classes.forEach((classe) => {
+      level += classe.level;
+    });
+    return level;
+  };
+
   return (
     <>
       {getPicture() !== "" ? (
@@ -55,7 +63,7 @@ const CharHeader = ({ char }: $Props) => {
         <PropWrapper>
           <Prop>
             <PropTitle>Level:</PropTitle>
-            {char.level}
+            {calcLevel()}
           </Prop>
           <Prop>
             <PropTitle>Player:</PropTitle>

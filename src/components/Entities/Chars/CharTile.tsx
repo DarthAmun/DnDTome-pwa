@@ -21,6 +21,14 @@ const CharTile = ({ char }: $Props) => {
     return "";
   }, [char]);
 
+  const calcLevel = useCallback(() => {
+    let level = 0;
+    char.classes.forEach((classe) => {
+      level += classe.level;
+    });
+    return level;
+  }, [char]);
+
   return (
     <Tile to={"/char-detail/id/" + char.id}>
       <Suspense fallback={<LoadingSpinner />}>
@@ -31,7 +39,7 @@ const CharTile = ({ char }: $Props) => {
           </Name>
 
           <PropRowWrapper>
-            <RowProp>{char.level}</RowProp>
+            <RowProp>{calcLevel()}</RowProp>
             <RowProp>{char.player}</RowProp>
             <RowProp>{char.race.race}</RowProp>
             <RowProp>{char.race.subrace}</RowProp>

@@ -9,8 +9,6 @@ export default class Char implements IEntity {
   id?: number;
   name: string;
   player: string;
-  prof: string;
-  level: number;
   pic: string;
   classes: ClassSet[];
   race: RaceSet;
@@ -51,8 +49,6 @@ export default class Char implements IEntity {
     id: number,
     name: string,
     player: string,
-    prof: string,
-    level: number,
     pic: string,
     classes: ClassSet[],
     race: RaceSet,
@@ -92,8 +88,6 @@ export default class Char implements IEntity {
     this.id = id;
     this.name = name;
     this.player = player;
-    this.prof = prof;
-    this.level = level;
     this.pic = pic;
     this.classes = classes;
     this.race = race;
@@ -135,8 +129,6 @@ export default class Char implements IEntity {
 export function isChar(arg: any): arg is Char {
   const nameCheck = arg.name !== undefined && typeof arg.name == "string";
   const playerCheck = arg.player !== undefined && typeof arg.player == "string";
-  const profCheck = arg.prof !== undefined && typeof arg.prof == "number";
-  const levelCheck = arg.level !== undefined && typeof arg.level == "number";
   const picCheck = arg.pic !== undefined && typeof arg.pic == "string";
   const raceCheck = arg.race !== undefined && isRaceSet(arg.race);
   const backgroundCheck =
@@ -154,8 +146,6 @@ export function isChar(arg: any): arg is Char {
     arg &&
     nameCheck &&
     playerCheck &&
-    profCheck &&
-    levelCheck &&
     picCheck &&
     raceCheck &&
     backgroundCheck &&

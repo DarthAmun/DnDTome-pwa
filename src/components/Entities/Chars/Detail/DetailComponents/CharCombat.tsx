@@ -5,15 +5,19 @@ import Char from "../../../../../Data/Chars/Char";
 import Item from "../../../../../Data/Item";
 import Gear from "../../../../../Data/Gear";
 import { reciveByAttribute } from "../../../../../Database/DbService";
+import Class from "../../../../../Data/Classes/Class";
+import FeatureSet from "../../../../../Data/Classes/FeatureSet";
 
 interface $Props {
   char: Char;
+  classes: Class[];
   items: Item[];
   gears: Gear[];
 }
 
-const CharCombat = ({ char, items, gears }: $Props) => {
+const CharCombat = ({ char, items, gears, classes }: $Props) => {
   const [baseItems, setBaseItems] = useState<{ base: Gear; item: Item }[]>([]);
+  const [prof, setProf] = useState<number>(0);
   let history = useHistory();
 
   useEffect(() => {
@@ -25,6 +29,25 @@ const CharCombat = ({ char, items, gears }: $Props) => {
       }
     });
   }, [items]);
+
+  const calcLevel = useCallback(() => {
+    let level = 0;
+    char.classes.forEach((classe) => {
+      level += classe.level;
+    });
+    return level;
+  }, [char]);
+  
+  useEffect(() => {
+    if (classes && classes.length > 0) {
+      const level = calcLevel();
+      classes[0].featureSets.forEach((featureSet: FeatureSet) => {
+        if (featureSet.level === level) {
+          setProf(featureSet.profBonus);
+        }
+      });
+    }
+  }, [char, classes, calcLevel]);
 
   const formatText = useCallback(
     (text: String) => {
@@ -68,8 +91,8 @@ const CharCombat = ({ char, items, gears }: $Props) => {
                   <PropWrapper key={index}>
                     <Prop>{baseitem.item.name}</Prop>
                     <Prop>
-                      {strBonus > dexBonus ? <>+{strBonus + char.prof}</> : ""}
-                      {dexBonus > strBonus ? <>+{dexBonus + char.prof}</> : ""}
+                      {strBonus > dexBonus ? <>+{strBonus + prof}</> : ""}
+                      {dexBonus > strBonus ? <>+{dexBonus + prof}</> : ""}
                     </Prop>
                     <Prop>{baseitem.base.damage}</Prop>
                     <Prop>{baseitem.base.properties}</Prop>
@@ -79,7 +102,7 @@ const CharCombat = ({ char, items, gears }: $Props) => {
                 return (
                   <PropWrapper key={index}>
                     <Prop>{baseitem.item.name}</Prop>
-                    <Prop>+{strBonus + char.prof}</Prop>
+                    <Prop>+{strBonus + prof}</Prop>
                     <Prop>{baseitem.base.damage}</Prop>
                     <Prop>{baseitem.base.properties}</Prop>
                   </PropWrapper>
@@ -100,8 +123,8 @@ const CharCombat = ({ char, items, gears }: $Props) => {
                   <PropWrapper key={index}>
                     <Prop>{gear.name}</Prop>
                     <Prop>
-                      {strBonus > dexBonus ? <>+{strBonus + char.prof}</> : ""}
-                      {dexBonus > strBonus ? <>+{dexBonus + char.prof}</> : ""}
+                      {strBonus > dexBonus ? <>+{strBonus + prof}</> : ""}
+                      {dexBonus > strBonus ? <>+{dexBonus + prof}</> : ""}
                     </Prop>
                     <Prop>{gear.damage}</Prop>
                     <Prop>{gear.properties}</Prop>
@@ -111,7 +134,7 @@ const CharCombat = ({ char, items, gears }: $Props) => {
                 return (
                   <PropWrapper key={index}>
                     <Prop>{gear.name}</Prop>
-                    <Prop>+{strBonus + char.prof}</Prop>
+                    <Prop>+{strBonus + prof}</Prop>
                     <Prop>{gear.damage}</Prop>
                     <Prop>{gear.properties}</Prop>
                   </PropWrapper>

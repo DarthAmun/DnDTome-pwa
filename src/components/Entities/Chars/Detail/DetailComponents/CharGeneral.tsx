@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useState, useEffect } from "react";
 import { useHistory } from "react-router";
 import styled from "styled-components";
 import Char from "../../../../../Data/Chars/Char";
@@ -15,6 +15,7 @@ import {
   faHeartbeat,
 } from "@fortawesome/free-solid-svg-icons";
 import SmallNumberField from "../../../../FormElements/SmallNumberField";
+import FeatureSet from "../../../../../Data/Classes/FeatureSet";
 
 interface $Props {
   char: Char;
@@ -26,7 +27,28 @@ interface $Props {
 
 const CharGeneral = ({ char, classes, items, gears, onChange }: $Props) => {
   const [deathSaves, setDeathSaves] = useState<number[]>([0, 0, 0, 0, 0, 0]);
+  const [prof, setProf] = useState<number>(0);
   let history = useHistory();
+
+  const calcLevel = useCallback(() => {
+    let level = 0;
+    char.classes.forEach((classe) => {
+      level += classe.level;
+    });
+    return level;
+  }, [char]);
+  
+  useEffect(() => {
+    if (classes && classes.length > 0) {
+      const level = calcLevel();
+      classes[0].featureSets.forEach((featureSet: FeatureSet) => {
+        if (featureSet.level === level) {
+          setProf(featureSet.profBonus);
+        }
+      });
+    }
+  }, [char, classes, calcLevel]);
+
 
   const formatText = useCallback(
     (text: String) => {
@@ -331,7 +353,7 @@ const CharGeneral = ({ char, classes, items, gears, onChange }: $Props) => {
       <MinView>
         <PropColumnWrapper>
           <Prop>
-            <PropTitle>Proficiencies Bonus:</PropTitle>+{char.prof}
+            <PropTitle>Proficiencies Bonus:</PropTitle>+{prof}
           </Prop>
           <Prop>
             <PropTitle>Initiative:</PropTitle>

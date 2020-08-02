@@ -53,12 +53,25 @@ const CharView = ({ character }: $Props) => {
   const [activeTab, setTab] = useState<string>("General");
   let history = useHistory();
 
+  const calcLevel = useCallback(() => {
+    let level = 0;
+    char.classes.forEach((classe) => {
+      level += classe.level;
+    });
+    return level;
+  }, [char]);
+
   useEffect(() => {
     reciveAllFiltered(
       "classes",
-      character.classes.map((classe) => {
-        return { fieldName: "name", value: classe.classe };
-      }),
+      [
+        {
+          fieldName: "name",
+          value: character.classes.map((classe) => {
+            return classe.classe;
+          }),
+        },
+      ],
       (results: any[]) => {
         setClasses(results);
         results.forEach((classe) => {
@@ -78,9 +91,14 @@ const CharView = ({ character }: $Props) => {
     );
     reciveAllFiltered(
       "subclasses",
-      character.classes.map((classe) => {
-        return { fieldName: "name", value: classe.subclasse };
-      }),
+      [
+        {
+          fieldName: "name",
+          value: character.classes.map((classe) => {
+            return classe.subclasse;
+          }),
+        },
+      ],
       (results: any[]) => {
         setSubclasses(results);
         results.forEach((subclass) => {
@@ -104,7 +122,7 @@ const CharView = ({ character }: $Props) => {
       (results: any) => {
         setRace(results[0]);
         results[0].traits.forEach((trait: Trait) => {
-          if (trait.level <= character.level) {
+          if (trait.level <= calcLevel()) {
             setRaceFeatures((c) => [...c, trait]);
           }
         });
@@ -116,7 +134,7 @@ const CharView = ({ character }: $Props) => {
       (results: any) => {
         setRace(results[0]);
         results[0].traits.forEach((trait: Trait) => {
-          if (trait.level <= character.level) {
+          if (trait.level <= calcLevel()) {
             setRaceFeatures((c) => [...c, trait]);
           }
         });
@@ -151,7 +169,7 @@ const CharView = ({ character }: $Props) => {
         }
       });
     });
-  }, [character]);
+  }, [character, calcLevel]);
 
   const formatText = useCallback(
     (text: String) => {
@@ -201,149 +219,158 @@ const CharView = ({ character }: $Props) => {
   };
 
   return (
-    <>
-      <CenterWrapper>
-        <CharHeader char={char} />
-        <TabBar
-          children={[
-            "General",
-            "Combat",
-            "Race",
-            "Classes",
-            "Spells",
-            "Items",
-            "Monster",
-            "Notes",
-          ]}
-          onChange={(tab: string) => setTab(tab)}
+    <CenterWrapper>
+      <CharHeader char={char} />
+      <TabBar
+        children={[
+          "General",
+          "Combat",
+          "Race",
+          "Classes",
+          "Spells",
+          "Items",
+          "Monster",
+          "Notes",
+        ]}
+        onChange={(tab: string) => setTab(tab)}
+      />
+      {activeTab === "General" && (
+        <CharGeneral
+          char={char}
+          onChange={saveChar}
+          classes={classes}
+          items={items}
+          gears={gears}
         />
-        {activeTab === "General" && (
-          <CharGeneral
-            char={char}
-            onChange={saveChar}
-            classes={classes}
-            items={items}
-            gears={gears}
-          />
-        )}
-        {activeTab === "Combat" && (
-          <CharCombat char={char} items={items} gears={gears} />
-        )}
-        {activeTab === "Classes" && (
-          <View>
-            <PropWrapper>
-              {classesFeatures &&
-                classesFeatures
-                  .sort((f1, f2) => f1.level - f2.level)
-                  .map((featureSet: FeatureSet) => {
-                    return featureSet.features.map(
-                      (feature: Feature, index: number) => {
-                        return (
-                          <Text key={index}>
-                            <PropTitle>{feature.name}:</PropTitle>
-                            {formatText(feature.text)}
-                          </Text>
-                        );
-                      }
-                    );
-                  })}
-            </PropWrapper>
-          </View>
-        )}
-        {activeTab === "Race" && (
-          <View>
-            <PropWrapper>
-              {raceFeatures &&
-                raceFeatures
-                  .sort((f1, f2) => f1.level - f2.level)
-                  .map((trait: Trait, index: number) => {
-                    return (
-                      <TraitWrapper key={index}>
-                        <TraitName>{trait.name}</TraitName>
-                        <TraitLevel>{trait.level}</TraitLevel>
-                        <TraitText>{formatText(trait.text)}</TraitText>
-                      </TraitWrapper>
-                    );
-                  })}
-            </PropWrapper>
-          </View>
-        )}
-        {activeTab === "Spells" && (
-          <MinView>
-            <PropWrapper>
-              <Prop>
-                <PropTitle>Casting Hit:</PropTitle>
-                {char.castingHit}
-              </Prop>
-              <Prop>
-                <PropTitle>Casting Dc:</PropTitle>
-                {char.castingDC}
-              </Prop>
-              {char.spellSlots.map(
-                (
-                  classSlots: {
-                    origin: string;
-                    slots: number[];
-                    max: number[];
-                  },
-                  index: number
-                ) => {
-                  return (
-                    <SmallNumberArrayField
-                      key={index}
-                      values={classSlots.slots}
-                      max={classSlots.max}
-                      label={classSlots.origin}
-                      onChange={(slots) => onSpellslotChange(classSlots, slots)}
-                    />
+      )}
+      {activeTab === "Combat" && (
+        <CharCombat char={char} items={items} gears={gears} classes={classes} />
+      )}
+      {activeTab === "Classes" && (
+        <View>
+          <PropWrapper>
+            {classes &&
+              classes.map((classe: Class, index: number) => {
+                return (
+                  <SmallText key={index}>
+                    <PropTitle>{classe.name} Proficiencies:</PropTitle>
+                    {formatText(classe.proficiencies)}
+                  </SmallText>
+                );
+              })}
+          </PropWrapper>
+          <PropWrapper>
+            {classesFeatures &&
+              classesFeatures
+                .sort((f1, f2) => f1.level - f2.level)
+                .map((featureSet: FeatureSet) => {
+                  return featureSet.features.map(
+                    (feature: Feature, index: number) => {
+                      return (
+                        <Text key={index}>
+                          <PropTitle>{feature.name}:</PropTitle>
+                          {formatText(feature.text)}
+                        </Text>
+                      );
+                    }
                   );
-                }
-              )}
-            </PropWrapper>
-            <PropWrapper>
-              {spells &&
-                spells.map((spell, index: number) => {
-                  return <SpellTile key={index} spell={spell} />;
                 })}
-            </PropWrapper>
-          </MinView>
-        )}
-        {activeTab === "Items" && (
-          <View>
-            <PropWrapper>
-              {items &&
-                items.map((item, index: number) => {
-                  return <ItemTile key={index} item={item} />;
+          </PropWrapper>
+        </View>
+      )}
+      {activeTab === "Race" && (
+        <View>
+          <PropWrapper>
+            {raceFeatures &&
+              raceFeatures
+                .sort((f1, f2) => f1.level - f2.level)
+                .map((trait: Trait, index: number) => {
+                  return (
+                    <TraitWrapper key={index}>
+                      <TraitName>{trait.name}</TraitName>
+                      <TraitLevel>{trait.level}</TraitLevel>
+                      <TraitText>{formatText(trait.text)}</TraitText>
+                    </TraitWrapper>
+                  );
                 })}
-              {gears &&
-                gears.map((gear, index: number) => {
-                  return <GearTile key={index} gear={gear} />;
-                })}
-            </PropWrapper>
-          </View>
-        )}
-        {activeTab === "Monster" && (
-          <View>
-            <PropWrapper>
-              {monsters &&
-                monsters.map((monster, index: number) => {
-                  return <MonsterTile key={index} monster={monster} />;
-                })}
-            </PropWrapper>
-          </View>
-        )}
-        {activeTab === "Notes" && (
-          <View>
-            <PropWrapper>
-              <Text>
-                <PropTitle>Notes:</PropTitle>
-                {formatText(char.spellNotes)}
-              </Text>
-            </PropWrapper>
-          </View>
-        )}
-      </CenterWrapper>
-    </>
+          </PropWrapper>
+        </View>
+      )}
+      {activeTab === "Spells" && (
+        <MinView>
+          <PropWrapper>
+            <Prop>
+              <PropTitle>Casting Hit:</PropTitle>
+              {char.castingHit}
+            </Prop>
+            <Prop>
+              <PropTitle>Casting Dc:</PropTitle>
+              {char.castingDC}
+            </Prop>
+            {char.spellSlots.map(
+              (
+                classSlots: {
+                  origin: string;
+                  slots: number[];
+                  max: number[];
+                },
+                index: number
+              ) => {
+                return (
+                  <SmallNumberArrayField
+                    key={index}
+                    values={classSlots.slots}
+                    max={classSlots.max}
+                    label={classSlots.origin}
+                    onChange={(slots) => onSpellslotChange(classSlots, slots)}
+                  />
+                );
+              }
+            )}
+          </PropWrapper>
+          <PropWrapper>
+            {spells &&
+              spells.map((spell, index: number) => {
+                return <SpellTile key={index} spell={spell} />;
+              })}
+          </PropWrapper>
+        </MinView>
+      )}
+      {activeTab === "Items" && (
+        <View>
+          <PropWrapper>
+            {items &&
+              items.map((item, index: number) => {
+                return <ItemTile key={index} item={item} />;
+              })}
+            {gears &&
+              gears.map((gear, index: number) => {
+                return <GearTile key={index} gear={gear} />;
+              })}
+          </PropWrapper>
+        </View>
+      )}
+      {activeTab === "Monster" && (
+        <View>
+          <PropWrapper>
+            {monsters &&
+              monsters.map((monster, index: number) => {
+                return <MonsterTile key={index} monster={monster} />;
+              })}
+          </PropWrapper>
+        </View>
+      )}
+      {activeTab === "Notes" && (
+        <View>
+          <PropWrapper>
+            <Text>
+              <PropTitle>Notes:</PropTitle>
+              {formatText(char.spellNotes)}
+            </Text>
+          </PropWrapper>
+        </View>
+      )}
+    </CenterWrapper>
   );
 };
 
@@ -422,6 +449,10 @@ const Text = styled.div`
   padding: 10px;
   border-radius: 5px;
   background-color: ${({ theme }) => theme.tile.backgroundColor};
+`;
+
+const SmallText = styled(Text)`
+  max-width: max-content;
 `;
 
 const TextPart = styled.span`

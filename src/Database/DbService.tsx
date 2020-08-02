@@ -180,6 +180,23 @@ export const reciveAttributeSelection = (
     });
 };
 
+export const saveNew = (
+  tableName: string,
+  entity: IEntity,
+  filename: string
+) => {
+  const db = new MyAppDatabase();
+  db.open()
+    .then(function () {
+      db.table(tableName).put({ ...entity, filename: filename }).then(function () {
+        console.log(entity.name);
+      });
+    })
+    .finally(function () {
+      db.close();
+    });
+};
+
 export const saveNewFromList = (
   tableName: string,
   entities: IEntity[],
