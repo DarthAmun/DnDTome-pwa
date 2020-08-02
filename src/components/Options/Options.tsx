@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useTheme } from "../Theme/MyThemeProvider";
 import { darkTheme, lightTheme } from "../Theme/Theme";
-import { importFiles, exportAll } from "./OptionService";
-import { deleteAll, reciveCount } from "../../Database/DbService";
+import { importFiles, exportAll } from "../../Services/OptionService";
+import { deleteAll, reciveCount } from "../../Services/DatabaseService";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {

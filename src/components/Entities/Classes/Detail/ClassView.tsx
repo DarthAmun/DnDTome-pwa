@@ -1,6 +1,9 @@
 import React, { useCallback, useState, useEffect } from "react";
 import { useHistory } from "react-router";
-import { reciveAllFiltered, createNewWithId } from "../../../../Database/DbService";
+import {
+  reciveAllFiltered,
+  createNewWithId,
+} from "../../../../Services/DatabaseService";
 import Class from "../../../../Data/Classes/Class";
 import Subclass from "../../../../Data/Classes/Subclass";
 import styled from "styled-components";
@@ -8,6 +11,7 @@ import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLink, faPlusCircle } from "@fortawesome/free-solid-svg-icons";
 import { GiDiceEightFacesEight } from "react-icons/gi";
+import FormatedText from "../../../GeneralElements/FormatedText";
 
 interface $Props {
   classe: Class;
@@ -26,32 +30,6 @@ const ClassView = ({ classe }: $Props) => {
       }
     );
   }, [classe]);
-
-  const formatText = useCallback(
-    (text: String) => {
-      if (classe !== undefined) {
-        let parts: string[] = text.split("[[");
-        return parts.map((part: string, index: number) => {
-          if (part.includes("]]")) {
-            const codePart: string[] = part.split("]]");
-            const linkParts: string[] = codePart[0].split(".");
-            const link: string =
-              "/" + linkParts[0] + "-detail/name/" + linkParts[1];
-            return (
-              <TextPart key={index}>
-                <Link onClick={() => history.push(link)}>{linkParts[1]}</Link>
-                {codePart[1]}
-              </TextPart>
-            );
-          } else {
-            return <TextPart key={index}>{part}</TextPart>;
-          }
-        });
-      }
-      return "";
-    },
-    [classe, history]
-  );
 
   const printSpellslots = (length: number) => {
     let count = length - 3;
@@ -108,11 +86,11 @@ const ClassView = ({ classe }: $Props) => {
             </Prop>
             <Text>
               <PropTitle>Proficiencies:</PropTitle>
-              {formatText(classe.proficiencies)}
+              <FormatedText text={classe.proficiencies} />
             </Text>
             <Text>
               <PropTitle>Equipment:</PropTitle>
-              {formatText(classe.equipment)}
+              <FormatedText text={classe.equipment} />
             </Text>
             <Text>
               <PropTitle>Subclasses:</PropTitle>
@@ -246,7 +224,7 @@ const ClassView = ({ classe }: $Props) => {
               return (
                 <Text key={index}>
                   <PropTitle>{feature.name}:</PropTitle>
-                  {formatText(feature.text)}
+                  <FormatedText text={feature.text} />
                 </Text>
               );
             });
@@ -283,10 +261,6 @@ const View = styled.div`
   justify-content: flex-start;
   align-items: flex-start;
   align-content: flex-start;
-`;
-
-const TextPart = styled.span`
-  white-space: pre-line;
 `;
 
 const ImageView = styled(View)`
@@ -378,18 +352,12 @@ const Text = styled.div`
   background-color: ${({ theme }) => theme.tile.backgroundColor};
 `;
 
-const Link = styled.span`
+const SubclasseLink = styled.span`
   display: inline-block;
   background-color: ${({ theme }) => theme.tile.backgroundColorLink};
   border-radius: 5px;
   text-decoration: none;
   color: ${({ theme }) => theme.tile.backgroundColor};
-  font-size: 10px;
-  padding: 0px 5px 0px 5px;
-  cursor: pointer;
-`;
-
-const SubclasseLink = styled(Link)`
   font-size: 16px;
   margin: 5px;
   padding: 5px;

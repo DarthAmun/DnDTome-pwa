@@ -1,50 +1,16 @@
-import React, { useCallback } from "react";
-import { useHistory } from "react-router";
+import React from "react";
 import styled from "styled-components";
 import Subclass from "../../../../Data/Classes/Subclass";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLink } from "@fortawesome/free-solid-svg-icons";
+import FormatedText from "../../../GeneralElements/FormatedText";
 
 interface $Props {
   subclass: Subclass;
 }
 
 const SubclassView = ({ subclass }: $Props) => {
-  let history = useHistory();
-
-  const formatText = useCallback(
-    (text: String) => {
-      if (subclass !== undefined) {
-        let parts: string[] = text.split("[[");
-        return parts.map((part: string, index: number) => {
-          if (part.includes("]]")) {
-            const codePart: string[] = part.split("]]");
-            const linkParts: string[] = codePart[0].split(".");
-            const link: string =
-              "/" + linkParts[0] + "-detail/name/" + linkParts[1];
-            return (
-              <span key={index}>
-                <Link onClick={() => history.push(link)}>
-                  {linkParts[1]}
-                </Link>
-                {codePart[1]}
-              </span>
-            );
-          } else {
-            return (
-              <span key={index}>
-                {part}
-              </span>
-            );
-          }
-        });
-      }
-      return "";
-    },
-    [subclass, history]
-  );
-
   const printSpellslots = (length: number) => {
     let count = length - 3;
     let levels = [];
@@ -58,25 +24,23 @@ const SubclassView = ({ subclass }: $Props) => {
 
   return (
     <>
-    <CenterWrapper>
-      <View>
-        <Name>
-          <b>
-            {subclass.name}
-          </b>
-        </Name>
-        <PropWrapper>
-        <Prop>
-            <PropTitle>Class:</PropTitle>
-            {subclass.type}
-          </Prop>
-          <Prop>
-            <Icon icon={faLink} />
-            {subclass.sources}
-          </Prop>
-        </PropWrapper>
-      </View>
-      {subclass.features.length !== 0 &&
+      <CenterWrapper>
+        <View>
+          <Name>
+            <b>{subclass.name}</b>
+          </Name>
+          <PropWrapper>
+            <Prop>
+              <PropTitle>Class:</PropTitle>
+              {subclass.type}
+            </Prop>
+            <Prop>
+              <Icon icon={faLink} />
+              {subclass.sources}
+            </Prop>
+          </PropWrapper>
+        </View>
+        {subclass.features.length !== 0 &&
           subclass.features[0].spellslots &&
           subclass.features[0].spellslots.length > 0 && (
             <View>
@@ -109,19 +73,21 @@ const SubclassView = ({ subclass }: $Props) => {
                         </>
                       )}
                     </FeatureRow>
-                    {subclass.features.map((featureSet, index:number) => {
+                    {subclass.features.map((featureSet, index: number) => {
                       return (
                         <FeatureRow key={index}>
                           {featureSet.spellslots && (
                             <>
                               <SpellProp>{featureSet.level}</SpellProp>
-                              {featureSet.spellslots.map((spellslot, index:number) => {
-                                return (
-                                  <SpellProp key={index}>
-                                    {spellslot === 0 ? "-" : spellslot}
-                                  </SpellProp>
-                                );
-                              })}
+                              {featureSet.spellslots.map(
+                                (spellslot, index: number) => {
+                                  return (
+                                    <SpellProp key={index}>
+                                      {spellslot === 0 ? "-" : spellslot}
+                                    </SpellProp>
+                                  );
+                                }
+                              )}
                             </>
                           )}
                         </FeatureRow>
@@ -142,8 +108,12 @@ const SubclassView = ({ subclass }: $Props) => {
                     <FeatureHeadProp>Features</FeatureHeadProp>
                     {subclass.features[0].bonis &&
                       subclass.features[0].bonis.length > 0 &&
-                      subclass.features[0].bonis?.map((boni, index:number) => {
-                        return <FeatureHeadProp key={index}>{boni.name}</FeatureHeadProp>;
+                      subclass.features[0].bonis?.map((boni, index: number) => {
+                        return (
+                          <FeatureHeadProp key={index}>
+                            {boni.name}
+                          </FeatureHeadProp>
+                        );
                       })}
                   </FeatureRow>
                 </thead>
@@ -178,14 +148,14 @@ const SubclassView = ({ subclass }: $Props) => {
               return (
                 <Text key={index}>
                   <PropTitle>{feature.name}:</PropTitle>
-                  {formatText(feature.text)}
+                  <FormatedText text={feature.text} />
                 </Text>
               );
             });
           })}
         </View>
       </CenterWrapper>
-      </>
+    </>
   );
 };
 
@@ -262,17 +232,6 @@ const PropTitle = styled.span`
   color: ${({ theme }) => theme.tile.backgroundColorLink};
   text-decoration: none;
   margin: 0px 5px 0px 5px;
-`;
-
-const Link = styled.span`
-  display: inline-block;
-  background-color: ${({ theme }) => theme.tile.backgroundColorLink};
-  border-radius: 5px;
-  text-decoration: none;
-  color: ${({ theme }) => theme.tile.backgroundColor};
-  font-size: 10px;
-  padding: 0px 5px 0px 5px;
-  cursor: pointer;
 `;
 
 const Icon = styled(FontAwesomeIcon)`

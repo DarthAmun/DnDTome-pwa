@@ -1,18 +1,17 @@
 import React, { useCallback, useState, useEffect } from "react";
-import { useHistory } from "react-router";
 import styled from "styled-components";
 import {
   reciveAllFiltered,
   reciveByAttribute,
   update,
-} from "../../../../Database/DbService";
+} from "../../../../Services/DatabaseService";
 import Char from "../../../../Data/Chars/Char";
 import Class from "../../../../Data/Classes/Class";
-import Subclass from "../../../../Data/Classes/Subclass";
+// import Subclass from "../../../../Data/Classes/Subclass";
 import Feature from "../../../../Data/Classes/Feature";
 import FeatureSet from "../../../../Data/Classes/FeatureSet";
-import Race from "../../../../Data/Races/Race";
-import Subrace from "../../../../Data/Races/Subrace";
+// import Race from "../../../../Data/Races/Race";
+// import Subrace from "../../../../Data/Races/Subrace";
 import Trait from "../../../../Data/Races/Trait";
 import SpellTile from "../../Spells/SpellTile";
 import Spell, { isSpell } from "../../../../Data/Spell";
@@ -28,6 +27,7 @@ import GearTile from "../../Gear/GearTile";
 import SmallNumberArrayField from "../../../FormElements/SmallNumberArrayField";
 import CharCombat from "./DetailComponents/CharCombat";
 import MonsterTile from "../../Monster/MonsterTile";
+import FormatedText from "../../../GeneralElements/FormatedText";
 
 interface $Props {
   character: Char;
@@ -37,11 +37,11 @@ const CharView = ({ character }: $Props) => {
   const [char, setChar] = useState<Char>(character);
 
   const [classes, setClasses] = useState<Class[]>([]);
-  const [subclasses, setSubclasses] = useState<Subclass[]>([]);
+  // const [subclasses, setSubclasses] = useState<Subclass[]>([]);
   const [classesFeatures, setClassesFeatures] = useState<FeatureSet[]>([]);
 
-  const [race, setRace] = useState<Race>();
-  const [subrace, setSubrace] = useState<Subrace>();
+  // const [race, setRace] = useState<Race>();
+  // const [subrace, setSubrace] = useState<Subrace>();
   const [raceFeatures, setRaceFeatures] = useState<Trait[]>([]);
 
   const [spells, setSpells] = useState<Spell[]>([]);
@@ -51,7 +51,6 @@ const CharView = ({ character }: $Props) => {
   const [monsters, setMonsters] = useState<Monster[]>([]);
 
   const [activeTab, setTab] = useState<string>("General");
-  let history = useHistory();
 
   const calcLevel = useCallback(() => {
     let level = 0;
@@ -100,7 +99,7 @@ const CharView = ({ character }: $Props) => {
         },
       ],
       (results: any[]) => {
-        setSubclasses(results);
+        // setSubclasses(results);
         results.forEach((subclass) => {
           let subclassLevel = 0;
           character.classes.forEach((charClass) => {
@@ -120,7 +119,7 @@ const CharView = ({ character }: $Props) => {
       "races",
       [{ fieldName: "name", value: character.race.race }],
       (results: any) => {
-        setRace(results[0]);
+        // setRace(results[0]);
         results[0].traits.forEach((trait: Trait) => {
           if (trait.level <= calcLevel()) {
             setRaceFeatures((c) => [...c, trait]);
@@ -132,7 +131,7 @@ const CharView = ({ character }: $Props) => {
       "subraces",
       [{ fieldName: "name", value: character.race.subrace }],
       (results: any) => {
-        setRace(results[0]);
+        // setRace(results[0]);
         results[0].traits.forEach((trait: Trait) => {
           if (trait.level <= calcLevel()) {
             setRaceFeatures((c) => [...c, trait]);
@@ -170,32 +169,6 @@ const CharView = ({ character }: $Props) => {
       });
     });
   }, [character, calcLevel]);
-
-  const formatText = useCallback(
-    (text: String) => {
-      if (char !== undefined) {
-        let parts: string[] = text.split("[[");
-        return parts.map((part: string, index: number) => {
-          if (part.includes("]]")) {
-            const codePart: string[] = part.split("]]");
-            const linkParts: string[] = codePart[0].split(".");
-            const link: string =
-              "/" + linkParts[0] + "-detail/name/" + linkParts[1];
-            return (
-              <TextPart key={index}>
-                <Link onClick={() => history.push(link)}>{linkParts[1]}</Link>
-                {codePart[1]}
-              </TextPart>
-            );
-          } else {
-            return <TextPart key={index}>{part}</TextPart>;
-          }
-        });
-      }
-      return "";
-    },
-    [char, history]
-  );
 
   const onSpellslotChange = (
     oldSlots: { origin: string; slots: number[]; max: number[] },
@@ -254,7 +227,7 @@ const CharView = ({ character }: $Props) => {
                 return (
                   <SmallText key={index}>
                     <PropTitle>{classe.name} Proficiencies:</PropTitle>
-                    {formatText(classe.proficiencies)}
+                    <FormatedText text={classe.proficiencies} />
                   </SmallText>
                 );
               })}
@@ -269,7 +242,7 @@ const CharView = ({ character }: $Props) => {
                       return (
                         <Text key={index}>
                           <PropTitle>{feature.name}:</PropTitle>
-                          {formatText(feature.text)}
+                          <FormatedText text={feature.text} />
                         </Text>
                       );
                     }
@@ -289,7 +262,9 @@ const CharView = ({ character }: $Props) => {
                     <TraitWrapper key={index}>
                       <TraitName>{trait.name}</TraitName>
                       <TraitLevel>{trait.level}</TraitLevel>
-                      <TraitText>{formatText(trait.text)}</TraitText>
+                      <TraitText>
+                        <FormatedText text={trait.text} />
+                      </TraitText>
                     </TraitWrapper>
                   );
                 })}
@@ -365,7 +340,7 @@ const CharView = ({ character }: $Props) => {
           <PropWrapper>
             <Text>
               <PropTitle>Notes:</PropTitle>
-              {formatText(char.spellNotes)}
+              <FormatedText text={char.spellNotes} />
             </Text>
           </PropWrapper>
         </View>
@@ -455,10 +430,6 @@ const SmallText = styled(Text)`
   max-width: max-content;
 `;
 
-const TextPart = styled.span`
-  white-space: pre-line;
-`;
-
 const TraitWrapper = styled(PropWrapper)``;
 const TraitName = styled.div`
   background-color: ${({ theme }) => theme.tile.backgroundColor};
@@ -472,15 +443,4 @@ const TraitLevel = styled(TraitName)`
 `;
 const TraitText = styled(TraitName)`
   flex: 4 4 auto;
-`;
-
-const Link = styled.span`
-  display: inline-block;
-  background-color: ${({ theme }) => theme.tile.backgroundColorLink};
-  border-radius: 5px;
-  text-decoration: none;
-  color: ${({ theme }) => theme.tile.backgroundColor};
-  font-size: 10px;
-  padding: 0px 5px 0px 5px;
-  cursor: pointer;
 `;

@@ -13,7 +13,7 @@ import MonsterEditView from "./MonsterEditView";
 import BackButton from "../../../FormElements/BackButton";
 import Monster from "../../../../Data/Monster";
 import IconButton from "../../../FormElements/IconButton";
-import { remove, updateWithCallback } from "../../../../Database/DbService";
+import { remove, updateWithCallback } from "../../../../Services/DatabaseService";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 interface $Props {

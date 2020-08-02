@@ -1,5 +1,4 @@
 import React, { useCallback, useState, useEffect } from "react";
-import { useHistory } from "react-router";
 import styled from "styled-components";
 import Char from "../../../../../Data/Chars/Char";
 import Class from "../../../../../Data/Classes/Class";
@@ -16,6 +15,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import SmallNumberField from "../../../../FormElements/SmallNumberField";
 import FeatureSet from "../../../../../Data/Classes/FeatureSet";
+import FormatedText from "../../../../GeneralElements/FormatedText";
 
 interface $Props {
   char: Char;
@@ -28,7 +28,6 @@ interface $Props {
 const CharGeneral = ({ char, classes, items, gears, onChange }: $Props) => {
   const [deathSaves, setDeathSaves] = useState<number[]>([0, 0, 0, 0, 0, 0]);
   const [prof, setProf] = useState<number>(0);
-  let history = useHistory();
 
   const calcLevel = useCallback(() => {
     let level = 0;
@@ -37,7 +36,7 @@ const CharGeneral = ({ char, classes, items, gears, onChange }: $Props) => {
     });
     return level;
   }, [char]);
-  
+
   useEffect(() => {
     if (classes && classes.length > 0) {
       const level = calcLevel();
@@ -48,33 +47,6 @@ const CharGeneral = ({ char, classes, items, gears, onChange }: $Props) => {
       });
     }
   }, [char, classes, calcLevel]);
-
-
-  const formatText = useCallback(
-    (text: String) => {
-      if (char !== undefined) {
-        let parts: string[] = text.split("[[");
-        return parts.map((part: string, index: number) => {
-          if (part.includes("]]")) {
-            const codePart: string[] = part.split("]]");
-            const linkParts: string[] = codePart[0].split(".");
-            const link: string =
-              "/" + linkParts[0] + "-detail/name/" + linkParts[1];
-            return (
-              <TextPart key={index}>
-                <Link onClick={() => history.push(link)}>{linkParts[1]}</Link>
-                {codePart[1]}
-              </TextPart>
-            );
-          } else {
-            return <TextPart key={index}>{part}</TextPart>;
-          }
-        });
-      }
-      return "";
-    },
-    [char, history]
-  );
 
   const formatProf = useCallback((prof: number) => {
     if (prof === undefined || prof === 0) {
@@ -402,7 +374,7 @@ const CharGeneral = ({ char, classes, items, gears, onChange }: $Props) => {
           </Prop>
           <Text>
             <PropTitle>Senses:</PropTitle>
-            {formatText(char.senses)}
+            <FormatedText text={char.senses} />
           </Text>
         </PropColumnWrapper>
       </MinView>
@@ -410,7 +382,7 @@ const CharGeneral = ({ char, classes, items, gears, onChange }: $Props) => {
         <PropColumnWrapper>
           <Text>
             <PropTitle>Proficiencies:</PropTitle>
-            {formatText(char.profsLangs)}
+            <FormatedText text={char.profsLangs} />
           </Text>
         </PropColumnWrapper>
       </MinView>
@@ -583,27 +555,12 @@ const Text = styled.div`
   background-color: ${({ theme }) => theme.tile.backgroundColor};
 `;
 
-const TextPart = styled.span`
-  white-space: pre-line;
-`;
-
 const Icon = styled(FontAwesomeIcon)`
   margin-right: 5px;
   width: 20px;
   height: auto;
   border-radius: 150px;
   color: ${({ theme }) => theme.main.highlight};
-`;
-
-const Link = styled.span`
-  display: inline-block;
-  background-color: ${({ theme }) => theme.tile.backgroundColorLink};
-  border-radius: 5px;
-  text-decoration: none;
-  color: ${({ theme }) => theme.tile.backgroundColor};
-  font-size: 10px;
-  padding: 0px 5px 0px 5px;
-  cursor: pointer;
 `;
 
 const DeathSaveRow = styled.div`

@@ -3,7 +3,7 @@ import { useHistory } from "react-router";
 import {
   reciveAllFiltered,
   createNewWithId,
-} from "../../../../Database/DbService";
+} from "../../../../Services/DatabaseService";
 import Race from "../../../../Data/Races/Race";
 import Trait from "../../../../Data/Races/Trait";
 import Subrace from "../../../../Data/Races/Subrace";
@@ -12,6 +12,7 @@ import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLink, faPlusCircle } from "@fortawesome/free-solid-svg-icons";
 import { GiUpgrade } from "react-icons/gi";
+import FormatedText from "../../../GeneralElements/FormatedText";
 
 interface $Props {
   race: Race;
@@ -30,32 +31,6 @@ const RaceView = ({ race }: $Props) => {
       }
     );
   }, [race]);
-
-  const formatText = useCallback(
-    (text: String) => {
-      if (race !== undefined) {
-        let parts: string[] = text.split("[[");
-        return parts.map((part: string, index: number) => {
-          if (part.includes("]]")) {
-            const codePart: string[] = part.split("]]");
-            const linkParts: string[] = codePart[0].split(".");
-            const link: string =
-              "/" + linkParts[0] + "-detail/name/" + linkParts[1];
-            return (
-              <TextPart key={index}>
-                <Link onClick={() => history.push(link)}>{linkParts[1]}</Link>
-                {codePart[1]}
-              </TextPart>
-            );
-          } else {
-            return <TextPart key={index}>{part}</TextPart>;
-          }
-        });
-      }
-      return "";
-    },
-    [race, history]
-  );
 
   const getPicture = useCallback(() => {
     if (race !== undefined) {
@@ -96,23 +71,23 @@ const RaceView = ({ race }: $Props) => {
           </Prop>
           <Text>
             <PropTitle>Age:</PropTitle>
-            {formatText(race.age)}
+            <FormatedText text={race.age} />
           </Text>
           <Text>
             <PropTitle>Alignment:</PropTitle>
-            {formatText(race.alignment)}
+            <FormatedText text={race.alignment} />
           </Text>
           <Text>
             <PropTitle>Size:</PropTitle>
-            {formatText(race.size)}
+            <FormatedText text={race.size} />
           </Text>
           <Text>
             <PropTitle>Speed:</PropTitle>
-            {formatText(race.speed)}
+            <FormatedText text={race.speed} />
           </Text>
           <Text>
             <PropTitle>Language:</PropTitle>
-            {formatText(race.lang)}
+            <FormatedText text={race.lang} />
           </Text>
           <Text>
             <PropTitle>Subraces:</PropTitle>
@@ -141,7 +116,9 @@ const RaceView = ({ race }: $Props) => {
             <TraitWrapper key={index}>
               <TraitName>{trait.name}</TraitName>
               <TraitLevel>{trait.level}</TraitLevel>
-              <TraitText>{formatText(trait.text)}</TraitText>
+              <TraitText>
+                <FormatedText text={trait.text} />
+              </TraitText>
             </TraitWrapper>
           </View>
         );
@@ -175,10 +152,6 @@ const View = styled.div`
   justify-content: flex-start;
   align-items: flex-start;
   align-content: flex-start;
-`;
-
-const TextPart = styled.span`
-  white-space: pre-line;
 `;
 
 const ImageView = styled(View)`

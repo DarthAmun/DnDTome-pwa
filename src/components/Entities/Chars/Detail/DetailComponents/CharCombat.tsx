@@ -1,12 +1,12 @@
 import React, { useCallback, useState, useEffect } from "react";
-import { useHistory } from "react-router";
 import styled from "styled-components";
 import Char from "../../../../../Data/Chars/Char";
 import Item from "../../../../../Data/Item";
 import Gear from "../../../../../Data/Gear";
-import { reciveByAttribute } from "../../../../../Database/DbService";
+import { reciveByAttribute } from "../../../../../Services/DatabaseService";
 import Class from "../../../../../Data/Classes/Class";
 import FeatureSet from "../../../../../Data/Classes/FeatureSet";
+import FormatedText from "../../../../GeneralElements/FormatedText";
 
 interface $Props {
   char: Char;
@@ -18,7 +18,6 @@ interface $Props {
 const CharCombat = ({ char, items, gears, classes }: $Props) => {
   const [baseItems, setBaseItems] = useState<{ base: Gear; item: Item }[]>([]);
   const [prof, setProf] = useState<number>(0);
-  let history = useHistory();
 
   useEffect(() => {
     items.forEach((item) => {
@@ -37,7 +36,7 @@ const CharCombat = ({ char, items, gears, classes }: $Props) => {
     });
     return level;
   }, [char]);
-  
+
   useEffect(() => {
     if (classes && classes.length > 0) {
       const level = calcLevel();
@@ -48,32 +47,6 @@ const CharCombat = ({ char, items, gears, classes }: $Props) => {
       });
     }
   }, [char, classes, calcLevel]);
-
-  const formatText = useCallback(
-    (text: String) => {
-      if (char !== undefined) {
-        let parts: string[] = text.split("[[");
-        return parts.map((part: string, index: number) => {
-          if (part.includes("]]")) {
-            const codePart: string[] = part.split("]]");
-            const linkParts: string[] = codePart[0].split(".");
-            const link: string =
-              "/" + linkParts[0] + "-detail/name/" + linkParts[1];
-            return (
-              <TextPart key={index}>
-                <Link onClick={() => history.push(link)}>{linkParts[1]}</Link>
-                {codePart[1]}
-              </TextPart>
-            );
-          } else {
-            return <TextPart key={index}>{part}</TextPart>;
-          }
-        });
-      }
-      return "";
-    },
-    [char, history]
-  );
 
   return (
     <>
@@ -149,19 +122,19 @@ const CharCombat = ({ char, items, gears, classes }: $Props) => {
         <PropWrapper>
           <Text>
             <PropTitle>Actions:</PropTitle>
-            {formatText(char.actions)}
+            <FormatedText text={char.actions} />
           </Text>
         </PropWrapper>
         <PropWrapper>
           <Text>
             <PropTitle>Bonus Actions:</PropTitle>
-            {formatText(char.bonusActions)}
+            <FormatedText text={char.bonusActions} />
           </Text>
         </PropWrapper>
         <PropWrapper>
           <Text>
             <PropTitle>Reactions:</PropTitle>
-            {formatText(char.reactions)}
+            <FormatedText text={char.reactions} />
           </Text>
         </PropWrapper>
       </MinView>
@@ -235,19 +208,4 @@ const Text = styled.div`
   padding: 10px;
   border-radius: 5px;
   background-color: ${({ theme }) => theme.tile.backgroundColor};
-`;
-
-const TextPart = styled.span`
-  white-space: pre-line;
-`;
-
-const Link = styled.span`
-  display: inline-block;
-  background-color: ${({ theme }) => theme.tile.backgroundColorLink};
-  border-radius: 5px;
-  text-decoration: none;
-  color: ${({ theme }) => theme.tile.backgroundColor};
-  font-size: 10px;
-  padding: 0px 5px 0px 5px;
-  cursor: pointer;
 `;

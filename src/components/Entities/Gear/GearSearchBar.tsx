@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { useHistory } from "react-router";
 import Filter from "../../../Data/Filter";
 import ReactDOM from "react-dom";
-import { reciveAttributeSelection, createNewWithId } from "../../../Database/DbService";
+import { reciveAttributeSelection, createNewWithId } from "../../../Services/DatabaseService";
 
 import {
   faLink,

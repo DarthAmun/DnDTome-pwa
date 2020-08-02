@@ -1,14 +1,14 @@
-import { saveNewFromList, reciveAll } from "../../Database/DbService";
+import { saveNewFromList, reciveAll } from "./DatabaseService";
 import { IndexableType } from "dexie";
-import Spell, { isSpell } from "../../Data/Spell";
-import Gear, { isGear } from "../../Data/Gear";
-import Monster, { isMonster } from "../../Data/Monster";
-import Race, { isRace } from "../../Data/Races/Race";
-import Subrace, { isSubrace } from "../../Data/Races/Subrace";
-import Item, { isItem } from "../../Data/Item";
-import Class, { isClass } from "../../Data/Classes/Class";
-import Subclass, { isSubclass } from "../../Data/Classes/Subclass";
-import Char, { isChar } from "../../Data/Chars/Char";
+import Spell, { isSpell } from "../Data/Spell";
+import Gear, { isGear } from "../Data/Gear";
+import Monster, { isMonster } from "../Data/Monster";
+import Race, { isRace } from "../Data/Races/Race";
+import Subrace, { isSubrace } from "../Data/Races/Subrace";
+import Item, { isItem } from "../Data/Item";
+import Class, { isClass } from "../Data/Classes/Class";
+import Subclass, { isSubclass } from "../Data/Classes/Subclass";
+import Char, { isChar } from "../Data/Chars/Char";
 
 export const importFiles = (fileList: FileList | null) => {
   if (fileList !== null) {

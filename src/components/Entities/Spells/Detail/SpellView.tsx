@@ -1,5 +1,4 @@
 import React, { useCallback } from "react";
-import { useHistory } from "react-router";
 import styled from "styled-components";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -12,14 +11,13 @@ import {
   faLink,
 } from "@fortawesome/free-solid-svg-icons";
 import Spell from "../../../../Data/Spell";
+import FormatedText from "../../../GeneralElements/FormatedText";
 
 interface $Props {
   spell: Spell;
 }
 
 const SpellView = ({ spell }: $Props) => {
-  let history = useHistory();
-
   const formatLevel = useCallback(() => {
     if (spell !== undefined) {
       if (spell.level === 0) {
@@ -48,30 +46,6 @@ const SpellView = ({ spell }: $Props) => {
     }
     return "";
   }, [spell]);
-
-  const formatText = useCallback(() => {
-    if (spell !== undefined) {
-      let text = spell.text;
-      let parts: string[] = text.split("[[");
-      return parts.map((part: string, index: number) => {
-        if (part.includes("]]")) {
-          const codePart: string[] = part.split("]]");
-          const linkParts: string[] = codePart[0].split(".");
-          const link: string =
-            "/" + linkParts[0] + "-detail/name/" + linkParts[1];
-          return (
-            <TextPart key={index}>
-              <Link onClick={() => history.push(link)}>{linkParts[1]}</Link>
-              {codePart[1]}
-            </TextPart>
-          );
-        } else {
-          return <TextPart key={index}>{part}</TextPart>;
-        }
-      });
-    }
-    return "";
-  }, [spell, history]);
 
   const getPicture = useCallback(() => {
     if (spell !== undefined) {
@@ -136,7 +110,9 @@ const SpellView = ({ spell }: $Props) => {
             {spell.sources}
           </Prop>
         </PropWrapper>
-        <Text>{formatText()}</Text>
+        <Text>
+          <FormatedText text={spell.text} />
+        </Text>
       </View>
     </CenterWrapper>
   );
@@ -219,10 +195,6 @@ const Name = styled.div`
   background-color: ${({ theme }) => theme.tile.backgroundColor};
 `;
 
-const TextPart = styled.span`
-  white-space: pre-line;
-`;
-
 const ImageName = styled.div`
   height: 30px;
   float: left;
@@ -265,17 +237,6 @@ const Text = styled.div`
   padding: 10px;
   border-radius: 5px;
   background-color: ${({ theme }) => theme.tile.backgroundColor};
-`;
-
-const Link = styled.span`
-  display: inline-block;
-  background-color: ${({ theme }) => theme.tile.backgroundColorLink};
-  border-radius: 5px;
-  text-decoration: none;
-  color: ${({ theme }) => theme.tile.backgroundColor};
-  font-size: 10px;
-  padding: 0px 5px 0px 5px;
-  cursor: pointer;
 `;
 
 const Icon = styled(FontAwesomeIcon)`

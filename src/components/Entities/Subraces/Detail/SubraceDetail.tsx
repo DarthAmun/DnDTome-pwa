@@ -13,7 +13,7 @@ import SubraceEditView from "./SubraceEditView";
 import BackButton from "../../../FormElements/BackButton";
 import Subrace from "../../../../Data/Races/Subrace";
 import IconButton from "../../../FormElements/IconButton";
-import { remove, updateWithCallback } from "../../../../Database/DbService";
+import { remove, updateWithCallback } from "../../../../Services/DatabaseService";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 interface $Props {

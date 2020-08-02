@@ -13,7 +13,7 @@ import ItemEditView from "./ItemEditView";
 import BackButton from "../../../FormElements/BackButton";
 import Item from "../../../../Data/Item";
 import IconButton from "../../../FormElements/IconButton";
-import { remove, updateWithCallback } from "../../../../Database/DbService";
+import { remove, updateWithCallback } from "../../../../Services/DatabaseService";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 interface $Props {

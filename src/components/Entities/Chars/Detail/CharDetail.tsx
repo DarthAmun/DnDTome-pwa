@@ -13,7 +13,7 @@ import CharEditView from "./CharEditView";
 import BackButton from "../../../FormElements/BackButton";
 import Char from "../../../../Data/Chars/Char";
 import IconButton from "../../../FormElements/IconButton";
-import { remove, updateWithCallback } from "../../../../Database/DbService";
+import { remove, updateWithCallback } from "../../../../Services/DatabaseService";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 interface $Props {

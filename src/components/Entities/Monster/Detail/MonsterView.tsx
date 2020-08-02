@@ -1,5 +1,4 @@
 import React, { useCallback } from "react";
-import { useHistory } from "react-router";
 import styled from "styled-components";
 import Monster from "../../../../Data/Monster";
 
@@ -11,14 +10,13 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { GiResize, GiAngelOutfit, GiLifeBar } from "react-icons/gi";
 import { MdRecordVoiceOver, MdRemoveRedEye } from "react-icons/md";
+import FormatedText from "../../../GeneralElements/FormatedText";
 
 interface $Props {
   monster: Monster;
 }
 
 const MonsterView = ({ monster }: $Props) => {
-  let history = useHistory();
-
   const isLegendary = useCallback(() => {
     if (monster !== undefined) {
       if (monster.lAblt.trim() !== "" || monster.sAblt.includes("Legendary")) {
@@ -27,32 +25,6 @@ const MonsterView = ({ monster }: $Props) => {
     }
     return "";
   }, [monster]);
-
-  const formatText = useCallback(
-    (text: String) => {
-      if (monster !== undefined) {
-        let parts: string[] = text.split("[[");
-        return parts.map((part: string, index: number) => {
-          if (part.includes("]]")) {
-            const codePart: string[] = part.split("]]");
-            const linkParts: string[] = codePart[0].split(".");
-            const link: string =
-              "/" + linkParts[0] + "-detail/name/" + linkParts[1];
-            return (
-              <TextPart key={index}>
-                <Link onClick={() => history.push(link)}>{linkParts[1]}</Link>
-                {codePart[1]}
-              </TextPart>
-            );
-          } else {
-            return <TextPart key={index}>{part}</TextPart>;
-          }
-        });
-      }
-      return "";
-    },
-    [monster, history]
-  );
 
   const getPicture = useCallback(() => {
     if (monster !== undefined) {
@@ -178,28 +150,28 @@ const MonsterView = ({ monster }: $Props) => {
         </PropWrapper>
       </View>
       <View>
-          {monster.ablt && (
-            <Text>
-              <PropTitle>Abilities:</PropTitle>
-              {formatText(monster.ablt)}
-            </Text>
-          )}
+        {monster.ablt && (
+          <Text>
+            <PropTitle>Abilities:</PropTitle>
+            <FormatedText text={monster.ablt} />
+          </Text>
+        )}
       </View>
       <View>
-          {monster.sAblt && (
-            <Text>
-              <PropTitle>Spezial Abilities:</PropTitle>
-              {formatText(monster.sAblt)}
-            </Text>
-          )}
+        {monster.sAblt && (
+          <Text>
+            <PropTitle>Spezial Abilities:</PropTitle>
+            <FormatedText text={monster.sAblt} />
+          </Text>
+        )}
       </View>
       <View>
-          {monster.lAblt && (
-            <Text>
-              <PropTitle>Legendary Abilities:</PropTitle>
-              {formatText(monster.lAblt)}
-            </Text>
-          )}
+        {monster.lAblt && (
+          <Text>
+            <PropTitle>Legendary Abilities:</PropTitle>
+            <FormatedText text={monster.lAblt} />
+          </Text>
+        )}
       </View>
     </CenterWrapper>
   );
@@ -230,10 +202,6 @@ const View = styled.div`
   justify-content: flex-start;
   align-items: flex-start;
   align-content: flex-start;
-`;
-
-const TextPart = styled.span`
-  white-space: pre-line;
 `;
 
 const ImageView = styled(View)`
@@ -333,15 +301,6 @@ const PropTitle = styled.span`
   color: ${({ theme }) => theme.tile.backgroundColorLink};
   text-decoration: none;
   margin: 0px 5px 0px 5px;
-`;
-
-const Link = styled(PropTitle)`
-  background-color: ${({ theme }) => theme.tile.backgroundColorLink};
-  color: ${({ theme }) => theme.tile.backgroundColor};
-  border-radius: 5px;
-  font-size: 10px;
-  padding: 0px 5px 0px 5px;
-  cursor: pointer;
 `;
 
 const Icon = styled(FontAwesomeIcon)`

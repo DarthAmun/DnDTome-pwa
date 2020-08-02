@@ -6,7 +6,7 @@ import ReactDOM from "react-dom";
 import {
   reciveAttributeSelection,
   createNewWithId,
-} from "../../../Database/DbService";
+} from "../../../Services/DatabaseService";
 
 import {
   faHourglassHalf,

@@ -9,7 +9,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import StringField from "../../FormElements/StringField";
 import IconButton from "../../FormElements/IconButton";
 import Race from "../../../Data/Races/Race";
-import { createNewWithId } from "../../../Database/DbService";
+import { createNewWithId } from "../../../Services/DatabaseService";
 
 interface $Props {
   onSend: (filters: Filter[]) => void;

@@ -1,4 +1,4 @@
-import { MyAppDatabase } from "./MyDatabase";
+import { MyAppDatabase } from "../Database/MyDatabase";
 import { IndexableType } from "dexie";
 import IEntity from "../Data/IEntity";
 import Filter from "../Data/Filter";

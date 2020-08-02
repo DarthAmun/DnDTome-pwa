@@ -1,5 +1,4 @@
 import React, { useCallback } from "react";
-import { useHistory } from "react-router";
 import Gear from "../../../../Data/Gear";
 import styled from "styled-components";
 
@@ -10,37 +9,12 @@ import {
   faWeightHanging,
   faCrosshairs,
 } from "@fortawesome/free-solid-svg-icons";
+import FormatedText from "../../../GeneralElements/FormatedText";
 interface $Props {
   gear: Gear;
 }
 
 const GearView = ({ gear }: $Props) => {
-  let history = useHistory();
-
-  const formatText = useCallback(() => {
-    if (gear !== undefined) {
-      let text = gear.description;
-      let parts: string[] = text.split("[[");
-      return parts.map((part: string, index: number) => {
-        if (part.includes("]]")) {
-          const codePart: string[] = part.split("]]");
-          const linkParts: string[] = codePart[0].split(".");
-          const link: string =
-            "/" + linkParts[0] + "-detail/name/" + linkParts[1];
-          return (
-            <TextPart key={index}>
-              <Link onClick={() => history.push(link)}>{linkParts[1]}</Link>
-              {codePart[1]}
-            </TextPart>
-          );
-        } else {
-          return <TextPart key={index}>{part}</TextPart>;
-        }
-      });
-    }
-    return "";
-  }, [gear, history]);
-
   const getPicture = useCallback(() => {
     if (gear !== undefined) {
       if (gear.pic === "" || gear.pic === null) {
@@ -86,7 +60,9 @@ const GearView = ({ gear }: $Props) => {
             </Prop>
           )}
           {gear.properties && <Prop>{gear.properties}</Prop>}
-          <Text>{formatText()}</Text>
+          <Text>
+            <FormatedText text={gear.description} />
+          </Text>
         </PropWrapper>
       </View>
     </CenterWrapper>
@@ -134,10 +110,6 @@ const ImageName = styled.div`
   background-color: ${({ theme }) => theme.tile.backgroundColor};
 `;
 
-const TextPart = styled.span`
-  white-space: pre-line;
-`;
-
 const PropWrapper = styled.div`
   height: auto;
   width: calc(100% - 6px);
@@ -168,17 +140,6 @@ const Text = styled.div`
   padding: 10px;
   border-radius: 5px;
   background-color: ${({ theme }) => theme.tile.backgroundColor};
-`;
-
-const Link = styled.span`
-  display: inline-block;
-  background-color: ${({ theme }) => theme.tile.backgroundColorLink};
-  border-radius: 5px;
-  text-decoration: none;
-  color: ${({ theme }) => theme.tile.backgroundColor};
-  font-size: 10px;
-  padding: 0px 5px 0px 5px;
-  cursor: pointer;
 `;
 
 const Icon = styled(FontAwesomeIcon)`

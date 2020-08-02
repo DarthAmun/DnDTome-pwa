@@ -13,7 +13,7 @@ import SpellEditView from "./SpellEditView";
 import BackButton from "../../../FormElements/BackButton";
 import Spell from "../../../../Data/Spell";
 import IconButton from "../../../FormElements/IconButton";
-import { remove, updateWithCallback } from "../../../../Database/DbService";
+import { remove, updateWithCallback } from "../../../../Services/DatabaseService";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 interface $Props {

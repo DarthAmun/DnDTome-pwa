@@ -1,12 +1,12 @@
 import React, { useCallback, useState, useEffect } from "react";
-import { useHistory } from "react-router";
 import Item from "../../../../Data/Item";
 import Gear from "../../../../Data/Gear";
-import { reciveAllFiltered } from "../../../../Database/DbService";
+import { reciveAllFiltered } from "../../../../Services/DatabaseService";
 import styled from "styled-components";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLink } from "@fortawesome/free-solid-svg-icons";
+import FormatedText from "../../../GeneralElements/FormatedText";
 
 interface $Props {
   item: Item;
@@ -14,7 +14,6 @@ interface $Props {
 
 const ItemView = ({ item }: $Props) => {
   const [itemBase, setItemBase] = useState<Gear>();
-  let history = useHistory();
 
   useEffect(() => {
     reciveAllFiltered(
@@ -34,30 +33,6 @@ const ItemView = ({ item }: $Props) => {
     }
     return "";
   }, [item]);
-
-  const formatText = useCallback(() => {
-    if (item !== undefined) {
-      let text = item.description;
-      let parts: string[] = text.split("[[");
-      return parts.map((part: string, index: number) => {
-        if (part.includes("]]")) {
-          const codePart: string[] = part.split("]]");
-          const linkParts: string[] = codePart[0].split(".");
-          const link: string =
-            "/" + linkParts[0] + "-detail/name/" + linkParts[1];
-          return (
-            <TextPart key={index}>
-              <Link onClick={() => history.push(link)}>{linkParts[1]}</Link>
-              {codePart[1]}
-            </TextPart>
-          );
-        } else {
-          return <TextPart key={index}>{part}</TextPart>;
-        }
-      });
-    }
-    return "";
-  }, [item, history]);
 
   const getPicture = useCallback(() => {
     if (item !== undefined) {
@@ -102,7 +77,9 @@ const ItemView = ({ item }: $Props) => {
               <Prop>{itemBase.properties}</Prop>
             </>
           )}
-          <Text>{formatText()}</Text>
+          <Text>
+            <FormatedText text={item.description} />
+          </Text>
         </PropWrapper>
       </View>
     </CenterWrapper>
@@ -124,10 +101,6 @@ const View = styled.div`
   padding: 5px;
   margin-left: auto;
   margin-right: auto;
-`;
-
-const TextPart = styled.span`
-  white-space: pre-line;
 `;
 
 type RarityType = {
@@ -213,17 +186,6 @@ const Text = styled.div`
   padding: 10px;
   border-radius: 5px;
   background-color: ${({ theme }) => theme.tile.backgroundColor};
-`;
-
-const Link = styled.span`
-  display: inline-block;
-  background-color: ${({ theme }) => theme.tile.backgroundColorLink};
-  border-radius: 5px;
-  text-decoration: none;
-  color: ${({ theme }) => theme.tile.backgroundColor};
-  font-size: 10px;
-  padding: 0px 5px 0px 5px;
-  cursor: pointer;
 `;
 
 const Flag = styled.div`

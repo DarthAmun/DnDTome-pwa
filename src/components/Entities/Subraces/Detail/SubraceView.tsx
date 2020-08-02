@@ -1,5 +1,4 @@
-import React, { useCallback } from "react";
-import { useHistory } from "react-router";
+import React from "react";
 import Trait from "../../../../Data/Races/Trait";
 import Subrace from "../../../../Data/Races/Subrace";
 import styled from "styled-components";
@@ -7,39 +6,13 @@ import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLink } from "@fortawesome/free-solid-svg-icons";
 import { GiUpgrade } from "react-icons/gi";
+import FormatedText from "../../../GeneralElements/FormatedText";
 
 interface $Props {
- subrace: Subrace;
+  subrace: Subrace;
 }
 
 const SubraceView = ({ subrace }: $Props) => {
-  let history = useHistory();
-
-  const formatText = useCallback(
-    (text: String) => {
-      if (subrace !== undefined) {
-        let parts: string[] = text.split("[[");
-        return parts.map((part: string, index: number) => {
-          if (part.includes("]]")) {
-            const codePart: string[] = part.split("]]");
-            const linkParts: string[] = codePart[0].split(".");
-            const link: string =
-              "/" + linkParts[0] + "-detail/name/" + linkParts[1];
-            return (
-              <span key={index}>
-                <Link onClick={() => history.push(link)}>{linkParts[1]}</Link>
-                {codePart[1]}
-              </span>
-            );
-          } else {
-            return <span key={index}>{part}</span>;
-          }
-        });
-      }
-      return "";
-    },
-    [subrace, history]
-  );
   return (
     <CenterWrapper>
       <View>
@@ -68,7 +41,9 @@ const SubraceView = ({ subrace }: $Props) => {
               <TraitWrapper key={index}>
                 <TraitName>{trait.name}</TraitName>
                 <TraitLevel>{trait.level}</TraitLevel>
-                <TraitText>{formatText(trait.text)}</TraitText>
+                <TraitText>
+                  <FormatedText text={trait.text} />
+                </TraitText>
               </TraitWrapper>
             );
           })}
@@ -166,17 +141,6 @@ const TraitLevel = styled(TraitName)`
 `;
 const TraitText = styled(TraitName)`
   flex: 4 4 auto;
-`;
-
-const Link = styled.span`
-  display: inline-block;
-  background-color: ${({ theme }) => theme.tile.backgroundColorLink};
-  border-radius: 5px;
-  text-decoration: none;
-  color: ${({ theme }) => theme.tile.backgroundColor};
-  font-size: 10px;
-  padding: 0px 5px 0px 5px;
-  cursor: pointer;
 `;
 
 const Icon = styled(FontAwesomeIcon)`
