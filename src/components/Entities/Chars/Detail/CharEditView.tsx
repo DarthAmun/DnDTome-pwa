@@ -38,6 +38,11 @@ const CharEditView = ({ char, onEdit }: $Props) => {
           label="Background"
           onChange={(background) => onEdit({ ...char, background: background })}
         />
+        <StringField
+          value={char.alignment}
+          label="Alignment"
+          onChange={(alignment) => onEdit({ ...char, alignment: alignment })}
+        />
         <NumberField
           value={char.ac}
           label="Armor Class"
@@ -53,36 +58,120 @@ const CharEditView = ({ char, onEdit }: $Props) => {
           label="Initiative"
           onChange={(init) => onEdit({ ...char, init: init })}
         />
-        <TextField
-          value={char.speed}
-          label="Speed"
-          onChange={(speed) => onEdit({ ...char, speed: speed })}
+        <NumberField
+          value={char.str}
+          label="Strength"
+          onChange={(str) => onEdit({ ...char, str: str })}
         />
-        <TextField
-          value={char.profsLangs}
-          label="Languages"
-          onChange={(profsLangs) => onEdit({ ...char, profsLangs: profsLangs })}
+        <NumberField
+          value={char.dex}
+          label="Dexterity"
+          onChange={(dex) => onEdit({ ...char, dex: dex })}
         />
-        <TextField
-          value={char.actions}
-          label="Actions"
-          onChange={(actions) => onEdit({ ...char, actions: actions })}
+        <NumberField
+          value={char.con}
+          label="Constitution"
+          onChange={(con) => onEdit({ ...char, con: con })}
         />
-        <TextField
-          value={char.bonusActions}
-          label="Bonus Actions"
-          onChange={(bonusActions) => onEdit({ ...char, bonusActions: bonusActions })}
+        <NumberField
+          value={char.int}
+          label="Intelligence"
+          onChange={(int) => onEdit({ ...char, int: int })}
         />
-        <TextField
-          value={char.reactions}
-          label="Reactions"
-          onChange={(reactions) => onEdit({ ...char, reactions: reactions })}
+        <NumberField
+          value={char.wis}
+          label="Wisdome"
+          onChange={(wis) => onEdit({ ...char, wis: wis })}
         />
+        <NumberField
+          value={char.cha}
+          label="Charisma"
+          onChange={(cha) => onEdit({ ...char, cha: cha })}
+        />
+      </CharView>
+      <CharView>
         <TabBar
-          children={["General"]}
+          children={["General", "Actions", "Spells"]}
           onChange={(tab: string) => setTab(tab)}
         />
-        {activeTab === "General" && <></>}
+        {activeTab === "General" && (
+          <>
+            <NumberField
+              value={char.passivPerception}
+              label="Passiv Perception"
+              onChange={(passivPerception) =>
+                onEdit({ ...char, passivPerception: passivPerception })
+              }
+            />
+            <NumberField
+              value={char.passivInsight}
+              label="Passiv Insight"
+              onChange={(passivInsight) =>
+                onEdit({ ...char, passivInsight: passivInsight })
+              }
+            />
+            <NumberField
+              value={char.passivInvestigation}
+              label="Passiv Investigation"
+              onChange={(passivInvestigation) =>
+                onEdit({ ...char, passivInvestigation: passivInvestigation })
+              }
+            />
+            <TextField
+              value={char.speed}
+              label="Speed"
+              onChange={(speed) => onEdit({ ...char, speed: speed })}
+            />
+            <TextField
+              value={char.profsLangs}
+              label="Languages"
+              onChange={(profsLangs) =>
+                onEdit({ ...char, profsLangs: profsLangs })
+              }
+            />
+          </>
+        )}
+        {activeTab === "Actions" && (
+          <>
+            <TextField
+              value={char.actions}
+              label="Actions"
+              onChange={(actions) => onEdit({ ...char, actions: actions })}
+            />
+            <TextField
+              value={char.bonusActions}
+              label="Bonus Actions"
+              onChange={(bonusActions) =>
+                onEdit({ ...char, bonusActions: bonusActions })
+              }
+            />
+            <TextField
+              value={char.reactions}
+              label="Reactions"
+              onChange={(reactions) =>
+                onEdit({ ...char, reactions: reactions })
+              }
+            />
+          </>
+        )}
+        {activeTab === "Spells" && (
+          <>
+            <NumberField
+              value={char.castingHit}
+              label="Casting Hit"
+              onChange={(castingHit) =>
+                onEdit({ ...char, castingHit: castingHit })
+              }
+            />
+            <NumberField
+              value={char.castingDC}
+              label="Casting DC"
+              onChange={(castingDC) =>
+                onEdit({ ...char, castingDC: castingDC })
+              }
+            />
+          </>
+        )}
       </CharView>
     </CenterWrapper>
   );
