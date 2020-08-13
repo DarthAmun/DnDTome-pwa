@@ -34,9 +34,6 @@ export default class Char implements IEntity {
   reactions: string;
   profsLangs: string;
   senses: string;
-  passivPerception: number;
-  passivInsight: number;
-  passivInvestigation: number;
   money: Money;
   skills: Skills;
   spellNotes: string;
@@ -74,9 +71,6 @@ export default class Char implements IEntity {
     reactions: string,
     profsLangs: string,
     senses: string,
-    passivPerception: number,
-    passivInsight: number,
-    passivInvestigation: number,
     money: Money,
     skills: Skills,
     spellNotes: string,
@@ -113,9 +107,6 @@ export default class Char implements IEntity {
     this.reactions = reactions;
     this.profsLangs = profsLangs;
     this.senses = senses;
-    this.passivPerception = passivPerception;
-    this.passivInsight = passivInsight;
-    this.passivInvestigation = passivInvestigation;
     this.money = money;
     this.skills = skills;
     this.spellNotes = spellNotes;

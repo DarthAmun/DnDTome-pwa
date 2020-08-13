@@ -58,6 +58,15 @@ const CharGeneral = ({ char, classes, items, gears, onChange }: $Props) => {
     }
   }, []);
 
+  const formatScore = useCallback((score: number) => {
+    let mod = Math.floor((score - 10) / 2);
+    return mod;
+  }, []);
+
+  const calcSkill = useCallback((skillProf: number, stat: number) => {
+    return (skillProf * prof) + formatScore(stat);
+  }, [formatScore, prof]);
+
   const changeMoney = (field: string, value: number) => {
     const newChar = { ...char, money: { ...char.money, [field]: value } };
     onChange(newChar);
@@ -95,7 +104,7 @@ const CharGeneral = ({ char, classes, items, gears, onChange }: $Props) => {
           <PropWithProf>
             <PropText>
               <PropTitle>Str Save:</PropTitle>
-              {char.saves.strSave}{" "}
+              {calcSkill(char.saves.strSaveProf, char.str)}
             </PropText>
             <PropProf>
               <Icon icon={formatProf(char.saves.strSaveProf)} />
@@ -104,7 +113,7 @@ const CharGeneral = ({ char, classes, items, gears, onChange }: $Props) => {
           <PropWithProf>
             <PropText>
               <PropTitle>Dex Save:</PropTitle>
-              {char.saves.dexSave}{" "}
+              {calcSkill(char.saves.dexSave, char.dex)}
             </PropText>
             <PropProf>
               <Icon icon={formatProf(char.saves.dexSaveProf)} />
@@ -113,7 +122,7 @@ const CharGeneral = ({ char, classes, items, gears, onChange }: $Props) => {
           <PropWithProf>
             <PropText>
               <PropTitle>Con Save:</PropTitle>
-              {char.saves.conSave}{" "}
+              {calcSkill(char.saves.conSaveProf, char.con)}
             </PropText>
             <PropProf>
               <Icon icon={formatProf(char.saves.conSaveProf)} />
@@ -122,7 +131,7 @@ const CharGeneral = ({ char, classes, items, gears, onChange }: $Props) => {
           <PropWithProf>
             <PropText>
               <PropTitle>Int Save:</PropTitle>
-              {char.saves.intSave}{" "}
+              {calcSkill(char.saves.intSaveProf, char.int)}
             </PropText>
             <PropProf>
               <Icon icon={formatProf(char.saves.intSaveProf)} />
@@ -131,7 +140,7 @@ const CharGeneral = ({ char, classes, items, gears, onChange }: $Props) => {
           <PropWithProf>
             <PropText>
               <PropTitle>Wis Save:</PropTitle>
-              {char.saves.wisSave}{" "}
+              {calcSkill(char.saves.wisSaveProf, char.wis)}
             </PropText>
             <PropProf>
               <Icon icon={formatProf(char.saves.wisSaveProf)} />
@@ -140,7 +149,7 @@ const CharGeneral = ({ char, classes, items, gears, onChange }: $Props) => {
           <PropWithProf>
             <PropText>
               <PropTitle>Cha Save:</PropTitle>
-              {char.saves.chaSave}{" "}
+              {calcSkill(char.saves.chaSaveProf, char.cha)}
             </PropText>
             <PropProf>
               <Icon icon={formatProf(char.saves.chaSaveProf)} />
@@ -153,7 +162,7 @@ const CharGeneral = ({ char, classes, items, gears, onChange }: $Props) => {
           <PropWithProf>
             <PropText>
               <PropTitle>Acrobatics:</PropTitle>
-              {char.skills.acrobatics}{" "}
+              {calcSkill(char.skills.acrobaticsProf, char.str)}
             </PropText>
             <PropProf>
               <Icon icon={formatProf(char.skills.acrobaticsProf)} />
@@ -162,7 +171,7 @@ const CharGeneral = ({ char, classes, items, gears, onChange }: $Props) => {
           <PropWithProf>
             <PropText>
               <PropTitle>Animal Handling:</PropTitle>
-              {char.skills.animalHandling}{" "}
+              {calcSkill(char.skills.animalHandlingProf, char.wis)}
             </PropText>
             <PropProf>
               <Icon icon={formatProf(char.skills.animalHandlingProf)} />
@@ -171,7 +180,7 @@ const CharGeneral = ({ char, classes, items, gears, onChange }: $Props) => {
           <PropWithProf>
             <PropText>
               <PropTitle>Arcana:</PropTitle>
-              {char.skills.arcana}{" "}
+              {calcSkill(char.skills.arcanaProf, char.int)}
             </PropText>
             <PropProf>
               <Icon icon={formatProf(char.skills.arcanaProf)} />
@@ -180,7 +189,7 @@ const CharGeneral = ({ char, classes, items, gears, onChange }: $Props) => {
           <PropWithProf>
             <PropText>
               <PropTitle>Athletics:</PropTitle>
-              {char.skills.athletics}{" "}
+              {calcSkill(char.skills.athleticsProf, char.dex)}
             </PropText>
             <PropProf>
               <Icon icon={formatProf(char.skills.athleticsProf)} />
@@ -189,7 +198,7 @@ const CharGeneral = ({ char, classes, items, gears, onChange }: $Props) => {
           <PropWithProf>
             <PropText>
               <PropTitle>Deception:</PropTitle>
-              {char.skills.deception}{" "}
+              {calcSkill(char.skills.deceptionProf, char.cha)}
             </PropText>
             <PropProf>
               <Icon icon={formatProf(char.skills.deceptionProf)} />
@@ -198,7 +207,7 @@ const CharGeneral = ({ char, classes, items, gears, onChange }: $Props) => {
           <PropWithProf>
             <PropText>
               <PropTitle>History:</PropTitle>
-              {char.skills.history}{" "}
+              {calcSkill(char.skills.historyProf, char.int)}
             </PropText>
             <PropProf>
               <Icon icon={formatProf(char.skills.historyProf)} />
@@ -211,7 +220,7 @@ const CharGeneral = ({ char, classes, items, gears, onChange }: $Props) => {
           <PropWithProf>
             <PropText>
               <PropTitle>Insight:</PropTitle>
-              {char.skills.insight}{" "}
+              {calcSkill(char.skills.insightProf, char.wis)}
             </PropText>
             <PropProf>
               <Icon icon={formatProf(char.skills.insightProf)} />
@@ -220,7 +229,7 @@ const CharGeneral = ({ char, classes, items, gears, onChange }: $Props) => {
           <PropWithProf>
             <PropText>
               <PropTitle>Intimidation:</PropTitle>
-              {char.skills.intimidation}{" "}
+              {calcSkill(char.skills.intimidationProf, char.cha)}
             </PropText>
             <PropProf>
               <Icon icon={formatProf(char.skills.intimidationProf)} />
@@ -229,7 +238,7 @@ const CharGeneral = ({ char, classes, items, gears, onChange }: $Props) => {
           <PropWithProf>
             <PropText>
               <PropTitle>Investigation:</PropTitle>
-              {char.skills.investigation}{" "}
+              {calcSkill(char.skills.investigationProf, char.int)}
             </PropText>
             <PropProf>
               <Icon icon={formatProf(char.skills.investigationProf)} />
@@ -238,7 +247,7 @@ const CharGeneral = ({ char, classes, items, gears, onChange }: $Props) => {
           <PropWithProf>
             <PropText>
               <PropTitle>Medicine:</PropTitle>
-              {char.skills.medicine}{" "}
+              {calcSkill(char.skills.medicineProf, char.wis)}
             </PropText>
             <PropProf>
               <Icon icon={formatProf(char.skills.medicineProf)} />
@@ -247,7 +256,7 @@ const CharGeneral = ({ char, classes, items, gears, onChange }: $Props) => {
           <PropWithProf>
             <PropText>
               <PropTitle>Nature:</PropTitle>
-              {char.skills.nature}{" "}
+              {calcSkill(char.skills.natureProf, char.int)}
             </PropText>
             <PropProf>
               <Icon icon={formatProf(char.skills.natureProf)} />
@@ -256,7 +265,7 @@ const CharGeneral = ({ char, classes, items, gears, onChange }: $Props) => {
           <PropWithProf>
             <PropText>
               <PropTitle>Perception:</PropTitle>
-              {char.skills.perception}{" "}
+              {calcSkill(char.skills.perceptionProf, char.wis)}
             </PropText>
             <PropProf>
               <Icon icon={formatProf(char.skills.perceptionProf)} />
@@ -269,7 +278,7 @@ const CharGeneral = ({ char, classes, items, gears, onChange }: $Props) => {
           <PropWithProf>
             <PropText>
               <PropTitle>Performance:</PropTitle>
-              {char.skills.performance}{" "}
+              {calcSkill(char.skills.performanceProf, char.cha)}
             </PropText>
             <PropProf>
               <Icon icon={formatProf(char.skills.performanceProf)} />
@@ -278,7 +287,7 @@ const CharGeneral = ({ char, classes, items, gears, onChange }: $Props) => {
           <PropWithProf>
             <PropText>
               <PropTitle>Persuasion:</PropTitle>
-              {char.skills.persuasion}{" "}
+              {calcSkill(char.skills.persuasionProf, char.cha)}
             </PropText>
             <PropProf>
               <Icon icon={formatProf(char.skills.persuasionProf)} />
@@ -287,7 +296,7 @@ const CharGeneral = ({ char, classes, items, gears, onChange }: $Props) => {
           <PropWithProf>
             <PropText>
               <PropTitle>Religion:</PropTitle>
-              {char.skills.religion}{" "}
+              {calcSkill(char.skills.religionProf, char.int)}
             </PropText>
             <PropProf>
               <Icon icon={formatProf(char.skills.religionProf)} />
@@ -296,7 +305,7 @@ const CharGeneral = ({ char, classes, items, gears, onChange }: $Props) => {
           <PropWithProf>
             <PropText>
               <PropTitle>Sleight Of Hand:</PropTitle>
-              {char.skills.sleightOfHand}{" "}
+              {calcSkill(char.skills.sleightOfHandProf, char.dex)}
             </PropText>
             <PropProf>
               <Icon icon={formatProf(char.skills.sleightOfHandProf)} />
@@ -305,7 +314,7 @@ const CharGeneral = ({ char, classes, items, gears, onChange }: $Props) => {
           <PropWithProf>
             <PropText>
               <PropTitle>Stealth:</PropTitle>
-              {char.skills.stealth}{" "}
+              {calcSkill(char.skills.stealthProf, char.dex)}
             </PropText>
             <PropProf>
               <Icon icon={formatProf(char.skills.stealthProf)} />
@@ -314,7 +323,7 @@ const CharGeneral = ({ char, classes, items, gears, onChange }: $Props) => {
           <PropWithProf>
             <PropText>
               <PropTitle>Survival:</PropTitle>
-              {char.skills.survival}{" "}
+              {calcSkill(char.skills.survivalProf, char.wis)}
             </PropText>
             <PropProf>
               <Icon icon={formatProf(char.skills.survivalProf)} />
@@ -362,15 +371,15 @@ const CharGeneral = ({ char, classes, items, gears, onChange }: $Props) => {
         <PropColumnWrapper>
           <Prop>
             <PropTitle>Passiv Perception:</PropTitle>
-            {char.passivPerception}
+            {calcSkill(char.skills.perceptionProf, char.wis) + 10}
           </Prop>
           <Prop>
             <PropTitle>Passiv Investigation:</PropTitle>
-            {char.passivInvestigation}
+            {calcSkill(char.skills.investigationProf, char.int) + 10}
           </Prop>
           <Prop>
             <PropTitle>Passiv Insight:</PropTitle>
-            {char.passivInsight}
+            {calcSkill(char.skills.insightProf, char.wis) + 10}
           </Prop>
           <Text>
             <PropTitle>Senses:</PropTitle>
