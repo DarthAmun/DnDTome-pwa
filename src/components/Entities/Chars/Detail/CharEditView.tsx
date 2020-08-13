@@ -6,6 +6,9 @@ import StringField from "../../../FormElements/StringField";
 import TabBar from "../../../GeneralElements/TabBar";
 import NumberField from "../../../FormElements/NumberField";
 import TextField from "../../../FormElements/TextField";
+import IconButton from "../../../FormElements/IconButton";
+import { faTrash, faPlus } from "@fortawesome/free-solid-svg-icons";
+import TextButton from "../../../FormElements/TextButton";
 
 interface $Props {
   char: Char;
@@ -14,6 +17,66 @@ interface $Props {
 
 const CharEditView = ({ char, onEdit }: $Props) => {
   const [activeTab, setTab] = useState<string>("General");
+
+  const removeSpell = (oldSpell: string) => {
+    let newSpellList = char.spells.filter(spell => spell !== oldSpell);
+    onEdit({ ...char, spells: newSpellList });
+  };
+  const addNewSpell = () => {
+    let newSpellList = char.spells;
+    newSpellList.push("");
+    onEdit({ ...char, spells: newSpellList });
+  };
+  const onChangeSpell = (newSpell: string, oldSpell: string) => {
+    let spells = char.spells.map((spell) => {
+      if (spell === oldSpell) {
+        return newSpell;
+      } else {
+        return spell;
+      }
+    })
+    onEdit({ ...char, spells: spells });
+  };
+
+  const removeItem = (oldItem: string) => {
+    let newItemList = char.items.filter(item => item !== oldItem);
+    onEdit({ ...char, items: newItemList });
+  };
+  const addNewItem = () => {
+    let newItemList = char.items;
+    newItemList.push("");
+    onEdit({ ...char, items: newItemList });
+  };
+  const onChangeItem = (newItem: string, oldItem: string) => {
+    let items = char.items.map((item) => {
+      if (item === oldItem) {
+        return newItem;
+      } else {
+        return item;
+      }
+    })
+    onEdit({ ...char, items: items });
+  };
+
+  const removeMonster = (oldMonster: string) => {
+    let newMonsterList = char.monsters.filter(monster => monster !== oldMonster);
+    onEdit({ ...char, monsters: newMonsterList });
+  };
+  const addNewMonster = () => {
+    let newMonsterList = char.monsters;
+    newMonsterList.push("");
+    onEdit({ ...char, monsters: newMonsterList });
+  };
+  const onChangeMonster= (newMonster: string, oldMonster: string) => {
+    let monsters = char.monsters.map((monster) => {
+      if (monster === oldMonster) {
+        return newMonster;
+      } else {
+        return monster;
+      }
+    })
+    onEdit({ ...char, monsters: monsters });
+  };
 
   return (
     <CenterWrapper>
@@ -91,7 +154,7 @@ const CharEditView = ({ char, onEdit }: $Props) => {
       </CharView>
       <CharView>
         <TabBar
-          children={["General", "Actions", "Spells"]}
+          children={["General", "Actions", "Spells", "Items", "Monster"]}
           onChange={(tab: string) => setTab(tab)}
         />
         {activeTab === "General" && (
@@ -170,6 +233,68 @@ const CharEditView = ({ char, onEdit }: $Props) => {
                 onEdit({ ...char, castingDC: castingDC })
               }
             />
+            {char.spells.map((spell: string, index: number) => {
+              return <SpellContainer key={index}>
+                <StringField
+                  value={spell}
+                  label="Spell"
+                  onChange={(newSpell) => onChangeSpell(newSpell, spell)}
+                />
+                <IconButton
+                  icon={faTrash}
+                  onClick={() => removeSpell(spell)}
+                />
+              </SpellContainer>
+            })}
+            <TextButton
+              text={"Add new Spell"}
+              icon={faPlus}
+              onClick={() => addNewSpell()}
+            />
+          </>
+        )}
+        {activeTab === "Items" && (
+          <>
+            {char.items.map((item: string, index: number) => {
+              return <SpellContainer key={index}>
+                <StringField
+                  value={item}
+                  label="Item"
+                  onChange={(newItem) => onChangeItem(newItem, item)}
+                />
+                <IconButton
+                  icon={faTrash}
+                  onClick={() => removeItem(item)}
+                />
+              </SpellContainer>
+            })}
+            <TextButton
+              text={"Add new Item"}
+              icon={faPlus}
+              onClick={() => addNewItem()}
+            />
+          </>
+        )}
+        {activeTab === "Monster" && (
+          <>
+            {char.monsters.map((monster: string, index: number) => {
+              return <SpellContainer key={index}>
+                <StringField
+                  value={monster}
+                  label="Monster"
+                  onChange={(newMonster) => onChangeMonster(newMonster, monster)}
+                />
+                <IconButton
+                  icon={faTrash}
+                  onClick={() => removeMonster(monster)}
+                />
+              </SpellContainer>
+            })}
+            <TextButton
+              text={"Add new Monster"}
+              icon={faPlus}
+              onClick={() => addNewMonster()}
+            />
           </>
         )}
       </CharView>
@@ -201,4 +326,11 @@ const CharView = styled.div`
   justify-content: space-around;
   align-items: flex-start;
   align-content: stretch;
+`;
+
+const SpellContainer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  flex: 1 1 600px;
 `;

@@ -51,6 +51,11 @@ const CharView = ({ character }: $Props) => {
   const [monsters, setMonsters] = useState<Monster[]>([]);
 
   const [activeTab, setTab] = useState<string>("General");
+  const [tabs, setTabs] = useState<string[]>(["General",
+    "Combat",
+    "Race",
+    "Classes",
+    "Notes",]);
 
   const calcLevel = useCallback(() => {
     let level = 0;
@@ -170,6 +175,19 @@ const CharView = ({ character }: $Props) => {
     });
   }, [character, calcLevel]);
 
+  useEffect(() => {
+    if (!tabs.includes("Monster") && monsters && monsters.length > 0)
+      setTabs((t) => [...t, "Monster"]);
+  }, [monsters, tabs])
+  useEffect(() => {
+    if (!tabs.includes("Items") && items && items.length > 0)
+      setTabs((t) => [...t, "Items"]);
+  }, [items, tabs])
+  useEffect(() => {
+    if (!tabs.includes("Spells") && spells && spells.length > 0)
+      setTabs((t) => [...t, "Spells"]);
+  }, [spells, tabs])
+
   const onSpellslotChange = (
     oldSlots: { origin: string; slots: number[]; max: number[] },
     value: number[]
@@ -195,16 +213,7 @@ const CharView = ({ character }: $Props) => {
     <CenterWrapper>
       <CharHeader char={char} />
       <TabBar
-        children={[
-          "General",
-          "Combat",
-          "Race",
-          "Classes",
-          "Spells",
-          "Items",
-          "Monster",
-          "Notes",
-        ]}
+        children={tabs}
         onChange={(tab: string) => setTab(tab)}
       />
       {activeTab === "General" && (
