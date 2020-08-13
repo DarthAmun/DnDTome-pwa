@@ -4,13 +4,14 @@ import Item from "../../../../Data/Item";
 
 import StringField from "../../../FormElements/StringField";
 import TextField from "../../../FormElements/TextField";
+import CheckField from "../../../FormElements/CheckField";
+import NumberField from "../../../FormElements/NumberField";
 
 import {
   faLink,
   faBookOpen,
   faImage,
 } from "@fortawesome/free-solid-svg-icons";
-import CheckField from "../../../FormElements/CheckField";
 
 interface $Props {
   item: Item;
@@ -40,6 +41,11 @@ const ItemEditView = ({ item, onEdit }: $Props) => {
           value={item.type}
           label="Type"
           onChange={(type) => onEdit({ ...item, type: type })}
+        />
+        <NumberField
+          value={item.magicBonus}
+          label="Magic Bonus"
+          onChange={(magicBonus) => onEdit({ ...item, magicBonus: magicBonus })}
         />
         <StringField
           value={item.rarity}

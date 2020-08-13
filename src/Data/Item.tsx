@@ -5,6 +5,7 @@ export default class Item {
   description: string;
   pic: string;
   rarity: string;
+  magicBonus: number;
   attunment: number;
   base: string;
   type: string;
@@ -18,6 +19,7 @@ export default class Item {
     description?: string,
     pic?: string,
     rarity?: string,
+    magicBonus?: number,
     attunment?: number,
     base?: string,
     type?: string,
@@ -28,6 +30,7 @@ export default class Item {
     this.description = description || "";
     this.pic = pic || "";
     this.rarity = rarity || "";
+    this.magicBonus = magicBonus || 0;
     this.attunment = attunment || 0;
     this.base = base || "";
     this.type = type || "";
@@ -42,6 +45,8 @@ export function isItem(arg: any): arg is Item {
     arg.sources !== undefined && typeof arg.sources == "string";
   const descriptionCheck =
     arg.description !== undefined && typeof arg.description == "string";
+  const magicBonusCheck =
+    arg.magicBonus !== undefined && typeof arg.magicBonus == "number";
   const attunmentCheck =
     arg.attunment !== undefined && typeof arg.attunment == "number";
   const rarityCheck = arg.rarity !== undefined && typeof arg.rarity == "string";
@@ -53,6 +58,7 @@ export function isItem(arg: any): arg is Item {
     nameCheck &&
     sourcesCheck &&
     descriptionCheck &&
+    magicBonusCheck &&
     attunmentCheck &&
     rarityCheck &&
     baseCheck &&

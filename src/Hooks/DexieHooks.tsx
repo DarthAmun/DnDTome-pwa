@@ -146,7 +146,7 @@ export const useTableByFilter = <T, U>(
             });
             return result;
           })
-          .toArray()
+          .sortBy("name")
           .then((data) => {
             dispatch({
               type: "resolved",

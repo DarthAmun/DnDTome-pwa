@@ -64,10 +64,10 @@ const CharCombat = ({ char, items, gears, classes }: $Props) => {
                   <PropWrapper key={index}>
                     <Prop>{baseitem.item.name}</Prop>
                     <Prop>
-                      {strBonus > dexBonus ? <>+{strBonus + prof}</> : ""}
-                      {dexBonus > strBonus ? <>+{dexBonus + prof}</> : ""}
+                      {strBonus > dexBonus ? <>+{strBonus + prof + baseitem.item.magicBonus}</> : ""}
+                      {dexBonus > strBonus ? <>+{dexBonus + prof + baseitem.item.magicBonus}</> : ""}
                     </Prop>
-                    <Prop>{baseitem.base.damage}</Prop>
+                    <Prop>{`${baseitem.base.damage} +${baseitem.item.magicBonus}`}</Prop>
                     <Prop>{baseitem.base.properties}</Prop>
                   </PropWrapper>
                 );
@@ -75,8 +75,8 @@ const CharCombat = ({ char, items, gears, classes }: $Props) => {
                 return (
                   <PropWrapper key={index}>
                     <Prop>{baseitem.item.name}</Prop>
-                    <Prop>+{strBonus + prof}</Prop>
-                    <Prop>{baseitem.base.damage}</Prop>
+                    <Prop>+{strBonus + prof + baseitem.item.magicBonus}</Prop>
+                    <Prop>{`${baseitem.base.damage} +${baseitem.item.magicBonus}`}</Prop>
                     <Prop>{baseitem.base.properties}</Prop>
                   </PropWrapper>
                 );

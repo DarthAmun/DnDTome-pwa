@@ -22,42 +22,6 @@ export class MyAppDatabase extends Dexie {
 
   constructor() {
     super("DnDTomeDB");
-    this.version(14).stores({
-      spells:
-        "++id, name, classes, sources, level, school, time, range, components, duration, ritual, text, pic",
-      items:
-        "++id, name, sources, pic, description, type, rarity, attunment, base, filename",
-      gears:
-        "++id, name, sources, pic, description, type, cost, damage, weight, properties, filename",
-      monsters:
-        "++id, name, type, subtype, cr, ac, hp, str, dex, con, int, wis, cha, senses, lang, speed, source, skills, savingThrows, dmgImmunities, dmgResistance, dmgVulnerabilitie, conImmunities, sAblt, ablt, lAblt, pic, size, alignment",
-      races:
-        "++id, name, abilityScores, age, alignment, size, speed, lang, traits, sources, pic, filename",
-      subraces: "++id, name, type, abilityScores, traits, sources, filename",
-      classes:
-        "++id, name, featureSets, hitDice, proficiencies, equipment, sources, pic, filename",
-      subclasses: "++id, name, type, features, sources, filename",
-      chars:
-        "++id, name, player, level, pic, classes, race, background, spells, spellSlots, items, ac, hp, currentHp, init, speed, str, dex, con, int, wis, cha, saves, actions, bonusActions, reactions, features, profsLangs, senses, passivPerception, passivInsight, passivInvestigation, money, skills, spellNotes, alignment, inspiration, castingHit, castingDC",
-    });
-    this.version(15).stores({
-      spells:
-        "++id, name, classes, sources, level, school, time, range, components, duration, ritual, text, pic",
-      items:
-        "++id, name, sources, pic, description, type, rarity, attunment, base, filename",
-      gears:
-        "++id, name, sources, pic, description, type, cost, damage, weight, properties, filename",
-      monsters:
-        "++id, name, type, subtype, cr, ac, hp, str, dex, con, int, wis, cha, senses, lang, speed, source, skills, savingThrows, dmgImmunities, dmgResistance, dmgVulnerabilitie, conImmunities, sAblt, ablt, lAblt, pic, size, alignment",
-      races:
-        "++id, name, abilityScores, age, alignment, size, speed, lang, traits, sources, pic, filename",
-      subraces: "++id, name, type, abilityScores, traits, sources, filename",
-      classes:
-        "++id, name, featureSets, hitDice, proficiencies, equipment, sources, pic, filename",
-      subclasses: "++id, name, type, features, sources, filename",
-      chars:
-        "++id, name, player, level, pic, classes, race, background, spells, spellSlots, items, monsters, ac, hp, currentHp, init, speed, str, dex, con, int, wis, cha, saves, actions, bonusActions, reactions, profsLangs, senses, passivPerception, passivInsight, passivInvestigation, money, skills, spellNotes, alignment, inspiration, castingHit, castingDC",
-    });
     this.version(16).stores({
       spells:
         "++id, name, classes, sources, level, school, time, range, components, duration, ritual, text, pic",
@@ -75,6 +39,24 @@ export class MyAppDatabase extends Dexie {
       subclasses: "++id, name, type, features, sources, filename",
       chars:
         "++id, name, player, pic, classes, race, background, spells, spellSlots, items, monsters, ac, hp, currentHp, init, speed, str, dex, con, int, wis, cha, saves, actions, bonusActions, reactions, profsLangs, senses, passivPerception, passivInsight, passivInvestigation, money, skills, spellNotes, alignment, inspiration, castingHit, castingDC",
+    });
+    this.version(17).stores({
+      spells:
+        "++id, name, classes, sources, level, school, time, range, components, duration, ritual, text, pic",
+      items:
+        "++id, name, sources, pic, description, type, rarity, attunment, magicBonus, base, filename",
+      gears:
+        "++id, name, sources, pic, description, type, cost, damage, weight, properties, filename",
+      monsters:
+        "++id, name, type, subtype, cr, ac, hp, str, dex, con, int, wis, cha, senses, lang, speed, source, skills, savingThrows, dmgImmunities, dmgResistance, dmgVulnerabilitie, conImmunities, sAblt, ablt, lAblt, pic, size, alignment",
+      races:
+        "++id, name, abilityScores, age, alignment, size, speed, lang, traits, sources, pic, filename",
+      subraces: "++id, name, type, abilityScores, traits, sources, filename",
+      classes:
+        "++id, name, featureSets, hitDice, proficiencies, equipment, sources, pic, filename",
+      subclasses: "++id, name, type, features, sources, filename",
+      chars:
+        "++id, name, player, pic, classes, race, background, spells, spellSlots, items, monsters, ac, hp, currentHp, init, speed, str, dex, con, int, wis, cha, saves, actions, bonusActions, reactions, profsLangs, senses, money, skills, spellNotes, alignment, inspiration, castingHit, castingDC",
     });
     this.spells = this.table("spells");
     this.items = this.table("items");
