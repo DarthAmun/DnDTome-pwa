@@ -45,7 +45,7 @@ const CharTile = ({ char }: $Props) => {
             <RowProp>{char.race.subrace}</RowProp>
           </PropRowWrapper>
           {char.classes &&
-            char.classes.map((classSet: ClassSet, index:number) => {
+            char.classes.map((classSet: ClassSet, index: number) => {
               return (
                 <PropRowWrapper key={index}>
                   <RowProp>{classSet.level}</RowProp>
@@ -155,10 +155,18 @@ const Image = ({ pic }: $ImageProps) => {
 };
 
 const ImgContainer = styled.div`
-  margin: 5px;
+  margin: 20px;
+  width: 100px;
+  height: 100px;
+  border: 2px double ${({ theme }) => theme.main.highlight};
+  transform: rotate(45deg);
+  overflow: hidden;
 `;
 const ImageElm = styled.img`
   max-width: 200px;
   max-height: 200px;
+  transform: rotate(-45deg);
+  margin-top: -40px;
+  margin-left: -20px;
 `;
 const Empty = styled.div``;

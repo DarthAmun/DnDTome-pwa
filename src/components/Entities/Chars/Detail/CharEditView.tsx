@@ -298,6 +298,13 @@ const CharEditView = ({ char, onEdit }: $Props) => {
                 onEdit({ ...char, profsLangs: profsLangs })
               }
             />
+            <TextField
+              value={char.senses}
+              label="Senses"
+              onChange={(senses) =>
+                onEdit({ ...char, senses: senses })
+              }
+            />
           </>
         )}
         {activeTab === "Classes" && (
