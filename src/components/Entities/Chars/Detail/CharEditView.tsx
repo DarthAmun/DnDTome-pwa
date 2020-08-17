@@ -5,6 +5,7 @@ import Class from "../../../../Data/Classes/Class";
 import FeatureSet from "../../../../Data/Classes/FeatureSet";
 import Skills from "../../../../Data/Chars/Skills";
 import Saves from "../../../../Data/Chars/Saves";
+import ClassSet from "../../../../Data/Chars/ClassSet";
 import { reciveAllFiltered } from "../../../../Services/DatabaseService";
 
 import StringField from "../../../FormElements/StringField";
@@ -12,10 +13,10 @@ import TabBar from "../../../GeneralElements/TabBar";
 import NumberField from "../../../FormElements/NumberField";
 import TextField from "../../../FormElements/TextField";
 import IconButton from "../../../FormElements/IconButton";
-import { faTrash, faPlus, faMinus, faAngleUp, faAngleDoubleUp } from "@fortawesome/free-solid-svg-icons";
 import TextButton from "../../../FormElements/TextButton";
+import { faTrash, faPlus, faMinus, faAngleUp, faAngleDoubleUp } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import ClassSet from "../../../../Data/Chars/ClassSet";
+import AutoStringField from "../../../FormElements/AutoStringField";
 
 interface $Props {
   char: Char;
@@ -321,7 +322,8 @@ const CharEditView = ({ char, onEdit }: $Props) => {
                     icon={faTrash}
                     onClick={() => removeClass(classSet)}
                   />
-                  <StringField
+                  <AutoStringField
+                    optionTable={"classes"}
                     value={classSet.classe}
                     label="Class"
                     onChange={(classe) => changeClass(classSet, classe)}
@@ -343,7 +345,8 @@ const CharEditView = ({ char, onEdit }: $Props) => {
         )}
         {activeTab === "Races" && (
           <PropWrapper>
-            <StringField
+            <AutoStringField
+              optionTable={"races"}
               value={char.race.race}
               label="Race"
               onChange={(race) => onEdit({ ...char, race: { ...char.race, race: race } })}
@@ -620,7 +623,8 @@ const CharEditView = ({ char, onEdit }: $Props) => {
             />
             {char.spells.map((spell: string, index: number) => {
               return <SpellContainer key={index}>
-                <StringField
+                <AutoStringField
+                  optionTable={"spells"}
                   value={spell}
                   label="Spell"
                   onChange={(newSpell) => onChangeSpell(newSpell, spell)}
@@ -664,7 +668,8 @@ const CharEditView = ({ char, onEdit }: $Props) => {
           <>
             {char.monsters.map((monster: string, index: number) => {
               return <SpellContainer key={index}>
-                <StringField
+                <AutoStringField
+                  optionTable={"monsters"}
                   value={monster}
                   label="Monster"
                   onChange={(newMonster) => onChangeMonster(newMonster, monster)}
@@ -690,7 +695,7 @@ const CharEditView = ({ char, onEdit }: $Props) => {
 export default CharEditView;
 
 const CenterWrapper = styled.div`
-  overflow: hidden;
+  overflow: visible;
   width: 100%;
   height: 100%;
   display: flex;

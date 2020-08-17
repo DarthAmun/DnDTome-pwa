@@ -2,8 +2,6 @@ import React, { useCallback, useState, useEffect } from "react";
 import styled from "styled-components";
 import Char from "../../../../../Data/Chars/Char";
 import Class from "../../../../../Data/Classes/Class";
-import Item from "../../../../../Data/Item";
-import Gear from "../../../../../Data/Gear";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -21,11 +19,9 @@ interface $Props {
   char: Char;
   onChange: (character: Char) => void;
   classes: Class[];
-  items: Item[];
-  gears: Gear[];
 }
 
-const CharGeneral = ({ char, classes, items, gears, onChange }: $Props) => {
+const CharGeneral = ({ char, classes, onChange }: $Props) => {
   const [deathSaves, setDeathSaves] = useState<number[]>([0, 0, 0, 0, 0, 0]);
   const [prof, setProf] = useState<number>(0);
 
@@ -113,7 +109,7 @@ const CharGeneral = ({ char, classes, items, gears, onChange }: $Props) => {
           <PropWithProf>
             <PropText>
               <PropTitle>Dex Save:</PropTitle>
-              {calcSkill(char.saves.dexSave, char.dex)}
+              {calcSkill(char.saves.dexSaveProf, char.dex)}
             </PropText>
             <PropProf>
               <Icon icon={formatProf(char.saves.dexSaveProf)} />

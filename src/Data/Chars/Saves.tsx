@@ -1,10 +1,4 @@
 export default class Saves {
-  strSave: number;
-  dexSave: number;
-  conSave: number;
-  intSave: number;
-  wisSave: number;
-  chaSave: number;
   strSaveProf: number;
   dexSaveProf: number;
   conSaveProf: number;
@@ -13,12 +7,6 @@ export default class Saves {
   chaSaveProf: number;
 
   constructor(
-    strSave: number,
-    dexSave: number,
-    conSave: number,
-    intSave: number,
-    wisSave: number,
-    chaSave: number,
     strSaveProf: number,
     dexSaveProf: number,
     conSaveProf: number,
@@ -26,12 +14,6 @@ export default class Saves {
     wisSaveProf: number,
     chaSaveProf: number
   ) {
-    this.strSave = strSave;
-    this.dexSave = dexSave;
-    this.conSave = conSave;
-    this.intSave = intSave;
-    this.wisSave = wisSave;
-    this.chaSave = chaSave;
     this.strSaveProf = strSaveProf;
     this.dexSaveProf = dexSaveProf;
     this.conSaveProf = conSaveProf;
@@ -42,18 +24,6 @@ export default class Saves {
 }
 
 export function isSaves(arg: any): arg is Saves {
-  const strSaveCheck =
-    arg.strSave !== undefined && typeof arg.strSave == "number";
-  const dexSaveCheck =
-    arg.dexSave !== undefined && typeof arg.dexSave == "number";
-  const conSaveCheck =
-    arg.conSave !== undefined && typeof arg.conSave == "number";
-  const intSaveCheck =
-    arg.intSave !== undefined && typeof arg.intSave == "number";
-  const wisSaveCheck =
-    arg.wisSave !== undefined && typeof arg.wisSave == "number";
-  const chaSaveCheck =
-    arg.chaSave !== undefined && typeof arg.chaSave == "number";
   const strSaveProfCheck =
     arg.strSaveProf !== undefined && typeof arg.strSaveProf == "number";
   const dexSaveProfCheck =
@@ -69,12 +39,6 @@ export function isSaves(arg: any): arg is Saves {
 
   return (
     arg &&
-    strSaveCheck &&
-    dexSaveCheck &&
-    conSaveCheck &&
-    intSaveCheck &&
-    wisSaveCheck &&
-    chaSaveCheck &&
     strSaveProfCheck &&
     dexSaveProfCheck &&
     conSaveProfCheck &&

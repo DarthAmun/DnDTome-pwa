@@ -12,6 +12,7 @@ import {
   faBookOpen,
   faImage,
 } from "@fortawesome/free-solid-svg-icons";
+import AutoStringField from "../../../FormElements/AutoStringField";
 
 interface $Props {
   item: Item;
@@ -27,7 +28,8 @@ const ItemEditView = ({ item, onEdit }: $Props) => {
           label="Name"
           onChange={(name) => onEdit({ ...item, name: name })}
         />
-        <StringField
+        <AutoStringField
+          optionTable={"gears"}
           value={item.base}
           label="Base Gear"
           onChange={(base) => onEdit({ ...item, base: base })}

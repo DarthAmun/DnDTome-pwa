@@ -123,7 +123,7 @@ const Options = () => {
           <OptionSection>
             <SelectionTitle>Import</SelectionTitle>
             <FileField
-              label="Select DnDTome Json"
+              label=""
               icon={faFileImport}
               onChange={(file) => importFiles(file)}
             />
@@ -155,7 +155,7 @@ const Options = () => {
           <OptionSection>
             <SelectionTitle>Import</SelectionTitle>
             <FileField
-              label="Select DnDTome Json"
+              label=""
               icon={faFileImport}
               onChange={(file) => importFiles(file)}
             />
@@ -187,7 +187,7 @@ const Options = () => {
           <OptionSection>
             <SelectionTitle>Import</SelectionTitle>
             <FileField
-              label="Select DnDTome Json"
+              label=""
               icon={faFileImport}
               onChange={(file) => importFiles(file)}
             />
@@ -219,7 +219,7 @@ const Options = () => {
           <OptionSection>
             <SelectionTitle>Import</SelectionTitle>
             <FileField
-              label="Select DnDTome Json"
+              label=""
               icon={faFileImport}
               onChange={(file) => importFiles(file)}
             />
@@ -251,7 +251,7 @@ const Options = () => {
           <OptionSection>
             <SelectionTitle>Import</SelectionTitle>
             <FileField
-              label="Select DnDTome Json"
+              label=""
               icon={faFileImport}
               onChange={(file) => importFiles(file)}
             />
@@ -297,7 +297,7 @@ const Options = () => {
           <OptionSection>
             <SelectionTitle>Import</SelectionTitle>
             <FileField
-              label="Select DnDTome Json"
+              label=""
               icon={faFileImport}
               onChange={(file) => importFiles(file)}
             />
@@ -345,7 +345,7 @@ const Options = () => {
           <OptionSection>
             <SelectionTitle>Import</SelectionTitle>
             <FileField
-              label="Select DnDTome Json"
+              label=""
               icon={faFileImport}
               onChange={(file) => importFiles(file)}
             />

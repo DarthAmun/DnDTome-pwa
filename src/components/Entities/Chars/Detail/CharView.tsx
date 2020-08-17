@@ -93,6 +93,9 @@ const CharView = ({ character }: $Props) => {
         });
       }
     );
+  }, [character]);
+
+  useEffect(() => {
     reciveAllFiltered(
       "subclasses",
       [
@@ -120,6 +123,9 @@ const CharView = ({ character }: $Props) => {
         });
       }
     );
+  }, [character]);
+
+  useEffect(() => {
     reciveAllFiltered(
       "races",
       [{ fieldName: "name", value: character.race.race }],
@@ -132,6 +138,9 @@ const CharView = ({ character }: $Props) => {
         });
       }
     );
+  }, [character, calcLevel]);
+
+  useEffect(() => {
     reciveAllFiltered(
       "subraces",
       [{ fieldName: "name", value: character.race.subrace }],
@@ -144,6 +153,9 @@ const CharView = ({ character }: $Props) => {
         });
       }
     );
+  }, [character, calcLevel]);
+
+  useEffect(() => {
     character.spells.forEach((spell) => {
       reciveByAttribute("spells", "name", spell, (result) => {
         if (result && isSpell(result)) {
@@ -152,6 +164,9 @@ const CharView = ({ character }: $Props) => {
       });
     });
 
+  }, [character]);
+
+  useEffect(() => {
     character.items.forEach((item) => {
       reciveByAttribute("items", "name", item, (result) => {
         if (result && isItem(result)) {
@@ -159,6 +174,9 @@ const CharView = ({ character }: $Props) => {
         }
       });
     });
+  }, [character]);
+
+  useEffect(() => {
     character.items.forEach((item) => {
       reciveByAttribute("gears", "name", item, (result) => {
         if (result && isGear(result)) {
@@ -166,6 +184,9 @@ const CharView = ({ character }: $Props) => {
         }
       });
     });
+  }, [character]);
+
+  useEffect(() => {
     character.monsters.forEach((monster) => {
       reciveByAttribute("monsters", "name", monster, (result) => {
         if (result && isMonster(result)) {
@@ -173,20 +194,20 @@ const CharView = ({ character }: $Props) => {
         }
       });
     });
-  }, [character, calcLevel]);
+  }, [character]);
 
   useEffect(() => {
-    if (!tabs.includes("Monster") && monsters && monsters.length > 0)
+    if (!tabs.includes("Monster") && character.monsters.length > 0)
       setTabs((t) => [...t, "Monster"]);
-  }, [monsters, tabs])
+  }, [character, tabs])
   useEffect(() => {
-    if (!tabs.includes("Items") && items && items.length > 0)
+    if (!tabs.includes("Items") && character.items.length > 0)
       setTabs((t) => [...t, "Items"]);
-  }, [items, tabs])
+  }, [character, tabs])
   useEffect(() => {
-    if (!tabs.includes("Spells") && spells && spells.length > 0)
+    if (!tabs.includes("Spells") && character.spells.length > 0)
       setTabs((t) => [...t, "Spells"]);
-  }, [spells, tabs])
+  }, [character, tabs])
 
   const onSpellslotChange = (
     oldSlots: { origin: string; slots: number[]; max: number[] },
@@ -221,8 +242,6 @@ const CharView = ({ character }: $Props) => {
           char={char}
           onChange={saveChar}
           classes={classes}
-          items={items}
-          gears={gears}
         />
       )}
       {activeTab === "Combat" && (

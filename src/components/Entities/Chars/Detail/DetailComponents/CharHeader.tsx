@@ -38,13 +38,13 @@ const CharHeader = ({ char }: $Props) => {
     return "";
   }, [char]);
 
-  const calcLevel = () => {
+  const calcLevel = useCallback(() => {
     let level = 0;
     char.classes.forEach((classe) => {
       level += classe.level;
     });
     return level;
-  };
+  }, [char.classes]);
 
   return (
     <>
@@ -53,8 +53,8 @@ const CharHeader = ({ char }: $Props) => {
           <Image pic={getPicture()}></Image>
         </ImageView>
       ) : (
-        ""
-      )}
+          ""
+        )}
       <View>
         <Name>
           <b>{char.name}</b>
