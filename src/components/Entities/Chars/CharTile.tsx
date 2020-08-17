@@ -154,7 +154,7 @@ const Image = ({ pic }: $ImageProps) => {
 };
 
 const ImgContainer = styled.div<{ pic: string }>`
-  margin: 20px;
+  margin: 30px;
   width: 100px;
   height: 100px;
   border: 2px double ${({ theme }) => theme.main.highlight};
