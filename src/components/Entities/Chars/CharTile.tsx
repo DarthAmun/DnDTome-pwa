@@ -145,8 +145,7 @@ interface $ImageProps {
 const Image = ({ pic }: $ImageProps) => {
   if (pic !== "") {
     return (
-      <ImgContainer>
-        <ImageElm src={pic}></ImageElm>
+      <ImgContainer pic={pic}>
       </ImgContainer>
     );
   } else {
@@ -154,19 +153,25 @@ const Image = ({ pic }: $ImageProps) => {
   }
 };
 
-const ImgContainer = styled.div`
+const ImgContainer = styled.div<{ pic: string }>`
   margin: 20px;
   width: 100px;
   height: 100px;
   border: 2px double ${({ theme }) => theme.main.highlight};
   transform: rotate(45deg);
   overflow: hidden;
-`;
-const ImageElm = styled.img`
-  max-width: 200px;
-  max-height: 200px;
-  transform: rotate(-45deg);
-  margin-top: -40px;
-  margin-left: -20px;
+
+  &::before {
+    content: "";
+    position: absolute;
+    width: 200%;
+    height: 200%;
+    top: -50%;
+    left: -50%;
+    z-index: -1;
+    background: url(${props => props.pic}) 0 0 no-repeat;
+    background-size: cover;
+    transform: rotate(-45deg);
+  }
 `;
 const Empty = styled.div``;
