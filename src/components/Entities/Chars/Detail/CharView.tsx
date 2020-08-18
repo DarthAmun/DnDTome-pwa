@@ -13,8 +13,6 @@ import FeatureSet from "../../../../Data/Classes/FeatureSet";
 // import Race from "../../../../Data/Races/Race";
 // import Subrace from "../../../../Data/Races/Subrace";
 import Trait from "../../../../Data/Races/Trait";
-import SpellTile from "../../Spells/SpellTile";
-import Spell, { isSpell } from "../../../../Data/Spell";
 import Item, { isItem } from "../../../../Data/Item";
 import Gear, { isGear } from "../../../../Data/Gear";
 import Monster, { isMonster } from "../../../../Data/Monster";
@@ -24,10 +22,10 @@ import CharGeneral from "./DetailComponents/CharGeneral";
 import CharHeader from "./DetailComponents/CharHeader";
 import ItemTile from "../../Item/ItemTile";
 import GearTile from "../../Gear/GearTile";
-import SmallNumberArrayField from "../../../FormElements/SmallNumberArrayField";
 import CharCombat from "./DetailComponents/CharCombat";
 import MonsterTile from "../../Monster/MonsterTile";
 import FormatedText from "../../../GeneralElements/FormatedText";
+import CharSpell from "./DetailComponents/CharSpells";
 
 interface $Props {
   character: Char;
@@ -44,18 +42,18 @@ const CharView = ({ character }: $Props) => {
   // const [subrace, setSubrace] = useState<Subrace>();
   const [raceFeatures, setRaceFeatures] = useState<Trait[]>([]);
 
-  const [spells, setSpells] = useState<Spell[]>([]);
-
   const [gears, setGears] = useState<Gear[]>([]);
   const [items, setItems] = useState<Item[]>([]);
   const [monsters, setMonsters] = useState<Monster[]>([]);
 
   const [activeTab, setTab] = useState<string>("General");
-  const [tabs, setTabs] = useState<string[]>(["General",
+  const [tabs, setTabs] = useState<string[]>([
+    "General",
     "Combat",
     "Race",
     "Classes",
-    "Notes",]);
+    "Notes",
+  ]);
 
   const calcLevel = useCallback(() => {
     let level = 0;
@@ -156,17 +154,6 @@ const CharView = ({ character }: $Props) => {
   }, [character, calcLevel]);
 
   useEffect(() => {
-    character.spells.forEach((spell) => {
-      reciveByAttribute("spells", "name", spell, (result) => {
-        if (result && isSpell(result)) {
-          setSpells((s) => [...s, result]);
-        }
-      });
-    });
-
-  }, [character]);
-
-  useEffect(() => {
     character.items.forEach((item) => {
       reciveByAttribute("items", "name", item, (result) => {
         if (result && isItem(result)) {
@@ -199,31 +186,15 @@ const CharView = ({ character }: $Props) => {
   useEffect(() => {
     if (!tabs.includes("Monster") && character.monsters.length > 0)
       setTabs((t) => [...t, "Monster"]);
-  }, [character, tabs])
+  }, [character, tabs]);
   useEffect(() => {
     if (!tabs.includes("Items") && character.items.length > 0)
       setTabs((t) => [...t, "Items"]);
-  }, [character, tabs])
+  }, [character, tabs]);
   useEffect(() => {
     if (!tabs.includes("Spells") && character.spells.length > 0)
       setTabs((t) => [...t, "Spells"]);
-  }, [character, tabs])
-
-  const onSpellslotChange = (
-    oldSlots: { origin: string; slots: number[]; max: number[] },
-    value: number[]
-  ) => {
-    let newSpellSlots = char.spellSlots.map(
-      (slots: { origin: string; slots: number[]; max: number[] }) => {
-        if (slots === oldSlots) {
-          return { ...slots, slots: value };
-        } else {
-          return slots;
-        }
-      }
-    );
-    saveChar({ ...char, spellSlots: newSpellSlots });
-  };
+  }, [character, tabs]);
 
   const saveChar = (char: Char) => {
     setChar(char);
@@ -233,16 +204,9 @@ const CharView = ({ character }: $Props) => {
   return (
     <CenterWrapper>
       <CharHeader char={char} />
-      <TabBar
-        children={tabs}
-        onChange={(tab: string) => setTab(tab)}
-      />
+      <TabBar children={tabs} onChange={(tab: string) => setTab(tab)} />
       {activeTab === "General" && (
-        <CharGeneral
-          char={char}
-          onChange={saveChar}
-          classes={classes}
-        />
+        <CharGeneral char={char} onChange={saveChar} classes={classes} />
       )}
       {activeTab === "Combat" && (
         <CharCombat char={char} items={items} gears={gears} classes={classes} />
@@ -300,44 +264,7 @@ const CharView = ({ character }: $Props) => {
         </View>
       )}
       {activeTab === "Spells" && (
-        <MinView>
-          <PropWrapper>
-            <Prop>
-              <PropTitle>Casting Hit:</PropTitle>
-              {char.castingHit}
-            </Prop>
-            <Prop>
-              <PropTitle>Casting Dc:</PropTitle>
-              {char.castingDC}
-            </Prop>
-            {char.spellSlots.map(
-              (
-                classSlots: {
-                  origin: string;
-                  slots: number[];
-                  max: number[];
-                },
-                index: number
-              ) => {
-                return (
-                  <SmallNumberArrayField
-                    key={index}
-                    values={classSlots.slots}
-                    max={classSlots.max}
-                    label={classSlots.origin}
-                    onChange={(slots) => onSpellslotChange(classSlots, slots)}
-                  />
-                );
-              }
-            )}
-          </PropWrapper>
-          <PropWrapper>
-            {spells &&
-              spells.map((spell, index: number) => {
-                return <SpellTile key={index} spell={spell} />;
-              })}
-          </PropWrapper>
-        </MinView>
+        <CharSpell char={char} saveChar={saveChar} />
       )}
       {activeTab === "Items" && (
         <View>
@@ -405,10 +332,6 @@ const View = styled.div`
   align-content: flex-start;
 `;
 
-const MinView = styled(View)`
-  max-width: max-content;
-`;
-
 const PropWrapper = styled.div`
   width: calc(100% - 6px);
   float: left;
@@ -416,24 +339,6 @@ const PropWrapper = styled.div`
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
-`;
-
-const Prop = styled.div`
-  flex: 1 1 auto;
-  max-width: max-content;
-  height: auto;
-  margin: 2px;
-  padding: 10px;
-  border-radius: 5px;
-  background-color: ${({ theme }) => theme.tile.backgroundColor};
-
-  svg {
-    margin-right: 5px;
-    height: auto;
-    border-radius: 150px;
-    transition: color 0.2s;
-    color: ${({ theme }) => theme.main.highlight};
-  }
 `;
 
 const PropTitle = styled.span`

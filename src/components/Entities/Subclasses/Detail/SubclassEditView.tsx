@@ -167,7 +167,8 @@ const SubclassEditView = ({ subclass, onEdit }: $Props) => {
       if (featureSet.bonis !== undefined && featureSet === oldFeatureSet) {
         const newBoni = {
           name: "",
-          value: ""
+          value: "",
+          isCurrency: false,
         };
         return { ...featureSet, bonis: [...featureSet.bonis, newBoni] };
       }

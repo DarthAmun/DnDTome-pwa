@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -11,7 +11,7 @@ interface $Props {
   label: string;
   icon?: IconDefinition;
   transform?: string | Transform;
-  onChange: (value: number[]) => void;
+  onChange: (index: number, value: number) => void;
 }
 
 const SmallNumberArrayField = ({
@@ -22,14 +22,6 @@ const SmallNumberArrayField = ({
   max,
   onChange,
 }: $Props) => {
-  const [array, setArray] = useState<number[]>(values);
-
-  const handleValueChange = (index: number, value: number) => {
-    let values = array;
-    values[index] = value;
-    setArray(values);
-    onChange(values);
-  };
 
   return (
     <Field>
@@ -44,7 +36,7 @@ const SmallNumberArrayField = ({
               key={index}
               max={max[index]}
               value={value}
-              onChange={(e) => handleValueChange(index, +e.target.value)}
+              onChange={(e) => onChange(index, +e.target.value)}
             ></Input>
           );
         } else {
@@ -53,7 +45,7 @@ const SmallNumberArrayField = ({
               type="number"
               key={index}
               value={value}
-              onChange={(e) => handleValueChange(index, +e.target.value)}
+              onChange={(e) => onChange(index, +e.target.value)}
             ></Input>
           );
         }

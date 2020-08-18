@@ -7,23 +7,41 @@ import { Transform } from "@fortawesome/fontawesome-svg-core";
 
 interface $Props {
   value: number;
+  max?: number;
   label: string;
   icon?: IconDefinition;
   transform?: string | Transform;
   onChange: (value: number) => void;
 }
 
-const SmallNumberField = ({ value, label, icon, transform, onChange }: $Props) => {
+const SmallNumberField = ({
+  value,
+  max,
+  label,
+  icon,
+  transform,
+  onChange,
+}: $Props) => {
   return (
     <Field>
       <LabelText>
         {icon ? <Icon icon={icon} transform={transform} /> : ""} {label}
       </LabelText>
-      <Input
-        type="number"
-        value={value}
-        onChange={(e) => onChange(+e.target.value)}
-      ></Input>
+      {max && (
+        <Input
+          type="number"
+          max={max}
+          value={value}
+          onChange={(e) => onChange(+e.target.value)}
+        />
+      )}
+      {!max && (
+        <Input
+          type="number"
+          value={value}
+          onChange={(e) => onChange(+e.target.value)}
+        />
+      )}
     </Field>
   );
 };

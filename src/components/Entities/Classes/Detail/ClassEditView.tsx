@@ -20,6 +20,7 @@ import NumberArrayField from "../../../FormElements/NumberArrayField";
 import Boni from "../../../../Data/Classes/Boni";
 import Feature from "../../../../Data/Classes/Feature";
 import TextButton from "../../../FormElements/TextButton";
+import CheckField from "../../../FormElements/CheckField";
 
 interface $Props {
   classe: Class;
@@ -44,12 +45,12 @@ const ClassEditView = ({ classe, onEdit }: $Props) => {
     });
     onEdit({ ...classe, featureSets: features });
   };
-  
+
   const onBoniChange = (
     oldFeature: FeatureSet,
     oldBoni: Boni,
     field: string,
-    value: string
+    value: string | boolean
   ) => {
     let features = classe.featureSets.map((featureSet: FeatureSet) => {
       if (featureSet === oldFeature && featureSet.bonis !== undefined) {
@@ -170,6 +171,7 @@ const ClassEditView = ({ classe, onEdit }: $Props) => {
         const newBoni = {
           name: "",
           value: "",
+          isCurrency: false,
         };
         return { ...featureSet, bonis: [...featureSet.bonis, newBoni] };
       }
@@ -320,6 +322,13 @@ const ClassEditView = ({ classe, onEdit }: $Props) => {
                         label="Boni Value"
                         onChange={(value) =>
                           onBoniChange(featureSet, boni, "value", value)
+                        }
+                      />
+                      <CheckField
+                        value={boni.isCurrency}
+                        label="is Currency?"
+                        onChange={(value) =>
+                          onBoniChange(featureSet, boni, "isCurrency", value)
                         }
                       />
                     </BoniContainer>

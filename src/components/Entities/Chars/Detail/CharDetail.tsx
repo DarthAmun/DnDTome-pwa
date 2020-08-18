@@ -13,7 +13,10 @@ import CharEditView from "./CharEditView";
 import BackButton from "../../../FormElements/BackButton";
 import Char from "../../../../Data/Chars/Char";
 import IconButton from "../../../FormElements/IconButton";
-import { remove, updateWithCallback } from "../../../../Services/DatabaseService";
+import {
+  remove,
+  updateWithCallback,
+} from "../../../../Services/DatabaseService";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 interface $Props {
@@ -39,8 +42,95 @@ const CharDetail = ({ char }: $Props) => {
     }
   }, [charObj, char]);
 
+  const recalcClasses = (char: Char) => {
+        let bonis: { origin: string; value: number; max: number }[] = [];
+        let spellSlots: {
+          origin: string;
+          slots: number[];
+          max: number[];
+        }[] = [];
+
+        
+    //     classes.forEach((classe) => {
+    //       reciveByAttribute("classes", "name", classe.classe, (result) => {
+    //         const dbClass: Class = result as Class;
+    //         if (result !== undefined) {
+    //           let featureSet = dbClass.featureSets[classe.level - 1];
+    //           if (featureSet.bonis) {
+    //             featureSet.bonis.forEach((boni: Boni) => {
+    //               if (boni.isCurrency) {
+    //                 bonis = [
+    //                   ...bonis,
+    //                   {
+    //                     origin: boni.name,
+    //                     value: +boni.value,
+    //                     max: +boni.value,
+    //                   },
+    //                 ];
+    //               }
+    //             });
+    //           }
+    //           if (featureSet.spellslots) {
+    //             spellSlots = [
+    //               ...spellSlots,
+    //               {
+    //                 origin: dbClass.name,
+    //                 slots: featureSet.spellslots,
+    //                 max: featureSet.spellslots,
+    //               },
+    //             ];
+    //           }
+    //         }
+    //       });
+    //     });
+    //     if (char.currencyBonis && char.currencyBonis.length > 0) {
+    //       bonis = bonis.map((newBoni) => {
+    //         char.currencyBonis.forEach((old) => {
+    //           if (newBoni.origin === old.origin) {
+    //             return {
+    //               origin: newBoni.origin,
+    //               value: old.value,
+    //               max: newBoni.max,
+    //             };
+    //           }
+    //         });
+    //         return newBoni;
+    //       });
+    //     }
+    //     if (char.spellSlots && char.spellSlots.length > 0) {
+    //       spellSlots = spellSlots.map((newSpellSlots) => {
+    //         char.spellSlots.forEach((old) => {
+    //           if (newSpellSlots.origin === old.origin) {
+    //             return {
+    //               origin: newSpellSlots.origin,
+    //               slots: old.slots,
+    //               max: newSpellSlots.max,
+    //             };
+    //           }
+    //         });
+    //         return newSpellSlots;
+    //       });
+    //     }
+    //     if (bonis.length > 0 && spellSlots.length > 0) {
+    //       onEdit({
+    //         ...char,
+    //         spellSlots: spellSlots,
+    //         currencyBonis: bonis,
+    //         classes: classes,
+    //       });
+    //     } else if (spellSlots.length > 0) {
+    //       onEdit({ ...char, spellSlots: spellSlots, classes: classes });
+    //     } else if (bonis.length > 0) {
+    //       onEdit({ ...char, currencyBonis: bonis, classes: classes });
+    //     } else {
+    //       onEdit({ ...char, classes: classes });
+    //     }
+    return char;
+  };
+
   const updateChar = (tableName: string, charObj: Char) => {
-    updateWithCallback(tableName, charObj, (result) => {
+    const updatedChar = recalcClasses(charObj)
+    updateWithCallback(tableName, updatedChar, (result) => {
       if (result > 0) {
         setUnsavedChanges(false);
         setMessage("Saved successful!");
@@ -70,10 +160,7 @@ const CharDetail = ({ char }: $Props) => {
               onClick={() => updateChar("chars", charObj)}
               icon={faSave}
             />
-            <IconButton
-              onClick={() => deleteChar(charObj.id)}
-              icon={faTrash}
-            />
+            <IconButton onClick={() => deleteChar(charObj.id)} icon={faTrash} />
             {message && showAlert && <Message>{message}</Message>}
           </>
         )}

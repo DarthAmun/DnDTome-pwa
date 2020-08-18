@@ -15,6 +15,7 @@ export default class Char implements IEntity {
   background: string;
   spells: string[];
   spellSlots: { origin: string; slots: number[]; max: number[] }[];
+  currencyBonis: { origin: string; value: number; max: number }[];
   items: string[];
   monsters: string[];
   ac: number;
@@ -52,6 +53,7 @@ export default class Char implements IEntity {
     background: string,
     spells: string[],
     spellSlots: { origin: string; slots: number[]; max: number[] }[],
+    currencyBonis: { origin: string; value: number; max: number }[],
     items: string[],
     monsters: string[],
     ac: number,
@@ -88,6 +90,7 @@ export default class Char implements IEntity {
     this.background = background;
     this.spells = spells;
     this.spellSlots = spellSlots;
+    this.currencyBonis = currencyBonis;
     this.items = items;
     this.monsters = monsters;
     this.ac = ac;

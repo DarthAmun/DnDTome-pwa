@@ -14,7 +14,13 @@ import NumberField from "../../../FormElements/NumberField";
 import TextField from "../../../FormElements/TextField";
 import IconButton from "../../../FormElements/IconButton";
 import TextButton from "../../../FormElements/TextButton";
-import { faTrash, faPlus, faMinus, faAngleUp, faAngleDoubleUp } from "@fortawesome/free-solid-svg-icons";
+import {
+  faTrash,
+  faPlus,
+  faMinus,
+  faAngleUp,
+  faAngleDoubleUp,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import AutoStringField from "../../../FormElements/AutoStringField";
 
@@ -28,8 +34,16 @@ const CharEditView = ({ char, onEdit }: $Props) => {
   const [classes, setClasses] = useState<Class[]>([]);
   const [prof, setProf] = useState<number>(0);
 
+  const calcLevel = useCallback(() => {
+    let level = 0;
+    char.classes.forEach((classe) => {
+      level += classe.level;
+    });
+    return level;
+  }, [char]);
+
   const removeSpell = (oldSpell: string) => {
-    let newSpellList = char.spells.filter(spell => spell !== oldSpell);
+    let newSpellList = char.spells.filter((spell) => spell !== oldSpell);
     onEdit({ ...char, spells: newSpellList });
   };
   const addNewSpell = () => {
@@ -44,12 +58,12 @@ const CharEditView = ({ char, onEdit }: $Props) => {
       } else {
         return spell;
       }
-    })
+    });
     onEdit({ ...char, spells: spells });
   };
 
   const removeItem = (oldItem: string) => {
-    let newItemList = char.items.filter(item => item !== oldItem);
+    let newItemList = char.items.filter((item) => item !== oldItem);
     onEdit({ ...char, items: newItemList });
   };
   const addNewItem = () => {
@@ -64,12 +78,14 @@ const CharEditView = ({ char, onEdit }: $Props) => {
       } else {
         return item;
       }
-    })
+    });
     onEdit({ ...char, items: items });
   };
 
   const removeMonster = (oldMonster: string) => {
-    let newMonsterList = char.monsters.filter(monster => monster !== oldMonster);
+    let newMonsterList = char.monsters.filter(
+      (monster) => monster !== oldMonster
+    );
     onEdit({ ...char, monsters: newMonsterList });
   };
   const addNewMonster = () => {
@@ -84,12 +100,12 @@ const CharEditView = ({ char, onEdit }: $Props) => {
       } else {
         return monster;
       }
-    })
+    });
     onEdit({ ...char, monsters: monsters });
   };
 
   const removeClass = (oldClass: ClassSet) => {
-    let newClassList = char.classes.filter(classe => classe !== oldClass);
+    let newClassList = char.classes.filter((classe) => classe !== oldClass);
     onEdit({ ...char, classes: newClassList });
   };
   const addNewClass = () => {
@@ -97,36 +113,45 @@ const CharEditView = ({ char, onEdit }: $Props) => {
     newClassList.push({ classe: "", subclasse: "", level: 0 });
     onEdit({ ...char, classes: newClassList });
   };
-  const changeClassLevel = useCallback((oldClassSet: ClassSet, level: number) => {
-    let classes = char.classes.map((classSet: ClassSet) => {
-      if (classSet === oldClassSet) {
-        return { ...classSet, level: level };
-      } else {
-        return classSet;
-      }
-    })
-    onEdit({ ...char, classes: classes });
-  }, [char, onEdit]);
-  const changeClass = useCallback((oldClassSet: ClassSet, classe: string) => {
-    let classes = char.classes.map((classSet: ClassSet) => {
-      if (classSet === oldClassSet) {
-        return { ...classSet, classe: classe };
-      } else {
-        return classSet;
-      }
-    })
-    onEdit({ ...char, classes: classes });
-  }, [char, onEdit]);
-  const changeClassSubclass = useCallback((oldClassSet: ClassSet, subclass: string) => {
-    let classes = char.classes.map((classSet: ClassSet) => {
-      if (classSet === oldClassSet) {
-        return { ...classSet, subclasse: subclass };
-      } else {
-        return classSet;
-      }
-    })
-    onEdit({ ...char, classes: classes });
-  }, [char, onEdit]);
+  const changeClassLevel = useCallback(
+    (oldClassSet: ClassSet, level: number) => {
+      let classes = char.classes.map((classSet: ClassSet) => {
+        if (classSet === oldClassSet) {
+          return { ...classSet, level: level };
+        } else {
+          return classSet;
+        }
+      });
+      onEdit({ ...char, classes: classes });
+    },
+    [char, onEdit]
+  );
+  const changeClass = useCallback(
+    (oldClassSet: ClassSet, classe: string) => {
+      let classes = char.classes.map((classSet: ClassSet) => {
+        if (classSet === oldClassSet) {
+          return { ...classSet, classe: classe };
+        } else {
+          return classSet;
+        }
+      });
+      onEdit({ ...char, classes: classes });
+    },
+    [char, onEdit]
+  );
+  const changeClassSubclass = useCallback(
+    (oldClassSet: ClassSet, subclass: string) => {
+      let classes = char.classes.map((classSet: ClassSet) => {
+        if (classSet === oldClassSet) {
+          return { ...classSet, subclasse: subclass };
+        } else {
+          return classSet;
+        }
+      });
+      onEdit({ ...char, classes: classes });
+    },
+    [char, onEdit]
+  );
 
   const formatProf = useCallback((prof: number) => {
     if (prof === undefined || prof === 0) {
@@ -137,15 +162,6 @@ const CharEditView = ({ char, onEdit }: $Props) => {
       return faAngleDoubleUp;
     }
   }, []);
-
-
-  const calcLevel = useCallback(() => {
-    let level = 0;
-    char.classes.forEach((classe) => {
-      level += classe.level;
-    });
-    return level;
-  }, [char]);
 
   useEffect(() => {
     reciveAllFiltered(
@@ -162,7 +178,7 @@ const CharEditView = ({ char, onEdit }: $Props) => {
         setClasses(results);
       }
     );
-  }, [char, calcLevel]);
+  }, [char.classes, calcLevel]);
 
   useEffect(() => {
     if (classes && classes.length > 0) {
@@ -173,31 +189,40 @@ const CharEditView = ({ char, onEdit }: $Props) => {
         }
       });
     }
-  }, [char, classes, calcLevel]);
+  }, [classes, calcLevel]);
 
   const formatScore = useCallback((score: number) => {
     let mod = Math.floor((score - 10) / 2);
     return mod;
   }, []);
 
-  const calcSkill = useCallback((skillProf: number, stat: number) => {
-    return (skillProf * prof) + formatScore(stat);
-    // return `${skill} = ${skillProf * prof} (Prof) + ${formatScore(stat)} (Stat Bonus)`;
-  }, [formatScore, prof]);
+  const calcSkill = useCallback(
+    (skillProf: number, stat: number) => {
+      return skillProf * prof + formatScore(stat);
+      // return `${skill} = ${skillProf * prof} (Prof) + ${formatScore(stat)} (Stat Bonus)`;
+    },
+    [formatScore, prof]
+  );
 
-  const changeProf = useCallback((profName: string) => {
-    const skills: Skills = char.skills;
-    let profValue = skills[profName];
-    profValue = (profValue + 1) % 3;
-    onEdit({ ...char, skills: { ...char.skills, [profName]: profValue } });
-  }, [char, onEdit]);
+  const changeProf = useCallback(
+    (profName: string) => {
+      const skills: Skills = char.skills;
+      let profValue = skills[profName];
+      profValue = (profValue + 1) % 3;
+      onEdit({ ...char, skills: { ...char.skills, [profName]: profValue } });
+    },
+    [char, onEdit]
+  );
 
-  const changeSaveProf = useCallback((profName: string) => {
-    const saves: Saves = char.saves;
-    let profValue = saves[profName];
-    profValue = (profValue + 1) % 2;
-    onEdit({ ...char, saves: { ...char.saves, [profName]: profValue } });
-  }, [char, onEdit]);
+  const changeSaveProf = useCallback(
+    (profName: string) => {
+      const saves: Saves = char.saves;
+      let profValue = saves[profName];
+      profValue = (profValue + 1) % 2;
+      onEdit({ ...char, saves: { ...char.saves, [profName]: profValue } });
+    },
+    [char, onEdit]
+  );
 
   return (
     <CenterWrapper>
@@ -275,14 +300,21 @@ const CharEditView = ({ char, onEdit }: $Props) => {
         <TextField
           value={char.spellNotes}
           label="Notes"
-          onChange={(notes) =>
-            onEdit({ ...char, spellNotes: notes })
-          }
+          onChange={(notes) => onEdit({ ...char, spellNotes: notes })}
         />
       </CharView>
       <CharView>
         <TabBar
-          children={["General", "Abilities", "Classes", "Races", "Actions", "Spells", "Items", "Monster"]}
+          children={[
+            "General",
+            "Abilities",
+            "Classes",
+            "Races",
+            "Actions",
+            "Spells",
+            "Items",
+            "Monster",
+          ]}
           onChange={(tab: string) => setTab(tab)}
         />
         {activeTab === "General" && (
@@ -302,17 +334,15 @@ const CharEditView = ({ char, onEdit }: $Props) => {
             <TextField
               value={char.senses}
               label="Senses"
-              onChange={(senses) =>
-                onEdit({ ...char, senses: senses })
-              }
+              onChange={(senses) => onEdit({ ...char, senses: senses })}
             />
           </>
         )}
         {activeTab === "Classes" && (
           <>
-            {char.classes.map((classSet: ClassSet) => {
+            {char.classes.map((classSet: ClassSet, index: number) => {
               return (
-                <PropWrapper>
+                <PropWrapper key={index}>
                   <NumberField
                     value={classSet.level}
                     label="Level"
@@ -331,7 +361,9 @@ const CharEditView = ({ char, onEdit }: $Props) => {
                   <StringField
                     value={classSet.subclasse}
                     label="Subclass"
-                    onChange={(subclasse) => changeClassSubclass(classSet, subclasse)}
+                    onChange={(subclasse) =>
+                      changeClassSubclass(classSet, subclasse)
+                    }
                   />
                 </PropWrapper>
               );
@@ -349,12 +381,16 @@ const CharEditView = ({ char, onEdit }: $Props) => {
               optionTable={"races"}
               value={char.race.race}
               label="Race"
-              onChange={(race) => onEdit({ ...char, race: { ...char.race, race: race } })}
+              onChange={(race) =>
+                onEdit({ ...char, race: { ...char.race, race: race } })
+              }
             />
             <StringField
               value={char.race.subrace}
               label="Subrace"
-              onChange={(subrace) => onEdit({ ...char, race: { ...char.race, subrace: subrace } })}
+              onChange={(subrace) =>
+                onEdit({ ...char, race: { ...char.race, subrace: subrace } })
+              }
             />
           </PropWrapper>
         )}
@@ -622,18 +658,20 @@ const CharEditView = ({ char, onEdit }: $Props) => {
               }
             />
             {char.spells.map((spell: string, index: number) => {
-              return <SpellContainer key={index}>
-                <AutoStringField
-                  optionTable={"spells"}
-                  value={spell}
-                  label="Spell"
-                  onChange={(newSpell) => onChangeSpell(newSpell, spell)}
-                />
-                <IconButton
-                  icon={faTrash}
-                  onClick={() => removeSpell(spell)}
-                />
-              </SpellContainer>
+              return (
+                <SpellContainer key={index}>
+                  <AutoStringField
+                    optionTable={"spells"}
+                    value={spell}
+                    label="Spell"
+                    onChange={(newSpell) => onChangeSpell(newSpell, spell)}
+                  />
+                  <IconButton
+                    icon={faTrash}
+                    onClick={() => removeSpell(spell)}
+                  />
+                </SpellContainer>
+              );
             })}
             <TextButton
               text={"Add new Spell"}
@@ -645,17 +683,16 @@ const CharEditView = ({ char, onEdit }: $Props) => {
         {activeTab === "Items" && (
           <>
             {char.items.map((item: string, index: number) => {
-              return <SpellContainer key={index}>
-                <StringField
-                  value={item}
-                  label="Item"
-                  onChange={(newItem) => onChangeItem(newItem, item)}
-                />
-                <IconButton
-                  icon={faTrash}
-                  onClick={() => removeItem(item)}
-                />
-              </SpellContainer>
+              return (
+                <SpellContainer key={index}>
+                  <StringField
+                    value={item}
+                    label="Item"
+                    onChange={(newItem) => onChangeItem(newItem, item)}
+                  />
+                  <IconButton icon={faTrash} onClick={() => removeItem(item)} />
+                </SpellContainer>
+              );
             })}
             <TextButton
               text={"Add new Item"}
@@ -667,18 +704,22 @@ const CharEditView = ({ char, onEdit }: $Props) => {
         {activeTab === "Monster" && (
           <>
             {char.monsters.map((monster: string, index: number) => {
-              return <SpellContainer key={index}>
-                <AutoStringField
-                  optionTable={"monsters"}
-                  value={monster}
-                  label="Monster"
-                  onChange={(newMonster) => onChangeMonster(newMonster, monster)}
-                />
-                <IconButton
-                  icon={faTrash}
-                  onClick={() => removeMonster(monster)}
-                />
-              </SpellContainer>
+              return (
+                <SpellContainer key={index}>
+                  <AutoStringField
+                    optionTable={"monsters"}
+                    value={monster}
+                    label="Monster"
+                    onChange={(newMonster) =>
+                      onChangeMonster(newMonster, monster)
+                    }
+                  />
+                  <IconButton
+                    icon={faTrash}
+                    onClick={() => removeMonster(monster)}
+                  />
+                </SpellContainer>
+              );
             })}
             <TextButton
               text={"Add new Monster"}
