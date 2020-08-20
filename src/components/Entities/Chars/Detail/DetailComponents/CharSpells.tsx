@@ -93,6 +93,7 @@ const CharSpell = ({ char, saveChar }: $Props) => {
                   <SmallNumberField
                     key={index}
                     max={boni.max}
+                    showMax={true}
                     value={boni.value}
                     label={boni.origin}
                     onChange={(boniChange) =>

@@ -8,6 +8,7 @@ import { Transform } from "@fortawesome/fontawesome-svg-core";
 interface $Props {
   value: number;
   max?: number;
+  showMax?: boolean;
   label: string;
   icon?: IconDefinition;
   transform?: string | Transform;
@@ -17,6 +18,7 @@ interface $Props {
 const SmallNumberField = ({
   value,
   max,
+  showMax,
   label,
   icon,
   transform,
@@ -27,15 +29,23 @@ const SmallNumberField = ({
       <LabelText>
         {icon ? <Icon icon={icon} transform={transform} /> : ""} {label}
       </LabelText>
-      {max && (
-        <Input
-          type="number"
-          max={max}
-          value={value}
-          onChange={(e) => onChange(+e.target.value)}
-        />
+      {max !== undefined && (
+        <>
+          <Input
+            type="number"
+            max={max}
+            value={value}
+            onChange={(e) => onChange(+e.target.value)}
+          />
+          {showMax && (
+            <Max>
+              {"/ "}
+              {max}
+            </Max>
+          )}
+        </>
       )}
-      {!max && (
+      {max === undefined && (
         <Input
           type="number"
           value={value}
@@ -89,4 +99,8 @@ const Input = styled.input`
   color: ${({ theme }) => theme.input.color};
   margin-left: 5px;
   border-radius: 5px;
+`;
+
+const Max = styled.span`
+  margin-left: 5px;
 `;

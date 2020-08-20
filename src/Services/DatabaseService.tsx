@@ -97,6 +97,26 @@ export const reciveByAttribute = (
     });
 };
 
+export const recivePromiseByAttribute = (
+  tableName: string,
+  name: string,
+  value: string
+) => {
+  const db = new MyAppDatabase();
+  return db.open()
+    .then(async function () {
+      const array = await db
+        .table(tableName)
+        .where(name)
+        .equalsIgnoreCase(value)
+        .toArray();
+      return array[0];
+    })
+    .finally(function () {
+      db.close();
+    });
+};
+
 export const reciveAllFiltered = (
   tableName: string,
   filters: Filter[],
@@ -188,9 +208,11 @@ export const saveNew = (
   const db = new MyAppDatabase();
   db.open()
     .then(function () {
-      db.table(tableName).put({ ...entity, filename: filename }).then(function () {
-        console.log(entity.name);
-      });
+      db.table(tableName)
+        .put({ ...entity, filename: filename })
+        .then(function () {
+          console.log(entity.name);
+        });
     })
     .finally(function () {
       db.close();
