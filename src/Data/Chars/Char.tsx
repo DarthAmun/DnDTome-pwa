@@ -16,7 +16,7 @@ export default class Char implements IEntity {
   spells: string[];
   spellSlots: { origin: string; slots: number[]; max: number[] }[];
   currencyBonis: { origin: string; value: number; max: number }[];
-  items: string[];
+  items: {origin: string, attuned: boolean, prof: boolean}[];
   monsters: string[];
   ac: number;
   hp: number;
@@ -54,7 +54,7 @@ export default class Char implements IEntity {
     spells: string[],
     spellSlots: { origin: string; slots: number[]; max: number[] }[],
     currencyBonis: { origin: string; value: number; max: number }[],
-    items: string[],
+    items: {origin: string, attuned: boolean, prof: boolean}[],
     monsters: string[],
     ac: number,
     hp: number,

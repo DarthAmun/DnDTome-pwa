@@ -154,23 +154,27 @@ const CharView = ({ character }: $Props) => {
   }, [character, calcLevel]);
 
   useEffect(() => {
-    character.items.forEach((item) => {
-      reciveByAttribute("items", "name", item, (result) => {
-        if (result && isItem(result)) {
-          setItems((s) => [...s, result]);
-        }
-      });
-    });
+    character.items.forEach(
+      (item: { origin: string; attuned: boolean; prof: boolean }) => {
+        reciveByAttribute("items", "name", item.origin, (result) => {
+          if (result && isItem(result)) {
+            setItems((s) => [...s, result]);
+          }
+        });
+      }
+    );
   }, [character]);
 
   useEffect(() => {
-    character.items.forEach((item) => {
-      reciveByAttribute("gears", "name", item, (result) => {
-        if (result && isGear(result)) {
-          setGears((s) => [...s, result]);
-        }
-      });
-    });
+    character.items.forEach(
+      (item: { origin: string; attuned: boolean; prof: boolean }) => {
+        reciveByAttribute("gears", "name", item.origin, (result) => {
+          if (result && isGear(result)) {
+            setGears((s) => [...s, result]);
+          }
+        });
+      }
+    );
   }, [character]);
 
   useEffect(() => {
@@ -263,9 +267,7 @@ const CharView = ({ character }: $Props) => {
           </PropWrapper>
         </View>
       )}
-      {activeTab === "Spells" && (
-        <CharSpell char={char} saveChar={saveChar} />
-      )}
+      {activeTab === "Spells" && <CharSpell char={char} saveChar={saveChar} />}
       {activeTab === "Items" && (
         <View>
           <PropWrapper>

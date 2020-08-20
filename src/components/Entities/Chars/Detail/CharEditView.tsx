@@ -62,23 +62,28 @@ const CharEditView = ({ char, onEdit }: $Props) => {
     onEdit({ ...char, spells: spells });
   };
 
-  const removeItem = (oldItem: string) => {
-    let newItemList = char.items.filter((item) => item !== oldItem);
+  const removeItem = (oldItem: { origin: string; attuned: boolean; prof: boolean }) => {
+    let newItemList = char.items.filter((item) => item.origin !== oldItem.origin);
     onEdit({ ...char, items: newItemList });
   };
   const addNewItem = () => {
     let newItemList = char.items;
-    newItemList.push("");
+    newItemList.push({ origin: "", attuned: false, prof: false });
     onEdit({ ...char, items: newItemList });
   };
-  const onChangeItem = (newItem: string, oldItem: string) => {
-    let items = char.items.map((item) => {
-      if (item === oldItem) {
-        return newItem;
-      } else {
-        return item;
+  const onChangeItem = (
+    newItem: { origin: string; attuned: boolean; prof: boolean },
+    oldItem: { origin: string; attuned: boolean; prof: boolean }
+  ) => {
+    let items = char.items.map(
+      (item: { origin: string; attuned: boolean; prof: boolean }) => {
+        if (item.origin === oldItem.origin) {
+          return newItem;
+        } else {
+          return item;
+        }
       }
-    });
+    );
     onEdit({ ...char, items: items });
   };
 
@@ -682,18 +687,26 @@ const CharEditView = ({ char, onEdit }: $Props) => {
         )}
         {activeTab === "Items" && (
           <>
-            {char.items.map((item: string, index: number) => {
-              return (
-                <SpellContainer key={index}>
-                  <StringField
-                    value={item}
-                    label="Item"
-                    onChange={(newItem) => onChangeItem(newItem, item)}
-                  />
-                  <IconButton icon={faTrash} onClick={() => removeItem(item)} />
-                </SpellContainer>
-              );
-            })}
+            {char.items.map(
+              (
+                item: { origin: string; attuned: boolean; prof: boolean },
+                index: number
+              ) => {
+                return (
+                  <SpellContainer key={index}>
+                    <StringField
+                      value={item.origin}
+                      label="Item"
+                      onChange={(newItem) => onChangeItem({...item, origin: newItem}, item)}
+                    />
+                    <IconButton
+                      icon={faTrash}
+                      onClick={() => removeItem(item)}
+                    />
+                  </SpellContainer>
+                );
+              }
+            )}
             <TextButton
               text={"Add new Item"}
               icon={faPlus}
