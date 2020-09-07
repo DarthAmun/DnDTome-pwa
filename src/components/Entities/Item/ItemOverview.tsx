@@ -1,7 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { MyAppDatabase } from "../../../Database/MyDatabase";
-import { useTableByFilter } from "../../../Hooks/DexieHooks";
 import Filter from "../../../Data/Filter";
 import Item from "../../../Data/Item";
 
@@ -9,23 +7,60 @@ import { LoadingSpinner } from "../../Loading";
 import ItemTile from "./ItemTile";
 import AppWrapper from "../../AppWrapper";
 import ItemSearchBar from "./ItemSearchBar";
+import InfiniteScroll from "react-infinite-scroll-component";
+import { reciveAllFiltered } from "../../../Services/DatabaseService";
 
 const ItemOverview = () => {
-  const db = new MyAppDatabase();
   const [filters, setFilter] = useState<Filter[]>([]);
-  const [allItem, loading, error] = useTableByFilter(db.items, filters);
+  const [allItems, setAllItems] = useState<Item[]>([]);
+  const [items, setItems] = useState<Item[]>([]);
+  const [scrollParam, setParam] = useState<{
+    start: number;
+    end: number;
+    hasMore: boolean;
+  }>({
+    start: 100,
+    end: 120,
+    hasMore: true,
+  });
 
+  useEffect(() => {
+    reciveAllFiltered("items", filters, (results: any[]) => {
+      setAllItems(results);
+      setItems(results.slice(0, 100));
+    });
+  }, [filters]);
+
+  const fetchMoreData = () => {
+    if (items.length === allItems.length) {
+      setParam({
+        start: scrollParam.start + 20,
+        end: scrollParam.end + 20,
+        hasMore: false,
+      });
+      return;
+    }
+    setItems((s) =>
+      s.concat(allItems.slice(scrollParam.start, scrollParam.end))
+    );
+    setParam({
+      start: scrollParam.start + 20,
+      end: scrollParam.end + 20,
+      hasMore: true,
+    });
+  };
   return (
     <AppWrapper>
       <ItemSearchBar onSend={(filterArray) => setFilter(filterArray)} />
-      <ItemContainer>
-        {!error && loading && <LoadingSpinner />}
-        {!error &&
-          !loading &&
-          allItem!.map((item: Item, index: number) => {
-            return <ItemTile key={index} item={item}></ItemTile>;
-          })}
-        {error && <>Fail</>}
+      <ItemContainer
+        dataLength={items.length}
+        next={fetchMoreData}
+        hasMore={scrollParam.hasMore}
+        loader={<LoadingSpinner />}
+      >
+        {items!.map((item: Item, index: number) => {
+          return <ItemTile key={index} item={item}></ItemTile>;
+        })}
       </ItemContainer>
     </AppWrapper>
   );
@@ -33,7 +68,7 @@ const ItemOverview = () => {
 
 export default ItemOverview;
 
-const ItemContainer = styled.div`
+const ItemContainer = styled(InfiniteScroll)`
   margin-top: 50px;
   width: 100%;
   display: flex;

@@ -1,7 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { MyAppDatabase } from "../../../Database/MyDatabase";
-import { useTableByFilter } from "../../../Hooks/DexieHooks";
 import Filter from "../../../Data/Filter";
 import Monster from "../../../Data/Monster";
 
@@ -9,23 +7,61 @@ import { LoadingSpinner } from "../../Loading";
 import MonsterTile from "./MonsterTile";
 import AppWrapper from "../../AppWrapper";
 import MonsterSearchBar from "./MonsterSearchBar";
+import InfiniteScroll from "react-infinite-scroll-component";
+import { reciveAllFiltered } from "../../../Services/DatabaseService";
 
 const MonsterOverview = () => {
-  const db = new MyAppDatabase();
   const [filters, setFilter] = useState<Filter[]>([]);
-  const [allMonsters, loading, error] = useTableByFilter(db.monsters, filters);
+  const [allMonsters, setAllMonsters] = useState<Monster[]>([]);
+  const [monsters, setMonsters] = useState<Monster[]>([]);
+  const [scrollParam, setParam] = useState<{
+    start: number;
+    end: number;
+    hasMore: boolean;
+  }>({
+    start: 100,
+    end: 120,
+    hasMore: true,
+  });
 
+  useEffect(() => {
+    reciveAllFiltered("monsters", filters, (results: any[]) => {
+      setAllMonsters(results);
+      setMonsters(results.slice(0, 100));
+    });
+  }, [filters]);
+
+  const fetchMoreData = () => {
+    if (monsters.length === allMonsters.length) {
+      setParam({
+        start: scrollParam.start + 20,
+        end: scrollParam.end + 20,
+        hasMore: false,
+      });
+      return;
+    }
+    setMonsters((s) =>
+      s.concat(allMonsters.slice(scrollParam.start, scrollParam.end))
+    );
+    setParam({
+      start: scrollParam.start + 20,
+      end: scrollParam.end + 20,
+      hasMore: true,
+    });
+  };
+  
   return (
     <AppWrapper>
       <MonsterSearchBar onSend={(filterArray) => setFilter(filterArray)} />
-      <MonsterContainer>
-        {!error && loading && <LoadingSpinner />}
-        {!error &&
-          !loading &&
-          allMonsters!.map((monster: Monster, index: number) => {
-            return <MonsterTile key={index} monster={monster}></MonsterTile>;
-          })}
-        {error && <>Fail</>}
+      <MonsterContainer
+        dataLength={monsters.length}
+        next={fetchMoreData}
+        hasMore={scrollParam.hasMore}
+        loader={<LoadingSpinner />}
+      >
+        {monsters!.map((monster: Monster, index: number) => {
+          return <MonsterTile key={index} monster={monster}></MonsterTile>;
+        })}
       </MonsterContainer>
     </AppWrapper>
   );
@@ -33,7 +69,7 @@ const MonsterOverview = () => {
 
 export default MonsterOverview;
 
-const MonsterContainer = styled.div`
+const MonsterContainer = styled(InfiniteScroll)`
   margin-top: 50px;
   width: 100%;
   display: flex;

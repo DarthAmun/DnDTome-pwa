@@ -103,7 +103,8 @@ export const recivePromiseByAttribute = (
   value: string
 ) => {
   const db = new MyAppDatabase();
-  return db.open()
+  return db
+    .open()
     .then(async function () {
       const array = await db
         .table(tableName)

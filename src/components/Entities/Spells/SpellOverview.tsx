@@ -1,7 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { MyAppDatabase } from "../../../Database/MyDatabase";
-import { useTableByFilter } from "../../../Hooks/DexieHooks";
 import Filter from "../../../Data/Filter";
 import Spell from "../../../Data/Spell";
 
@@ -9,31 +7,74 @@ import { LoadingSpinner } from "../../Loading";
 import SpellTile from "./SpellTile";
 import AppWrapper from "../../AppWrapper";
 import SpellSearchBar from "./SpellSearchBar";
+import InfiniteScroll from "react-infinite-scroll-component";
+import { reciveAllFiltered } from "../../../Services/DatabaseService";
 
 const SpellOverview = () => {
-  const db = new MyAppDatabase();
   const [filters, setFilter] = useState<Filter[]>([]);
-  const [allSpells, loading, error] = useTableByFilter(db.spells, filters);
+  const [allSpells, setAllSpells] = useState<Spell[]>([]);
+  const [spells, setSpells] = useState<Spell[]>([]);
+  const [scrollParam, setParam] = useState<{
+    start: number;
+    end: number;
+    hasMore: boolean;
+  }>({
+    
+    start: 100,
+    end: 120,
+    hasMore: true,
+  });
+
+  useEffect(() => {
+    reciveAllFiltered("spells", filters, (results: any[]) => {
+      setAllSpells(results);
+      setSpells(results.slice(0, 100));
+    });
+  }, [filters]);
+
+  const fetchMoreData = () => {
+    if (spells.length === allSpells.length) {
+      setParam({
+        start: scrollParam.start + 20,
+        end: scrollParam.end + 20,
+        hasMore: false,
+      });
+      return;
+    }
+    setSpells((s) =>
+      s.concat(allSpells.slice(scrollParam.start, scrollParam.end))
+    );
+    setParam({
+      start: scrollParam.start + 20,
+      end: scrollParam.end + 20,
+      hasMore: true,
+    });
+  };
 
   return (
     <AppWrapper>
       <SpellSearchBar onSend={(filterArray) => setFilter(filterArray)} />
-      <SpellContainer>
-        {!error && loading && <LoadingSpinner />}
-        {!error &&
-          !loading &&
-          allSpells!.map((spell: Spell, index: number) => {
-            return <SpellTile key={index} spell={spell}></SpellTile>;
-          })}
-        {error && <>Fail</>}
+      {/* {!error && loading && <LoadingSpinner />}
+        {!error && !loading && ( */}
+      <SpellContainer
+        dataLength={spells.length}
+        next={fetchMoreData}
+        hasMore={scrollParam.hasMore}
+        loader={<LoadingSpinner />}
+      >
+        {spells!.map((spell: Spell, index: number) => {
+          return <SpellTile key={index} spell={spell}></SpellTile>;
+        })}
       </SpellContainer>
+      {/* )}
+        {error && <>Fail</>} */}
     </AppWrapper>
   );
 };
 
 export default SpellOverview;
 
-const SpellContainer = styled.div`
+const SpellContainer = styled(InfiniteScroll)`
   margin-top: 50px;
   width: 100%;
   display: flex;

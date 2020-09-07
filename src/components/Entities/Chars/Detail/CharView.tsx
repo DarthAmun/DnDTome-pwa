@@ -213,7 +213,7 @@ const CharView = ({ character }: $Props) => {
         <CharGeneral char={char} onChange={saveChar} classes={classes} />
       )}
       {activeTab === "Combat" && (
-        <CharCombat char={char} items={items} gears={gears} classes={classes} />
+        <CharCombat char={char} items={items} gears={gears} classes={classes} classesFeatures={classesFeatures} />
       )}
       {activeTab === "Classes" && (
         <View>

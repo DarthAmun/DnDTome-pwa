@@ -7,17 +7,53 @@ import { reciveByAttribute } from "../../../../../Services/DatabaseService";
 import Class from "../../../../../Data/Classes/Class";
 import FeatureSet from "../../../../../Data/Classes/FeatureSet";
 import FormatedText from "../../../../GeneralElements/FormatedText";
+import Feature from "../../../../../Data/Classes/Feature";
 
 interface $Props {
   char: Char;
   classes: Class[];
+  classesFeatures: FeatureSet[];
   items: Item[];
   gears: Gear[];
 }
 
-const CharCombat = ({ char, items, gears, classes }: $Props) => {
+const CharCombat = ({
+  char,
+  items,
+  gears,
+  classes,
+  classesFeatures,
+}: $Props) => {
   const [baseItems, setBaseItems] = useState<{ base: Gear; item: Item }[]>([]);
   const [prof, setProf] = useState<number>(0);
+
+  const [actions, setActions] = useState<Feature[]>([]);
+  const [bonusActions, setBonusActions] = useState<Feature[]>([]);
+  const [reactions, setReactions] = useState<Feature[]>([]);
+
+  useEffect(() => {
+    if (classesFeatures && classesFeatures.length > 0) {
+      let newActions: Feature[] = [];
+      let newBonusActions: Feature[] = [];
+      let newReactions: Feature[] = [];
+      classesFeatures
+        .sort((f1, f2) => f1.level - f2.level)
+        .forEach((featureSet) => {
+          featureSet.features.forEach((feature: Feature) => {
+            if (feature.type.toString() === "action") {
+              newActions.push(feature);
+            } else if (feature.type.toString() === "bonusAction") {
+              newBonusActions.push(feature);
+            } else if (feature.type.toString() === "reaction") {
+              newReactions.push(feature);
+            }
+          });
+        });
+      setActions(newActions);
+      setBonusActions(newBonusActions);
+      setReactions(newReactions);
+    }
+  }, [classesFeatures]);
 
   useEffect(() => {
     items.forEach((item) => {
@@ -64,8 +100,16 @@ const CharCombat = ({ char, items, gears, classes }: $Props) => {
                   <PropWrapper key={index}>
                     <Prop>{baseitem.item.name}</Prop>
                     <Prop>
-                      {strBonus > dexBonus ? <>+{strBonus + prof + baseitem.item.magicBonus}</> : ""}
-                      {dexBonus > strBonus ? <>+{dexBonus + prof + baseitem.item.magicBonus}</> : ""}
+                      {strBonus > dexBonus ? (
+                        <>+{strBonus + prof + baseitem.item.magicBonus}</>
+                      ) : (
+                        ""
+                      )}
+                      {dexBonus > strBonus ? (
+                        <>+{dexBonus + prof + baseitem.item.magicBonus}</>
+                      ) : (
+                        ""
+                      )}
                     </Prop>
                     <Prop>{`${baseitem.base.damage} +${baseitem.item.magicBonus}`}</Prop>
                     <Prop>{baseitem.base.properties}</Prop>
@@ -118,23 +162,53 @@ const CharCombat = ({ char, items, gears, classes }: $Props) => {
             }
           })}
       </MinView>
+      {actions && actions.length > 0 && (
+        <MinView>
+          <PropWrapper>
+            {actions.map((action: Feature, index: number) => {
+              return (
+                <Text key={index}>
+                  <PropTitle>{action.name}:</PropTitle>
+                  <FormatedText text={action.text} />
+                </Text>
+              );
+            })}
+          </PropWrapper>
+        </MinView>
+      )}
+      {bonusActions && bonusActions.length > 0 && (
+        <MinView>
+          <PropWrapper>
+            {bonusActions.map((action: Feature, index: number) => {
+              return (
+                <Text key={index}>
+                  <PropTitle>{action.name}:</PropTitle>
+                  <FormatedText text={action.text} />
+                </Text>
+              );
+            })}
+          </PropWrapper>
+        </MinView>
+      )}
+      {reactions && reactions.length > 0 && (
+        <MinView>
+          <PropWrapper>
+            {reactions.map((action: Feature, index: number) => {
+              return (
+                <Text key={index}>
+                  <PropTitle>{action.name}:</PropTitle>
+                  <FormatedText text={action.text} />
+                </Text>
+              );
+            })}
+          </PropWrapper>
+        </MinView>
+      )}
       <MinView>
         <PropWrapper>
           <Text>
-            <PropTitle>Actions:</PropTitle>
+            <PropTitle>Action Notes:</PropTitle>
             <FormatedText text={char.actions} />
-          </Text>
-        </PropWrapper>
-        <PropWrapper>
-          <Text>
-            <PropTitle>Bonus Actions:</PropTitle>
-            <FormatedText text={char.bonusActions} />
-          </Text>
-        </PropWrapper>
-        <PropWrapper>
-          <Text>
-            <PropTitle>Reactions:</PropTitle>
-            <FormatedText text={char.reactions} />
           </Text>
         </PropWrapper>
       </MinView>

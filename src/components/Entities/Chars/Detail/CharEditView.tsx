@@ -62,8 +62,14 @@ const CharEditView = ({ char, onEdit }: $Props) => {
     onEdit({ ...char, spells: spells });
   };
 
-  const removeItem = (oldItem: { origin: string; attuned: boolean; prof: boolean }) => {
-    let newItemList = char.items.filter((item) => item.origin !== oldItem.origin);
+  const removeItem = (oldItem: {
+    origin: string;
+    attuned: boolean;
+    prof: boolean;
+  }) => {
+    let newItemList = char.items.filter(
+      (item) => item.origin !== oldItem.origin
+    );
     onEdit({ ...char, items: newItemList });
   };
   const addNewItem = () => {
@@ -315,7 +321,6 @@ const CharEditView = ({ char, onEdit }: $Props) => {
             "Abilities",
             "Classes",
             "Races",
-            "Actions",
             "Spells",
             "Items",
             "Monster",
@@ -620,30 +625,12 @@ const CharEditView = ({ char, onEdit }: $Props) => {
                   <Icon icon={formatProf(char.skills.survivalProf)} />
                 </PropProf>
               </PropWithProf>
+              <TextField
+                value={char.actions}
+                label="Actions"
+                onChange={(actions) => onEdit({ ...char, actions: actions })}
+              />
             </PropWrapper>
-          </>
-        )}
-        {activeTab === "Actions" && (
-          <>
-            <TextField
-              value={char.actions}
-              label="Actions"
-              onChange={(actions) => onEdit({ ...char, actions: actions })}
-            />
-            <TextField
-              value={char.bonusActions}
-              label="Bonus Actions"
-              onChange={(bonusActions) =>
-                onEdit({ ...char, bonusActions: bonusActions })
-              }
-            />
-            <TextField
-              value={char.reactions}
-              label="Reactions"
-              onChange={(reactions) =>
-                onEdit({ ...char, reactions: reactions })
-              }
-            />
           </>
         )}
         {activeTab === "Spells" && (
@@ -697,7 +684,9 @@ const CharEditView = ({ char, onEdit }: $Props) => {
                     <StringField
                       value={item.origin}
                       label="Item"
-                      onChange={(newItem) => onChangeItem({...item, origin: newItem}, item)}
+                      onChange={(newItem) =>
+                        onChangeItem({ ...item, origin: newItem }, item)
+                      }
                     />
                     <IconButton
                       icon={faTrash}

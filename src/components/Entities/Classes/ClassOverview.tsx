@@ -1,7 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { MyAppDatabase } from "../../../Database/MyDatabase";
-import { useTableByFilter } from "../../../Hooks/DexieHooks";
 import Filter from "../../../Data/Filter";
 import Class from "../../../Data/Classes/Class";
 
@@ -9,23 +7,61 @@ import { LoadingSpinner } from "../../Loading";
 import ClassTile from "./ClassTile";
 import AppWrapper from "../../AppWrapper";
 import ClassSearchBar from "./ClassSearchBar";
+import InfiniteScroll from "react-infinite-scroll-component";
+import { reciveAllFiltered } from "../../../Services/DatabaseService";
 
 const ClassOverview = () => {
-  const db = new MyAppDatabase();
   const [filters, setFilter] = useState<Filter[]>([]);
-  const [allClass, loading, error] = useTableByFilter(db.classes, filters);
+  const [allClasses, setAllClasses]  = useState<Class[]>([]);
+  const [classes, setClasses] = useState<Class[]>([]);
+  const [scrollParam, setParam] = useState<{
+    start: number;
+    end: number;
+    hasMore: boolean;
+  }>({
+    
+    start: 100,
+    end: 120,
+    hasMore: true,
+  });
+
+  useEffect(() => {
+    reciveAllFiltered("classes", filters, (results: any[]) => {
+      setAllClasses(results);
+      setClasses(results.slice(0, 100));
+    });
+  }, [filters]);
+
+  const fetchMoreData = () => {
+    if (classes.length === allClasses.length) {
+      setParam({
+        start: scrollParam.start + 20,
+        end: scrollParam.end + 20,
+        hasMore: false,
+      });
+      return;
+    }
+    setClasses((s) =>
+      s.concat(allClasses.slice(scrollParam.start, scrollParam.end))
+    );
+    setParam({
+      start: scrollParam.start + 20,
+      end: scrollParam.end + 20,
+      hasMore: true,
+    });
+  };
 
   return (
     <AppWrapper>
       <ClassSearchBar onSend={(filterArray) => setFilter(filterArray)} />
-      <ClassContainer>
-        {!error && loading && <LoadingSpinner />}
-        {!error &&
-          !loading &&
-          allClass!.map((classe: Class, index: number) => {
+      <ClassContainer
+      dataLength={classes.length}
+      next={fetchMoreData}
+      hasMore={scrollParam.hasMore}
+      loader={<LoadingSpinner />}>
+        {classes!.map((classe: Class, index: number) => {
             return <ClassTile key={index} classe={classe}></ClassTile>;
           })}
-        {error && <>Fail</>}
       </ClassContainer>
     </AppWrapper>
   );
@@ -33,7 +69,7 @@ const ClassOverview = () => {
 
 export default ClassOverview;
 
-const ClassContainer = styled.div`
+const ClassContainer = styled(InfiniteScroll)`
   margin-top: 50px;
   width: 100%;
   display: flex;

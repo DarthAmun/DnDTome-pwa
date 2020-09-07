@@ -18,9 +18,10 @@ import TextField from "../../../FormElements/TextField";
 import FeatureSet from "../../../../Data/Classes/FeatureSet";
 import NumberArrayField from "../../../FormElements/NumberArrayField";
 import Boni from "../../../../Data/Classes/Boni";
-import Feature from "../../../../Data/Classes/Feature";
+import Feature, { featureType, featureTypeArray, getOptionFromEnum } from "../../../../Data/Classes/Feature";
 import TextButton from "../../../FormElements/TextButton";
 import CheckField from "../../../FormElements/CheckField";
+import EnumField from "../../../FormElements/EnumField";
 
 interface $Props {
   classe: Class;
@@ -186,6 +187,7 @@ const ClassEditView = ({ classe, onEdit }: $Props) => {
         features.push({
           name: "",
           text: "",
+          type: featureType.normal,
         });
         return { ...featureSet, features: features };
       }
@@ -352,6 +354,14 @@ const ClassEditView = ({ classe, onEdit }: $Props) => {
                         label="Feature"
                         onChange={(name) =>
                           onFeatureChange(featureSet, feature, "name", name)
+                        }
+                      />
+                      <EnumField
+                        options={featureTypeArray}
+                        value={getOptionFromEnum(feature.type)}
+                        label="Types"
+                        onChange={(type) =>
+                          onFeatureChange(featureSet, feature, "type", type)
                         }
                       />
                       <IconButton

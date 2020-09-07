@@ -96,6 +96,7 @@ export const useTableByFilter = <T, U>(
   useEffect(() => {
     if (effect) {
       const getAndDispatch = () =>
+      console.time("filtered get all");
         table
           .filter((obj: T) => {
             let test: boolean[] = [];
@@ -148,6 +149,7 @@ export const useTableByFilter = <T, U>(
           })
           .sortBy("name")
           .then((data) => {
+            console.timeEnd("filtered get all");
             dispatch({
               type: "resolved",
               data,

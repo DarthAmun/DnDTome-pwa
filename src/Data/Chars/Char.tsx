@@ -31,8 +31,6 @@ export default class Char implements IEntity {
   cha: number;
   saves: Saves;
   actions: string;
-  bonusActions: string;
-  reactions: string;
   profsLangs: string;
   senses: string;
   money: Money;
@@ -69,8 +67,6 @@ export default class Char implements IEntity {
     cha: number,
     saves: Saves,
     actions: string,
-    bonusActions: string,
-    reactions: string,
     profsLangs: string,
     senses: string,
     money: Money,
@@ -106,8 +102,6 @@ export default class Char implements IEntity {
     this.cha = cha;
     this.saves = saves;
     this.actions = actions;
-    this.bonusActions = bonusActions;
-    this.reactions = reactions;
     this.profsLangs = profsLangs;
     this.senses = senses;
     this.money = money;

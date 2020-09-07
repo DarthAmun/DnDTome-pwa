@@ -3,7 +3,7 @@ import styled from "styled-components";
 import Subclass from "../../../../Data/Classes/Subclass";
 import FeatureSet from "../../../../Data/Classes/FeatureSet";
 import Boni from "../../../../Data/Classes/Boni";
-import Feature from "../../../../Data/Classes/Feature";
+import Feature, { featureType, featureTypeArray, getOptionFromEnum } from "../../../../Data/Classes/Feature";
 
 import StringField from "../../../FormElements/StringField";
 import ShortTextField from "../../../FormElements/ShortTextField";
@@ -16,8 +16,9 @@ import {
   faLink,
   faPlus,
   faTrash,
-  faMinus
+  faMinus,
 } from "@fortawesome/free-solid-svg-icons";
+import EnumField from "../../../FormElements/EnumField";
 
 interface $Props {
   subclass: Subclass;
@@ -34,7 +35,7 @@ const SubclassEditView = ({ subclass, onEdit }: $Props) => {
       if (featureSet === oldFeature) {
         return {
           ...featureSet,
-          [field]: value
+          [field]: value,
         };
       } else {
         return featureSet;
@@ -55,7 +56,7 @@ const SubclassEditView = ({ subclass, onEdit }: $Props) => {
           if (boni === oldBoni) {
             return {
               ...boni,
-              [field]: value
+              [field]: value,
             };
           } else {
             return boni;
@@ -90,7 +91,7 @@ const SubclassEditView = ({ subclass, onEdit }: $Props) => {
           if (feature === oldFeature) {
             return {
               ...feature,
-              [field]: value
+              [field]: value,
             };
           } else {
             return feature;
@@ -113,7 +114,7 @@ const SubclassEditView = ({ subclass, onEdit }: $Props) => {
     }
   };
   const removeBoni = (oldBoni: Boni) => {
-    let features = subclass.features.map(featureSet => {
+    let features = subclass.features.map((featureSet) => {
       let bonis = featureSet.bonis;
       if (bonis !== undefined) {
         const index: number = bonis.indexOf(oldBoni);
@@ -127,7 +128,7 @@ const SubclassEditView = ({ subclass, onEdit }: $Props) => {
     onEdit({ ...subclass, features: features });
   };
   const removeFeature = (oldFeature: Feature) => {
-    let features = subclass.features.map(featureSet => {
+    let features = subclass.features.map((featureSet) => {
       let features = featureSet.features;
       const index: number = features.indexOf(oldFeature);
       if (index !== -1) {
@@ -138,14 +139,14 @@ const SubclassEditView = ({ subclass, onEdit }: $Props) => {
     onEdit({ ...subclass, features: features });
   };
   const removeSpellslot = (oldFeatureSet: FeatureSet) => {
-    let features = subclass.features.map(featureSet => {
+    let features = subclass.features.map((featureSet) => {
       if (featureSet.spellslots !== undefined && featureSet === oldFeatureSet) {
         return {
           ...featureSet,
           spellslots: [...featureSet.spellslots].slice(
             0,
             featureSet.spellslots.length - 1
-          )
+          ),
         };
       }
       return featureSet;
@@ -154,7 +155,7 @@ const SubclassEditView = ({ subclass, onEdit }: $Props) => {
   };
 
   const addNewSpellslot = (oldFeatureSet: FeatureSet) => {
-    let features = subclass.features.map(featureSet => {
+    let features = subclass.features.map((featureSet) => {
       if (featureSet.spellslots !== undefined && featureSet === oldFeatureSet) {
         return { ...featureSet, spellslots: [...featureSet.spellslots, 0] };
       }
@@ -163,7 +164,7 @@ const SubclassEditView = ({ subclass, onEdit }: $Props) => {
     onEdit({ ...subclass, features: features });
   };
   const addNewBoni = (oldFeatureSet: FeatureSet) => {
-    let features = subclass.features.map(featureSet => {
+    let features = subclass.features.map((featureSet) => {
       if (featureSet.bonis !== undefined && featureSet === oldFeatureSet) {
         const newBoni = {
           name: "",
@@ -177,12 +178,13 @@ const SubclassEditView = ({ subclass, onEdit }: $Props) => {
     onEdit({ ...subclass, features: features });
   };
   const addNewFeature = (oldFeatureSet: FeatureSet) => {
-    let features = subclass.features.map(featureSet => {
+    let features = subclass.features.map((featureSet) => {
       let features = featureSet.features;
       if (features !== undefined && featureSet === oldFeatureSet) {
         features.push({
           name: "",
-          text: ""
+          text: "",
+          type: featureType.normal,
         });
         return { ...featureSet, features: features };
       }
@@ -202,9 +204,9 @@ const SubclassEditView = ({ subclass, onEdit }: $Props) => {
             features: [],
             bonis: subclass.features[subclass.features.length - 1].bonis,
             spellslots:
-              subclass.features[subclass.features.length - 1].spellslots
-          }
-        ]
+              subclass.features[subclass.features.length - 1].spellslots,
+          },
+        ],
       });
     } else {
       onEdit({
@@ -216,9 +218,9 @@ const SubclassEditView = ({ subclass, onEdit }: $Props) => {
             profBonus: 0,
             features: [],
             bonis: [],
-            spellslots: []
-          }
-        ]
+            spellslots: [],
+          },
+        ],
       });
     }
   };
@@ -229,18 +231,18 @@ const SubclassEditView = ({ subclass, onEdit }: $Props) => {
         <StringField
           value={subclass.name}
           label="Name"
-          onChange={name => onEdit({ ...subclass, name: name })}
+          onChange={(name) => onEdit({ ...subclass, name: name })}
         />
         <StringField
           value={subclass.type}
           label="Class"
-          onChange={type => onEdit({ ...subclass, type: type })}
+          onChange={(type) => onEdit({ ...subclass, type: type })}
         />
         <StringField
           value={subclass.sources}
           label="Sources"
           icon={faLink}
-          onChange={sources => onEdit({ ...subclass, sources: sources })}
+          onChange={(sources) => onEdit({ ...subclass, sources: sources })}
         />
       </SubclassView>
       {subclass.features.map((featureSet: FeatureSet, index: number) => {
@@ -250,8 +252,9 @@ const SubclassEditView = ({ subclass, onEdit }: $Props) => {
               <FeatureNumber
                 value={featureSet.level}
                 label="Level"
-                onChange={level =>
-                  onFeatureSetChange(featureSet, "level", level)}
+                onChange={(level) =>
+                  onFeatureSetChange(featureSet, "level", level)
+                }
               />
               <IconButton
                 icon={faTrash}
@@ -261,7 +264,8 @@ const SubclassEditView = ({ subclass, onEdit }: $Props) => {
                 values={featureSet.spellslots ? featureSet.spellslots : []}
                 label="Spellslots"
                 onChange={(spellslots: number[]) =>
-                  onSpellslotChange(featureSet, spellslots)}
+                  onSpellslotChange(featureSet, spellslots)
+                }
               />
               <IconButton
                 icon={faMinus}
@@ -278,8 +282,9 @@ const SubclassEditView = ({ subclass, onEdit }: $Props) => {
                       <BoniName
                         value={boni.name}
                         label="Boni"
-                        onChange={name =>
-                          onBoniChange(featureSet, boni, "name", name)}
+                        onChange={(name) =>
+                          onBoniChange(featureSet, boni, "name", name)
+                        }
                       />
                       <IconButton
                         icon={faTrash}
@@ -288,8 +293,9 @@ const SubclassEditView = ({ subclass, onEdit }: $Props) => {
                       <FeatureString
                         value={boni.value}
                         label="Boni Value"
-                        onChange={value =>
-                          onBoniChange(featureSet, boni, "value", value)}
+                        onChange={(value) =>
+                          onBoniChange(featureSet, boni, "value", value)
+                        }
                       />
                     </BoniContainer>
                   );
@@ -310,8 +316,17 @@ const SubclassEditView = ({ subclass, onEdit }: $Props) => {
                       <FeatureName
                         value={feature.name}
                         label="Feature"
-                        onChange={name =>
-                          onFeatureChange(featureSet, feature, "name", name)}
+                        onChange={(name) =>
+                          onFeatureChange(featureSet, feature, "name", name)
+                        }
+                      />
+                      <EnumField
+                        options={featureTypeArray}
+                        value={getOptionFromEnum(feature.type)}
+                        label="Types"
+                        onChange={(type) =>
+                          onFeatureChange(featureSet, feature, "type", type)
+                        }
                       />
                       <IconButton
                         icon={faTrash}
@@ -320,8 +335,9 @@ const SubclassEditView = ({ subclass, onEdit }: $Props) => {
                       <FeatureText
                         value={feature.text}
                         label="Feature Text"
-                        onChange={text =>
-                          onFeatureChange(featureSet, feature, "text", text)}
+                        onChange={(text) =>
+                          onFeatureChange(featureSet, feature, "text", text)
+                        }
                       />
                     </FeatureContainer>
                   );
