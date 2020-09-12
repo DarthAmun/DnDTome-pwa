@@ -19,7 +19,6 @@ const SpellOverview = () => {
     end: number;
     hasMore: boolean;
   }>({
-    
     start: 100,
     end: 120,
     hasMore: true,

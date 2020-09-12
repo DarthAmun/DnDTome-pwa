@@ -5,10 +5,10 @@ import IEntity from "../../Data/IEntity";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { IconDefinition } from "@fortawesome/free-solid-svg-icons";
 import { Transform } from "@fortawesome/fontawesome-svg-core";
-import { reciveAll } from "../../Services/DatabaseService";
+import { reciveAll, reciveAllPromise } from "../../Services/DatabaseService";
 
 interface $Props {
-  optionTable: string;
+  optionTable: string | string[];
   value: string;
   label: string;
   icon?: IconDefinition;
@@ -16,20 +16,50 @@ interface $Props {
   onChange: (value: string) => void;
 }
 
-const AutoStringField = ({ optionTable, value, label, icon, transform, onChange }: $Props) => {
+const AutoStringField = ({
+  optionTable,
+  value,
+  label,
+  icon,
+  transform,
+  onChange,
+}: $Props) => {
   const [options, setOptions] = useState<IEntity[]>([]);
   const [filteredOptions, setFilteredOptions] = useState<IEntity[]>([]);
 
   useEffect(() => {
-    reciveAll(optionTable, (data: any[]) => {
-      setOptions(data);
-    });
-  }, [optionTable])
+    if (typeof optionTable === "string") {
+      reciveAll(optionTable, (data: any[]) => {
+        setOptions(data);
+      });
+    }
+    if (optionTable instanceof Array && optionTable.length > 0) {
+      findAllItems(optionTable);
+    }
+  }, [optionTable]);
 
-  const onSearch = useCallback((searchTerm: string) => {
-    onChange(searchTerm);
-    setFilteredOptions(options.filter((option) => { return option.name.includes(searchTerm) }));
-  }, [options, onChange])
+  const findAllItems = async (optionTable: string[]) => {
+    let itemList: Promise<IEntity[]>[] = [];
+    optionTable.forEach((table) => {
+      itemList.push(reciveAllPromise(table));
+    });
+    const results = await Promise.all(itemList);
+    results.forEach((items: IEntity[]) => {
+      setOptions((o) => o.concat(items));
+    });
+  };
+
+  const onSearch = useCallback(
+    (searchTerm: string) => {
+      onChange(searchTerm);
+      setFilteredOptions(
+        options.filter((option) => {
+          return option.name.includes(searchTerm);
+        })
+      );
+    },
+    [options, onChange]
+  );
 
   return (
     <Field>
@@ -42,9 +72,14 @@ const AutoStringField = ({ optionTable, value, label, icon, transform, onChange 
         onChange={(e) => onSearch(e.target.value)}
       ></Input>
       <Options>
-        {filteredOptions.length > 1 && filteredOptions.map((opt, index: number) => {
-          return <Option key={index} onClick={(e) => onSearch(opt.name)}>{opt.name}</Option>;
-        })}
+        {filteredOptions.length > 1 &&
+          filteredOptions.map((opt, index: number) => {
+            return (
+              <Option key={index} onClick={(e) => onSearch(opt.name)}>
+                {opt.name}
+              </Option>
+            );
+          })}
       </Options>
     </Field>
   );
@@ -85,7 +120,7 @@ const LabelText = styled.div`
 `;
 
 const Options = styled.div`
-  display:none;
+  display: none;
   position: absolute;
   border: 1px solid #d4d4d4;
   border-bottom: none;
@@ -108,7 +143,7 @@ const Option = styled.div`
   cursor: pointer;
   color: ${({ theme }) => theme.input.color};
   background-color: ${({ theme }) => theme.input.backgroundColor};
-  border-bottom: 1px solid #d4d4d4; 
+  border-bottom: 1px solid #d4d4d4;
 `;
 
 const Input = styled.input`

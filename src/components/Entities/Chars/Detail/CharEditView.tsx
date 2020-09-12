@@ -23,6 +23,8 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import AutoStringField from "../../../FormElements/AutoStringField";
+import CheckField from "../../../FormElements/CheckField";
+import EnumField from "../../../FormElements/EnumField";
 
 interface $Props {
   char: Char;
@@ -66,6 +68,7 @@ const CharEditView = ({ char, onEdit }: $Props) => {
     origin: string;
     attuned: boolean;
     prof: boolean;
+    attribute: string;
   }) => {
     let newItemList = char.items.filter(
       (item) => item.origin !== oldItem.origin
@@ -74,16 +77,53 @@ const CharEditView = ({ char, onEdit }: $Props) => {
   };
   const addNewItem = () => {
     let newItemList = char.items;
-    newItemList.push({ origin: "", attuned: false, prof: false });
+    newItemList.push({
+      origin: "",
+      attuned: false,
+      prof: false,
+      attribute: "str",
+    });
     onEdit({ ...char, items: newItemList });
   };
   const onChangeItem = (
-    newItem: { origin: string; attuned: boolean; prof: boolean },
-    oldItem: { origin: string; attuned: boolean; prof: boolean }
+    newItem: string,
+    oldItem: {
+      origin: string;
+      attuned: boolean;
+      prof: boolean;
+      attribute: string;
+    }
   ) => {
     let items = char.items.map(
-      (item: { origin: string; attuned: boolean; prof: boolean }) => {
+      (item: {
+        origin: string;
+        attuned: boolean;
+        prof: boolean;
+        attribute: string;
+      }) => {
         if (item.origin === oldItem.origin) {
+          return { ...item, origin: newItem };
+        } else {
+          return item;
+        }
+      }
+    );
+    onEdit({ ...char, items: items });
+  };
+  const onChangeItemAttribute = (newItem: {
+    origin: string;
+    attuned: boolean;
+    prof: boolean;
+    attribute: string;
+  }) => {
+    let items = char.items.map(
+      (item: {
+        origin: string;
+        attuned: boolean;
+        prof: boolean;
+        attribute: string;
+      }) => {
+        if (item.origin === newItem.origin) {
           return newItem;
         } else {
           return item;
@@ -651,7 +691,7 @@ const CharEditView = ({ char, onEdit }: $Props) => {
             />
             {char.spells.map((spell: string, index: number) => {
               return (
-                <SpellContainer key={index}>
+                <Container key={index}>
                   <AutoStringField
                     optionTable={"spells"}
                     value={spell}
@@ -662,7 +702,7 @@ const CharEditView = ({ char, onEdit }: $Props) => {
                     icon={faTrash}
                     onClick={() => removeSpell(spell)}
                   />
-                </SpellContainer>
+                </Container>
               );
             })}
             <TextButton
@@ -676,23 +716,64 @@ const CharEditView = ({ char, onEdit }: $Props) => {
           <>
             {char.items.map(
               (
-                item: { origin: string; attuned: boolean; prof: boolean },
+                item: {
+                  origin: string;
+                  attuned: boolean;
+                  prof: boolean;
+                  attribute: string;
+                },
                 index: number
               ) => {
                 return (
-                  <SpellContainer key={index}>
-                    <StringField
+                  <Container key={index}>
+                    <AutoStringField
+                      optionTable={["items", "gears"]}
                       value={item.origin}
                       label="Item"
-                      onChange={(newItem) =>
-                        onChangeItem({ ...item, origin: newItem }, item)
+                      onChange={(newItem) => onChangeItem(newItem, item)}
+                    />
+                    <CheckField
+                      value={!!item.attuned}
+                      label="Attunment"
+                      onChange={(attunment) =>
+                        onChangeItemAttribute({
+                          ...item,
+                          attuned: attunment,
+                        })
+                      }
+                    />
+                    <CheckField
+                      value={!!item.prof}
+                      label="Prof"
+                      onChange={(prof) =>
+                        onChangeItemAttribute({ ...item, prof: prof })
+                      }
+                    />
+                    <EnumField
+                      options={[
+                        { value: "str", label: "Str" },
+                        { value: "dex", label: "Dex" },
+                        { value: "con", label: "Con" },
+                        { value: "int", label: "Int" },
+                        { value: "wis", label: "Wis" },
+                        { value: "cha", label: "Cha" },
+                      ]}
+                      value={{
+                        value: item.attribute,
+                        label:
+                          item.attribute.charAt(0).toUpperCase() +
+                          item.attribute.slice(1),
+                      }}
+                      label="Attribute"
+                      onChange={(type) =>
+                        onChangeItemAttribute({ ...item, attribute: type })
                       }
                     />
                     <IconButton
                       icon={faTrash}
                       onClick={() => removeItem(item)}
                     />
-                  </SpellContainer>
+                  </Container>
                 );
               }
             )}
@@ -707,7 +788,7 @@ const CharEditView = ({ char, onEdit }: $Props) => {
           <>
             {char.monsters.map((monster: string, index: number) => {
               return (
-                <SpellContainer key={index}>
+                <Container key={index}>
                   <AutoStringField
                     optionTable={"monsters"}
                     value={monster}
@@ -720,7 +801,7 @@ const CharEditView = ({ char, onEdit }: $Props) => {
                     icon={faTrash}
                     onClick={() => removeMonster(monster)}
                   />
-                </SpellContainer>
+                </Container>
               );
             })}
             <TextButton
@@ -761,7 +842,7 @@ const CharView = styled.div`
   align-content: stretch;
 `;
 
-const SpellContainer = styled.div`
+const Container = styled.div`
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;

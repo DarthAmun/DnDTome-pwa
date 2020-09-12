@@ -97,6 +97,23 @@ export const reciveByAttribute = (
     });
 };
 
+export const reciveAllPromise = (
+  tableName: string
+) => {
+  const db = new MyAppDatabase();
+  return db
+    .open()
+    .then(async function () {
+      const array = await db
+        .table(tableName)
+        .toArray();
+      return array;
+    })
+    .finally(function () {
+      db.close();
+    });
+};
+
 export const recivePromiseByAttribute = (
   tableName: string,
   name: string,

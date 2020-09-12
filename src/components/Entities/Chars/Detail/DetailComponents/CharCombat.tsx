@@ -1,4 +1,5 @@
 import React, { useCallback, useState, useEffect } from "react";
+import { useHistory } from "react-router";
 import styled from "styled-components";
 import Char from "../../../../../Data/Chars/Char";
 import Item from "../../../../../Data/Item";
@@ -13,8 +14,20 @@ interface $Props {
   char: Char;
   classes: Class[];
   classesFeatures: FeatureSet[];
-  items: Item[];
-  gears: Gear[];
+  items: {
+    item: Item;
+    origin: string;
+    attuned: boolean;
+    prof: boolean;
+    attribute: string;
+  }[];
+  gears: {
+    gear: Gear;
+    origin: string;
+    attuned: boolean;
+    prof: boolean;
+    attribute: string;
+  }[];
 }
 
 const CharCombat = ({
@@ -24,7 +37,19 @@ const CharCombat = ({
   classes,
   classesFeatures,
 }: $Props) => {
-  const [baseItems, setBaseItems] = useState<{ base: Gear; item: Item }[]>([]);
+  let history = useHistory();
+  const [baseItems, setBaseItems] = useState<
+    {
+      base: Gear;
+      item: {
+        item: Item;
+        origin: string;
+        attuned: boolean;
+        prof: boolean;
+        attribute: string;
+      };
+    }[]
+  >([]);
   const [prof, setProf] = useState<number>(0);
 
   const [actions, setActions] = useState<Feature[]>([]);
@@ -57,8 +82,8 @@ const CharCombat = ({
 
   useEffect(() => {
     items.forEach((item) => {
-      if (item.base !== "") {
-        reciveByAttribute("gears", "name", item.base, (result) => {
+      if (item.item.base !== "") {
+        reciveByAttribute("gears", "name", item.item.base, (result) => {
           setBaseItems((b) => [...b, { item: item, base: result as Gear }]);
         });
       }
@@ -90,41 +115,39 @@ const CharCombat = ({
         {baseItems &&
           baseItems.length > 0 &&
           baseItems.map((baseitem, index: number) => {
-            if (baseitem.item.type.toLocaleLowerCase().includes("weapon")) {
-              const strBonus = Math.floor((char.str - 10) / 2);
-              const dexBonus = Math.floor((char.dex - 10) / 2);
-              if (
-                baseitem.base.properties.toLocaleLowerCase().includes("finesse")
-              ) {
-                return (
-                  <PropWrapper key={index}>
-                    <Prop>{baseitem.item.name}</Prop>
-                    <Prop>
-                      {strBonus > dexBonus ? (
-                        <>+{strBonus + prof + baseitem.item.magicBonus}</>
-                      ) : (
-                        ""
-                      )}
-                      {dexBonus > strBonus ? (
-                        <>+{dexBonus + prof + baseitem.item.magicBonus}</>
-                      ) : (
-                        ""
-                      )}
-                    </Prop>
-                    <Prop>{`${baseitem.base.damage} +${baseitem.item.magicBonus}`}</Prop>
-                    <Prop>{baseitem.base.properties}</Prop>
-                  </PropWrapper>
-                );
-              } else {
-                return (
-                  <PropWrapper key={index}>
-                    <Prop>{baseitem.item.name}</Prop>
-                    <Prop>+{strBonus + prof + baseitem.item.magicBonus}</Prop>
-                    <Prop>{`${baseitem.base.damage} +${baseitem.item.magicBonus}`}</Prop>
-                    <Prop>{baseitem.base.properties}</Prop>
-                  </PropWrapper>
-                );
-              }
+            if (
+              baseitem.item.item.type.toLocaleLowerCase().includes("weapon")
+            ) {
+              const bonus = Math.floor(
+                (char[baseitem.item.attribute] - 10) / 2
+              );
+              return (
+                <PropWrapper key={index}>
+                  <Prop>
+                    <MainLink
+                      onClick={() =>
+                        history.push(
+                          `/item-detail/name/${baseitem.item.origin}`
+                        )
+                      }
+                    >
+                      {baseitem.item.item.name}
+                    </MainLink>
+                  </Prop>
+                  <Prop>
+                    +
+                    {bonus +
+                      (baseitem.item.prof ? prof : 0) +
+                      baseitem.item.item.magicBonus}
+                  </Prop>
+                  <Prop>
+                    {`${baseitem.base.damage} +${
+                      baseitem.item.item.magicBonus + bonus
+                    }`}
+                  </Prop>
+                  <Prop>{baseitem.base.properties}</Prop>
+                </PropWrapper>
+              );
             } else {
               return "";
             }
@@ -132,28 +155,30 @@ const CharCombat = ({
         {gears &&
           gears.length > 0 &&
           gears.map((gear, index: number) => {
-            if (gear.type.toLocaleLowerCase().includes("weapon")) {
+            if (gear.gear.type.toLocaleLowerCase().includes("weapon")) {
               const strBonus = Math.floor((char.str - 10) / 2);
               const dexBonus = Math.floor((char.dex - 10) / 2);
-              if (gear.properties.toLocaleLowerCase().includes("finesse")) {
+              if (
+                gear.gear.properties.toLocaleLowerCase().includes("finesse")
+              ) {
                 return (
                   <PropWrapper key={index}>
-                    <Prop>{gear.name}</Prop>
+                    <Prop>{gear.gear.name}</Prop>
                     <Prop>
                       {strBonus > dexBonus ? <>+{strBonus + prof}</> : ""}
                       {dexBonus > strBonus ? <>+{dexBonus + prof}</> : ""}
                     </Prop>
-                    <Prop>{gear.damage}</Prop>
-                    <Prop>{gear.properties}</Prop>
+                    <Prop>{gear.gear.damage}</Prop>
+                    <Prop>{gear.gear.properties}</Prop>
                   </PropWrapper>
                 );
               } else {
                 return (
                   <PropWrapper key={index}>
-                    <Prop>{gear.name}</Prop>
+                    <Prop>{gear.gear.name}</Prop>
                     <Prop>+{strBonus + prof}</Prop>
-                    <Prop>{gear.damage}</Prop>
-                    <Prop>{gear.properties}</Prop>
+                    <Prop>{gear.gear.damage}</Prop>
+                    <Prop>{gear.gear.properties}</Prop>
                   </PropWrapper>
                 );
               }
@@ -282,4 +307,15 @@ const Text = styled.div`
   padding: 10px;
   border-radius: 5px;
   background-color: ${({ theme }) => theme.tile.backgroundColor};
+`;
+
+const MainLink = styled.span`
+  display: inline-block;
+  background-color: ${({ theme }) => theme.tile.backgroundColorLink};
+  border-radius: 5px;
+  text-decoration: none;
+  color: ${({ theme }) => theme.tile.backgroundColor};
+  font-size: 16px;
+  padding: 0px 5px 0px 5px;
+  cursor: pointer;
 `;

@@ -42,8 +42,24 @@ const CharView = ({ character }: $Props) => {
   // const [subrace, setSubrace] = useState<Subrace>();
   const [raceFeatures, setRaceFeatures] = useState<Trait[]>([]);
 
-  const [gears, setGears] = useState<Gear[]>([]);
-  const [items, setItems] = useState<Item[]>([]);
+  const [gears, setGears] = useState<
+    {
+      gear: Gear;
+      origin: string;
+      attuned: boolean;
+      prof: boolean;
+      attribute: string;
+    }[]
+  >([]);
+  const [items, setItems] = useState<
+    {
+      item: Item;
+      origin: string;
+      attuned: boolean;
+      prof: boolean;
+      attribute: string;
+    }[]
+  >([]);
   const [monsters, setMonsters] = useState<Monster[]>([]);
 
   const [activeTab, setTab] = useState<string>("General");
@@ -155,10 +171,15 @@ const CharView = ({ character }: $Props) => {
 
   useEffect(() => {
     character.items.forEach(
-      (item: { origin: string; attuned: boolean; prof: boolean }) => {
+      (item: {
+        origin: string;
+        attuned: boolean;
+        prof: boolean;
+        attribute: string;
+      }) => {
         reciveByAttribute("items", "name", item.origin, (result) => {
           if (result && isItem(result)) {
-            setItems((s) => [...s, result]);
+            setItems((s) => [...s, { ...item, item: result }]);
           }
         });
       }
@@ -167,10 +188,15 @@ const CharView = ({ character }: $Props) => {
 
   useEffect(() => {
     character.items.forEach(
-      (item: { origin: string; attuned: boolean; prof: boolean }) => {
+      (item: {
+        origin: string;
+        attuned: boolean;
+        prof: boolean;
+        attribute: string;
+      }) => {
         reciveByAttribute("gears", "name", item.origin, (result) => {
           if (result && isGear(result)) {
-            setGears((s) => [...s, result]);
+            setGears((s) => [...s, { ...item, gear: result }]);
           }
         });
       }
@@ -213,7 +239,13 @@ const CharView = ({ character }: $Props) => {
         <CharGeneral char={char} onChange={saveChar} classes={classes} />
       )}
       {activeTab === "Combat" && (
-        <CharCombat char={char} items={items} gears={gears} classes={classes} classesFeatures={classesFeatures} />
+        <CharCombat
+          char={char}
+          items={items}
+          gears={gears}
+          classes={classes}
+          classesFeatures={classesFeatures}
+        />
       )}
       {activeTab === "Classes" && (
         <View>
@@ -273,11 +305,11 @@ const CharView = ({ character }: $Props) => {
           <PropWrapper>
             {items &&
               items.map((item, index: number) => {
-                return <ItemTile key={index} item={item} />;
+                return <ItemTile key={index} item={item.item} />;
               })}
             {gears &&
               gears.map((gear, index: number) => {
-                return <GearTile key={index} gear={gear} />;
+                return <GearTile key={index} gear={gear.gear} />;
               })}
           </PropWrapper>
         </View>
