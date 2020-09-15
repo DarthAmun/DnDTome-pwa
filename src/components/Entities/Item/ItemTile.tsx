@@ -54,11 +54,21 @@ const ItemTile = ({ item }: $Props) => {
 
         <PropWrapper>
           <Prop>{item.type}</Prop>
-          {item.base && <Prop>{item.base}</Prop>}
-          <Prop>
-            <Icon icon={faLink} />
-            {item.sources}
-          </Prop>
+          {item.base && (
+            <>
+              <Prop>{item.base}</Prop>
+              <WideProp>
+                <Icon icon={faLink} />
+                {item.sources}
+              </WideProp>
+            </>
+          )}
+          {!item.base && (
+            <Prop>
+              <Icon icon={faLink} />
+              {item.sources}
+            </Prop>
+          )}
         </PropWrapper>
       </Suspense>
     </Tile>
@@ -162,6 +172,11 @@ const Prop = styled.div`
   margin: 0 0 5px 0px;
   }
 }
+`;
+
+const WideProp = styled(Prop)`
+  margin: 0 0 5px 0px;
+  width: calc(100% - 20px);
 `;
 
 const Flag = styled.div`

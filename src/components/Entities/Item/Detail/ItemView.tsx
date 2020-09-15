@@ -59,14 +59,14 @@ const ItemView = ({ item }: $Props) => {
             <b>{item.name}</b>
           </ImageName>
         ) : (
-            <Name>
-              <b>{item.name}</b>
-            </Name>
-          )}
+          <Name>
+            <b>{item.name}</b>
+          </Name>
+        )}
 
         <PropWrapper>
           <Prop>{item.type}</Prop>
-          {item.magicBonus && <Prop>+{item.magicBonus}</Prop>}
+          <Prop>+{item.magicBonus}</Prop>
           <Prop>
             <Icon icon={faLink} />
             {item.sources}

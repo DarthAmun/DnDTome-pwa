@@ -189,7 +189,7 @@ export const reciveAllFiltered = (
           });
           return result;
         })
-        .toArray()
+        .sortBy("name")
         .then((data) => {
           callback(data);
         });
