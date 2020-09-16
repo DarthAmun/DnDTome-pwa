@@ -10,7 +10,10 @@ import Class, { isClass } from "../Data/Classes/Class";
 import Subclass, { isSubclass } from "../Data/Classes/Subclass";
 import Char, { isChar } from "../Data/Chars/Char";
 
-export const importFiles = (fileList: FileList | null) => {
+export const importFiles = (
+  fileList: FileList | null,
+  callback: () => void
+) => {
   if (fileList !== null) {
     const files = Array.from(fileList);
 
@@ -22,23 +25,23 @@ export const importFiles = (fileList: FileList | null) => {
           let json = JSON.parse(content.toString());
           if (Array.isArray(json)) {
             if (isClass(json[0])) {
-              saveNewFromList("classes", json as Class[], file.name);
+              saveNewFromList("classes", json as Class[], file.name, callback);
             } else if (isSubclass(json[0])) {
-              saveNewFromList("subclasses", json as Subclass[], file.name);
+              saveNewFromList("subclasses", json as Subclass[], file.name, callback);
             } else if (isRace(json[0])) {
-              saveNewFromList("races", json as Race[], file.name);
+              saveNewFromList("races", json as Race[], file.name, callback);
             } else if (isSubrace(json[0])) {
-              saveNewFromList("subraces", json as Subrace[], file.name);
+              saveNewFromList("subraces", json as Subrace[], file.name, callback);
             } else if (isMonster(json[0])) {
-              saveNewFromList("monsters", json as Monster[], file.name);
+              saveNewFromList("monsters", json as Monster[], file.name, callback);
             } else if (isSpell(json[0])) {
-              saveNewFromList("spells", json as Spell[], file.name);
+              saveNewFromList("spells", json as Spell[], file.name, callback);
             } else if (isGear(json[0])) {
-              saveNewFromList("gears", json as Gear[], file.name);
+              saveNewFromList("gears", json as Gear[], file.name, callback);
             } else if (isItem(json[0])) {
-              saveNewFromList("items", json as Item[], file.name);
+              saveNewFromList("items", json as Item[], file.name, callback);
             } else if (isChar(json[0])) {
-              saveNewFromList("chars", json as Char[], file.name);
+              saveNewFromList("chars", json as Char[], file.name, callback);
             }
           }
           //   saveNewSpells(spellsJson, file.name);
