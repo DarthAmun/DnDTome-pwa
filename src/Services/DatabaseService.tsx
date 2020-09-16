@@ -189,7 +189,7 @@ export const reciveAllFiltered = (
           });
           return result;
         })
-        .toArray()
+        .sortBy("name")
         .then((data) => {
           callback(data);
         });
@@ -240,7 +240,8 @@ export const saveNew = (
 export const saveNewFromList = (
   tableName: string,
   entities: IEntity[],
-  filename: string
+  filename: string,
+  callback: () => void
 ) => {
   const db = new MyAppDatabase();
   db.open()
@@ -249,7 +250,9 @@ export const saveNewFromList = (
         delete entity["id"];
         return { ...entity, filename: filename };
       });
-      db.table(tableName).bulkPut(refinedEntities);
+      db.table(tableName).bulkPut(refinedEntities).then(() => {
+        callback();
+      })
     })
     .finally(function () {
       db.close();

@@ -143,13 +143,15 @@ const CharView = ({ character }: $Props) => {
     reciveAllFiltered(
       "races",
       [{ fieldName: "name", value: character.race.race }],
-      (results: any) => {
+      (results: any[]) => {
         // setRace(results[0]);
-        results[0].traits.forEach((trait: Trait) => {
-          if (trait.level <= calcLevel()) {
-            setRaceFeatures((c) => [...c, trait]);
-          }
-        });
+        if (results.length > 0) {
+          results[0].traits.forEach((trait: Trait) => {
+            if (trait.level <= calcLevel()) {
+              setRaceFeatures((c) => [...c, trait]);
+            }
+          });
+        }
       }
     );
   }, [character, calcLevel]);
@@ -158,13 +160,15 @@ const CharView = ({ character }: $Props) => {
     reciveAllFiltered(
       "subraces",
       [{ fieldName: "name", value: character.race.subrace }],
-      (results: any) => {
+      (results: any[]) => {
         // setRace(results[0]);
-        results[0].traits.forEach((trait: Trait) => {
-          if (trait.level <= calcLevel()) {
-            setRaceFeatures((c) => [...c, trait]);
-          }
-        });
+        if (results.length > 0) {
+          results[0].traits.forEach((trait: Trait) => {
+            if (trait.level <= calcLevel()) {
+              setRaceFeatures((c) => [...c, trait]);
+            }
+          });
+        }
       }
     );
   }, [character, calcLevel]);

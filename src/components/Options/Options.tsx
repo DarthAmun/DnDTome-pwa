@@ -31,35 +31,40 @@ const Options = () => {
   const [subclassAmount, setSubclassAmount] = useState<number>(0);
   const [charAmount, setCharAmount] = useState<number>(0);
 
+  const [reload, isReload] = useState<boolean>(true);
+
   useEffect(() => {
-    reciveCount("spells", (result: number) => {
-      setSpellAmount(result);
-    });
-    reciveCount("gears", (result: number) => {
-      setGearAmount(result);
-    });
-    reciveCount("items", (result: number) => {
-      setItemAmount(result);
-    });
-    reciveCount("monsters", (result: number) => {
-      setMonsterAmount(result);
-    });
-    reciveCount("races", (result: number) => {
-      setRaceAmount(result);
-    });
-    reciveCount("subraces", (result: number) => {
-      setSubraceAmount(result);
-    });
-    reciveCount("classes", (result: number) => {
-      setClassAmount(result);
-    });
-    reciveCount("subclasses", (result: number) => {
-      setSubclassAmount(result);
-    });
-    reciveCount("chars", (result: number) => {
-      setCharAmount(result);
-    });
-  }, []);
+    if (reload) {
+      reciveCount("spells", (result: number) => {
+        setSpellAmount(result);
+      });
+      reciveCount("gears", (result: number) => {
+        setGearAmount(result);
+      });
+      reciveCount("items", (result: number) => {
+        setItemAmount(result);
+      });
+      reciveCount("monsters", (result: number) => {
+        setMonsterAmount(result);
+      });
+      reciveCount("races", (result: number) => {
+        setRaceAmount(result);
+      });
+      reciveCount("subraces", (result: number) => {
+        setSubraceAmount(result);
+      });
+      reciveCount("classes", (result: number) => {
+        setClassAmount(result);
+      });
+      reciveCount("subclasses", (result: number) => {
+        setSubclassAmount(result);
+      });
+      reciveCount("chars", (result: number) => {
+        setCharAmount(result);
+      });
+      isReload(false);
+    }
+  }, [reload]);
 
   const toggleTheme = () => {
     if (theme === darkTheme) {
@@ -69,6 +74,16 @@ const Options = () => {
       setTheme(darkTheme);
       localStorage.setItem("theme", "dark");
     }
+  };
+
+  const triggerImportFiles = (fileList: FileList | null) => {
+    importFiles(fileList, () => {
+      isReload(true);
+    });
+  };
+  const triggerDeleteAll = (tableName: string) => {
+    deleteAll(tableName);
+    isReload(true);
   };
 
   return (
@@ -125,7 +140,7 @@ const Options = () => {
             <FileField
               label=""
               icon={faFileImport}
-              onChange={(file) => importFiles(file)}
+              onChange={(file) => triggerImportFiles(file)}
             />
           </OptionSection>
           <OptionSection>
@@ -144,7 +159,7 @@ const Options = () => {
               <SectionText>Delete all {spellAmount} Spells?</SectionText>
               <IconButton
                 icon={faTrashAlt}
-                onClick={() => deleteAll("spells")}
+                onClick={() => triggerDeleteAll("spells")}
               />
             </SectionRow>
           </OptionSection>
@@ -157,7 +172,7 @@ const Options = () => {
             <FileField
               label=""
               icon={faFileImport}
-              onChange={(file) => importFiles(file)}
+              onChange={(file) => triggerImportFiles(file)}
             />
           </OptionSection>
           <OptionSection>
@@ -176,7 +191,7 @@ const Options = () => {
               <SectionText>Delete all {gearAmount} Gear?</SectionText>
               <IconButton
                 icon={faTrashAlt}
-                onClick={() => deleteAll("gears")}
+                onClick={() => triggerDeleteAll("gears")}
               />
             </SectionRow>
           </OptionSection>
@@ -189,7 +204,7 @@ const Options = () => {
             <FileField
               label=""
               icon={faFileImport}
-              onChange={(file) => importFiles(file)}
+              onChange={(file) => triggerImportFiles(file)}
             />
           </OptionSection>
           <OptionSection>
@@ -208,7 +223,7 @@ const Options = () => {
               <SectionText>Delete all {itemAmount} Items?</SectionText>
               <IconButton
                 icon={faTrashAlt}
-                onClick={() => deleteAll("items")}
+                onClick={() => triggerDeleteAll("items")}
               />
             </SectionRow>
           </OptionSection>
@@ -221,7 +236,7 @@ const Options = () => {
             <FileField
               label=""
               icon={faFileImport}
-              onChange={(file) => importFiles(file)}
+              onChange={(file) => triggerImportFiles(file)}
             />
           </OptionSection>
           <OptionSection>
@@ -240,7 +255,7 @@ const Options = () => {
               <SectionText>Delete all {monsterAmount} Monsters?</SectionText>
               <IconButton
                 icon={faTrashAlt}
-                onClick={() => deleteAll("monsters")}
+                onClick={() => triggerDeleteAll("monsters")}
               />
             </SectionRow>
           </OptionSection>
@@ -253,7 +268,7 @@ const Options = () => {
             <FileField
               label=""
               icon={faFileImport}
-              onChange={(file) => importFiles(file)}
+              onChange={(file) => triggerImportFiles(file)}
             />
           </OptionSection>
           <OptionSection>
@@ -279,14 +294,14 @@ const Options = () => {
               <SectionText>Delete all {raceAmount} Races?</SectionText>
               <IconButton
                 icon={faTrashAlt}
-                onClick={() => deleteAll("races")}
+                onClick={() => triggerDeleteAll("races")}
               />
             </SectionRow>
             <SectionRow>
               <SectionText>Delete all {subraceAmount} Subraces?</SectionText>
               <IconButton
                 icon={faTrashAlt}
-                onClick={() => deleteAll("subraces")}
+                onClick={() => triggerDeleteAll("subraces")}
               />
             </SectionRow>
           </OptionSection>
@@ -299,7 +314,7 @@ const Options = () => {
             <FileField
               label=""
               icon={faFileImport}
-              onChange={(file) => importFiles(file)}
+              onChange={(file) => triggerImportFiles(file)}
             />
           </OptionSection>
           <OptionSection>
@@ -327,14 +342,14 @@ const Options = () => {
               <SectionText>Delete all {classAmount} Classes?</SectionText>
               <IconButton
                 icon={faTrashAlt}
-                onClick={() => deleteAll("classes")}
+                onClick={() => triggerDeleteAll("classes")}
               />
             </SectionRow>
             <SectionRow>
               <SectionText>Delete all {subclassAmount} Subclasses?</SectionText>
               <IconButton
                 icon={faTrashAlt}
-                onClick={() => deleteAll("subclasses")}
+                onClick={() => triggerDeleteAll("subclasses")}
               />
             </SectionRow>
           </OptionSection>
@@ -347,7 +362,7 @@ const Options = () => {
             <FileField
               label=""
               icon={faFileImport}
-              onChange={(file) => importFiles(file)}
+              onChange={(file) => triggerImportFiles(file)}
             />
           </OptionSection>
           <OptionSection>
@@ -366,7 +381,7 @@ const Options = () => {
               <SectionText>Delete all {charAmount} Chars?</SectionText>
               <IconButton
                 icon={faTrashAlt}
-                onClick={() => deleteAll("chars")}
+                onClick={() => triggerDeleteAll("chars")}
               />
             </SectionRow>
           </OptionSection>
