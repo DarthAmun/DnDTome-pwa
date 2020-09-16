@@ -28,6 +28,7 @@ import IdToSubclass from "./components/Entities/Subclasses/Detail/LinkWrapper/Id
 import NameToChar from "./components/Entities/Chars/Detail/LinkWrapper/NameToChar";
 import IdToChar from "./components/Entities/Chars/Detail/LinkWrapper/IdToChar";
 import CharOverview from "./components/Entities/Chars/CharOverview";
+import CharLab from "./components/Entities/Chars/Lab/CharLab";
 
 const App = () => {
   return (
@@ -60,6 +61,7 @@ const App = () => {
           <Route path="/char-detail/name/:name" component={NameToChar}></Route>
           <Route path="/char-detail/id/:id" component={IdToChar}></Route>
           <Route path="/char-overview" component={CharOverview}></Route>
+          <Route path="/char-lab" component={CharLab}></Route>
           <Route path="/options" component={Options}></Route>
         </Switch>
       </MemoryRouter>

@@ -5,18 +5,19 @@ export default class Money {
   gold: number;
   platinum: number;
 
+  constructor();
   constructor(
-    copper: number,
-    silver: number,
-    electrum: number,
-    gold: number,
-    platinum: number
+    copper?: number,
+    silver?: number,
+    electrum?: number,
+    gold?: number,
+    platinum?: number
   ) {
-    this.copper = copper;
-    this.silver = silver;
-    this.electrum = electrum;
-    this.gold = gold;
-    this.platinum = platinum;
+    this.copper = copper || 0;
+    this.silver = silver || 0;
+    this.electrum = electrum || 0;
+    this.gold = gold || 0;
+    this.platinum = platinum || 0;
   }
 }
 

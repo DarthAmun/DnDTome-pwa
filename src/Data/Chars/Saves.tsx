@@ -6,20 +6,21 @@ export default class Saves {
   wisSaveProf: number;
   chaSaveProf: number;
 
+  constructor();
   constructor(
-    strSaveProf: number,
-    dexSaveProf: number,
-    conSaveProf: number,
-    intSaveProf: number,
-    wisSaveProf: number,
-    chaSaveProf: number
+    strSaveProf?: number,
+    dexSaveProf?: number,
+    conSaveProf?: number,
+    intSaveProf?: number,
+    wisSaveProf?: number,
+    chaSaveProf?: number
   ) {
-    this.strSaveProf = strSaveProf;
-    this.dexSaveProf = dexSaveProf;
-    this.conSaveProf = conSaveProf;
-    this.intSaveProf = intSaveProf;
-    this.wisSaveProf = wisSaveProf;
-    this.chaSaveProf = chaSaveProf;
+    this.strSaveProf = strSaveProf || 0;
+    this.dexSaveProf = dexSaveProf || 0;
+    this.conSaveProf = conSaveProf || 0;
+    this.intSaveProf = intSaveProf || 0;
+    this.wisSaveProf = wisSaveProf || 0;
+    this.chaSaveProf = chaSaveProf || 0;
   }
 }
 
