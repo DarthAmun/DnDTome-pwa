@@ -46,81 +46,82 @@ export default class Char implements IEntity {
   castingHit: number;
   castingDC: number;
 
+  constructor();
   constructor(
-    id: number,
-    name: string,
-    player: string,
-    pic: string,
-    classes: ClassSet[],
-    race: RaceSet,
-    background: string,
-    spells: string[],
-    spellSlots: { origin: string; slots: number[]; max: number[] }[],
-    currencyBonis: { origin: string; value: number; max: number }[],
-    items: {
+    id?: number,
+    name?: string,
+    player?: string,
+    pic?: string,
+    classes?: ClassSet[],
+    race?: RaceSet,
+    background?: string,
+    spells?: string[],
+    spellSlots?: { origin: string; slots: number[]; max: number[] }[],
+    currencyBonis?: { origin: string; value: number; max: number }[],
+    items?: {
       origin: string;
       attuned: boolean;
       prof: boolean;
       attribute: string;
     }[],
-    monsters: string[],
-    ac: number,
-    hp: number,
-    currentHp: number,
-    init: number,
-    speed: string,
-    str: number,
-    dex: number,
-    con: number,
-    int: number,
-    wis: number,
-    cha: number,
-    saves: Saves,
-    actions: string,
-    profsLangs: string,
-    senses: string,
-    money: Money,
-    skills: Skills,
-    spellNotes: string,
-    alignment: string,
-    inspiration: number,
-    castingHit: number,
-    castingDC: number
+    monsters?: string[],
+    ac?: number,
+    hp?: number,
+    currentHp?: number,
+    init?: number,
+    speed?: string,
+    str?: number,
+    dex?: number,
+    con?: number,
+    int?: number,
+    wis?: number,
+    cha?: number,
+    saves?: Saves,
+    actions?: string,
+    profsLangs?: string,
+    senses?: string,
+    money?: Money,
+    skills?: Skills,
+    spellNotes?: string,
+    alignment?: string,
+    inspiration?: number,
+    castingHit?: number,
+    castingDC?: number
   ) {
-    this.id = id;
-    this.name = name;
-    this.player = player;
-    this.pic = pic;
-    this.classes = classes;
-    this.race = race;
-    this.background = background;
-    this.spells = spells;
-    this.spellSlots = spellSlots;
-    this.currencyBonis = currencyBonis;
-    this.items = items;
-    this.monsters = monsters;
-    this.ac = ac;
-    this.hp = hp;
-    this.currentHp = currentHp;
-    this.init = init;
-    this.speed = speed;
-    this.str = str;
-    this.dex = dex;
-    this.con = con;
-    this.int = int;
-    this.wis = wis;
-    this.cha = cha;
-    this.saves = saves;
-    this.actions = actions;
-    this.profsLangs = profsLangs;
-    this.senses = senses;
-    this.money = money;
-    this.skills = skills;
-    this.spellNotes = spellNotes;
-    this.alignment = alignment;
-    this.inspiration = inspiration;
-    this.castingHit = castingHit;
-    this.castingDC = castingDC;
+    this.id = id || -1;
+    this.name = name || "";
+    this.player = player || "";
+    this.pic = pic || "";
+    this.classes = classes || [];
+    this.race = race || new RaceSet();
+    this.background = background || "";
+    this.spells = spells || [];
+    this.spellSlots = spellSlots || [];
+    this.currencyBonis = currencyBonis || [];
+    this.items = items || [];
+    this.monsters = monsters || [];
+    this.ac = ac || 0;
+    this.hp = hp || 0;
+    this.currentHp = currentHp || 0;
+    this.init = init || 0;
+    this.speed = speed || "";
+    this.str = str || 0;
+    this.dex = dex || 0;
+    this.con = con || 0;
+    this.int = int || 0;
+    this.wis = wis || 0;
+    this.cha = cha || 0;
+    this.saves = saves  || new Saves();
+    this.actions = actions || "";
+    this.profsLangs = profsLangs || "";
+    this.senses = senses || "";
+    this.money = money || new Money();
+    this.skills = skills || new Skills();
+    this.spellNotes = spellNotes || "";
+    this.alignment = alignment || "";
+    this.inspiration = inspiration || 0;
+    this.castingHit = castingHit || 0;
+    this.castingDC = castingDC || 0;
   }
 }
 

@@ -108,12 +108,15 @@ const CharDetail = ({ char }: $Props) => {
               value: old.value,
               max: newBoni.max,
             };
+          } else {
+            return null;
           }
         });
         if (
           updatedOldBonis &&
           updatedOldBonis.length > 0 &&
-          updatedOldBonis[0] !== undefined
+          updatedOldBonis[0] !== undefined &&
+          updatedOldBonis[0] !== null
         ) {
           return updatedOldBonis[0];
         } else {
@@ -134,12 +137,15 @@ const CharDetail = ({ char }: $Props) => {
               slots: old.slots,
               max: newSpellSlots.max,
             };
+          } else {
+            return null;
           }
         });
         if (
           updatedOldSlots &&
           updatedOldSlots.length > 0 &&
-          updatedOldSlots[0] !== undefined
+          updatedOldSlots[0] !== undefined &&
+          updatedOldSlots[0] !== null
         ) {
           return updatedOldSlots[0];
         } else {

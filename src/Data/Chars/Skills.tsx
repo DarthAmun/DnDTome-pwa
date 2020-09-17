@@ -18,44 +18,45 @@ export default class Skills {
   stealthProf: number;
   survivalProf: number;
 
+  constructor();
   constructor(
-    acrobaticsProf: number,
-    animalHandlingProf: number,
-    arcanaProf: number,
-    athleticsProf: number,
-    deceptionProf: number,
-    historyProf: number,
-    insightProf: number,
-    intimidationProf: number,
-    investigationProf: number,
-    medicineProf: number,
-    natureProf: number,
-    perceptionProf: number,
-    performanceProf: number,
-    persuasionProf: number,
-    religionProf: number,
-    sleightOfHandProf: number,
-    stealthProf: number,
-    survivalProf: number
+    acrobaticsProf?: number,
+    animalHandlingProf?: number,
+    arcanaProf?: number,
+    athleticsProf?: number,
+    deceptionProf?: number,
+    historyProf?: number,
+    insightProf?: number,
+    intimidationProf?: number,
+    investigationProf?: number,
+    medicineProf?: number,
+    natureProf?: number,
+    perceptionProf?: number,
+    performanceProf?: number,
+    persuasionProf?: number,
+    religionProf?: number,
+    sleightOfHandProf?: number,
+    stealthProf?: number,
+    survivalProf?: number
   ) {
-    this.acrobaticsProf = acrobaticsProf;
-    this.animalHandlingProf = animalHandlingProf;
-    this.arcanaProf = arcanaProf;
-    this.athleticsProf = athleticsProf;
-    this.deceptionProf = deceptionProf;
-    this.historyProf = historyProf;
-    this.insightProf = insightProf;
-    this.intimidationProf = intimidationProf;
-    this.investigationProf = investigationProf;
-    this.medicineProf = medicineProf;
-    this.natureProf = natureProf;
-    this.perceptionProf = perceptionProf;
-    this.performanceProf = performanceProf;
-    this.persuasionProf = persuasionProf;
-    this.religionProf = religionProf;
-    this.sleightOfHandProf = sleightOfHandProf;
-    this.stealthProf = stealthProf;
-    this.survivalProf = survivalProf;
+    this.acrobaticsProf = acrobaticsProf || 0;
+    this.animalHandlingProf = animalHandlingProf || 0;
+    this.arcanaProf = arcanaProf || 0;
+    this.athleticsProf = athleticsProf || 0;
+    this.deceptionProf = deceptionProf || 0;
+    this.historyProf = historyProf || 0;
+    this.insightProf = insightProf || 0;
+    this.intimidationProf = intimidationProf || 0;
+    this.investigationProf = investigationProf || 0;
+    this.medicineProf = medicineProf || 0;
+    this.natureProf = natureProf || 0;
+    this.perceptionProf = perceptionProf || 0;
+    this.performanceProf = performanceProf || 0;
+    this.persuasionProf = persuasionProf || 0;
+    this.religionProf = religionProf || 0;
+    this.sleightOfHandProf = sleightOfHandProf || 0;
+    this.stealthProf = stealthProf || 0;
+    this.survivalProf = survivalProf || 0;
   }
 }
 

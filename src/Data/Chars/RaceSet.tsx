@@ -2,9 +2,10 @@ export default class RaceSet {
   race: string;
   subrace: string;
 
-  constructor(race: string, subrace: string) {
-    this.race = race;
-    this.subrace = subrace;
+  constructor();
+  constructor(race?: string, subrace?: string) {
+    this.race = race || "";
+    this.subrace = subrace || "";
   }
 }
 

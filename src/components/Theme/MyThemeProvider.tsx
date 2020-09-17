@@ -29,12 +29,12 @@ export const MyThemeProvider = ({ children }: Props) => {
   useEffect(() => {
     let localTheme = localStorage.getItem("theme");
     if (localTheme !== undefined) {
-      if (localTheme === "dark") {
-        setTheme(darkTheme);
-        localStorage.setItem("theme", "dark");
-      } else {
+      if (localTheme === "light") {
         setTheme(lightTheme);
         localStorage.setItem("theme", "light");
+      } else {
+        setTheme(darkTheme);
+        localStorage.setItem("theme", "dark");
       }
     } else {
       localStorage.setItem("theme", "dark");

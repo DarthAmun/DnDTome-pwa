@@ -85,29 +85,9 @@ const CharEditView = ({ char, onEdit }: $Props) => {
     });
     onEdit({ ...char, items: newItemList });
   };
-  const onChangeItem = (
-    newItem: string,
-    oldItem: {
-      origin: string;
-      attuned: boolean;
-      prof: boolean;
-      attribute: string;
-    }
-  ) => {
-    let items = char.items.map(
-      (item: {
-        origin: string;
-        attuned: boolean;
-        prof: boolean;
-        attribute: string;
-      }) => {
-        if (item.origin === oldItem.origin) {
-          return { ...item, origin: newItem };
-        } else {
-          return item;
-        }
-      }
-    );
+  const onChangeItem = (newItem: string, i: number) => {
+    let items = char.items;
+    items[i].origin = newItem;
     onEdit({ ...char, items: items });
   };
   const onChangeItemAttribute = (newItem: {
@@ -115,21 +95,10 @@ const CharEditView = ({ char, onEdit }: $Props) => {
     attuned: boolean;
     prof: boolean;
     attribute: string;
-  }) => {
-    let items = char.items.map(
-      (item: {
-        origin: string;
-        attuned: boolean;
-        prof: boolean;
-        attribute: string;
-      }) => {
-        if (item.origin === newItem.origin) {
-          return newItem;
-        } else {
-          return item;
-        }
-      }
-    );
+  },
+  i: number) => {
+    let items = char.items;
+    items[i] = newItem;
     onEdit({ ...char, items: items });
   };
 
@@ -730,23 +699,26 @@ const CharEditView = ({ char, onEdit }: $Props) => {
                       optionTable={["items", "gears"]}
                       value={item.origin}
                       label="Item"
-                      onChange={(newItem) => onChangeItem(newItem, item)}
+                      onChange={(newItem) => onChangeItem(newItem, index)}
                     />
                     <CheckField
                       value={!!item.attuned}
                       label="Attunment"
                       onChange={(attunment) =>
-                        onChangeItemAttribute({
-                          ...item,
-                          attuned: attunment,
-                        })
+                        onChangeItemAttribute(
+                          {
+                            ...item,
+                            attuned: attunment,
+                          },
+                          index
+                        )
                       }
                     />
                     <CheckField
                       value={!!item.prof}
                       label="Prof"
                       onChange={(prof) =>
-                        onChangeItemAttribute({ ...item, prof: prof })
+                        onChangeItemAttribute({ ...item, prof: prof }, index)
                       }
                     />
                     <EnumField
@@ -766,7 +738,10 @@ const CharEditView = ({ char, onEdit }: $Props) => {
                       }}
                       label="Attribute"
                       onChange={(type) =>
-                        onChangeItemAttribute({ ...item, attribute: type })
+                        onChangeItemAttribute(
+                          { ...item, attribute: type },
+                          index
+                        )
                       }
                     />
                     <IconButton

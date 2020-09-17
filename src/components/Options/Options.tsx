@@ -16,6 +16,7 @@ import AppWrapper from "../AppWrapper";
 import TabBar from "../GeneralElements/TabBar";
 import FileField from "../FormElements/FileField";
 import IconButton from "../FormElements/IconButton";
+import { LoadingSpinner } from "../Loading";
 
 const Options = () => {
   const { theme, setTheme } = useTheme();
@@ -32,6 +33,10 @@ const Options = () => {
   const [charAmount, setCharAmount] = useState<number>(0);
 
   const [reload, isReload] = useState<boolean>(true);
+
+  const [loading, isLoading] = useState<boolean>(false);
+  const [showAlert, setAlert] = useState<boolean>(false);
+  const [message, setMessage] = useState<string>("");
 
   useEffect(() => {
     if (reload) {
@@ -77,8 +82,21 @@ const Options = () => {
   };
 
   const triggerImportFiles = (fileList: FileList | null) => {
-    importFiles(fileList, () => {
+    isLoading(true);
+    importFiles(fileList, (failed: number, max: number) => {
       isReload(true);
+      isLoading(false);
+
+      if (failed > 0) {
+        setMessage(failed + "of " + max + " failed!");
+      } else {
+        setMessage(max + " imported successfully!");
+      }
+      setAlert(true);
+
+      setTimeout(() => {
+        setAlert(false);
+      }, 3000);
     });
   };
   const triggerDeleteAll = (tableName: string) => {
@@ -88,6 +106,7 @@ const Options = () => {
 
   return (
     <AppWrapper>
+      {message && showAlert && <Message>{message}</Message>}
       <TabBar
         children={[
           "General",
@@ -101,6 +120,14 @@ const Options = () => {
         ]}
         onChange={(tab: string) => setTab(tab)}
       />
+      <OptionSection>
+        <SelectionTitle>Import</SelectionTitle>
+        <FileField
+          label=""
+          icon={faFileImport}
+          onChange={(file) => triggerImportFiles(file)}
+        />
+      </OptionSection>
       {activeTab === "General" && (
         <General>
           <OptionSection>
@@ -136,14 +163,6 @@ const Options = () => {
       {activeTab === "Spells" && (
         <OptionTab>
           <OptionSection>
-            <SelectionTitle>Import</SelectionTitle>
-            <FileField
-              label=""
-              icon={faFileImport}
-              onChange={(file) => triggerImportFiles(file)}
-            />
-          </OptionSection>
-          <OptionSection>
             <SelectionTitle>Export</SelectionTitle>
             <SectionRow>
               <SectionText>Export all Spells?</SectionText>
@@ -167,14 +186,6 @@ const Options = () => {
       )}
       {activeTab === "Gears" && (
         <OptionTab>
-          <OptionSection>
-            <SelectionTitle>Import</SelectionTitle>
-            <FileField
-              label=""
-              icon={faFileImport}
-              onChange={(file) => triggerImportFiles(file)}
-            />
-          </OptionSection>
           <OptionSection>
             <SelectionTitle>Export</SelectionTitle>
             <SectionRow>
@@ -200,14 +211,6 @@ const Options = () => {
       {activeTab === "Magic Items" && (
         <OptionTab>
           <OptionSection>
-            <SelectionTitle>Import</SelectionTitle>
-            <FileField
-              label=""
-              icon={faFileImport}
-              onChange={(file) => triggerImportFiles(file)}
-            />
-          </OptionSection>
-          <OptionSection>
             <SelectionTitle>Export</SelectionTitle>
             <SectionRow>
               <SectionText>Export all Items?</SectionText>
@@ -232,14 +235,6 @@ const Options = () => {
       {activeTab === "Monsters" && (
         <OptionTab>
           <OptionSection>
-            <SelectionTitle>Import</SelectionTitle>
-            <FileField
-              label=""
-              icon={faFileImport}
-              onChange={(file) => triggerImportFiles(file)}
-            />
-          </OptionSection>
-          <OptionSection>
             <SelectionTitle>Export</SelectionTitle>
             <SectionRow>
               <SectionText>Export all Monsters?</SectionText>
@@ -263,14 +258,6 @@ const Options = () => {
       )}
       {activeTab === "Races" && (
         <OptionTab>
-          <OptionSection>
-            <SelectionTitle>Import</SelectionTitle>
-            <FileField
-              label=""
-              icon={faFileImport}
-              onChange={(file) => triggerImportFiles(file)}
-            />
-          </OptionSection>
           <OptionSection>
             <SelectionTitle>Export</SelectionTitle>
             <SectionRow>
@@ -309,14 +296,6 @@ const Options = () => {
       )}
       {activeTab === "Classes" && (
         <OptionTab>
-          <OptionSection>
-            <SelectionTitle>Import</SelectionTitle>
-            <FileField
-              label=""
-              icon={faFileImport}
-              onChange={(file) => triggerImportFiles(file)}
-            />
-          </OptionSection>
           <OptionSection>
             <SelectionTitle>Export</SelectionTitle>
             <SectionRow>
@@ -358,14 +337,6 @@ const Options = () => {
       {activeTab === "Chars" && (
         <OptionTab>
           <OptionSection>
-            <SelectionTitle>Import</SelectionTitle>
-            <FileField
-              label=""
-              icon={faFileImport}
-              onChange={(file) => triggerImportFiles(file)}
-            />
-          </OptionSection>
-          <OptionSection>
             <SelectionTitle>Export</SelectionTitle>
             <SectionRow>
               <SectionText>Export all Chars?</SectionText>
@@ -387,6 +358,7 @@ const Options = () => {
           </OptionSection>
         </OptionTab>
       )}
+      {loading && <LoadingSpinner />}
     </AppWrapper>
   );
 };
@@ -486,4 +458,16 @@ const SectionRow = styled.div`
 
 const SectionText = styled.div`
   flex: 1 1 auto;
+`;
+
+const Message = styled.div`
+  color: ${({ theme }) => theme.tile.color};
+  background-color: ${({ theme }) => theme.tile.backgroundColor};
+  font-size: 16px;
+  overflow: hidden;
+  min-width: calc(100% - 20px);
+  flex: 1 1 auto;
+  padding: 3px;
+  margin: 5px;
+  border-radius: 5px;
 `;
