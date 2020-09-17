@@ -289,7 +289,8 @@ const CharLab = () => {
                 !completedClass ||
                 !completedRace ||
                 !completedAbilities ||
-                !completedGeneral) && (
+                !completedGeneral||
+                !completedEquipment) && (
                 <PropWrapper>
                   <Prop>Somthing is not finished!</Prop>
                 </PropWrapper>
@@ -298,7 +299,8 @@ const CharLab = () => {
                 completedClass &&
                 completedRace &&
                 completedAbilities &&
-                completedGeneral && (
+                completedGeneral &&
+                completedEquipment && (
                   <PropWrapper>
                     <Prop>Create Char?</Prop>
                     <IconButton
