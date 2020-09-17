@@ -163,6 +163,7 @@ export const reciveAllFiltered = (
             } else if (filter.value instanceof Array) {
               let arrayTest: boolean = false;
               filter.value.forEach((filterPart: string | boolean | number) => {
+                console.log(filterPart + " => " + (typeof filterPart === "string"));
                 if (typeof filterPart === "string") {
                   if (
                     // @ts-ignore
@@ -224,13 +225,11 @@ export const saveNew = (
   filename: string
 ) => {
   const db = new MyAppDatabase();
-  db.open()
-    .then(function () {
-      db.table(tableName)
-        .put({ ...entity, filename: filename })
-        .then(function () {
-          console.log(entity.name);
-        });
+  return db.open()
+    .then(async function () {
+      const prom = await db.table(tableName)
+        .put({ ...entity, filename: filename });
+        return prom;
     })
     .finally(function () {
       db.close();
