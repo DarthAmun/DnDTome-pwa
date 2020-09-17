@@ -18,12 +18,12 @@ const CharLabGeneral = ({ char, onChange, completed }: $Props) => {
       <CharView>
         <StringField
           value={char.name}
-          label="Name"
+          label="Name *"
           onChange={(name) => onChange({ ...char, name: name })}
         />
         <StringField
           value={char.player}
-          label="Player"
+          label="Player *"
           onChange={(player) => onChange({ ...char, player: player })}
         />
         <StringField

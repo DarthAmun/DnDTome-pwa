@@ -24,23 +24,13 @@ const AutoStringField = ({
   transform,
   onChange,
 }: $Props) => {
+  const [optionsTable] = useState<string | string[]>(optionTable);
   const [options, setOptions] = useState<IEntity[]>([]);
   const [filteredOptions, setFilteredOptions] = useState<IEntity[]>([]);
 
-  useEffect(() => {
-    if (typeof optionTable === "string") {
-      reciveAll(optionTable, (data: any[]) => {
-        setOptions(data);
-      });
-    }
-    if (optionTable instanceof Array && optionTable.length > 0) {
-      findAllItems(optionTable);
-    }
-  }, [optionTable]);
-
-  const findAllItems = async (optionTable: string[]) => {
+  const findAllItems = async (optionsTable: string[]) => {
     let itemList: Promise<IEntity[]>[] = [];
-    optionTable.forEach((table) => {
+    optionsTable.forEach((table) => {
       itemList.push(reciveAllPromise(table));
     });
     const results = await Promise.all(itemList);
@@ -49,14 +39,24 @@ const AutoStringField = ({
     });
   };
 
+  useEffect(() => {
+    if (typeof optionsTable === "string") {
+      reciveAll(optionsTable, (data: any[]) => {
+        setOptions(data);
+      });
+    }
+    if (optionsTable instanceof Array && optionsTable.length > 0) {
+      findAllItems(optionsTable);
+    }
+  }, [optionsTable]);
+
   const onSearch = useCallback(
     (searchTerm: string) => {
       onChange(searchTerm);
-      setFilteredOptions(
-        options.filter((option) => {
-          return option.name.includes(searchTerm);
-        })
-      );
+      let newOptions = options.filter((option) => {
+        return option.name.includes(searchTerm);
+      });
+      setFilteredOptions(newOptions);
     },
     [options, onChange]
   );
@@ -72,7 +72,7 @@ const AutoStringField = ({
         onChange={(e) => onSearch(e.target.value)}
       ></Input>
       <Options>
-        {filteredOptions.length > 1 &&
+        {filteredOptions.length > 0 &&
           filteredOptions.map((opt, index: number) => {
             return (
               <Option key={index} onClick={(e) => onSearch(opt.name)}>
@@ -122,7 +122,6 @@ const LabelText = styled.div`
 const Options = styled.div`
   display: none;
   position: absolute;
-  border: 1px solid #d4d4d4;
   border-bottom: none;
   border-top: none;
   z-index: 99;
@@ -130,8 +129,6 @@ const Options = styled.div`
   left: 0;
   right: 0;
   overflow: hidden;
-  overflow-y: scroll;
-  max-height: 100px;
 
   &:hover {
     display: block;
@@ -143,7 +140,8 @@ const Option = styled.div`
   cursor: pointer;
   color: ${({ theme }) => theme.input.color};
   background-color: ${({ theme }) => theme.input.backgroundColor};
-  border-bottom: 1px solid #d4d4d4;
+  margin-bottom: 1px;
+  border-radius: 5px;
 `;
 
 const Input = styled.input`

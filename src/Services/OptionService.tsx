@@ -1,4 +1,4 @@
-import { saveNewFromList, reciveAll, saveNew } from "./DatabaseService";
+import { reciveAll, saveNew } from "./DatabaseService";
 import { IndexableType } from "dexie";
 import Spell, { isSpell } from "../Data/Spell";
 import Gear, { isGear } from "../Data/Gear";
@@ -65,30 +65,6 @@ const scanImportFileTest = async (
     });
     await Promise.all(promList);
     callback(failCount,json.length);
-  }
-};
-
-const scanImportFile = (json: any, file: File, callback: () => void) => {
-  if (Array.isArray(json)) {
-    if (isClass(json[0])) {
-      saveNewFromList("classes", json as Class[], file.name, callback);
-    } else if (isSubclass(json[0])) {
-      saveNewFromList("subclasses", json as Subclass[], file.name, callback);
-    } else if (isRace(json[0])) {
-      saveNewFromList("races", json as Race[], file.name, callback);
-    } else if (isSubrace(json[0])) {
-      saveNewFromList("subraces", json as Subrace[], file.name, callback);
-    } else if (isMonster(json[0])) {
-      saveNewFromList("monsters", json as Monster[], file.name, callback);
-    } else if (isSpell(json[0])) {
-      saveNewFromList("spells", json as Spell[], file.name, callback);
-    } else if (isGear(json[0])) {
-      saveNewFromList("gears", json as Gear[], file.name, callback);
-    } else if (isItem(json[0])) {
-      saveNewFromList("items", json as Item[], file.name, callback);
-    } else if (isChar(json[0])) {
-      saveNewFromList("chars", json as Char[], file.name, callback);
-    }
   }
 };
 

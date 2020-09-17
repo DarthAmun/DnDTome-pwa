@@ -1,6 +1,9 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import Char from "../../../../Data/Chars/Char";
+import { reciveAllFiltered } from "../../../../Services/DatabaseService";
+import Class from "../../../../Data/Classes/Class";
+import ClassSet from "../../../../Data/Chars/ClassSet";
 
 import IconButton from "../../../FormElements/IconButton";
 import {
@@ -8,10 +11,10 @@ import {
   faPlus,
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
-import ClassSet from "../../../../Data/Chars/ClassSet";
 import AutoStringField from "../../../FormElements/AutoStringField";
 import NumberField from "../../../FormElements/NumberField";
 import TextButton from "../../../FormElements/TextButton";
+import FormatedText from "../../../GeneralElements/FormatedText";
 
 interface $Props {
   char: Char;
@@ -20,6 +23,8 @@ interface $Props {
 }
 
 const CharLabClass = ({ char, onChange, completed }: $Props) => {
+  const [classes, setClasses] = useState<Class[]>([]);
+
   const removeClass = (oldClass: ClassSet) => {
     let newClassList = char.classes.filter((classe) => classe !== oldClass);
     onChange({ ...char, classes: newClassList });
@@ -69,6 +74,25 @@ const CharLabClass = ({ char, onChange, completed }: $Props) => {
     [char, onChange]
   );
 
+  useEffect(() => {
+    if (char.classes.length > 0) {
+      reciveAllFiltered(
+        "classes",
+        [
+          {
+            fieldName: "name",
+            value: char.classes.map((classe) => {
+              return classe.classe;
+            }),
+          },
+        ],
+        (results: any[]) => {
+          setClasses(results);
+        }
+      );
+    }
+  }, [char]);
+
   return (
     <CenterWrapper>
       <CharView>
@@ -77,7 +101,7 @@ const CharLabClass = ({ char, onChange, completed }: $Props) => {
             <PropWrapper key={index}>
               <NumberField
                 value={classSet.level}
-                label="Level"
+                label="Level *"
                 onChange={(level) => changeClassLevel(classSet, level)}
               />
               <IconButton
@@ -87,7 +111,7 @@ const CharLabClass = ({ char, onChange, completed }: $Props) => {
               <AutoStringField
                 optionTable={"classes"}
                 value={classSet.classe}
-                label="Class"
+                label="Class *"
                 onChange={(classe) => changeClass(classSet, classe)}
               />
               <AutoStringField
@@ -113,12 +137,24 @@ const CharLabClass = ({ char, onChange, completed }: $Props) => {
               char &&
               char.classes.length > 0 &&
               char.classes[0].classe.length > 1 &&
-              char.classes[0].subclasse.length > 1 &&
               char.classes[0].level > 0
             )
           }
           onClick={() => completed(true, "Race")}
         />
+        <PropWrapper>
+          {classes &&
+            classes.map((classe: Class, index: number) => {
+              return (
+                <Text key={index}>
+                  <PropTitle>{classe.name}:</PropTitle>
+                  <FormatedText text={classe.proficiencies} />
+                  <br />
+                  <FormatedText text={classe.equipment} />
+                </Text>
+              );
+            })}
+        </PropWrapper>
       </CharView>
     </CenterWrapper>
   );
@@ -157,4 +193,22 @@ const PropWrapper = styled.div`
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
+`;
+
+const PropTitle = styled.span`
+  display: inline-block;
+  color: ${({ theme }) => theme.tile.backgroundColorLink};
+  text-decoration: none;
+  margin: 0px 5px 0px 5px;
+`;
+
+const Text = styled.div`
+  height: auto;
+  width: calc(100% - 20px);
+  margin: 0 0 5px 0;
+  float: left;
+  line-height: 18px;
+  padding: 10px;
+  border-radius: 5px;
+  background-color: ${({ theme }) => theme.tile.backgroundColor};
 `;

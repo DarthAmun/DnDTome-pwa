@@ -44,6 +44,25 @@ export const save = (tableName: string, data: IEntity) => {
     });
 };
 
+export const saveWithCallback = (
+  tableName: string,
+  data: IEntity,
+  callback: (data: number) => void
+) => {
+  const db = new MyAppDatabase();
+  db.open()
+    .then(function () {
+      db.table(tableName)
+        .add(data)
+        .then((result: number) => {
+          callback(result);
+        });
+    })
+    .finally(function () {
+      db.close();
+    });
+};
+
 export const remove = (tableName: string, id: number | undefined) => {
   const db = new MyAppDatabase();
   if (id !== undefined) {
@@ -97,16 +116,12 @@ export const reciveByAttribute = (
     });
 };
 
-export const reciveAllPromise = (
-  tableName: string
-) => {
+export const reciveAllPromise = (tableName: string) => {
   const db = new MyAppDatabase();
   return db
     .open()
     .then(async function () {
-      const array = await db
-        .table(tableName)
-        .toArray();
+      const array = await db.table(tableName).toArray();
       return array;
     })
     .finally(function () {
@@ -163,7 +178,6 @@ export const reciveAllFiltered = (
             } else if (filter.value instanceof Array) {
               let arrayTest: boolean = false;
               filter.value.forEach((filterPart: string | boolean | number) => {
-                console.log(filterPart + " => " + (typeof filterPart === "string"));
                 if (typeof filterPart === "string") {
                   if (
                     // @ts-ignore
@@ -225,11 +239,13 @@ export const saveNew = (
   filename: string
 ) => {
   const db = new MyAppDatabase();
-  return db.open()
+  return db
+    .open()
     .then(async function () {
-      const prom = await db.table(tableName)
+      const prom = await db
+        .table(tableName)
         .put({ ...entity, filename: filename });
-        return prom;
+      return prom;
     })
     .finally(function () {
       db.close();
@@ -249,9 +265,11 @@ export const saveNewFromList = (
         delete entity["id"];
         return { ...entity, filename: filename };
       });
-      db.table(tableName).bulkPut(refinedEntities).then(() => {
-        callback();
-      })
+      db.table(tableName)
+        .bulkPut(refinedEntities)
+        .then(() => {
+          callback();
+        });
     })
     .finally(function () {
       db.close();
