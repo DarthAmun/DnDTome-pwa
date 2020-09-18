@@ -29,6 +29,13 @@ const ClassOverview = () => {
     reciveAllFiltered("classes", filters, (results: any[]) => {
       setAllClasses(results);
       setClasses(results.slice(0, 100));
+      if(results.length === 0){
+        setParam({
+          start: 0,
+          end: 0,
+          hasMore: false,
+        });
+      }
     });
   }, [filters]);
 

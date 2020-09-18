@@ -28,6 +28,13 @@ const MonsterOverview = () => {
     reciveAllFiltered("monsters", filters, (results: any[]) => {
       setAllMonsters(results);
       setMonsters(results.slice(0, 100));
+      if(results.length === 0){
+        setParam({
+          start: 0,
+          end: 0,
+          hasMore: false,
+        });
+      }
     });
   }, [filters]);
 

@@ -28,6 +28,13 @@ const SpellOverview = () => {
     reciveAllFiltered("spells", filters, (results: any[]) => {
       setAllSpells(results);
       setSpells(results.slice(0, 100));
+      if(results.length === 0){
+        setParam({
+          start: 0,
+          end: 0,
+          hasMore: false,
+        });
+      }
     });
   }, [filters]);
 
@@ -53,8 +60,6 @@ const SpellOverview = () => {
   return (
     <AppWrapper>
       <SpellSearchBar onSend={(filterArray) => setFilter(filterArray)} />
-      {/* {!error && loading && <LoadingSpinner />}
-        {!error && !loading && ( */}
       <SpellContainer
         dataLength={spells.length}
         next={fetchMoreData}
@@ -65,8 +70,6 @@ const SpellOverview = () => {
           return <SpellTile key={index} spell={spell}></SpellTile>;
         })}
       </SpellContainer>
-      {/* )}
-        {error && <>Fail</>} */}
     </AppWrapper>
   );
 };

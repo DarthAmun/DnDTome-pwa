@@ -28,6 +28,13 @@ const GearOverview = () => {
     reciveAllFiltered("gears", filters, (results: any[]) => {
       setAllGears(results);
       setGears(results.slice(0, 100));
+      if(results.length === 0){
+        setParam({
+          start: 0,
+          end: 0,
+          hasMore: false,
+        });
+      }
     });
   }, [filters]);
 

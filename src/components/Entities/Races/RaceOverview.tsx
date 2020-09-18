@@ -29,6 +29,13 @@ const RaceOverview = () => {
     reciveAllFiltered("races", filters, (results: any[]) => {
       setAllRaces(results);
       setRaces(results.slice(0, 100));
+      if(results.length === 0){
+        setParam({
+          start: 0,
+          end: 0,
+          hasMore: false,
+        });
+      }
     });
   }, [filters]);
 

@@ -93,7 +93,7 @@ const Options = () => {
         isLoading(false);
 
         if (failed > 0) {
-          setMessage(failed + "of " + max + " failed!");
+          setMessage(failed + " of " + max + " failed!");
         } else {
           setMessage(max + " imported successfully!");
         }

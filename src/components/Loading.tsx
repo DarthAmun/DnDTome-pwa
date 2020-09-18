@@ -21,7 +21,7 @@ const Spinner = styled.div`
   height: 40px;
   font-size: 40px;
   position: fixed;
-  z-index: 1000;
+  z-index: 940;
   top: calc(50% - 20px);
   right: calc(50% - 20px);
 
@@ -34,7 +34,9 @@ const Icon = styled(FontAwesomeIcon)`
   width: 100%;
   height: 100%;
   border-radius: 150px;
+  border: 5px solid ${({ theme }) => theme.main.backgroundColor};
   animation: bounce 2s linear infinite;
+  background-color: ${({ theme }) => theme.main.backgroundColor};
 
   @-webkit-keyframes bounce {
     0%,
