@@ -60,3 +60,36 @@ export function isClass(arg: any): arg is Class {
     equipmentCheck
   );
 }
+
+export function findClassFormattError(
+  arg: any
+): {
+  nameCheck: boolean;
+  sourcesCheck: boolean;
+  featureSetsCheck: boolean;
+  hitDicesCheck: boolean;
+  proficienciesCheck: boolean;
+  equipmentCheck: boolean;
+} {
+  const nameCheck = arg.name !== undefined && typeof arg.name == "string";
+  const featureSetsCheck =
+    arg.featureSets !== undefined &&
+    Array.isArray(arg.featureSets) &&
+    isFeatureSet(arg.featureSets[0]);
+  const hitDicesCheck =
+    arg.hitDices !== undefined && typeof arg.hitDices == "string";
+  const proficienciesCheck =
+    arg.proficiencies !== undefined && typeof arg.proficiencies == "string";
+  const equipmentCheck =
+    arg.equipment !== undefined && typeof arg.equipment == "string";
+  const sourcesCheck =
+    arg.sources !== undefined && typeof arg.sources == "string";
+  return {
+    nameCheck: nameCheck,
+    sourcesCheck: sourcesCheck,
+    featureSetsCheck: featureSetsCheck,
+    hitDicesCheck: hitDicesCheck,
+    proficienciesCheck: proficienciesCheck,
+    equipmentCheck: equipmentCheck,
+  };
+}

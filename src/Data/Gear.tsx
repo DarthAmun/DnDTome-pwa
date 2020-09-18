@@ -65,3 +65,41 @@ export function isGear(arg: any): arg is Gear {
     picCheck
   );
 }
+
+export function findGearFormattError(
+  arg: any
+): {
+  nameCheck: boolean;
+  sourcesCheck: boolean;
+  descriptionCheck: boolean;
+  costCheck: boolean;
+  damageCheck: boolean;
+  weightCheck: boolean;
+  propertiesCheck: boolean;
+  typeCheck: boolean;
+  picCheck: boolean;
+} {
+  const nameCheck = arg.name !== undefined && typeof arg.name == "string";
+  const sourcesCheck =
+    arg.sources !== undefined && typeof arg.sources == "string";
+  const descriptionCheck =
+    arg.description !== undefined && typeof arg.description == "string";
+  const costCheck = arg.cost !== undefined && typeof arg.cost == "string";
+  const damageCheck = arg.damage !== undefined && typeof arg.damage == "string";
+  const weightCheck = arg.weight !== undefined && typeof arg.weight == "string";
+  const propertiesCheck =
+    arg.properties !== undefined && typeof arg.properties == "string";
+  const typeCheck = arg.type !== undefined && typeof arg.type == "string";
+  const picCheck = arg.pic !== undefined && typeof arg.pic == "string";
+  return {
+    nameCheck: nameCheck,
+    sourcesCheck: sourcesCheck,
+    descriptionCheck: descriptionCheck,
+    costCheck: costCheck,
+    damageCheck: damageCheck,
+    weightCheck: weightCheck,
+    propertiesCheck: propertiesCheck,
+    typeCheck: typeCheck,
+    picCheck: picCheck,
+  };
+}

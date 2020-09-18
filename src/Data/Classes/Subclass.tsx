@@ -38,3 +38,27 @@ export function isSubclass(arg: any): arg is Subclass {
     arg.sources !== undefined && typeof arg.sources == "string";
   return arg && nameCheck && typeCheck && sourcesCheck && featuresCheck;
 }
+
+export function formattSubclassFromattError(
+  arg: any
+): {
+  nameCheck: boolean;
+  typeCheck: boolean;
+  sourcesCheck: boolean;
+  featuresCheck: boolean;
+} {
+  const nameCheck = arg.name !== undefined && typeof arg.name == "string";
+  const typeCheck = arg.type !== undefined && typeof arg.type == "string";
+  const featuresCheck =
+    arg.features !== undefined &&
+    Array.isArray(arg.features) &&
+    isFeatureSet(arg.features[0]);
+  const sourcesCheck =
+    arg.sources !== undefined && typeof arg.sources == "string";
+  return {
+    nameCheck: nameCheck,
+    typeCheck: typeCheck,
+    sourcesCheck: sourcesCheck,
+    featuresCheck: featuresCheck,
+  };
+}

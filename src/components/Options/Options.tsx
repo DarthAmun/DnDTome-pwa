@@ -38,6 +38,8 @@ const Options = () => {
   const [showAlert, setAlert] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
 
+  const [failedObjs, setFailedObjs] = useState<string[]>([]);
+
   useEffect(() => {
     if (reload) {
       reciveCount("spells", (result: number) => {
@@ -83,21 +85,25 @@ const Options = () => {
 
   const triggerImportFiles = (fileList: FileList | null) => {
     isLoading(true);
-    importFiles(fileList, (failed: number, max: number) => {
-      isReload(true);
-      isLoading(false);
+    importFiles(
+      fileList,
+      (failed: number, failedObj: string[], max: number) => {
+        setFailedObjs(failedObj);
+        isReload(true);
+        isLoading(false);
 
-      if (failed > 0) {
-        setMessage(failed + "of " + max + " failed!");
-      } else {
-        setMessage(max + " imported successfully!");
+        if (failed > 0) {
+          setMessage(failed + "of " + max + " failed!");
+        } else {
+          setMessage(max + " imported successfully!");
+        }
+        setAlert(true);
+
+        setTimeout(() => {
+          setAlert(false);
+        }, 3000);
       }
-      setAlert(true);
-
-      setTimeout(() => {
-        setAlert(false);
-      }, 3000);
-    });
+    );
   };
   const triggerDeleteAll = (tableName: string) => {
     deleteAll(tableName);
@@ -359,6 +365,18 @@ const Options = () => {
         </OptionTab>
       )}
       {loading && <LoadingSpinner />}
+      {failedObjs &&
+        failedObjs.length > 0 &&
+        failedObjs.map((obj: string, index: number) => {
+          return (
+            <OptionSection key={index}>
+              <SelectionTitle>Formatt Errors</SelectionTitle>
+              <SectionText>
+                <pre>{obj}</pre>
+              </SectionText>
+            </OptionSection>
+          );
+        })}
     </AppWrapper>
   );
 };

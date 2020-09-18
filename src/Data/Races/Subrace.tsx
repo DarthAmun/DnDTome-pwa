@@ -50,3 +50,31 @@ export function isSubrace(arg: any): arg is Subrace {
     sourcesCheck
   );
 }
+
+export function findSubraceFormattError(
+  arg: any
+): {
+  nameCheck: boolean;
+  typeCheck: boolean;
+  abilityScoresCheck: boolean;
+  traitsCheck: boolean;
+  sourcesCheck: boolean;
+} {
+  const nameCheck = arg.name !== undefined && typeof arg.name == "string";
+  const typeCheck = arg.type !== undefined && typeof arg.type == "string";
+  const abilityScoresCheck =
+    arg.abilityScores !== undefined && typeof arg.abilityScores == "string";
+  const traitsCheck =
+    arg.traits !== undefined &&
+    Array.isArray(arg.traits) &&
+    isTrait(arg.traits[0]);
+  const sourcesCheck =
+    arg.sources !== undefined && typeof arg.sources == "string";
+  return {
+    nameCheck: nameCheck,
+    typeCheck: typeCheck,
+    abilityScoresCheck: abilityScoresCheck,
+    traitsCheck: traitsCheck,
+    sourcesCheck: sourcesCheck,
+  };
+}

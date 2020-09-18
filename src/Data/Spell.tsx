@@ -40,7 +40,7 @@ export default class Spell implements IEntity {
     this.school = school || "";
     this.time = time || "";
     this.range = range || "";
-    this.components = components|| "";
+    this.components = components || "";
     this.duration = duration || "";
     this.ritual = ritual || 0;
     this.text = text || "";
@@ -82,4 +82,52 @@ export function isSpell(arg: any): arg is Spell {
     textCheck &&
     picCheck
   );
+}
+
+export function findSpellFormattError(
+  arg: any
+): {
+  nameCheck: boolean;
+  classesCheck: boolean;
+  sourcesCheck: boolean;
+  levelCheck: boolean;
+  schoolCheck: boolean;
+  timeCheck: boolean;
+  rangeCheck: boolean;
+  compCheck: boolean;
+  durationCheck: boolean;
+  ritualCheck: boolean;
+  textCheck: boolean;
+  picCheck: boolean;
+} {
+  const nameCheck = arg.name !== undefined && typeof arg.name == "string";
+  const classesCheck =
+    arg.classes !== undefined && typeof arg.classes == "string";
+  const sourcesCheck =
+    arg.sources !== undefined && typeof arg.sources == "string";
+  const levelCheck = arg.level !== undefined && typeof arg.level == "number";
+  const schoolCheck = arg.school !== undefined && typeof arg.school == "string";
+  const timeCheck = arg.time !== undefined && typeof arg.time == "string";
+  const rangeCheck = arg.range !== undefined && typeof arg.range == "string";
+  const compCheck =
+    arg.components !== undefined && typeof arg.components == "string";
+  const durationCheck =
+    arg.duration !== undefined && typeof arg.duration == "string";
+  const ritualCheck = arg.ritual !== undefined && typeof arg.ritual == "number";
+  const textCheck = arg.text !== undefined && typeof arg.text == "string";
+  const picCheck = arg.pic !== undefined && typeof arg.pic == "string";
+  return {
+    nameCheck: nameCheck,
+    classesCheck: classesCheck,
+    sourcesCheck: sourcesCheck,
+    levelCheck: levelCheck,
+    schoolCheck: schoolCheck,
+    timeCheck: timeCheck,
+    rangeCheck: rangeCheck,
+    compCheck: compCheck,
+    durationCheck: durationCheck,
+    ritualCheck: ritualCheck,
+    textCheck: textCheck,
+    picCheck: picCheck,
+  };
 }

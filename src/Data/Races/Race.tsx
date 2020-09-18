@@ -76,3 +76,47 @@ export function isRace(arg: any): arg is Race {
     sourcesCheck
   );
 }
+
+export function findRaceFormattError(
+  arg: any
+): {
+  nameCheck: boolean;
+  picCheck: boolean;
+  abilityScoresCheck: boolean;
+  ageCheck: boolean;
+  alignmentCheck: boolean;
+  sizeCheck: boolean;
+  speedCheck: boolean;
+  langCheck: boolean;
+  traitsCheck: boolean;
+  sourcesCheck: boolean;
+} {
+  const nameCheck = arg.name !== undefined && typeof arg.name == "string";
+  const picCheck = arg.pic !== undefined && typeof arg.pic == "string";
+  const abilityScoresCheck =
+    arg.abilityScores !== undefined && typeof arg.abilityScores == "string";
+  const ageCheck = arg.age !== undefined && typeof arg.age == "string";
+  const alignmentCheck =
+    arg.alignment !== undefined && typeof arg.alignment == "string";
+  const sizeCheck = arg.size !== undefined && typeof arg.size == "string";
+  const speedCheck = arg.speed !== undefined && typeof arg.speed == "string";
+  const langCheck = arg.lang !== undefined && typeof arg.lang == "string";
+  const traitsCheck =
+    arg.traits !== undefined &&
+    Array.isArray(arg.traits) &&
+    isTrait(arg.traits[0]);
+  const sourcesCheck =
+    arg.sources !== undefined && typeof arg.sources == "string";
+  return {
+    nameCheck: nameCheck,
+    picCheck: picCheck,
+    abilityScoresCheck: abilityScoresCheck,
+    ageCheck: ageCheck,
+    alignmentCheck: alignmentCheck,
+    sizeCheck: sizeCheck,
+    speedCheck: speedCheck,
+    langCheck: langCheck,
+    traitsCheck: traitsCheck,
+    sourcesCheck: sourcesCheck,
+  };
+}
