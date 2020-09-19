@@ -29,13 +29,16 @@ import NameToChar from "./components/Entities/Chars/Detail/LinkWrapper/NameToCha
 import IdToChar from "./components/Entities/Chars/Detail/LinkWrapper/IdToChar";
 import CharOverview from "./components/Entities/Chars/CharOverview";
 import CharLab from "./components/Entities/Chars/Lab/CharLab";
+import EncounterOverview from "./components/Encounters/EncounterOverview";
+import NameToEncounter from "./components/Encounters/Detail/LinkWrapper/NameToEncounter";
+import IdToEncounter from "./components/Encounters/Detail/LinkWrapper/IdToEncounter";
 
 const App = () => {
   return (
     <MyThemeProvider>
       <MemoryRouter>
         <Switch>
-          <Route exact path="/" component={CharOverview}></Route>
+          <Route exact path="/" component={EncounterOverview}></Route>
           <Route path="/spell-detail/name/:name" component={NameToSpell}></Route>
           <Route path="/spell-detail/id/:id" component={IdToSpell}></Route>
           <Route path="/spell-overview" component={SpellOverview}></Route>
@@ -63,6 +66,9 @@ const App = () => {
           <Route path="/char-overview" component={CharOverview}></Route>
           <Route path="/char-lab" component={CharLab}></Route>
           <Route path="/options" component={Options}></Route>
+          <Route path="/encounter-detail/name/:name" component={NameToEncounter}></Route>
+          <Route path="/encounter-detail/id/:id" component={IdToEncounter}></Route>
+          <Route path="/encounter-overview" component={EncounterOverview}></Route>
         </Switch>
       </MemoryRouter>
     </MyThemeProvider>
