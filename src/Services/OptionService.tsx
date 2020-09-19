@@ -1,4 +1,4 @@
-import { reciveAll, saveNew } from "./DatabaseService";
+import { reciveAll, reciveAllPromise, saveNew } from "./DatabaseService";
 import { IndexableType } from "dexie";
 import Spell, { findSpellFormattError, isSpell } from "../Data/Spell";
 import Gear, { findGearFormattError, isGear } from "../Data/Gear";
@@ -15,6 +15,7 @@ import Subclass, {
   isSubclass,
 } from "../Data/Classes/Subclass";
 import Char, { isChar } from "../Data/Chars/Char";
+import IEntity from "../Data/IEntity";
 
 export const importFiles = (
   fileList: FileList | null,
@@ -214,7 +215,7 @@ const scanForFormatErrors = (obj: any) => {
   return JSON.stringify({ failedObject: obj, Errors: errors }, null, 2);
 };
 
-export const exportAll = (tableName: string, filename: string) => {
+export const exportAllFromTable = (tableName: string, filename: string) => {
   reciveAll(tableName, (all: IndexableType[]) => {
     let contentType = "application/json;charset=utf-8;";
     if (window.navigator && window.navigator.msSaveOrOpenBlob) {
@@ -234,4 +235,41 @@ export const exportAll = (tableName: string, filename: string) => {
       document.body.removeChild(a);
     }
   });
+};
+
+export const exportAll = async (filename: string) => {
+  let tableList: Promise<IEntity[]>[] = [];
+  tableList.push(reciveAllPromise("spells"));
+  tableList.push(reciveAllPromise("items"));
+  tableList.push(reciveAllPromise("gears"));
+  tableList.push(reciveAllPromise("monsters"));
+  tableList.push(reciveAllPromise("races"));
+  tableList.push(reciveAllPromise("subraces"));
+  tableList.push(reciveAllPromise("classes"));
+  tableList.push(reciveAllPromise("subclasses"));
+  tableList.push(reciveAllPromise("chars"));
+  const results = await Promise.all(tableList);
+  let all: IEntity[] = [];
+  results.forEach((list: IEntity[]) => {
+    list.forEach((entity: IEntity) => {
+      all.push(entity);
+    });
+  });
+  
+  let contentType = "application/json;charset=utf-8;";
+  if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+    var blob = new Blob([decodeURIComponent(encodeURI(JSON.stringify(all)))], {
+      type: contentType,
+    });
+    navigator.msSaveOrOpenBlob(blob, filename);
+  } else {
+    var a = document.createElement("a");
+    a.download = filename;
+    a.href =
+      "data:" + contentType + "," + encodeURIComponent(JSON.stringify(all));
+    a.target = "_blank";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  }
 };

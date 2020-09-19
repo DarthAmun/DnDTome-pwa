@@ -2,7 +2,11 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useTheme } from "../Theme/MyThemeProvider";
 import { darkTheme, lightTheme } from "../Theme/Theme";
-import { importFiles, exportAll } from "../../Services/OptionService";
+import {
+  importFiles,
+  exportAllFromTable,
+  exportAll,
+} from "../../Services/OptionService";
 import { deleteAll, reciveCount } from "../../Services/DatabaseService";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -101,7 +105,7 @@ const Options = () => {
 
         setTimeout(() => {
           setAlert(false);
-        }, 3000);
+        }, 5000);
       }
     );
   };
@@ -113,6 +117,24 @@ const Options = () => {
   return (
     <AppWrapper>
       {message && showAlert && <Message>{message}</Message>}
+      <OptionSection>
+        <SelectionTitle>Import</SelectionTitle>
+        <FileField
+          label=""
+          icon={faFileImport}
+          onChange={(file) => triggerImportFiles(file)}
+        />
+      </OptionSection>
+      <OptionSection>
+        <SelectionTitle>Export</SelectionTitle>
+        <SectionRow>
+          <SectionText>Export as one file?</SectionText>
+          <IconButton
+            icon={faFileExport}
+            onClick={() => exportAll("DnDTome_all.json")}
+          />
+        </SectionRow>
+      </OptionSection>
       <TabBar
         children={[
           "General",
@@ -126,14 +148,6 @@ const Options = () => {
         ]}
         onChange={(tab: string) => setTab(tab)}
       />
-      <OptionSection>
-        <SelectionTitle>Import</SelectionTitle>
-        <FileField
-          label=""
-          icon={faFileImport}
-          onChange={(file) => triggerImportFiles(file)}
-        />
-      </OptionSection>
       {activeTab === "General" && (
         <General>
           <OptionSection>
@@ -174,7 +188,9 @@ const Options = () => {
               <SectionText>Export all Spells?</SectionText>
               <IconButton
                 icon={faFileExport}
-                onClick={() => exportAll("spells", "DnDTome_spells.json")}
+                onClick={() =>
+                  exportAllFromTable("spells", "DnDTome_spells.json")
+                }
               />
             </SectionRow>
           </OptionSection>
@@ -198,7 +214,7 @@ const Options = () => {
               <SectionText>Export all Gear?</SectionText>
               <IconButton
                 icon={faFileExport}
-                onClick={() => exportAll("gears", "DnDTome_gear.json")}
+                onClick={() => exportAllFromTable("gears", "DnDTome_gear.json")}
               />
             </SectionRow>
           </OptionSection>
@@ -222,7 +238,9 @@ const Options = () => {
               <SectionText>Export all Items?</SectionText>
               <IconButton
                 icon={faFileExport}
-                onClick={() => exportAll("items", "DnDTome_items.json")}
+                onClick={() =>
+                  exportAllFromTable("items", "DnDTome_items.json")
+                }
               />
             </SectionRow>
           </OptionSection>
@@ -246,7 +264,9 @@ const Options = () => {
               <SectionText>Export all Monsters?</SectionText>
               <IconButton
                 icon={faFileExport}
-                onClick={() => exportAll("monsters", "DnDTome_monsters.json")}
+                onClick={() =>
+                  exportAllFromTable("monsters", "DnDTome_monsters.json")
+                }
               />
             </SectionRow>
           </OptionSection>
@@ -270,14 +290,18 @@ const Options = () => {
               <SectionText>Export all Races?</SectionText>
               <IconButton
                 icon={faFileExport}
-                onClick={() => exportAll("races", "DnDTome_races.json")}
+                onClick={() =>
+                  exportAllFromTable("races", "DnDTome_races.json")
+                }
               />
             </SectionRow>
             <SectionRow>
               <SectionText>Export all Subraces?</SectionText>
               <IconButton
                 icon={faFileExport}
-                onClick={() => exportAll("subraces", "DnDTome_subraces.json")}
+                onClick={() =>
+                  exportAllFromTable("subraces", "DnDTome_subraces.json")
+                }
               />
             </SectionRow>
           </OptionSection>
@@ -308,7 +332,9 @@ const Options = () => {
               <SectionText>Export all Classes?</SectionText>
               <IconButton
                 icon={faFileExport}
-                onClick={() => exportAll("classes", "DnDTome_classes.json")}
+                onClick={() =>
+                  exportAllFromTable("classes", "DnDTome_classes.json")
+                }
               />
             </SectionRow>
             <SectionRow>
@@ -316,7 +342,7 @@ const Options = () => {
               <IconButton
                 icon={faFileExport}
                 onClick={() =>
-                  exportAll("subclasses", "DnDTome_subclasses.json")
+                  exportAllFromTable("subclasses", "DnDTome_subclasses.json")
                 }
               />
             </SectionRow>
@@ -348,7 +374,9 @@ const Options = () => {
               <SectionText>Export all Chars?</SectionText>
               <IconButton
                 icon={faFileExport}
-                onClick={() => exportAll("chars", "DnDTome_chars.json")}
+                onClick={() =>
+                  exportAllFromTable("chars", "DnDTome_chars.json")
+                }
               />
             </SectionRow>
           </OptionSection>
