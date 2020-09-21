@@ -11,9 +11,9 @@ export default class Monster implements IEntity {
   subtype: string;
   alignment: string;
   ac: number;
-  hp: string;
+  hp: number;
   speed: string;
-  cr: string;
+  cr: number;
   str: number;
   dex: number;
   con: number;
@@ -43,9 +43,9 @@ export default class Monster implements IEntity {
     subtype?: string,
     alignment?: string,
     ac?: number,
-    hp?: string,
+    hp?: number,
     speed?: string,
-    cr?: string,
+    cr?: number,
     str?: number,
     dex?: number,
     con?: number,
@@ -74,9 +74,9 @@ export default class Monster implements IEntity {
     this.subtype = subtype || "";
     this.alignment = alignment || "";
     this.ac = ac || 0;
-    this.hp = hp || "";
+    this.hp = hp || 0;
     this.speed = speed || "";
-    this.cr = cr || "";
+    this.cr = cr || 0;
     this.str = str || 0;
     this.dex = dex || 0;
     this.con = con || 0;
@@ -110,9 +110,9 @@ export function isMonster(arg: any): arg is Monster {
   const alignmentCheck =
     arg.alignment !== undefined && typeof arg.alignment == "string";
   const acCheck = arg.ac !== undefined && typeof arg.ac == "number";
-  const hpCheck = arg.hp !== undefined && typeof arg.hp == "string";
+  const hpCheck = arg.hp !== undefined && typeof arg.hp == "number";
   const speedCheck = arg.speed !== undefined && typeof arg.speed == "string";
-  const crCheck = arg.cr !== undefined && typeof arg.cr == "string";
+  const crCheck = arg.cr !== undefined && typeof arg.cr == "number";
   const strCheck = arg.str !== undefined && typeof arg.str == "number";
   const dexCheck = arg.dex !== undefined && typeof arg.dex == "number";
   const conCheck = arg.con !== undefined && typeof arg.con == "number";
@@ -213,9 +213,9 @@ export function findMonsterFormattError(
   const alignmentCheck =
     arg.alignment !== undefined && typeof arg.alignment == "string";
   const acCheck = arg.ac !== undefined && typeof arg.ac == "number";
-  const hpCheck = arg.hp !== undefined && typeof arg.hp == "string";
+  const hpCheck = arg.hp !== undefined && typeof arg.hp == "number";
   const speedCheck = arg.speed !== undefined && typeof arg.speed == "string";
-  const crCheck = arg.cr !== undefined && typeof arg.cr == "string";
+  const crCheck = arg.cr !== undefined && typeof arg.cr == "number";
   const strCheck = arg.str !== undefined && typeof arg.str == "number";
   const dexCheck = arg.dex !== undefined && typeof arg.dex == "number";
   const conCheck = arg.con !== undefined && typeof arg.con == "number";

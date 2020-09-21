@@ -24,6 +24,21 @@ const MonsterTile = ({ monster }: $Props) => {
     return "";
   }, [monster]);
 
+  const formatCr = useCallback(() => {
+    if (monster !== undefined) {
+      if (monster.cr === 0.125) {
+        return "⅛";
+      } else if (monster.cr === 0.25) {
+        return "¼";
+      } else if (monster.cr === 0.5) {
+        return "½";
+      } else {
+        return monster.cr
+      }
+    }
+    return "";
+  }, [monster]);
+
   const getPicture = useCallback(() => {
     if (monster !== undefined) {
       if (monster.pic === "" || monster.pic === null) {
@@ -47,7 +62,7 @@ const MonsterTile = ({ monster }: $Props) => {
         </Flag>
 
         <CR>
-          <b>{monster.cr}</b>
+          <b>{formatCr()}</b>
         </CR>
         {getPicture() !== "" ? (
           <ImageName>

@@ -1,12 +1,14 @@
 import { faTrash, faPlus } from "@fortawesome/free-solid-svg-icons";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { isChar } from "../../../Data/Chars/Char";
+import ClassSet from "../../../Data/Chars/ClassSet";
 import Encounter from "../../../Data/Encounter/Encounter";
 import Player from "../../../Data/Encounter/Player";
 import IEntity from "../../../Data/IEntity";
 import { isMonster } from "../../../Data/Monster";
 import { reciveByAttribute } from "../../../Services/DatabaseService";
+import { calcDifficulty } from "../../../Services/EncounterService";
 
 import AutoStringField from "../../FormElements/AutoStringField";
 import IconButton from "../../FormElements/IconButton";
@@ -20,6 +22,12 @@ interface $Props {
 }
 
 const EncounterEditView = ({ encounter, onEdit }: $Props) => {
+  const [difficulty, setDifficulty] = useState<string>("");
+
+  useEffect(() => {
+    setDifficulty(calcDifficulty(encounter));
+  }, [encounter]);
+
   const removeEnemy = (i: number) => {
     let newEnemyList = encounter.enemies;
     newEnemyList.splice(i, 1);
@@ -48,8 +56,11 @@ const EncounterEditView = ({ encounter, onEdit }: $Props) => {
         enemies[i] = {
           ...oldEnemy,
           name: newEnemy,
+          hp: result.hp,
+          currentHp: result.hp,
           ac: result.ac,
           isMonster: true,
+          level: result.cr,
         };
         onEdit({ ...encounter, enemies: enemies });
       } else {
@@ -84,13 +95,19 @@ const EncounterEditView = ({ encounter, onEdit }: $Props) => {
 
     reciveByAttribute("chars", "name", newPlayer, (result: IEntity) => {
       if (result && isChar(result)) {
+        let level = 0;
+        result.classes.forEach((classSet: ClassSet) => {
+          level += classSet.level;
+        });
         players[i] = {
           ...oldPlayer,
           name: newPlayer,
-          hp: result.currentHp,
+          hp: result.hp,
+          currentHp: result.currentHp,
           initBonus: result.init,
           ac: result.ac,
           isMonster: false,
+          level: level,
         };
         onEdit({ ...encounter, players: players });
       } else {
@@ -108,6 +125,14 @@ const EncounterEditView = ({ encounter, onEdit }: $Props) => {
           label="Encounter Name"
           onChange={(name) => onEdit({ ...encounter, name: name })}
         />
+      </View>
+      <View>
+        <PropWrapper>
+          <Prop>
+            <PropTitle>Difficulty: </PropTitle>
+            {difficulty}
+          </Prop>
+        </PropWrapper>
       </View>
       <CharView>
         {encounter.enemies.map((enemy: Player, index: number) => {
@@ -127,10 +152,10 @@ const EncounterEditView = ({ encounter, onEdit }: $Props) => {
                 onChange={(hp) => onChangeEnemyField("hp", hp, enemy, index)}
               />
               <NumberField
-                value={enemy.tempHp}
+                value={enemy.currentHp}
                 label="Temp Hp"
-                onChange={(tempHp) =>
-                  onChangeEnemyField("tempHp", tempHp, enemy, index)
+                onChange={(currentHp) =>
+                  onChangeEnemyField("currentHp", currentHp, enemy, index)
                 }
               />
               <NumberField
@@ -141,8 +166,8 @@ const EncounterEditView = ({ encounter, onEdit }: $Props) => {
               <NumberField
                 value={enemy.initBonus}
                 label="Init"
-                onChange={(init) =>
-                  onChangeEnemyField("init", init, enemy, index)
+                onChange={(initBonus) =>
+                  onChangeEnemyField("initBonus", initBonus, enemy, index)
                 }
               />
               <IconButton icon={faTrash} onClick={() => removeEnemy(index)} />
@@ -160,7 +185,7 @@ const EncounterEditView = ({ encounter, onEdit }: $Props) => {
           return (
             <Container key={index}>
               <AutoStringField
-                optionTable={["monsters", "chars"]}
+                optionTable={"chars"}
                 value={player.name}
                 label="Character"
                 onChange={(newPlayer) =>
@@ -173,10 +198,10 @@ const EncounterEditView = ({ encounter, onEdit }: $Props) => {
                 onChange={(hp) => onChangePlayerField("hp", hp, player, index)}
               />
               <NumberField
-                value={player.tempHp}
+                value={player.currentHp}
                 label="Temp Hp"
-                onChange={(tempHp) =>
-                  onChangePlayerField("tempHp", tempHp, player, index)
+                onChange={(currentHp) =>
+                  onChangePlayerField("currentHp", currentHp, player, index)
                 }
               />
               <NumberField
@@ -187,8 +212,8 @@ const EncounterEditView = ({ encounter, onEdit }: $Props) => {
               <NumberField
                 value={player.initBonus}
                 label="Init"
-                onChange={(init) =>
-                  onChangePlayerField("init", init, player, index)
+                onChange={(initBonus) =>
+                  onChangePlayerField("initBonus", initBonus, player, index)
                 }
               />
               <IconButton icon={faTrash} onClick={() => removePlayer(index)} />
@@ -248,4 +273,39 @@ const Container = styled.div`
   flex-wrap: wrap;
   justify-content: space-around;
   flex: 1 1 600px;
+`;
+
+const Prop = styled.div`
+  flex: 1 1 auto;
+  max-width: 100%;
+  height: auto;
+  margin: 2px;
+  padding: 10px;
+  border-radius: 5px;
+  background-color: ${({ theme }) => theme.tile.backgroundColor};
+
+  svg {
+    margin-right: 5px;
+    height: auto;
+    border-radius: 150px;
+    transition: color 0.2s;
+    color: ${({ theme }) => theme.main.highlight};
+  }
+`;
+
+const PropTitle = styled.span`
+  display: inline-block;
+  color: ${({ theme }) => theme.tile.backgroundColorLink};
+  text-decoration: none;
+  margin: 0px 5px 0px 5px;
+`;
+
+const PropWrapper = styled.div`
+  height: auto;
+  width: calc(100% - 6px);
+  float: left;
+  padding: 3px;
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-around;
 `;

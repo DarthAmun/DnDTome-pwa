@@ -38,7 +38,7 @@ const EncounterDetail = ({ encounter }: $Props) => {
     if (encounterObj !== encounter) {
       setUnsavedChanges(true);
     }
-  }, [encounterObj,encounter]);
+  }, [encounterObj, encounter]);
 
   const updateEncounter = (tableName: string, encounterObj: Encounter) => {
     updateWithCallback(tableName, encounterObj, (result) => {
@@ -54,6 +54,11 @@ const EncounterDetail = ({ encounter }: $Props) => {
         setAlert(false);
       }, 3000);
     });
+  };
+
+  const editAndSaveEncounter = (encounter: Encounter) => {
+    editEncounter(encounter);
+    updateEncounter("encounters", encounter);
   };
 
   return (
@@ -80,9 +85,15 @@ const EncounterDetail = ({ encounter }: $Props) => {
         )}
       </TopBar>
       {editMode ? (
-        <EncounterEditView encounter={encounterObj} onEdit={(value) => editEncounter(value)} />
+        <EncounterEditView
+          encounter={encounterObj}
+          onEdit={(value) => editEncounter(value)}
+        />
       ) : (
-        <EncounterView encounter={encounterObj} />
+        <EncounterView
+          encounter={encounterObj}
+          onEdit={(value) => editAndSaveEncounter(value)}
+        />
       )}
     </>
   );

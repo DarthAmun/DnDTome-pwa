@@ -11,6 +11,7 @@ import MultipleSelectField from "../../FormElements/MultipleSelectField";
 import StringField from "../../FormElements/StringField";
 import IconButton from "../../FormElements/IconButton";
 import Monster from "../../../Data/Monster";
+import NumberField from "../../FormElements/NumberField";
 
 interface $Props {
   onSend: (filters: Filter[]) => void;
@@ -21,7 +22,7 @@ const MonsterSearchBar = ({ onSend }: $Props) => {
   let history = useHistory();
 
   const [name, setName] = useState<string>("");
-  const [cr, setCr] = useState<string>("");
+  const [cr, setCr] = useState<number>(-1);
   const [type, setType] = useState<string[]>([]);
   const [typeList, setTypeList] = useState<{ value: string; label: string }[]>(
     []
@@ -70,7 +71,7 @@ const MonsterSearchBar = ({ onSend }: $Props) => {
     if (name !== "") {
       newFilters = [...newFilters, new Filter("name", name)];
     }
-    if (cr !== "") {
+    if (cr !== -1) {
       newFilters = [...newFilters, new Filter("cr", cr)];
     }
     if (alignment !== "") {
@@ -126,7 +127,7 @@ const MonsterSearchBar = ({ onSend }: $Props) => {
   const reset = () => {
     ReactDOM.unstable_batchedUpdates(() => {
       setName("");
-      setCr("");
+      setCr(-1);
       setSpeed("");
       setAlignment("");
       setSubType([]);
@@ -162,7 +163,7 @@ const MonsterSearchBar = ({ onSend }: $Props) => {
         label="Name"
         onChange={(name: string) => setName(name)}
       />
-      <StringField value={cr} label="Cr" onChange={(cr: string) => setCr(cr)} />
+      <NumberField value={cr} label="Cr" onChange={(cr: number) => setCr(cr)} />
       <MultipleSelectField
         options={typeList}
         label="Type"

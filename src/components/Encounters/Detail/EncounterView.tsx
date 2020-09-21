@@ -3,44 +3,126 @@ import { useHistory } from "react-router";
 import styled from "styled-components";
 import Encounter from "../../../Data/Encounter/Encounter";
 import Player from "../../../Data/Encounter/Player";
+import { rollDie } from "../../../Services/DiceService";
+import { calcDifficulty } from "../../../Services/EncounterService";
 
-import { faPlayCircle, faTrash } from "@fortawesome/free-solid-svg-icons";
+import {
+  faPlayCircle,
+  faSkullCrossbones,
+  faStepForward,
+  faStopCircle,
+} from "@fortawesome/free-solid-svg-icons";
 import { LoadingSpinner } from "../../Loading";
 import IconButton from "../../FormElements/IconButton";
 import TextButton from "../../FormElements/TextButton";
-import { rollDie } from "../../../Services/DiceService";
+import SmallNumberField from "../../FormElements/SmallNumberField";
 
 interface $Props {
   encounter: Encounter;
+  onEdit: (value: Encounter) => void;
 }
 
-const EncounterView = ({ encounter }: $Props) => {
+const EncounterView = ({ encounter, onEdit }: $Props) => {
   let history = useHistory();
   const [loading, isLoading] = useState<boolean>(true);
   const [players, setPlayers] = useState<Player[]>([]);
+  const [difficulty, setDifficulty] = useState<string>("");
 
   useEffect(() => {
-    setPlayers([...encounter.enemies, ...encounter.players]);
+    setDifficulty(calcDifficulty(encounter));
+  }, [encounter]);
+
+  useEffect(() => {
+    let newPlayers = [...encounter.enemies, ...encounter.players];
+    newPlayers = newPlayers.sort((a, b) => (a.init < b.init ? 1 : -1));
+    setPlayers(newPlayers);
     isLoading(false);
   }, [encounter]);
 
-  const removeEnemy = (enemy: Player) => {
-    let newEnemyList: Player[] = players.filter(
-      (player: Player) => enemy !== player
-    );
-    setPlayers(newEnemyList);
+  const onChangePlayerField = (
+    field: string,
+    newField: string | number,
+    oldPlayer: Player
+  ) => {
+    if (oldPlayer.isMonster) {
+      let newPlayers = encounter.enemies.map((newPlayer: Player) => {
+        if (oldPlayer === newPlayer) {
+          return { ...newPlayer, [field]: newField };
+        } else {
+          return newPlayer;
+        }
+      });
+      onEdit({ ...encounter, enemies: newPlayers });
+    } else {
+      let newPlayers = encounter.players.map((newPlayer: Player) => {
+        if (oldPlayer === newPlayer) {
+          return { ...newPlayer, [field]: newField };
+        } else {
+          return newPlayer;
+        }
+      });
+      onEdit({ ...encounter, players: newPlayers });
+    }
+  };
+
+  const killEnemy = (enemy: Player) => {
+    onChangePlayerField("currentHp", 0, enemy);
   };
 
   const startEncounter = () => {
-    let newPlayers = [...encounter.enemies, ...encounter.players].map(
-      (player: Player) => {
-        let roll = rollDie(20);
-        roll += player.initBonus || 0;
-        return { ...player, init: roll };
+    let newPlayers = encounter.players.map((player: Player) => {
+      let roll = rollDie(20);
+      roll += player.initBonus || 0;
+      return { ...player, init: roll };
+    });
+    let newEnemies = encounter.enemies.map((enemy: Player) => {
+      let roll = rollDie(20);
+      roll += enemy.initBonus || 0;
+      return { ...enemy, init: roll };
+    });
+    onEdit({
+      ...encounter,
+      enemies: newEnemies,
+      players: newPlayers,
+      isPlaying: true,
+      currentRound: 0,
+    });
+  };
+
+  const finishEncounter = () => {
+    let newPlayers = encounter.players.map((player: Player) => {
+      return { ...player, init: 0 };
+    });
+    let newEnemies = encounter.enemies.map((enemy: Player) => {
+      return { ...enemy, init: 0 };
+    });
+    onEdit({
+      ...encounter,
+      enemies: newEnemies,
+      players: newPlayers,
+      isPlaying: false,
+      currentRound: 0,
+    });
+  };
+
+  const nextPlayer = () => {
+    let nextRound = (encounter.currentRound + 1) % players.length;
+    let counter = 0;
+    while (players[nextRound].currentHp <= 0) {
+      nextRound = (nextRound + 1) % players.length;
+      counter++;
+      if (counter > players.length) {
+        break;
       }
-    );
-    newPlayers = newPlayers.sort((a, b) => (a.init < b.init ? 1 : -1));
-    setPlayers(newPlayers);
+    }
+    if (counter > players.length) {
+      finishEncounter();
+    } else {
+      onEdit({
+        ...encounter,
+        currentRound: nextRound,
+      });
+    }
   };
 
   return (
@@ -49,47 +131,95 @@ const EncounterView = ({ encounter }: $Props) => {
         <Name>
           <b>{encounter.name}</b>
         </Name>
-        <TextButton
-          text={"Start Encounter"}
-          icon={faPlayCircle}
-          onClick={() => startEncounter()}
-        />
+        <PropWrapper>
+          <Prop>
+            <PropTitle>Difficulty: </PropTitle>
+            {difficulty}
+          </Prop>
+          {encounter && !encounter.isPlaying && (
+            <TextButton
+              text={"Start Encounter"}
+              icon={faPlayCircle}
+              onClick={() => startEncounter()}
+            />
+          )}
+          {encounter && encounter.isPlaying && (
+            <>
+              <TextButton
+                text={"Next"}
+                icon={faStepForward}
+                onClick={() => nextPlayer()}
+              />
+              <TextButton
+                text={"End Encounter"}
+                icon={faStopCircle}
+                onClick={() => finishEncounter()}
+              />
+            </>
+          )}
+        </PropWrapper>
         {loading && <LoadingSpinner />}
         {!loading && (
           <>
             {players.map((player: Player, index: number) => {
               return (
-                <PropWrapper key={index}>
-                  <Prop>{player.init}</Prop>
-                  <Prop>
-                    {player.isMonster && (
-                      <MainLink
-                        onClick={() =>
-                          history.push(`/monster-detail/name/${player.name}`)
+                <>
+                  <PropWrapper
+                    current={
+                      encounter.currentRound === index && encounter.isPlaying
+                    }
+                    isDead={player.currentHp <= 0}
+                    key={index}
+                  >
+                    <PropField>
+                      <SmallNumberField
+                        value={player.init}
+                        label="Init"
+                        onChange={(init) =>
+                          onChangePlayerField("init", init, player)
                         }
-                      >
-                        {player.name}
-                      </MainLink>
-                    )}
-                    {!player.isMonster && (
-                      <MainLink
-                        onClick={() =>
-                          history.push(`/char-detail/name/${player.name}`)
+                      />
+                    </PropField>
+                    <Prop>
+                      {player.isMonster && (
+                        <MainLink
+                          onClick={() =>
+                            history.push(`/monster-detail/name/${player.name}`)
+                          }
+                        >
+                          {player.name}
+                        </MainLink>
+                      )}
+                      {!player.isMonster && (
+                        <MainLink
+                          onClick={() =>
+                            history.push(`/char-detail/name/${player.name}`)
+                          }
+                        >
+                          {player.name}
+                        </MainLink>
+                      )}
+                    </Prop>
+                    <PropField>
+                      <SmallNumberField
+                        value={player.currentHp}
+                        label="Current Hp"
+                        onChange={(currentHp) =>
+                          onChangePlayerField("currentHp", currentHp, player)
                         }
-                      >
-                        {player.name}
-                      </MainLink>
+                      />{" "}
+                      / {player.hp}
+                    </PropField>
+                    <Prop>{player.ac}</Prop>
+                    <Prop>{player.tag}</Prop>
+                    {player.currentHp > 0 && (
+                      <IconButton
+                        icon={faSkullCrossbones}
+                        onClick={() => killEnemy(player)}
+                      />
                     )}
-                  </Prop>
-                  <Prop>{player.hp}</Prop>
-                  <Prop>{player.tempHp}</Prop>
-                  <Prop>{player.ac}</Prop>
-                  <Prop>{player.tag}</Prop>
-                  <IconButton
-                    icon={faTrash}
-                    onClick={() => removeEnemy(player)}
-                  />
-                </PropWrapper>
+                  </PropWrapper>
+                </>
               );
             })}
           </>
@@ -128,7 +258,21 @@ const Name = styled.div`
   background-color: ${({ theme }) => theme.tile.backgroundColor};
 `;
 
-const PropWrapper = styled.div`
+type Type = {
+  current?: boolean;
+  isDead?: boolean;
+};
+
+const PropWrapper = styled.div<Type>`
+  ${(props) => {
+    if (props.current) {
+      return "background-color: #8000ff;";
+    }
+    if (props.isDead) {
+      return "opacity: 0.5;";
+    }
+    return "";
+  }};
   height: auto;
   width: calc(100% - 6px);
   float: left;
@@ -136,17 +280,6 @@ const PropWrapper = styled.div`
   display: flex;
   flex-wrap: nowrap;
   justify-content: space-around;
-`;
-
-const Text = styled.div`
-  height: auto;
-  width: calc(100% - 20px);
-  margin: 2px;
-  float: left;
-  line-height: 18px;
-  padding: 10px;
-  border-radius: 5px;
-  background-color: ${({ theme }) => theme.tile.backgroundColor};
 `;
 
 const Prop = styled.div`
@@ -165,6 +298,10 @@ const Prop = styled.div`
     transition: color 0.2s;
     color: ${({ theme }) => theme.main.highlight};
   }
+`;
+
+const PropField = styled(Prop)`
+  padding: 0px;
 `;
 
 const PropTitle = styled.span`
