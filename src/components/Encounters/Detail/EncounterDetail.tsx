@@ -9,7 +9,7 @@ import {
   faExclamationTriangle,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Encounter from "../../../Data/Encounter";
+import Encounter from "../../../Data/Encounter/Encounter";
 import { remove, updateWithCallback } from "../../../Services/DatabaseService";
 
 import BackButton from "../../FormElements/BackButton";

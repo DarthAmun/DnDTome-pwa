@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import ReactDOM from "react-dom";
 import styled from "styled-components";
 import { useHistory } from "react-router";
-import Encounter from "../../Data/Encounter";
+import Encounter from "../../Data/Encounter/Encounter";
 import Filter from "../../Data/Filter";
 import { createNewWithId } from "../../Services/DatabaseService";
 

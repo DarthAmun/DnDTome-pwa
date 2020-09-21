@@ -8,7 +8,7 @@ import Subrace from "../Data/Races/Subrace";
 import Class from "../Data/Classes/Class";
 import Subclass from "../Data/Classes/Subclass";
 import Char from "../Data/Chars/Char";
-import Encounter from "../Data/Encounter";
+import Encounter from "../Data/Encounter/Encounter";
 
 export class MyAppDatabase extends Dexie {
   spells: Dexie.Table<Spell, number>; // number = type of the primkey

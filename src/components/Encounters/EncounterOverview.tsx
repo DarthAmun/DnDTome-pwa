@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import Encounter from "../../Data/Encounter";
+import Encounter from "../../Data/Encounter/Encounter";
 import Filter from "../../Data/Filter";
 import { reciveAllFiltered } from "../../Services/DatabaseService";
 

@@ -1,7 +1,7 @@
 import React, { Suspense } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import Encounter from "../../Data/Encounter";
+import Encounter from "../../Data/Encounter/Encounter";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDragon, faUser } from "@fortawesome/free-solid-svg-icons";
@@ -26,7 +26,7 @@ const EncounterTile = ({ encounter }: $Props) => {
           </WideProp>
           <WideProp>
             <Icon icon={faDragon} />
-            {encounter.monsters.length}
+            {encounter.enemies.length}
           </WideProp>
         </PropWrapper>
       </Suspense>
@@ -51,7 +51,7 @@ const Name = styled.div`
   height: auto;
   float: left;
   padding: 10px;
-  margin: 0 5px 5px 5px;
+  margin: 5px;
   font-size: 14px;
   width: calc(100% - 30px);
   color: var(--card-title-color);
