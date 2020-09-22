@@ -147,16 +147,16 @@ const EncounterEditView = ({ encounter, onEdit }: $Props) => {
                 }
               />
               <NumberField
-                value={enemy.hp}
-                label="Hp"
-                onChange={(hp) => onChangeEnemyField("hp", hp, enemy, index)}
-              />
-              <NumberField
                 value={enemy.currentHp}
-                label="Temp Hp"
+                label="Current Hp"
                 onChange={(currentHp) =>
                   onChangeEnemyField("currentHp", currentHp, enemy, index)
                 }
+              />
+              <NumberField
+                value={enemy.hp}
+                label="Hp"
+                onChange={(hp) => onChangeEnemyField("hp", hp, enemy, index)}
               />
               <NumberField
                 value={enemy.ac}
@@ -165,7 +165,7 @@ const EncounterEditView = ({ encounter, onEdit }: $Props) => {
               />
               <NumberField
                 value={enemy.initBonus}
-                label="Init"
+                label="Init Bonus"
                 onChange={(initBonus) =>
                   onChangeEnemyField("initBonus", initBonus, enemy, index)
                 }
