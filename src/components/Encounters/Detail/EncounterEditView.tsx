@@ -193,16 +193,16 @@ const EncounterEditView = ({ encounter, onEdit }: $Props) => {
                 }
               />
               <NumberField
-                value={player.hp}
-                label="Hp"
-                onChange={(hp) => onChangePlayerField("hp", hp, player, index)}
-              />
-              <NumberField
                 value={player.currentHp}
-                label="Temp Hp"
+                label="Current Hp"
                 onChange={(currentHp) =>
                   onChangePlayerField("currentHp", currentHp, player, index)
                 }
+              />
+              <NumberField
+                value={player.hp}
+                label="Hp"
+                onChange={(hp) => onChangePlayerField("hp", hp, player, index)}
               />
               <NumberField
                 value={player.ac}
@@ -211,7 +211,7 @@ const EncounterEditView = ({ encounter, onEdit }: $Props) => {
               />
               <NumberField
                 value={player.initBonus}
-                label="Init"
+                label="Init Bonus"
                 onChange={(initBonus) =>
                   onChangePlayerField("initBonus", initBonus, player, index)
                 }
