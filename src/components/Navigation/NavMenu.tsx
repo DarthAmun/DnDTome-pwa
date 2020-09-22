@@ -3,12 +3,18 @@ import styled from "styled-components";
 import { Link, useLocation } from "react-router-dom";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMeteor, faCog, faDragon, faIdCard } from "@fortawesome/free-solid-svg-icons";
+import {
+  faMeteor,
+  faCog,
+  faDragon,
+  faIdCard,
+} from "@fortawesome/free-solid-svg-icons";
 import {
   GiBackpack,
   GiWomanElfFace,
   GiCrystalWand,
   GiPlagueDoctorProfile,
+  GiSwordClash,
 } from "react-icons/gi";
 
 interface $Props {
@@ -83,21 +89,13 @@ const NavMenu = ({ open }: $Props) => {
         <FontAwesomeIcon icon={faIdCard} />
         Chars
       </Link>
-      {/* <Link
-        to="/encounter"
-        className={location.pathname === "/encounter" ? "menuItemActiv" : ""}
+      <Link
+        to="/encounter-overview"
+        className={location.pathname === "/encounters" ? "menuItemActiv" : ""}
       >
-        <img
-          alt=""
-          src={encounterIcon}
-          style={{
-            width: "20px",
-            marginTop: "10px",
-            marginRight: "5px",
-            float: "left",
-          }}
-        />
-      </Link> */}
+        <GiSwordClash />
+        Encounters
+      </Link>
       <Link
         to="/options"
         className={location.pathname === "/options" ? "menuItemActiv" : ""}
