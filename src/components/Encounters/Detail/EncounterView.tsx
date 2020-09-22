@@ -295,14 +295,15 @@ type Type = {
 
 const Row = styled.tr<Type>`
   ${(props) => {
-    if (props.current) {
-      return "td:nth-child(1) {background-color: #8000ff;}";
-    }
     if (props.isDead) {
       return "opacity: 0.5;";
     }
+    if (props.current) {
+      return "td:nth-child(1) {background-color: #8000ff;}";
+    }
     return "";
   }}
+  margin: 2px;
 `;
 
 const Prop = styled.td`
