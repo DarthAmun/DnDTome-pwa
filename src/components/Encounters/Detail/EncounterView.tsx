@@ -15,7 +15,7 @@ import {
 import { LoadingSpinner } from "../../Loading";
 import IconButton from "../../FormElements/IconButton";
 import TextButton from "../../FormElements/TextButton";
-import SmallNumberField from "../../FormElements/SmallNumberField";
+import TinyNumberField from "../../FormElements/TinyNumberField";
 
 interface $Props {
   encounter: Encounter;
@@ -85,7 +85,8 @@ const EncounterView = ({ encounter, onEdit }: $Props) => {
       enemies: newEnemies,
       players: newPlayers,
       isPlaying: true,
-      currentRound: 0,
+      currentInit: 0,
+      roundCounter: 0,
     });
   };
 
@@ -101,15 +102,24 @@ const EncounterView = ({ encounter, onEdit }: $Props) => {
       enemies: newEnemies,
       players: newPlayers,
       isPlaying: false,
-      currentRound: 0,
+      currentInit: 0,
+      roundCounter: 0,
     });
   };
 
   const nextPlayer = () => {
-    let nextRound = (encounter.currentRound + 1) % players.length;
+    let nextInit = (encounter.currentInit + 1) % players.length;
+    let roundCounter = encounter.roundCounter;
+    if ((encounter.currentInit + 1) % players.length === 0) {
+      roundCounter++;
+    }
+
     let counter = 0;
-    while (players[nextRound].currentHp <= 0) {
-      nextRound = (nextRound + 1) % players.length;
+    while (players[nextInit].currentHp <= 0) {
+      if ((nextInit + 1) % players.length === 0) {
+        roundCounter++;
+      }
+      nextInit = (nextInit + 1) % players.length;
       counter++;
       if (counter > players.length) {
         break;
@@ -120,7 +130,8 @@ const EncounterView = ({ encounter, onEdit }: $Props) => {
     } else {
       onEdit({
         ...encounter,
-        currentRound: nextRound,
+        currentInit: nextInit,
+        roundCounter: roundCounter,
       });
     }
   };
@@ -132,10 +143,14 @@ const EncounterView = ({ encounter, onEdit }: $Props) => {
           <b>{encounter.name}</b>
         </Name>
         <PropWrapper>
-          <Prop>
+          <PropElm>
             <PropTitle>Difficulty: </PropTitle>
             {difficulty}
-          </Prop>
+          </PropElm>
+          <PropElm>
+            <PropTitle>Round: </PropTitle>
+            {encounter.roundCounter}
+          </PropElm>
           {encounter && !encounter.isPlaying && (
             <TextButton
               text={"Start Encounter"}
@@ -160,21 +175,30 @@ const EncounterView = ({ encounter, onEdit }: $Props) => {
         </PropWrapper>
         {loading && <LoadingSpinner />}
         {!loading && (
-          <>
-            {players.map((player: Player, index: number) => {
-              return (
-                <>
-                  <PropWrapper
+          <Table>
+            <thead>
+              <tr>
+                <th>Init</th>
+                <th>Name</th>
+                <th>Current Hp</th>
+                <th>Hp</th>
+                <th>AC</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {players.map((player: Player, index: number) => {
+                return (
+                  <Row
                     current={
-                      encounter.currentRound === index && encounter.isPlaying
+                      encounter.currentInit === index && encounter.isPlaying
                     }
                     isDead={player.currentHp <= 0}
                     key={index}
                   >
                     <PropField>
-                      <SmallNumberField
+                      <TinyNumberField
                         value={player.init}
-                        label="Init"
                         onChange={(init) =>
                           onChangePlayerField("init", init, player)
                         }
@@ -201,28 +225,30 @@ const EncounterView = ({ encounter, onEdit }: $Props) => {
                       )}
                     </Prop>
                     <PropField>
-                      <SmallNumberField
+                      <TinyNumberField
                         value={player.currentHp}
-                        label="Current Hp"
+                        max={player.hp}
                         onChange={(currentHp) =>
                           onChangePlayerField("currentHp", currentHp, player)
                         }
-                      />{" "}
-                      / {player.hp}
-                    </PropField>
-                    <Prop>{player.ac}</Prop>
-                    <Prop>{player.tag}</Prop>
-                    {player.currentHp > 0 && (
-                      <IconButton
-                        icon={faSkullCrossbones}
-                        onClick={() => killEnemy(player)}
                       />
-                    )}
-                  </PropWrapper>
-                </>
-              );
-            })}
-          </>
+                    </PropField>
+                    <Prop>{player.hp}</Prop>
+                    <Prop>{player.ac}</Prop>
+                    {/* <Prop>{player.tag}</Prop> */}
+                    <td>
+                      {player.currentHp > 0 && (
+                        <IconButton
+                          icon={faSkullCrossbones}
+                          onClick={() => killEnemy(player)}
+                        />
+                      )}
+                    </td>
+                  </Row>
+                );
+              })}
+            </tbody>
+          </Table>
         )}
       </View>
     </CenterWrapper>
@@ -230,6 +256,10 @@ const EncounterView = ({ encounter, onEdit }: $Props) => {
 };
 
 export default EncounterView;
+
+const Table = styled.table`
+  width: 100%;
+`;
 
 const CenterWrapper = styled.div`
   overflow: hidden;
@@ -250,7 +280,7 @@ const Name = styled.div`
   height: auto;
   float: left;
   padding: 10px;
-  margin: 5px 5px 10px 5px;
+  margin: 5px;
   width: calc(100% - 30px);
   color: var(--card-title-color);
   text-align: center;
@@ -263,31 +293,39 @@ type Type = {
   isDead?: boolean;
 };
 
-const PropWrapper = styled.div<Type>`
+const Row = styled.tr<Type>`
   ${(props) => {
     if (props.current) {
-      return "background-color: #8000ff;";
+      return "td:nth-child(1) {background-color: #8000ff;}";
     }
     if (props.isDead) {
       return "opacity: 0.5;";
     }
     return "";
-  }};
-  height: auto;
-  width: calc(100% - 6px);
-  float: left;
-  padding: 3px;
-  display: flex;
-  flex-wrap: nowrap;
-  justify-content: space-around;
+  }}
 `;
 
-const Prop = styled.div`
-  flex: 1 1 auto;
-  max-width: 100%;
-  height: auto;
+const Prop = styled.td`
   margin: 2px;
+  padding: 5px;
+  border-radius: 5px;
+  background-color: ${({ theme }) => theme.tile.backgroundColor};
+
+  svg {
+    margin-right: 5px;
+    height: auto;
+    border-radius: 150px;
+    transition: color 0.2s;
+    color: ${({ theme }) => theme.main.highlight};
+  }
+`;
+
+const PropElm = styled.div`
+  margin: 5px;
   padding: 10px;
+  height: 20px;
+  flex: 1 1 auto;
+  line-height: 20px;
   border-radius: 5px;
   background-color: ${({ theme }) => theme.tile.backgroundColor};
 
@@ -320,4 +358,14 @@ const MainLink = styled.span`
   font-size: 16px;
   padding: 0px 5px 0px 5px;
   cursor: pointer;
+`;
+
+const PropWrapper = styled.div`
+  height: auto;
+  width: calc(100% - 6px);
+  float: left;
+  padding: 3px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
 `;

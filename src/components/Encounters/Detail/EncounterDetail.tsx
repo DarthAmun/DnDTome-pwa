@@ -69,7 +69,7 @@ const EncounterDetail = ({ encounter }: $Props) => {
           <ToggleLeft onClick={() => setMode(false)}>View</ToggleLeft>
           <ToggleRight onClick={() => setMode(true)}>Edit</ToggleRight>
         </EditToggle>
-        {unsavedChanges && <Icon icon={faExclamationTriangle} />}
+        {editMode && unsavedChanges && <Icon icon={faExclamationTriangle} />}
         {editMode && (
           <>
             <IconButton

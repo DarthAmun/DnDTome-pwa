@@ -7,7 +7,8 @@ export default class Encounter implements IEntity {
   enemies: Player[];
   players: Player[];
   isPlaying: boolean;
-  currentRound: number;
+  currentInit: number;
+  roundCounter: number;
 
   constructor();
   constructor(
@@ -16,14 +17,16 @@ export default class Encounter implements IEntity {
     enemies?: Player[],
     players?: Player[],
     isPlaying?: boolean,
-    currentRound?: number
+    currentInit?: number,
+    roundCounter?: number
   ) {
     this.id = id;
     this.name = name || "";
     this.enemies = enemies || [];
     this.players = players || [];
     this.isPlaying = isPlaying || false;
-    this.currentRound = currentRound || 0;
+    this.currentInit = currentInit || 0;
+    this.roundCounter = roundCounter || 0;
   }
 }
 
