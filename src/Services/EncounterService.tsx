@@ -68,7 +68,7 @@ const expTable: {
 ];
 
 export const calcDifficulty = (encounter: Encounter) => {
-  let clacExp: {
+  let calcExp: {
     easy: number;
     medium: number;
     hard: number;
@@ -76,10 +76,10 @@ export const calcDifficulty = (encounter: Encounter) => {
   } = { easy: 0, medium: 0, hard: 0, deadly: 0 };
   encounter.players.forEach((player: Player) => {
     if (expTable.length >= player.level) {
-      clacExp.easy += expTable[player.level].easy;
-      clacExp.medium += expTable[player.level].medium;
-      clacExp.hard += expTable[player.level].hard;
-      clacExp.deadly += expTable[player.level].deadly;
+      calcExp.easy += expTable[player.level].easy;
+      calcExp.medium += expTable[player.level].medium;
+      calcExp.hard += expTable[player.level].hard;
+      calcExp.deadly += expTable[player.level].deadly;
     }
   });
 
@@ -106,13 +106,16 @@ export const calcDifficulty = (encounter: Encounter) => {
     enemyExp = enemyExp * 4;
   }
 
-  if (clacExp.easy + (clacExp.medium - clacExp.easy) / 2 > enemyExp) {
-    return "Easy (" + enemyExp + " Exp)";
-  } else if (clacExp.medium + (clacExp.hard - clacExp.medium) / 2 > enemyExp) {
-    return "Medium (" + enemyExp + " Exp)";
-  } else if (clacExp.hard + (clacExp.deadly - clacExp.hard) / 2 > enemyExp) {
-    return "Hard (" + enemyExp + " Exp)";
+  let difficulty = "";
+  if (calcExp.easy + (calcExp.medium - calcExp.easy) / 2 > enemyExp) {
+    difficulty = "Easy (" + enemyExp + " Exp)";
+  } else if (calcExp.medium + (calcExp.hard - calcExp.medium) / 2 > enemyExp) {
+    difficulty = "Medium (" + enemyExp + " Exp)";
+  } else if (calcExp.hard + (calcExp.deadly - calcExp.hard) / 2 > enemyExp) {
+    difficulty = "Hard (" + enemyExp + " Exp)";
   } else {
-    return "Deadly (" + enemyExp + " Exp)";
+    difficulty = "Deadly (" + enemyExp + " Exp)";
   }
+
+  return { difficulty: difficulty, calcExp: calcExp };
 };

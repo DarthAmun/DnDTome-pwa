@@ -29,12 +29,13 @@ const EncounterView = ({ encounter, onEdit }: $Props) => {
   const [difficulty, setDifficulty] = useState<string>("");
 
   useEffect(() => {
-    setDifficulty(calcDifficulty(encounter));
+    const { difficulty } = calcDifficulty(encounter);
+    setDifficulty(difficulty);
   }, [encounter]);
 
   useEffect(() => {
     let newPlayers = [...encounter.enemies, ...encounter.players];
-    if(encounter.isPlaying) {
+    if (encounter.isPlaying) {
       newPlayers = newPlayers.sort((a, b) => (a.init < b.init ? 1 : -1));
     }
     setPlayers(newPlayers);

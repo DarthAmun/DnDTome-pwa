@@ -23,9 +23,21 @@ interface $Props {
 
 const EncounterEditView = ({ encounter, onEdit }: $Props) => {
   const [difficulty, setDifficulty] = useState<string>("");
+  const [expArray, setExpArray] = useState<string>("");
 
   useEffect(() => {
-    setDifficulty(calcDifficulty(encounter));
+    const { difficulty, calcExp } = calcDifficulty(encounter);
+    setDifficulty(difficulty);
+    setExpArray(
+      "Easy: " +
+        calcExp.easy +
+        " | Medium: " +
+        calcExp.medium +
+        " | Hard: " +
+        calcExp.hard +
+        " | Deadly: " +
+        calcExp.deadly
+    );
   }, [encounter]);
 
   const removeEnemy = (i: number) => {
@@ -131,6 +143,10 @@ const EncounterEditView = ({ encounter, onEdit }: $Props) => {
           <Prop>
             <PropTitle>Difficulty: </PropTitle>
             {difficulty}
+          </Prop>
+          <Prop>
+            <PropTitle>Exp: </PropTitle>
+            {expArray}
           </Prop>
         </PropWrapper>
       </View>
@@ -295,7 +311,6 @@ const Container = styled.div`
 
 const Prop = styled.div`
   flex: 1 1 auto;
-  max-width: 100%;
   height: auto;
   margin: 2px;
   padding: 10px;
@@ -324,6 +339,6 @@ const PropWrapper = styled.div`
   float: left;
   padding: 3px;
   display: flex;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
   justify-content: space-around;
 `;
