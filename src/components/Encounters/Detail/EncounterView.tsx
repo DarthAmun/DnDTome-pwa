@@ -34,7 +34,9 @@ const EncounterView = ({ encounter, onEdit }: $Props) => {
 
   useEffect(() => {
     let newPlayers = [...encounter.enemies, ...encounter.players];
-    newPlayers = newPlayers.sort((a, b) => (a.init < b.init ? 1 : -1));
+    if(encounter.isPlaying) {
+      newPlayers = newPlayers.sort((a, b) => (a.init < b.init ? 1 : -1));
+    }
     setPlayers(newPlayers);
     isLoading(false);
   }, [encounter]);
@@ -71,14 +73,22 @@ const EncounterView = ({ encounter, onEdit }: $Props) => {
 
   const startEncounter = () => {
     let newPlayers = encounter.players.map((player: Player) => {
-      let roll = rollDie(20);
-      roll += player.initBonus || 0;
-      return { ...player, init: roll };
+      if (player.init < 0) {
+        let roll = rollDie(20);
+        roll += player.initBonus || 0;
+        return { ...player, init: roll };
+      } else {
+        return player;
+      }
     });
     let newEnemies = encounter.enemies.map((enemy: Player) => {
-      let roll = rollDie(20);
-      roll += enemy.initBonus || 0;
-      return { ...enemy, init: roll };
+      if (enemy.init < 0) {
+        let roll = rollDie(20);
+        roll += enemy.initBonus || 0;
+        return { ...enemy, init: roll };
+      } else {
+        return enemy;
+      }
     });
     onEdit({
       ...encounter,
@@ -92,10 +102,10 @@ const EncounterView = ({ encounter, onEdit }: $Props) => {
 
   const finishEncounter = () => {
     let newPlayers = encounter.players.map((player: Player) => {
-      return { ...player, init: 0 };
+      return { ...player, init: -1 };
     });
     let newEnemies = encounter.enemies.map((enemy: Player) => {
-      return { ...enemy, init: 0 };
+      return { ...enemy, init: -1 };
     });
     onEdit({
       ...encounter,

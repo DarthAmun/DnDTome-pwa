@@ -37,6 +37,11 @@ const MonsterEditView = ({ monster, onEdit }: $Props) => {
           label="Alignment"
           onChange={(alignment) => onEdit({ ...monster, alignment: alignment })}
         />
+        <StringField
+          value={monster.size}
+          label="Size"
+          onChange={(size) => onEdit({ ...monster, size: size })}
+        />
         <NumberField
           value={monster.cr}
           label="CR"

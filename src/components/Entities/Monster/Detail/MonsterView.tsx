@@ -149,30 +149,30 @@ const MonsterView = ({ monster }: $Props) => {
           </Prop>
         </PropWrapper>
       </View>
-      <View>
-        {monster.ablt && (
+      {monster.ablt && (
+        <View>
           <Text>
             <PropTitle>Abilities:</PropTitle>
             <FormatedText text={monster.ablt} />
           </Text>
-        )}
-      </View>
-      <View>
-        {monster.sAblt && (
+        </View>
+      )}
+      {monster.sAblt && (
+        <View>
           <Text>
             <PropTitle>Spezial Abilities:</PropTitle>
             <FormatedText text={monster.sAblt} />
           </Text>
-        )}
-      </View>
-      <View>
-        {monster.lAblt && (
+        </View>
+      )}
+      {monster.lAblt && (
+        <View>
           <Text>
             <PropTitle>Legendary Abilities:</PropTitle>
             <FormatedText text={monster.lAblt} />
           </Text>
-        )}
-      </View>
+        </View>
+      )}
     </CenterWrapper>
   );
 };
@@ -193,8 +193,6 @@ const View = styled.div`
   font-size: 16px;
   flex: 1 1 auto;
   max-width: 600px;
-  padding: 5px;
-  margin: 5px;
   height: 100%;
 
   display: flex;

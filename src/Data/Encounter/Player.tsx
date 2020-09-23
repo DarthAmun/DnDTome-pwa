@@ -25,7 +25,7 @@ export default class Player {
     this.hp = hp || 0;
     this.currentHp = tempHp || 0;
     this.initBonus = initBonus || 0;
-    this.init = init || 0;
+    this.init = init || -1;
     this.ac = ac || 0;
     this.tag = tag || "";
     this.isMonster = isMonster || false;

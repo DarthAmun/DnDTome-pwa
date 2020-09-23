@@ -170,15 +170,24 @@ const EncounterEditView = ({ encounter, onEdit }: $Props) => {
                   onChangeEnemyField("initBonus", initBonus, enemy, index)
                 }
               />
+              <NumberField
+                value={enemy.level}
+                label="Cr"
+                onChange={(level) =>
+                  onChangePlayerField("level", level, enemy, index)
+                }
+              />
               <IconButton icon={faTrash} onClick={() => removeEnemy(index)} />
             </Container>
           );
         })}
-        <TextButton
-          text={"Add new Monster"}
-          icon={faPlus}
-          onClick={() => addNewEnemy()}
-        />
+        <Container>
+          <TextButton
+            text={"Add new Monster"}
+            icon={faPlus}
+            onClick={() => addNewEnemy()}
+          />
+        </Container>
       </CharView>
       <CharView>
         {encounter.players.map((player: Player, index: number) => {
@@ -216,15 +225,24 @@ const EncounterEditView = ({ encounter, onEdit }: $Props) => {
                   onChangePlayerField("initBonus", initBonus, player, index)
                 }
               />
+              <NumberField
+                value={player.level}
+                label="Level"
+                onChange={(level) =>
+                  onChangePlayerField("level", level, player, index)
+                }
+              />
               <IconButton icon={faTrash} onClick={() => removePlayer(index)} />
             </Container>
           );
         })}
-        <TextButton
-          text={"Add new Character"}
-          icon={faPlus}
-          onClick={() => addNewPlayer()}
-        />
+        <Container>
+          <TextButton
+            text={"Add new Character"}
+            icon={faPlus}
+            onClick={() => addNewPlayer()}
+          />
+        </Container>
       </CharView>
     </CenterWrapper>
   );
