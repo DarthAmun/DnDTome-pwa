@@ -6,6 +6,7 @@ import {
   importFiles,
   exportAllFromTable,
   exportAll,
+  import5eToolsSpellsFiles,
 } from "../../Services/OptionService";
 import { deleteAll, reciveCount } from "../../Services/DatabaseService";
 
@@ -149,7 +150,8 @@ const Options = () => {
           "Races",
           "Classes",
           "Chars",
-          "Encounters"
+          "Encounters",
+          "Others",
         ]}
         onChange={(tab: string) => setTab(tab)}
       />
@@ -414,12 +416,26 @@ const Options = () => {
           <OptionSection>
             <SelectionTitle>Delete</SelectionTitle>
             <SectionRow>
-              <SectionText>Delete all {encounterAmount} Encounters?</SectionText>
+              <SectionText>
+                Delete all {encounterAmount} Encounters?
+              </SectionText>
               <IconButton
                 icon={faTrashAlt}
                 onClick={() => triggerDeleteAll("encounters")}
               />
             </SectionRow>
+          </OptionSection>
+        </OptionTab>
+      )}
+      {activeTab === "Others" && (
+        <OptionTab>
+          <OptionSection>
+            <SelectionTitle>Import 5eTools Spells</SelectionTitle>
+            <FileField
+              label=""
+              icon={faFileImport}
+              onChange={(file) => import5eToolsSpellsFiles(file)}
+            />
           </OptionSection>
         </OptionTab>
       )}

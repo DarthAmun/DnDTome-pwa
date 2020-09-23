@@ -10,7 +10,6 @@ export default class Subrace implements IEntity {
   sources: string;
   filename: string;
 
-  constructor();
   constructor(
     name?: string,
     id?: number,

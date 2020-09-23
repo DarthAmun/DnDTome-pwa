@@ -11,7 +11,6 @@ export default class Item {
   type: string;
   filename: string;
 
-  constructor();
   constructor(
     id?: number,
     name?: string,

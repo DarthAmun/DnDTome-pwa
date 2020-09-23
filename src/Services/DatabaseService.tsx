@@ -242,6 +242,7 @@ export const saveNew = (
   return db
     .open()
     .then(async function () {
+      delete entity["id"];
       const prom = await db
         .table(tableName)
         .put({ ...entity, filename: filename });

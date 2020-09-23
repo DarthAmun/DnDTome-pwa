@@ -259,7 +259,7 @@ export const exportAll = async (filename: string) => {
       all.push(entity);
     });
   });
-  
+
   let contentType = "application/json;charset=utf-8;";
   if (window.navigator && window.navigator.msSaveOrOpenBlob) {
     var blob = new Blob([decodeURIComponent(encodeURI(JSON.stringify(all)))], {
@@ -275,5 +275,98 @@ export const exportAll = async (filename: string) => {
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
+  }
+};
+
+export const import5eToolsSpellsFiles = (fileList: FileList | null) => {
+  if (fileList !== null) {
+    const files = Array.from(fileList);
+
+    files.forEach((file, i) => {
+      let fileReader = new FileReader();
+      fileReader.onloadend = async function () {
+        const content = fileReader.result;
+        if (content !== null) {
+          let json = JSON.parse(content.toString());
+
+          let promList: Promise<any>[] = [];
+          json.spell.forEach((obj: any) => {
+            console.log(obj.duration);
+
+            let classes = "";
+            obj.classes.fromClassList.forEach(
+              (classe: { name: string; source: string }) => {
+                classes += classe.name + ", ";
+              }
+            );
+
+            let school = "";
+            if (obj.school === "V") school = "Evocation";
+            if (obj.school === "D") school = "Divination";
+            if (obj.school === "N") school = "Necromancy";
+            if (obj.school === "T") school = "Transmutation";
+            if (obj.school === "I") school = "Illusion";
+            if (obj.school === "C") school = "Conjuration";
+            if (obj.school === "A") school = "Abjuration";
+            if (obj.school === "E") school = "Enchantment";
+
+            let time =
+              obj.time[0].number +
+              " " +
+              obj.time[0].unit +
+              " " +
+              (obj.time[0].condition ? obj.time[0].condition : "");
+
+            let range =
+              obj.range.type +
+              " " +
+              obj.range.distance.type +
+              " " +
+              (obj.range.distance.amount ? obj.range.distance.amount : "");
+
+            let components =
+              (obj.components.v ? "V, " : "") +
+              (obj.components.s ? "S, " : "") +
+              (obj.components.m ? "M (" + obj.components.m.text + ")" : "");
+
+            let concentration = obj.duration[0].concentration;
+            let duration =
+              (concentration ? "Concentration, " : "") +
+              obj.duration[0].type +
+              " " +
+              (obj.duration[0].duration
+                ? obj.duration[0].duration.type +
+                  " " +
+                  obj.duration[0].duration.amount
+                : "");
+
+            let text = "";
+            obj.entries.forEach((textPart: string) => {
+              text += textPart + "\n";
+            });
+
+            let newSpell = new Spell(
+              obj.name,
+              classes,
+              obj.source,
+              obj.level,
+              school,
+              time,
+              range,
+              components,
+              duration,
+              obj.meta && obj.meta.ritual ? 1 : 0,
+              text,
+              0,
+              file.name,
+              ""
+            );
+            promList.push(saveNew("spells", newSpell, file.name));
+          });
+          await Promise.all(promList);
+        }
+      };
+      fileReader.readAsText(file);
+    });
   }
 };

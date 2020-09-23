@@ -32,7 +32,6 @@ export default class Monster implements IEntity {
   ablt: string;
   lAblt: string;
 
-  constructor();
   constructor(
     id?: number,
     name?: string,
