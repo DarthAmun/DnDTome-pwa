@@ -6,8 +6,8 @@ import {
   importFiles,
   exportAllFromTable,
   exportAll,
-  import5eToolsSpellsFiles,
 } from "../../Services/OptionService";
+import { import5eToolsMonstersFiles, import5eToolsSpellsFiles } from "../../Services/5eToolService";
 import { deleteAll, reciveCount } from "../../Services/DatabaseService";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -435,6 +435,14 @@ const Options = () => {
               label=""
               icon={faFileImport}
               onChange={(file) => import5eToolsSpellsFiles(file)}
+            />
+          </OptionSection>
+          <OptionSection>
+            <SelectionTitle>Import 5eTools Monsters</SelectionTitle>
+            <FileField
+              label=""
+              icon={faFileImport}
+              onChange={(file) => import5eToolsMonstersFiles(file)}
             />
           </OptionSection>
         </OptionTab>
