@@ -16,6 +16,7 @@ import Subclass, {
 } from "../Data/Classes/Subclass";
 import Char, { isChar } from "../Data/Chars/Char";
 import IEntity from "../Data/IEntity";
+import Encounter, { isEncounter } from "../Data/Encounter/Encounter";
 
 export const importFiles = (
   fileList: FileList | null,
@@ -65,6 +66,8 @@ const scanImportFileTest = async (
         promList.push(saveNew("gears", obj as Gear, file.name));
       } else if (isItem(obj)) {
         promList.push(saveNew("items", obj as Item, file.name));
+      } else if (isEncounter(obj)) {
+        promList.push(saveNew("encounters", obj as Encounter, file.name));
       } else if (isChar(obj)) {
         promList.push(saveNew("chars", obj as Char, file.name));
       } else {
@@ -248,6 +251,7 @@ export const exportAll = async (filename: string) => {
   tableList.push(reciveAllPromise("classes"));
   tableList.push(reciveAllPromise("subclasses"));
   tableList.push(reciveAllPromise("chars"));
+  tableList.push(reciveAllPromise("encounters"));
   const results = await Promise.all(tableList);
   let all: IEntity[] = [];
   results.forEach((list: IEntity[]) => {

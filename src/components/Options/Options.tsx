@@ -35,6 +35,7 @@ const Options = () => {
   const [classAmount, setClassAmount] = useState<number>(0);
   const [subclassAmount, setSubclassAmount] = useState<number>(0);
   const [charAmount, setCharAmount] = useState<number>(0);
+  const [encounterAmount, setEncounterAmount] = useState<number>(0);
 
   const [reload, isReload] = useState<boolean>(true);
 
@@ -72,6 +73,9 @@ const Options = () => {
       });
       reciveCount("chars", (result: number) => {
         setCharAmount(result);
+      });
+      reciveCount("encounters", (result: number) => {
+        setEncounterAmount(result);
       });
       isReload(false);
     }
@@ -145,6 +149,7 @@ const Options = () => {
           "Races",
           "Classes",
           "Chars",
+          "Encounters"
         ]}
         onChange={(tab: string) => setTab(tab)}
       />
@@ -387,6 +392,32 @@ const Options = () => {
               <IconButton
                 icon={faTrashAlt}
                 onClick={() => triggerDeleteAll("chars")}
+              />
+            </SectionRow>
+          </OptionSection>
+        </OptionTab>
+      )}
+      {activeTab === "Encounters" && (
+        <OptionTab>
+          <OptionSection>
+            <SelectionTitle>Export</SelectionTitle>
+            <SectionRow>
+              <SectionText>Export all Encounters?</SectionText>
+              <IconButton
+                icon={faFileExport}
+                onClick={() =>
+                  exportAllFromTable("encounters", "DnDTome_encounters.json")
+                }
+              />
+            </SectionRow>
+          </OptionSection>
+          <OptionSection>
+            <SelectionTitle>Delete</SelectionTitle>
+            <SectionRow>
+              <SectionText>Delete all {encounterAmount} Encounters?</SectionText>
+              <IconButton
+                icon={faTrashAlt}
+                onClick={() => triggerDeleteAll("encounters")}
               />
             </SectionRow>
           </OptionSection>
