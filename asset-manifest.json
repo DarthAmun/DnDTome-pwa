@@ -1,14 +1,14 @@
 {
   "files": {
     "main.css": "/DnDTome-pwa/static/css/main.a4aed14a.chunk.css",
-    "main.js": "/DnDTome-pwa/static/js/main.c0cc9999.chunk.js",
-    "main.js.map": "/DnDTome-pwa/static/js/main.c0cc9999.chunk.js.map",
+    "main.js": "/DnDTome-pwa/static/js/main.86a89a04.chunk.js",
+    "main.js.map": "/DnDTome-pwa/static/js/main.86a89a04.chunk.js.map",
     "runtime-main.js": "/DnDTome-pwa/static/js/runtime-main.f1683600.js",
     "runtime-main.js.map": "/DnDTome-pwa/static/js/runtime-main.f1683600.js.map",
     "static/js/2.a794f86b.chunk.js": "/DnDTome-pwa/static/js/2.a794f86b.chunk.js",
     "static/js/2.a794f86b.chunk.js.map": "/DnDTome-pwa/static/js/2.a794f86b.chunk.js.map",
     "index.html": "/DnDTome-pwa/index.html",
-    "precache-manifest.925ffd5504d3ecb135d35faffefd7110.js": "/DnDTome-pwa/precache-manifest.925ffd5504d3ecb135d35faffefd7110.js",
+    "precache-manifest.bc91152b6d8c3eff4dc048729061f041.js": "/DnDTome-pwa/precache-manifest.bc91152b6d8c3eff4dc048729061f041.js",
     "service-worker.js": "/DnDTome-pwa/service-worker.js",
     "static/css/main.a4aed14a.chunk.css.map": "/DnDTome-pwa/static/css/main.a4aed14a.chunk.css.map",
     "static/js/2.a794f86b.chunk.js.LICENSE.txt": "/DnDTome-pwa/static/js/2.a794f86b.chunk.js.LICENSE.txt"
@@ -17,6 +17,6 @@
     "static/js/runtime-main.f1683600.js",
     "static/js/2.a794f86b.chunk.js",
     "static/css/main.a4aed14a.chunk.css",
-    "static/js/main.c0cc9999.chunk.js"
+    "static/js/main.86a89a04.chunk.js"
   ]
 }
