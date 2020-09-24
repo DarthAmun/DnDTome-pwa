@@ -28,7 +28,7 @@ const CharOverview = () => {
     reciveAllFiltered("chars", filters, (results: any[]) => {
       setAllChars(results);
       setChars(results.slice(0, 100));
-      if(results.length === 0){
+      if (results.length === 0) {
         setParam({
           start: 0,
           end: 0,
@@ -60,16 +60,19 @@ const CharOverview = () => {
   return (
     <AppWrapper>
       <CharSearchBar onSend={(filterArray) => setFilter(filterArray)} />
-      <CharContainer
-        dataLength={chars.length}
-        next={fetchMoreData}
-        hasMore={scrollParam.hasMore}
-        loader={<LoadingSpinner />}
-      >
-        {chars!.map((char: Char, index: number) => {
-          return <CharTile key={index} char={char}></CharTile>;
-        })}
-      </CharContainer>
+      <div id="scrollable" style={{ width: "100%" }}>
+        <CharContainer
+          dataLength={chars.length}
+          next={fetchMoreData}
+          hasMore={scrollParam.hasMore}
+          loader={<LoadingSpinner />}
+          scrollableTarget="scrollable"
+        >
+          {chars!.map((char: Char, index: number) => {
+            return <CharTile key={index} char={char}></CharTile>;
+          })}
+        </CharContainer>
+      </div>
     </AppWrapper>
   );
 };

@@ -322,3 +322,16 @@ export const reciveCount = (
       db.close();
     });
 };
+
+export const reciveCountPromise = (
+  tableName: string,
+) => {
+  const db = new MyAppDatabase();
+  return db.open()
+    .then(function () {
+      return db.table(tableName).count();
+    })
+    .finally(function () {
+      db.close();
+    });
+};

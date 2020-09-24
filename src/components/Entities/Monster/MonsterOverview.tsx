@@ -28,7 +28,7 @@ const MonsterOverview = () => {
     reciveAllFiltered("monsters", filters, (results: any[]) => {
       setAllMonsters(results);
       setMonsters(results.slice(0, 100));
-      if(results.length === 0){
+      if (results.length === 0) {
         setParam({
           start: 0,
           end: 0,
@@ -56,20 +56,23 @@ const MonsterOverview = () => {
       hasMore: true,
     });
   };
-  
+
   return (
     <AppWrapper>
       <MonsterSearchBar onSend={(filterArray) => setFilter(filterArray)} />
-      <MonsterContainer
-        dataLength={monsters.length}
-        next={fetchMoreData}
-        hasMore={scrollParam.hasMore}
-        loader={<LoadingSpinner />}
-      >
-        {monsters!.map((monster: Monster, index: number) => {
-          return <MonsterTile key={index} monster={monster}></MonsterTile>;
-        })}
-      </MonsterContainer>
+      <div id="scrollable" style={{ width: "100%" }}>
+        <MonsterContainer
+          dataLength={monsters.length}
+          next={fetchMoreData}
+          hasMore={scrollParam.hasMore}
+          loader={<LoadingSpinner />}
+          scrollableTarget="scrollable"
+        >
+          {monsters!.map((monster: Monster, index: number) => {
+            return <MonsterTile key={index} monster={monster}></MonsterTile>;
+          })}
+        </MonsterContainer>
+      </div>
     </AppWrapper>
   );
 };
@@ -79,6 +82,7 @@ export default MonsterOverview;
 const MonsterContainer = styled(InfiniteScroll)`
   margin-top: 50px;
   width: 100%;
+  flex-basis: 100%;
   display: flex;
   flex-wrap: wrap;
   align-items: flex-start;

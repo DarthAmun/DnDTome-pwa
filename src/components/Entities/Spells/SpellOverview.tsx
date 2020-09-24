@@ -28,7 +28,7 @@ const SpellOverview = () => {
     reciveAllFiltered("spells", filters, (results: any[]) => {
       setAllSpells(results);
       setSpells(results.slice(0, 100));
-      if(results.length === 0){
+      if (results.length === 0) {
         setParam({
           start: 0,
           end: 0,
@@ -60,16 +60,19 @@ const SpellOverview = () => {
   return (
     <AppWrapper>
       <SpellSearchBar onSend={(filterArray) => setFilter(filterArray)} />
-      <SpellContainer
-        dataLength={spells.length}
-        next={fetchMoreData}
-        hasMore={scrollParam.hasMore}
-        loader={<LoadingSpinner />}
-      >
-        {spells!.map((spell: Spell, index: number) => {
-          return <SpellTile key={index} spell={spell}></SpellTile>;
-        })}
-      </SpellContainer>
+      <div id="scrollable" style={{ width: "100%" }}>
+        <SpellContainer
+          dataLength={spells.length}
+          next={fetchMoreData}
+          hasMore={scrollParam.hasMore}
+          loader={<LoadingSpinner />}
+          scrollableTarget="scrollable"
+        >
+          {spells!.map((spell: Spell, index: number) => {
+            return <SpellTile key={index} spell={spell}></SpellTile>;
+          })}
+        </SpellContainer>
+      </div>
     </AppWrapper>
   );
 };
