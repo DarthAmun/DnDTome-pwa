@@ -46,7 +46,6 @@ export default class Char implements IEntity {
   castingHit: number;
   castingDC: number;
 
-  constructor();
   constructor(
     id?: number,
     name?: string,

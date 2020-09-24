@@ -12,7 +12,6 @@ export default class Class implements IEntity {
   filename: string;
   pic: string;
 
-  constructor();
   constructor(
     id?: number,
     name?: string,

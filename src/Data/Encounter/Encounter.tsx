@@ -10,7 +10,6 @@ export default class Encounter implements IEntity {
   currentInit: number;
   roundCounter: number;
 
-  constructor();
   constructor(
     id?: number,
     name?: string,

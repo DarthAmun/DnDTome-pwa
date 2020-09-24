@@ -259,7 +259,7 @@ export const exportAll = async (filename: string) => {
       all.push(entity);
     });
   });
-  
+
   let contentType = "application/json;charset=utf-8;";
   if (window.navigator && window.navigator.msSaveOrOpenBlob) {
     var blob = new Blob([decodeURIComponent(encodeURI(JSON.stringify(all)))], {

@@ -7,6 +7,7 @@ import {
   exportAllFromTable,
   exportAll,
 } from "../../Services/OptionService";
+import { import5eToolsMonstersFiles, import5eToolsSpellsFiles } from "../../Services/5eToolService";
 import { deleteAll, reciveCount } from "../../Services/DatabaseService";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -149,7 +150,8 @@ const Options = () => {
           "Races",
           "Classes",
           "Chars",
-          "Encounters"
+          "Encounters",
+          "Others",
         ]}
         onChange={(tab: string) => setTab(tab)}
       />
@@ -414,12 +416,34 @@ const Options = () => {
           <OptionSection>
             <SelectionTitle>Delete</SelectionTitle>
             <SectionRow>
-              <SectionText>Delete all {encounterAmount} Encounters?</SectionText>
+              <SectionText>
+                Delete all {encounterAmount} Encounters?
+              </SectionText>
               <IconButton
                 icon={faTrashAlt}
                 onClick={() => triggerDeleteAll("encounters")}
               />
             </SectionRow>
+          </OptionSection>
+        </OptionTab>
+      )}
+      {activeTab === "Others" && (
+        <OptionTab>
+          <OptionSection>
+            <SelectionTitle>Import 5eTools Spells</SelectionTitle>
+            <FileField
+              label=""
+              icon={faFileImport}
+              onChange={(file) => import5eToolsSpellsFiles(file)}
+            />
+          </OptionSection>
+          <OptionSection>
+            <SelectionTitle>Import 5eTools Monsters</SelectionTitle>
+            <FileField
+              label=""
+              icon={faFileImport}
+              onChange={(file) => import5eToolsMonstersFiles(file)}
+            />
           </OptionSection>
         </OptionTab>
       )}
@@ -514,7 +538,7 @@ const SelectionTitle = styled.div`
   flex: 1 1 auto;
   padding: 5px;
   margin: 5px;
-  min-width: calc(100% - 10px);
+  min-width: calc(100% - 20px);
   font-weight: bold;
   text-algin: center;
   border-radius: 5px;

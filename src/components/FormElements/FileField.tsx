@@ -18,7 +18,7 @@ const FileField = ({ label, icon, transform, onChange }: $Props) => {
       <LabelText>
         {icon ? <Icon icon={icon} transform={transform} /> : ""} {label}
       </LabelText>
-      <Input onChange={(e) => onChange(e.target.files)} type="file"></Input>
+      <Input onChange={(e) => onChange(e.target.files)} type="file" multiple></Input>
     </Field>
   );
 };

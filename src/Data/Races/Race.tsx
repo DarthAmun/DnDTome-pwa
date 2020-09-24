@@ -15,7 +15,6 @@ export default class Race implements IEntity {
   filename: string;
   pic: string;
 
-  constructor();
   constructor(
     name?: string,
     id?: number,

@@ -16,7 +16,6 @@ export default class Spell implements IEntity {
   filename: string;
   pic: string;
 
-  constructor();
   constructor(
     name?: string,
     classes?: string,

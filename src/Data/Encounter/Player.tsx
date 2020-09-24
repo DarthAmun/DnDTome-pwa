@@ -9,7 +9,6 @@ export default class Player {
   isMonster: boolean;
   level: number;
 
-  constructor();
   constructor(
     name?: string,
     hp?: number,

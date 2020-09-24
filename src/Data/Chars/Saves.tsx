@@ -6,7 +6,6 @@ export default class Saves {
   wisSaveProf: number;
   chaSaveProf: number;
 
-  constructor();
   constructor(
     strSaveProf?: number,
     dexSaveProf?: number,

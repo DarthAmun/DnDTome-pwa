@@ -11,7 +11,6 @@ export default class Gear {
   type: string;
   filename: string;
 
-  constructor();
   constructor(
     id?: number,
     name?: string,

@@ -5,7 +5,6 @@ export default class Money {
   gold: number;
   platinum: number;
 
-  constructor();
   constructor(
     copper?: number,
     silver?: number,

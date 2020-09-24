@@ -18,7 +18,6 @@ export default class Skills {
   stealthProf: number;
   survivalProf: number;
 
-  constructor();
   constructor(
     acrobaticsProf?: number,
     animalHandlingProf?: number,
