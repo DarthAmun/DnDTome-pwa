@@ -15,14 +15,17 @@ export const import5eToolsSpellsFiles = (fileList: FileList | null) => {
 
           let promList: Promise<any>[] = [];
           json.spell.forEach((obj: any) => {
-            console.log(obj.duration);
-
             let classes = "";
-            obj.classes.fromClassList.forEach(
-              (classe: { name: string; source: string }) => {
-                classes += classe.name + ", ";
-              }
-            );
+            if (
+              obj.classes !== undefined &&
+              obj.classes.fromClassList !== undefined
+            ) {
+              obj.classes.fromClassList.forEach(
+                (classe: { name: string; source: string }) => {
+                  classes += classe.name + ", ";
+                }
+              );
+            }
 
             let school = "";
             if (obj.school === "V") school = "Evocation";
@@ -41,17 +44,25 @@ export const import5eToolsSpellsFiles = (fileList: FileList | null) => {
               " " +
               (obj.time[0].condition ? obj.time[0].condition : "");
 
-            let range =
-              obj.range.type +
-              " " +
-              obj.range.distance.type +
-              " " +
-              (obj.range.distance.amount ? obj.range.distance.amount : "");
+            let range = "";
+            if (obj.range !== undefined) {
+              range =
+                obj.range.type +
+                " " +
+                (obj.distance
+                  ? obj.range.distance.typ +
+                    " " +
+                    (obj.range.distance.amount ? obj.range.distance.amount : "")
+                  : "");
+            }
 
-            let components =
-              (obj.components.v ? "V, " : "") +
-              (obj.components.s ? "S, " : "") +
-              (obj.components.m ? "M (" + obj.components.m.text + ")" : "");
+            let components = "";
+            if (obj.components !== undefined) {
+              components =
+                (obj.components.v ? "V, " : "") +
+                (obj.components.s ? "S, " : "") +
+                (obj.components.m ? "M (" + obj.components.m.text + ")" : "");
+            }
 
             let concentration = obj.duration[0].concentration;
             let duration =
@@ -119,21 +130,52 @@ export const import5eToolsMonstersFiles = (fileList: FileList | null) => {
               }
 
               let cr = 0;
-              if (typeof obj.cr === "string") {
-                cr = +obj.cr;
-              } else {
-                cr = +obj.cr.cr;
+              if (obj.cr !== undefined) {
+                if (typeof obj.cr === "string") {
+                  if (obj.cr === "1/8") {
+                    cr = 0.125;
+                  } else if (obj.cr === "1/4") {
+                    cr = 0.25;
+                  } else if (obj.cr === "1/2") {
+                    cr = 0.5;
+                  } else {
+                    cr = +obj.cr;
+                  }
+                } else {
+                  if (obj.cr.cr === "1/8") {
+                    cr = 0.125;
+                  } else if (obj.cr.cr === "1/4") {
+                    cr = 0.25;
+                  } else if (obj.cr.cr === "1/2") {
+                    cr = 0.5;
+                  } else {
+                    cr = +obj.cr.cr;
+                  }
+                }
               }
 
               let alignment = "";
-              obj.alignment.forEach((align: string) => {
-                if (align === "L") alignment += "lawfull ";
-                if (align === "N") alignment += "neutral ";
-                if (align === "C") alignment += "chaotic ";
-                if (align === "G") alignment += "good ";
-                if (align === "E") alignment += "evil ";
-              });
+              if (obj.alignment !== undefined) {
+                obj.alignment.forEach((align: string) => {
+                  if (align === "L") alignment += "lawfull ";
+                  if (align === "N") alignment += "neutral ";
+                  if (align === "C") alignment += "chaotic ";
+                  if (align === "G") alignment += "good ";
+                  if (align === "E") alignment += "evil ";
+                });
+              }
               alignment = alignment.trim();
+
+              let size = "";
+              if (obj.size !== undefined) {
+                if (obj.size === "L") size += "large ";
+                else if (obj.size === "H") size += "huge ";
+                else if (obj.size === "T") size += "tiny ";
+                else if (obj.size === "M") size += "medium ";
+                else if (obj.size === "S") size += "small ";
+                else if (obj.size === "G") size += "gargantuan ";
+              }
+              size = size.trim();
 
               let ac = 0;
               if (typeof obj.ac[0] === "number") {
@@ -143,8 +185,18 @@ export const import5eToolsMonstersFiles = (fileList: FileList | null) => {
               }
 
               let speed = "";
-              for (const key of Object.entries(obj.speed)) {
-                speed += key + ", ";
+              for (const [key, value] of Object.entries(obj.speed)) {
+                if (typeof value === "string") {
+                  speed += key + " " + value + "ft, ";
+                } else {
+                  speed += key + " ";
+                  for (const [key2, value2] of Object.entries(
+                    value as Object
+                  )) {
+                    speed += key2 + " (" + value2 + ")";
+                  }
+                  speed += key + ", ";
+                }
               }
               speed.trim();
 
@@ -210,10 +262,22 @@ export const import5eToolsMonstersFiles = (fileList: FileList | null) => {
                   (tra: { name: string; entries: string[] }) => {
                     traits += tra.name + ". \n";
                     tra.entries.forEach((entry: string) => {
-                      traits += entry;
+                      traits += entry + " \n";
                     });
+                    traits += "\n";
                   }
                 );
+              traits = traits
+                .replaceAll("}", "")
+                .replaceAll("{@damage ", "")
+                .replaceAll("{@recharge", "(Recharge 6)")
+                .replaceAll("{@atk mw", "Melee Weapon Attack: ")
+                .replaceAll("{@atk mw", "Ranged Weapon Attack: ")
+                .replaceAll("{@atk ms", "Melee Spell Attack: ")
+                .replaceAll("{@atk rs", "Ranged Spell Attack: ")
+                .replaceAll("{@h", "Hit: ")
+                .replaceAll("{@dc", "DC")
+                .replaceAll("{@hit", "+");
               traits.trim();
 
               let actions = "";
@@ -222,10 +286,22 @@ export const import5eToolsMonstersFiles = (fileList: FileList | null) => {
                   (tra: { name: string; entries: string[] }) => {
                     actions += tra.name + ". \n";
                     tra.entries.forEach((entry: string) => {
-                      actions += entry;
+                      actions += entry + " \n";
                     });
+                    actions += " \n";
                   }
                 );
+              actions = actions
+                .replaceAll("}", "")
+                .replaceAll("{@damage ", "")
+                .replaceAll("{@recharge", "(Recharge 6)")
+                .replaceAll("{@atk mw", "Melee Weapon Attack: ")
+                .replaceAll("{@atk mw", "Ranged Weapon Attack: ")
+                .replaceAll("{@atk ms", "Melee Spell Attack: ")
+                .replaceAll("{@atk rs", "Ranged Spell Attack: ")
+                .replaceAll("{@h", "Hit: ")
+                .replaceAll("{@dc", "DC")
+                .replaceAll("{@hit", "+");
               actions.trim();
 
               let lactions = "";
@@ -234,10 +310,22 @@ export const import5eToolsMonstersFiles = (fileList: FileList | null) => {
                   (tra: { name: string; entries: string[] }) => {
                     lactions += tra.name + ". \n";
                     tra.entries.forEach((entry: string) => {
-                      lactions += entry;
+                      lactions += entry + " \n";
                     });
+                    lactions += " \n";
                   }
                 );
+              lactions = lactions
+                .replaceAll("}", "")
+                .replaceAll("{@damage ", "")
+                .replaceAll("{@recharge", "(Recharge 6)")
+                .replaceAll("{@atk mw", "Melee Weapon Attack: ")
+                .replaceAll("{@atk mw", "Ranged Weapon Attack: ")
+                .replaceAll("{@atk ms", "Melee Spell Attack: ")
+                .replaceAll("{@atk rs", "Ranged Spell Attack: ")
+                .replaceAll("{@h", "Hit: ")
+                .replaceAll("{@dc", "DC")
+                .replaceAll("{@hit", "+");
               lactions.trim();
 
               let newMonster = new Monster(
@@ -245,7 +333,7 @@ export const import5eToolsMonstersFiles = (fileList: FileList | null) => {
                 obj.name,
                 obj.source,
                 "",
-                obj.size,
+                size,
                 type,
                 subtype,
                 alignment,
@@ -278,6 +366,7 @@ export const import5eToolsMonstersFiles = (fileList: FileList | null) => {
         }
       };
       fileReader.readAsText(file);
+      console.log("Done");
     });
   }
 };
