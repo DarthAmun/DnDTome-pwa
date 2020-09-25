@@ -16,18 +16,41 @@ export const LoadingSpinner = () => (
   </Spinner>
 );
 
-const Spinner = styled.div`
+export const LocalLoadingSpinner = () => (
+  <Wrapper>
+    <LocalSpinner>
+      <Icon icon={faDiceD20} />
+      <svg width="0" height="0">
+        <radialGradient id="rg" r="150%" cx="30%" cy="107%">
+          <stop stopColor="#350069" offset="0" />
+          <stop stopColor="#B973FF" offset="0.9" />
+        </radialGradient>
+      </svg>
+    </LocalSpinner>
+  </Wrapper>
+);
+
+const Wrapper = styled.div`
+  height: 100px;
+  width: 100px;
+  margin: 1em auto;
+`;
+
+const LocalSpinner = styled.div`
   width: 40px;
   height: 40px;
   font-size: 40px;
-  position: fixed;
-  z-index: 940;
-  top: calc(50% - 20px);
-  right: calc(50% - 20px);
 
   svg * {
     fill: url(#rg);
   }
+`;
+
+const Spinner = styled(LocalSpinner)`
+  position: fixed;
+  z-index: 940;
+  top: calc(50% - 20px);
+  right: calc(50% - 20px);
 `;
 
 const Icon = styled(FontAwesomeIcon)`
