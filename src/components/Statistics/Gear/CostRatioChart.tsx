@@ -8,7 +8,7 @@ import {
 } from "../../../Services/DatabaseService";
 import { LocalLoadingSpinner } from "../../Loading";
 
-const TypeRatioChart = () => {
+const CostRatioChart = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [generalCounts, setGeneralCounts] = useState<{
     labels: string[];
@@ -20,18 +20,18 @@ const TypeRatioChart = () => {
   }, []);
 
   const makeSchoolsData = async () => {
-    const types = await reciveAttributeSelectionPromise("gears", "type");
+    const costs = await reciveAttributeSelectionPromise("gears", "cost");
 
     let promList: { name: string; count: number }[] = [];
-    for (const type of types) {
-      if (type !== undefined) {
+    for (const cost of costs) {
+      if (cost !== "") {
         const count = await recivePromiseByAttributeCount(
           "gears",
-          "type",
-          type as number
+          "cost",
+          cost.toString()
         );
         promList.push({
-          name: type.toString(),
+          name: cost.toString(),
           count: count,
         });
       }
@@ -59,21 +59,23 @@ const TypeRatioChart = () => {
 
   return (
     <OptionSection>
-      <SelectionTitle>Type Ratio</SelectionTitle>
-      {!loading && <div style={{ width: "100%", height: 210 }}>
-        <Bar data={generalCounts} />
-      </div>}
+      <SelectionTitle>Cost Graph</SelectionTitle>
+      {!loading && (
+        <div style={{ width: "100%", paddingBottom: "10px" }}>
+          <Bar data={generalCounts} />
+        </div>
+      )}
       {loading && <LocalLoadingSpinner />}
     </OptionSection>
   );
 };
 
-export default TypeRatioChart;
+export default CostRatioChart;
 
 const OptionSection = styled.div`
-  flex: 1 1 15em;
+  flex: 1 1 800px;
   width: calc(100% - 1em);
-  max-width: 400px;
+  max-width: 800px;
   color: ${({ theme }) => theme.tile.color};
   background-color: ${({ theme }) => theme.tile.backgroundColor};
   margin: 0.5em;

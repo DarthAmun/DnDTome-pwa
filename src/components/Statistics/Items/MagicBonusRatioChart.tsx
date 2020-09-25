@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 
-import { Bar } from "react-chartjs-2";
+import { Doughnut } from "react-chartjs-2";
 import {
   reciveAttributeSelectionPromise,
   recivePromiseByAttributeCount,
 } from "../../../Services/DatabaseService";
 import { LocalLoadingSpinner } from "../../Loading";
 
-const ActionsRatioChart = () => {
+const MagicBonusRatioChart = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [generalCounts, setGeneralCounts] = useState<{
     labels: string[];
@@ -20,26 +20,21 @@ const ActionsRatioChart = () => {
   }, []);
 
   const makeSchoolsData = async () => {
-    let times = await reciveAttributeSelectionPromise("spells", "time");
-    console.log(times);
-
-    let newTimes:string[] = [];
-    times.forEach((time) => {
-      if(!time.toString().startsWith("1 reaction")) {
-        newTimes.push(time.toString());
-      }
-    })
+    const magicBoni = await reciveAttributeSelectionPromise(
+      "items",
+      "magicBonus"
+    );
 
     let promList: { name: string; count: number }[] = [];
-    for (const time of newTimes) {
-      if (time !== "") {
+    for (const magicBonus of magicBoni) {
+      if (magicBonus !== undefined) {
         const count = await recivePromiseByAttributeCount(
-          "spells",
-          "time",
-          time.toString()
+          "items",
+          "magicBonus",
+          magicBonus as number
         );
         promList.push({
-          name: time.toString(),
+          name: "+" + magicBonus.toString(),
           count: count,
         });
       }
@@ -67,10 +62,10 @@ const ActionsRatioChart = () => {
 
   return (
     <OptionSection>
-      <SelectionTitle>Time Ratio</SelectionTitle>
+      <SelectionTitle>Rarity Ratio</SelectionTitle>
       {!loading && (
         <div style={{ width: "100%", paddingBottom: "10px" }}>
-          <Bar data={generalCounts} />
+          <Doughnut data={generalCounts} />
         </div>
       )}
       {loading && <LocalLoadingSpinner />}
@@ -78,12 +73,12 @@ const ActionsRatioChart = () => {
   );
 };
 
-export default ActionsRatioChart;
+export default MagicBonusRatioChart;
 
 const OptionSection = styled.div`
-  flex: 1 1 800em;
+  flex: 1 1 15em;
   width: calc(100% - 1em);
-  max-width: 800px;
+  max-width: 400px;
   color: ${({ theme }) => theme.tile.color};
   background-color: ${({ theme }) => theme.tile.backgroundColor};
   margin: 0.5em;

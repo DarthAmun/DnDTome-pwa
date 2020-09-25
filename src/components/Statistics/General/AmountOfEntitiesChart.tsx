@@ -66,7 +66,7 @@ const AmountOfEntitiesChart = () => {
     <OptionSection>
       <SelectionTitle>Amount of Entities</SelectionTitle>
       {!loading && (
-        <div style={{ width: "100%", height: 210 }}>
+        <div style={{ width: "100%", paddingBottom: "10px" }}>
           <Doughnut data={generalCounts} />
         </div>
       )}
@@ -78,7 +78,7 @@ const AmountOfEntitiesChart = () => {
 export default AmountOfEntitiesChart;
 
 const OptionSection = styled.div`
-  flex: 1 1 15em;
+  flex: 1 1 20em;
   width: calc(100% - 1em);
   max-width: 400px;
   color: ${({ theme }) => theme.tile.color};

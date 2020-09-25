@@ -59,9 +59,9 @@ const DamageRatioChart = () => {
 
   return (
     <OptionSection>
-      <SelectionTitle>Type Ratio</SelectionTitle>
+      <SelectionTitle>Damage Graph</SelectionTitle>
       {!loading && (
-        <div style={{ width: "100%", height: 210 }}>
+        <div style={{ width: "100%", paddingBottom: "10px" }}>
           <Bar data={generalCounts} />
         </div>
       )}
@@ -73,9 +73,9 @@ const DamageRatioChart = () => {
 export default DamageRatioChart;
 
 const OptionSection = styled.div`
-  flex: 1 1 15em;
+  flex: 1 1 800px;
   width: calc(100% - 1em);
-  max-width: 400px;
+  max-width: 800px;
   color: ${({ theme }) => theme.tile.color};
   background-color: ${({ theme }) => theme.tile.backgroundColor};
   margin: 0.5em;

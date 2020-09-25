@@ -8,7 +8,7 @@ import {
 } from "../../../Services/DatabaseService";
 import { LocalLoadingSpinner } from "../../Loading";
 
-const ActionsRatioChart = () => {
+const GearTypeRatioChart = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [generalCounts, setGeneralCounts] = useState<{
     labels: string[];
@@ -20,26 +20,18 @@ const ActionsRatioChart = () => {
   }, []);
 
   const makeSchoolsData = async () => {
-    let times = await reciveAttributeSelectionPromise("spells", "time");
-    console.log(times);
-
-    let newTimes:string[] = [];
-    times.forEach((time) => {
-      if(!time.toString().startsWith("1 reaction")) {
-        newTimes.push(time.toString());
-      }
-    })
+    const types = await reciveAttributeSelectionPromise("gears", "type");
 
     let promList: { name: string; count: number }[] = [];
-    for (const time of newTimes) {
-      if (time !== "") {
+    for (const type of types) {
+      if (type !== undefined) {
         const count = await recivePromiseByAttributeCount(
-          "spells",
-          "time",
-          time.toString()
+          "gears",
+          "type",
+          type as number
         );
         promList.push({
-          name: time.toString(),
+          name: type.toString(),
           count: count,
         });
       }
@@ -67,7 +59,7 @@ const ActionsRatioChart = () => {
 
   return (
     <OptionSection>
-      <SelectionTitle>Time Ratio</SelectionTitle>
+      <SelectionTitle>Type Graph</SelectionTitle>
       {!loading && (
         <div style={{ width: "100%", paddingBottom: "10px" }}>
           <Bar data={generalCounts} />
@@ -78,10 +70,10 @@ const ActionsRatioChart = () => {
   );
 };
 
-export default ActionsRatioChart;
+export default GearTypeRatioChart;
 
 const OptionSection = styled.div`
-  flex: 1 1 800em;
+  flex: 1 1 800px;
   width: calc(100% - 1em);
   max-width: 800px;
   color: ${({ theme }) => theme.tile.color};

@@ -59,7 +59,7 @@ const SchoolsRatioChart = () => {
     <OptionSection>
       <SelectionTitle>School Ratio</SelectionTitle>
       {!loading && (
-        <div style={{ width: "100%", height: 210 }}>
+        <div style={{ width: "100%", paddingBottom: "10px" }}>
           <Doughnut data={generalCounts} />
         </div>
       )}
