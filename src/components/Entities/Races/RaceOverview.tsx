@@ -66,7 +66,6 @@ const RaceOverview = () => {
           next={fetchMoreData}
           hasMore={scrollParam.hasMore}
           loader={<LoadingSpinner />}
-          scrollableTarget="scrollable"
         >
           {races!.map((race: Race, index: number) => {
             return <RaceTile key={index} race={race}></RaceTile>;

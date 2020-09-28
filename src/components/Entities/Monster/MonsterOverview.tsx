@@ -66,7 +66,6 @@ const MonsterOverview = () => {
           next={fetchMoreData}
           hasMore={scrollParam.hasMore}
           loader={<LoadingSpinner />}
-          scrollableTarget="scrollable"
         >
           {monsters!.map((monster: Monster, index: number) => {
             return <MonsterTile key={index} monster={monster}></MonsterTile>;

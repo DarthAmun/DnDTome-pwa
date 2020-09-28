@@ -37,12 +37,15 @@ export const import5eToolsSpellsFiles = (fileList: FileList | null) => {
             if (obj.school === "A") school = "Abjuration";
             if (obj.school === "E") school = "Enchantment";
 
-            let time =
-              obj.time[0].number +
-              " " +
-              obj.time[0].unit +
-              " " +
-              (obj.time[0].condition ? obj.time[0].condition : "");
+            let time = "";
+            if (obj.time !== undefined) {
+              time =
+                obj.time[0].number +
+                " " +
+                obj.time[0].unit +
+                " " +
+                (obj.time[0].condition ? obj.time[0].condition : "");
+            }
 
             let range = "";
             if (obj.range !== undefined) {
@@ -60,25 +63,83 @@ export const import5eToolsSpellsFiles = (fileList: FileList | null) => {
             if (obj.components !== undefined) {
               components =
                 (obj.components.v ? "V, " : "") +
-                (obj.components.s ? "S, " : "") +
-                (obj.components.m ? "M (" + obj.components.m.text + ")" : "");
+                (obj.components.s ? "S, " : "");
+              if (obj.components.m !== undefined) {
+                if (obj.components.m.text !== undefined) {
+                  components = "M (" + obj.components.m.text + ")";
+                } else {
+                  components = "M (" + obj.components.m + ")";
+                }
+              }
             }
 
-            let concentration = obj.duration[0].concentration;
-            let duration =
-              (concentration ? "Concentration, " : "") +
-              obj.duration[0].type +
-              " " +
-              (obj.duration[0].duration
-                ? obj.duration[0].duration.type +
-                  " " +
-                  obj.duration[0].duration.amount
-                : "");
+            let duration = "";
+            if (obj.duration !== undefined) {
+              let concentration = obj.duration[0].concentration;
+              duration =
+                (concentration ? "Concentration, " : "") +
+                obj.duration[0].type +
+                " " +
+                (obj.duration[0].duration !== undefined
+                  ? obj.duration[0].duration.type +
+                    " " +
+                    obj.duration[0].duration.amount
+                  : "");
+            }
 
             let text = "";
-            obj.entries.forEach((textPart: string) => {
-              text += textPart + "\n";
+            obj.entries.forEach((textPart: string | any) => {
+              if (typeof textPart === "string") {
+                text += textPart + "\n";
+              } else {
+                if (
+                  textPart.name !== undefined &&
+                  textPart.entries !== undefined
+                ) {
+                  text += "\n" + textPart.name + ". ";
+                  textPart.entries.forEach((entryTextPart: string) => {
+                    text += entryTextPart + "\n";
+                  });
+                } else if (textPart.items !== undefined) {
+                  textPart.items.forEach((listItem: string) => {
+                    text += "• " + listItem + "\n";
+                  });
+                } else if (
+                  textPart.type !== undefined &&
+                  textPart.type === "table"
+                ) {
+                  text += "||table||\n";
+                  if (textPart.colLabels !== undefined) {
+                    text += "||";
+                    textPart.colLabels.forEach((listItem: string) => {
+                      text += listItem + "|";
+                    });
+                    text += "|\n";
+                  }
+                  textPart.rows.forEach((rows: string[]) => {
+                    text += "||";
+                    rows.forEach((cel: string) => {
+                      text += cel + "|";
+                    });
+                    text += "|\n";
+                  });
+                  text += "||table||\n";
+                } else {
+                  let convertText = JSON.stringify(textPart);
+                  convertText = convertText
+                    .replaceAll("},", "\n")
+                    .replaceAll("[", "")
+                    .replaceAll("]", "")
+                    .replaceAll("}", "")
+                    .replaceAll("{@", "")
+                    .replaceAll("{", "");
+                  convertText = convertText.trim();
+                  text += convertText;
+                }
+              }
             });
+            text = text.replaceAll("}", "").replaceAll("{@", "");
+            text = text.trim();
 
             let newSpell = new Spell(
               obj.name,
@@ -208,7 +269,7 @@ export const import5eToolsMonstersFiles = (fileList: FileList | null) => {
               saves.trim();
 
               let skills = "";
-              if (obj.skills !== undefined)
+              if (obj.skill !== undefined)
                 for (const [key, value] of Object.entries(obj.skill)) {
                   skills += key + " " + value + ", ";
                 }
@@ -261,10 +322,12 @@ export const import5eToolsMonstersFiles = (fileList: FileList | null) => {
                 obj.trait.forEach(
                   (tra: { name: string; entries: string[] }) => {
                     traits += tra.name + ". \n";
-                    tra.entries.forEach((entry: string) => {
-                      traits += entry + " \n";
-                    });
-                    traits += "\n";
+                    if (tra.entries !== undefined) {
+                      tra.entries.forEach((entry: string) => {
+                        traits += entry + " \n";
+                      });
+                      traits += "\n";
+                    }
                   }
                 );
               traits = traits
@@ -277,18 +340,21 @@ export const import5eToolsMonstersFiles = (fileList: FileList | null) => {
                 .replaceAll("{@atk rs", "Ranged Spell Attack: ")
                 .replaceAll("{@h", "Hit: ")
                 .replaceAll("{@dc", "DC")
-                .replaceAll("{@hit", "+");
-              traits.trim();
+                .replaceAll("{@hit", "+")
+                .replaceAll("{@", "");
+              traits = traits.trim();
 
               let actions = "";
               obj.action &&
                 obj.action.forEach(
                   (tra: { name: string; entries: string[] }) => {
                     actions += tra.name + ". \n";
-                    tra.entries.forEach((entry: string) => {
-                      actions += entry + " \n";
-                    });
-                    actions += " \n";
+                    if (tra.entries !== undefined) {
+                      tra.entries.forEach((entry: string) => {
+                        actions += entry + " \n";
+                      });
+                      actions += " \n";
+                    }
                   }
                 );
               actions = actions
@@ -301,18 +367,21 @@ export const import5eToolsMonstersFiles = (fileList: FileList | null) => {
                 .replaceAll("{@atk rs", "Ranged Spell Attack: ")
                 .replaceAll("{@h", "Hit: ")
                 .replaceAll("{@dc", "DC")
-                .replaceAll("{@hit", "+");
-              actions.trim();
+                .replaceAll("{@hit", "+")
+                .replaceAll("{@", "");
+              actions = actions.trim();
 
               let lactions = "";
               obj.legendary &&
                 obj.legendary.forEach(
                   (tra: { name: string; entries: string[] }) => {
                     lactions += tra.name + ". \n";
-                    tra.entries.forEach((entry: string) => {
-                      lactions += entry + " \n";
-                    });
-                    lactions += " \n";
+                    if (tra.entries !== undefined) {
+                      tra.entries.forEach((entry: string) => {
+                        lactions += entry + " \n";
+                      });
+                      lactions += " \n";
+                    }
                   }
                 );
               lactions = lactions
@@ -325,8 +394,9 @@ export const import5eToolsMonstersFiles = (fileList: FileList | null) => {
                 .replaceAll("{@atk rs", "Ranged Spell Attack: ")
                 .replaceAll("{@h", "Hit: ")
                 .replaceAll("{@dc", "DC")
-                .replaceAll("{@hit", "+");
-              lactions.trim();
+                .replaceAll("{@hit", "+")
+                .replaceAll("{@", "");
+              lactions = lactions.trim();
 
               let newMonster = new Monster(
                 0,

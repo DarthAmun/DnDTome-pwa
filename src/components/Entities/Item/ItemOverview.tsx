@@ -65,7 +65,6 @@ const ItemOverview = () => {
           next={fetchMoreData}
           hasMore={scrollParam.hasMore}
           loader={<LoadingSpinner />}
-          scrollableTarget="scrollable"
         >
           {items!.map((item: Item, index: number) => {
             return <ItemTile key={index} item={item}></ItemTile>;

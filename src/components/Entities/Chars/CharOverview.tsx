@@ -66,7 +66,6 @@ const CharOverview = () => {
           next={fetchMoreData}
           hasMore={scrollParam.hasMore}
           loader={<LoadingSpinner />}
-          scrollableTarget="scrollable"
         >
           {chars!.map((char: Char, index: number) => {
             return <CharTile key={index} char={char}></CharTile>;

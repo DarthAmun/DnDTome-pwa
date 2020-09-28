@@ -60,13 +60,17 @@ const SpellOverview = () => {
   return (
     <AppWrapper>
       <SpellSearchBar onSend={(filterArray) => setFilter(filterArray)} />
-      <div id="scrollable" style={{ width: "100%" }}>
+      <div
+        id="scrollable"
+        style={{
+          width: "100%",
+        }}
+      >
         <SpellContainer
           dataLength={spells.length}
           next={fetchMoreData}
           hasMore={scrollParam.hasMore}
           loader={<LoadingSpinner />}
-          scrollableTarget="scrollable"
         >
           {spells!.map((spell: Spell, index: number) => {
             return <SpellTile key={index} spell={spell}></SpellTile>;

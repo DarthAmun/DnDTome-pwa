@@ -66,7 +66,6 @@ const GearOverview = () => {
           next={fetchMoreData}
           hasMore={scrollParam.hasMore}
           loader={<LoadingSpinner />}
-          scrollableTarget="scrollable"
         >
           {gears!.map((gear: Gear, index: number) => {
             return <GearTile key={index} gear={gear}></GearTile>;

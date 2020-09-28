@@ -66,7 +66,6 @@ const ClassOverview = () => {
           next={fetchMoreData}
           hasMore={scrollParam.hasMore}
           loader={<LoadingSpinner />}
-          scrollableTarget="scrollable"
         >
           {classes!.map((classe: Class, index: number) => {
             return <ClassTile key={index} classe={classe}></ClassTile>;
