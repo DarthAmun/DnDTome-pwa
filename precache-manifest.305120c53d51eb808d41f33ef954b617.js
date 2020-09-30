@@ -1,10 +1,10 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "e9c70f6365520073d2e3629b3a126774",
+    "revision": "0acfade6783248d41c5298ca92fd68ed",
     "url": "/DnDTome-pwa/index.html"
   },
   {
-    "revision": "ca9d8cc3e305e2db545e",
+    "revision": "ed68a22ca4f266776c35",
     "url": "/DnDTome-pwa/static/css/main.a4aed14a.chunk.css"
   },
   {
@@ -16,8 +16,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/DnDTome-pwa/static/js/2.0ccbe362.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "ca9d8cc3e305e2db545e",
-    "url": "/DnDTome-pwa/static/js/main.d2b51800.chunk.js"
+    "revision": "ed68a22ca4f266776c35",
+    "url": "/DnDTome-pwa/static/js/main.a3086d94.chunk.js"
   },
   {
     "revision": "1f5dc9f02f21b62314c6",
