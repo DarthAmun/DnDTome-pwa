@@ -14,6 +14,7 @@ import ItemTypeRatioChart from "./Items/ItemTypeRatioChart";
 import MagicBonusRatioChart from "./Items/MagicBonusRatioChart";
 import RarityRatioChart from "./Items/RarityRatioChart";
 import CrRatioChart from "./Monsters/CrRatioChart";
+import LegendaryRatioChart from "./Monsters/LegendaryRatioChart";
 import MonsterTypeRatioChart from "./Monsters/MonsterTypeRatioChart";
 import ActionsRatioChart from "./Spells/ActionsRatioChart";
 import LevelRatioChart from "./Spells/LevelRatioChart";
@@ -61,6 +62,7 @@ const Statistics = () => {
       )}
       {activeTab === "Monsters" && (
         <OptionTab>
+          <LegendaryRatioChart />
           <MonsterTypeRatioChart />
           <CrRatioChart />
         </OptionTab>
