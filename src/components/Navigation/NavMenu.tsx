@@ -8,6 +8,7 @@ import {
   faCog,
   faDragon,
   faIdCard,
+  faChartPie,
 } from "@fortawesome/free-solid-svg-icons";
 import {
   GiBackpack,
@@ -102,6 +103,13 @@ const NavMenu = ({ open }: $Props) => {
       >
         <FontAwesomeIcon icon={faCog} />
         Options
+      </Link>
+      <Link
+        to="/statistics"
+        className={location.pathname === "/statistics" ? "menuItemActiv" : ""}
+      >
+        <FontAwesomeIcon icon={faChartPie} />
+        Statistics
       </Link>
     </Menu>
   );

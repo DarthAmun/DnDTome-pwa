@@ -44,6 +44,50 @@ export const save = (tableName: string, data: IEntity) => {
     });
 };
 
+export const saveNew = (
+  tableName: string,
+  entity: IEntity,
+  filename: string
+) => {
+  const db = new MyAppDatabase();
+  return db
+    .open()
+    .then(async function () {
+      delete entity["id"];
+      const prom = await db
+        .table(tableName)
+        .put({ ...entity, filename: filename });
+      return prom;
+    })
+    .finally(function () {
+      db.close();
+    });
+};
+
+export const saveNewFromList = (
+  tableName: string,
+  entities: IEntity[],
+  filename: string,
+  callback: () => void
+) => {
+  const db = new MyAppDatabase();
+  db.open()
+    .then(function () {
+      const refinedEntities = (entities as IEntity[]).map((entity: IEntity) => {
+        delete entity["id"];
+        return { ...entity, filename: filename };
+      });
+      db.table(tableName)
+        .bulkPut(refinedEntities)
+        .then(() => {
+          callback();
+        });
+    })
+    .finally(function () {
+      db.close();
+    });
+};
+
 export const saveWithCallback = (
   tableName: string,
   data: IEntity,
@@ -94,6 +138,34 @@ export const reciveAll = (
     });
 };
 
+export const reciveCount = (
+  tableName: string,
+  callback: (value: number) => void
+) => {
+  const db = new MyAppDatabase();
+  db.open()
+    .then(function () {
+      db.table(tableName).count((count) => {
+        callback(count);
+      });
+    })
+    .finally(function () {
+      db.close();
+    });
+};
+
+export const reciveCountPromise = (tableName: string) => {
+  const db = new MyAppDatabase();
+  return db
+    .open()
+    .then(function () {
+      return db.table(tableName).count();
+    })
+    .finally(function () {
+      db.close();
+    });
+};
+
 export const reciveByAttribute = (
   tableName: string,
   name: string,
@@ -116,19 +188,6 @@ export const reciveByAttribute = (
     });
 };
 
-export const reciveAllPromise = (tableName: string) => {
-  const db = new MyAppDatabase();
-  return db
-    .open()
-    .then(async function () {
-      const array = await db.table(tableName).toArray();
-      return array;
-    })
-    .finally(function () {
-      db.close();
-    });
-};
-
 export const recivePromiseByAttribute = (
   tableName: string,
   name: string,
@@ -144,6 +203,62 @@ export const recivePromiseByAttribute = (
         .equalsIgnoreCase(value)
         .toArray();
       return array[0];
+    })
+    .finally(function () {
+      db.close();
+    });
+};
+
+export const recivePromiseByAttributeCount = (
+  tableName: string,
+  name: string,
+  value: string | number
+) => {
+  const db = new MyAppDatabase();
+  if (typeof value === "string") {
+    return db
+      .open()
+      .then(async function () {
+        return await db
+          .table(tableName)
+          .where(name)
+          .equalsIgnoreCase(value)
+          .count();
+      })
+      .finally(function () {
+        db.close();
+      });
+  } else if (typeof value === "number") {
+    return db
+      .open()
+      .then(async function () {
+        return await db.table(tableName).where(name).equals(value).count();
+      })
+      .finally(function () {
+        db.close();
+      });
+  } else {
+    return db
+      .open()
+      .then(async function () {
+        return await db
+          .table(tableName)
+          .where(name)
+          .equalsIgnoreCase("" + value)
+          .count();
+      })
+      .finally(function () {
+        db.close();
+      });
+  }
+};
+
+export const reciveAllPromise = (tableName: string) => {
+  const db = new MyAppDatabase();
+  return db
+    .open()
+    .then(async function () {
+      return await db.table(tableName).toArray();
     })
     .finally(function () {
       db.close();
@@ -233,44 +348,15 @@ export const reciveAttributeSelection = (
     });
 };
 
-export const saveNew = (
+export const reciveAttributeSelectionPromise = (
   tableName: string,
-  entity: IEntity,
-  filename: string
+  attribute: string
 ) => {
   const db = new MyAppDatabase();
   return db
     .open()
-    .then(async function () {
-      delete entity["id"];
-      const prom = await db
-        .table(tableName)
-        .put({ ...entity, filename: filename });
-      return prom;
-    })
-    .finally(function () {
-      db.close();
-    });
-};
-
-export const saveNewFromList = (
-  tableName: string,
-  entities: IEntity[],
-  filename: string,
-  callback: () => void
-) => {
-  const db = new MyAppDatabase();
-  db.open()
     .then(function () {
-      const refinedEntities = (entities as IEntity[]).map((entity: IEntity) => {
-        delete entity["id"];
-        return { ...entity, filename: filename };
-      });
-      db.table(tableName)
-        .bulkPut(refinedEntities)
-        .then(() => {
-          callback();
-        });
+      return db.table(tableName).orderBy(attribute).uniqueKeys();
     })
     .finally(function () {
       db.close();
@@ -301,22 +387,6 @@ export const deleteAll = (tableName: string) => {
   db.open()
     .then(function () {
       db.table(tableName).clear();
-    })
-    .finally(function () {
-      db.close();
-    });
-};
-
-export const reciveCount = (
-  tableName: string,
-  callback: (value: number) => void
-) => {
-  const db = new MyAppDatabase();
-  db.open()
-    .then(function () {
-      db.table(tableName).count((count) => {
-        callback(count);
-      });
     })
     .finally(function () {
       db.close();

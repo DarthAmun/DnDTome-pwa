@@ -28,7 +28,7 @@ const ItemOverview = () => {
     reciveAllFiltered("items", filters, (results: any[]) => {
       setAllItems(results);
       setItems(results.slice(0, 100));
-      if(results.length === 0){
+      if (results.length === 0) {
         setParam({
           start: 0,
           end: 0,
@@ -59,16 +59,18 @@ const ItemOverview = () => {
   return (
     <AppWrapper>
       <ItemSearchBar onSend={(filterArray) => setFilter(filterArray)} />
-      <ItemContainer
-        dataLength={items.length}
-        next={fetchMoreData}
-        hasMore={scrollParam.hasMore}
-        loader={<LoadingSpinner />}
-      >
-        {items!.map((item: Item, index: number) => {
-          return <ItemTile key={index} item={item}></ItemTile>;
-        })}
-      </ItemContainer>
+      <div id="scrollable" style={{ width: "100%" }}>
+        <ItemContainer
+          dataLength={items.length}
+          next={fetchMoreData}
+          hasMore={scrollParam.hasMore}
+          loader={<LoadingSpinner />}
+        >
+          {items!.map((item: Item, index: number) => {
+            return <ItemTile key={index} item={item}></ItemTile>;
+          })}
+        </ItemContainer>
+      </div>
     </AppWrapper>
   );
 };

@@ -513,7 +513,7 @@ const ExternalLink = styled.a`
   display: inline-block;
   text-decoration: none;
   background-color: ${({ theme }) => theme.buttons.backgroundColor};
-  height: 28px;
+  height: 38px;
   border: none;
   border-radius: 5px;
   padding-left: 10px;
@@ -524,7 +524,7 @@ const ExternalLink = styled.a`
   font-size: 14px;
   color: ${({ theme }) => theme.buttons.color};
   cursor: pointer;
-  line-height: 26px;
+  line-height: 36px;
 
   &.patreon {
     background-color: rgb(232, 91, 70);

@@ -19,7 +19,6 @@ const RaceOverview = () => {
     end: number;
     hasMore: boolean;
   }>({
-
     start: 100,
     end: 120,
     hasMore: true,
@@ -29,7 +28,7 @@ const RaceOverview = () => {
     reciveAllFiltered("races", filters, (results: any[]) => {
       setAllRaces(results);
       setRaces(results.slice(0, 100));
-      if(results.length === 0){
+      if (results.length === 0) {
         setParam({
           start: 0,
           end: 0,
@@ -61,16 +60,18 @@ const RaceOverview = () => {
   return (
     <AppWrapper>
       <RaceSearchBar onSend={(filterArray) => setFilter(filterArray)} />
-      <RaceContainer
-        dataLength={races.length}
-        next={fetchMoreData}
-        hasMore={scrollParam.hasMore}
-        loader={<LoadingSpinner />}
-      >
-        {races!.map((race: Race, index: number) => {
-          return <RaceTile key={index} race={race}></RaceTile>;
-        })}
-      </RaceContainer>
+      <div id="scrollable" style={{ width: "100%" }}>
+        <RaceContainer
+          dataLength={races.length}
+          next={fetchMoreData}
+          hasMore={scrollParam.hasMore}
+          loader={<LoadingSpinner />}
+        >
+          {races!.map((race: Race, index: number) => {
+            return <RaceTile key={index} race={race}></RaceTile>;
+          })}
+        </RaceContainer>
+      </div>
     </AppWrapper>
   );
 };

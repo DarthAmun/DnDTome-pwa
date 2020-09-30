@@ -28,7 +28,7 @@ const GearOverview = () => {
     reciveAllFiltered("gears", filters, (results: any[]) => {
       setAllGears(results);
       setGears(results.slice(0, 100));
-      if(results.length === 0){
+      if (results.length === 0) {
         setParam({
           start: 0,
           end: 0,
@@ -60,16 +60,18 @@ const GearOverview = () => {
   return (
     <AppWrapper>
       <GearSearchBar onSend={(filterArray) => setFilter(filterArray)} />
-      <GearContainer
-        dataLength={gears.length}
-        next={fetchMoreData}
-        hasMore={scrollParam.hasMore}
-        loader={<LoadingSpinner />}
-      >
-        {gears!.map((gear: Gear, index: number) => {
-          return <GearTile key={index} gear={gear}></GearTile>;
-        })}
-      </GearContainer>
+      <div id="scrollable" style={{ width: "100%" }}>
+        <GearContainer
+          dataLength={gears.length}
+          next={fetchMoreData}
+          hasMore={scrollParam.hasMore}
+          loader={<LoadingSpinner />}
+        >
+          {gears!.map((gear: Gear, index: number) => {
+            return <GearTile key={index} gear={gear}></GearTile>;
+          })}
+        </GearContainer>
+      </div>
     </AppWrapper>
   );
 };

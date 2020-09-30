@@ -33,7 +33,7 @@ const MonsterTile = ({ monster }: $Props) => {
       } else if (monster.cr === 0.5) {
         return "½";
       } else {
-        return monster.cr
+        return monster.cr;
       }
     }
     return "";
@@ -178,7 +178,7 @@ const PropWrapper = styled.div`
 
 const Prop = styled.div`
   height: 12px;
-  width: calc(50% - 22.5px);
+  width: calc(50% - 25px);
   margin: 0 0 5px 5px;
   float: left;
   line-height: 10px;
@@ -191,14 +191,15 @@ const Prop = styled.div`
   overflow: hidden;
 
   &:nth-child(odd) {
-  margin: 0 0 5px 0px;
+    margin: 0 0 5px 0px;
+    width: calc(50% - 20px);
   }
 
   svg {
-  margin-right: 5px;
-  height: auto;
-  border-radius: 150px;
-  color: ${({ theme }) => theme.main.highlight};
+    margin-right: 5px;
+    height: auto;
+    border-radius: 150px;
+    color: ${({ theme }) => theme.main.highlight};
   }
 }
 `;
@@ -206,6 +207,11 @@ const Prop = styled.div`
 const WideProp = styled(Prop)`
   margin: 0 0 5px 0px;
   width: calc(100% - 20px);
+
+  &:nth-child(odd) {
+    margin: 0 0 5px 0px;
+    width: calc(100% - 20px);
+  }
 `;
 
 const Icon = styled(FontAwesomeIcon)`

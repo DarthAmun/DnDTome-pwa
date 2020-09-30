@@ -32,13 +32,14 @@ import CharLab from "./components/Entities/Chars/Lab/CharLab";
 import EncounterOverview from "./components/Encounters/EncounterOverview";
 import NameToEncounter from "./components/Encounters/Detail/LinkWrapper/NameToEncounter";
 import IdToEncounter from "./components/Encounters/Detail/LinkWrapper/IdToEncounter";
+import Statistics from "./components/Statistics/Statistics";
 
 const App = () => {
   return (
     <MyThemeProvider>
       <MemoryRouter>
         <Switch>
-          <Route exact path="/" component={EncounterOverview}></Route>
+          <Route exact path="/" component={Statistics}></Route>
           <Route path="/spell-detail/name/:name" component={NameToSpell}></Route>
           <Route path="/spell-detail/id/:id" component={IdToSpell}></Route>
           <Route path="/spell-overview" component={SpellOverview}></Route>
@@ -69,6 +70,7 @@ const App = () => {
           <Route path="/encounter-detail/name/:name" component={NameToEncounter}></Route>
           <Route path="/encounter-detail/id/:id" component={IdToEncounter}></Route>
           <Route path="/encounter-overview" component={EncounterOverview}></Route>
+          <Route path="/statistics" component={Statistics}></Route>
         </Switch>
       </MemoryRouter>
     </MyThemeProvider>

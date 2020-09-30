@@ -12,14 +12,13 @@ import { reciveAllFiltered } from "../../../Services/DatabaseService";
 
 const ClassOverview = () => {
   const [filters, setFilter] = useState<Filter[]>([]);
-  const [allClasses, setAllClasses]  = useState<Class[]>([]);
+  const [allClasses, setAllClasses] = useState<Class[]>([]);
   const [classes, setClasses] = useState<Class[]>([]);
   const [scrollParam, setParam] = useState<{
     start: number;
     end: number;
     hasMore: boolean;
   }>({
-    
     start: 100,
     end: 120,
     hasMore: true,
@@ -29,7 +28,7 @@ const ClassOverview = () => {
     reciveAllFiltered("classes", filters, (results: any[]) => {
       setAllClasses(results);
       setClasses(results.slice(0, 100));
-      if(results.length === 0){
+      if (results.length === 0) {
         setParam({
           start: 0,
           end: 0,
@@ -61,15 +60,18 @@ const ClassOverview = () => {
   return (
     <AppWrapper>
       <ClassSearchBar onSend={(filterArray) => setFilter(filterArray)} />
-      <ClassContainer
-      dataLength={classes.length}
-      next={fetchMoreData}
-      hasMore={scrollParam.hasMore}
-      loader={<LoadingSpinner />}>
-        {classes!.map((classe: Class, index: number) => {
+      <div id="scrollable" style={{ width: "100%" }}>
+        <ClassContainer
+          dataLength={classes.length}
+          next={fetchMoreData}
+          hasMore={scrollParam.hasMore}
+          loader={<LoadingSpinner />}
+        >
+          {classes!.map((classe: Class, index: number) => {
             return <ClassTile key={index} classe={classe}></ClassTile>;
           })}
-      </ClassContainer>
+        </ClassContainer>
+      </div>
     </AppWrapper>
   );
 };

@@ -20,14 +20,23 @@ const EncounterTile = ({ encounter }: $Props) => {
         </Name>
 
         <PropWrapper>
-          <WideProp>
+          <Prop>
             <Icon icon={faUser} />
             {encounter.players.length}
-          </WideProp>
-          <WideProp>
+          </Prop>
+          <Prop>
             <Icon icon={faDragon} />
             {encounter.enemies.length}
-          </WideProp>
+          </Prop>
+          {encounter.isPlaying && (
+            <>
+              <Prop>Aktiv playing</Prop>
+              <Prop>
+                <PropTitle>Round: </PropTitle>
+                {encounter.roundCounter}
+              </Prop>
+            </>
+          )}
         </PropWrapper>
       </Suspense>
     </Tile>
@@ -89,9 +98,11 @@ const Prop = styled.div`
 }
 `;
 
-const WideProp = styled(Prop)`
-  margin: 0 0 5px 0px;
-  width: calc(100% - 20px);
+const PropTitle = styled.span`
+  display: inline-block;
+  color: ${({ theme }) => theme.tile.backgroundColorLink};
+  text-decoration: none;
+  margin: 0px 5px 0px 5px;
 `;
 
 const Icon = styled(FontAwesomeIcon)`
