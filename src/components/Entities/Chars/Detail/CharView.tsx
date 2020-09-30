@@ -88,6 +88,7 @@ const CharView = ({ character }: $Props) => {
           value: character.classes.map((classe) => {
             return classe.classe;
           }),
+          sort: 0,
         },
       ],
       (results: any[]) => {
@@ -118,6 +119,7 @@ const CharView = ({ character }: $Props) => {
           value: character.classes.map((classe) => {
             return classe.subclasse;
           }),
+          sort: 0,
         },
       ],
       (results: any[]) => {
@@ -142,7 +144,7 @@ const CharView = ({ character }: $Props) => {
   useEffect(() => {
     reciveAllFiltered(
       "races",
-      [{ fieldName: "name", value: character.race.race }],
+      [{ fieldName: "name", value: character.race.race, sort: 0 }],
       (results: any[]) => {
         // setRace(results[0]);
         if (results.length > 0) {
@@ -159,7 +161,7 @@ const CharView = ({ character }: $Props) => {
   useEffect(() => {
     reciveAllFiltered(
       "subraces",
-      [{ fieldName: "name", value: character.race.subrace }],
+      [{ fieldName: "name", value: character.race.subrace, sort: 0 }],
       (results: any[]) => {
         // setRace(results[0]);
         if (results.length > 0) {

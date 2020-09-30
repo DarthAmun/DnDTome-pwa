@@ -18,7 +18,7 @@ const ItemView = ({ item }: $Props) => {
   useEffect(() => {
     reciveAllFiltered(
       "gears",
-      [{ fieldName: "name", value: item.base }],
+      [{ fieldName: "name", value: item.base, sort: 0 }],
       (results: any[]) => {
         setItemBase(results[0]);
       }

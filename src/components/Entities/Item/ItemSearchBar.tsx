@@ -3,15 +3,24 @@ import styled from "styled-components";
 import { useHistory } from "react-router";
 import Filter from "../../../Data/Filter";
 import ReactDOM from "react-dom";
-import { reciveAttributeSelection, createNewWithId } from "../../../Services/DatabaseService";
+import {
+  reciveAttributeSelection,
+  createNewWithId,
+} from "../../../Services/DatabaseService";
 
-import { faLink, faSearch, faRedoAlt, faBook, faPlusCircle } from "@fortawesome/free-solid-svg-icons";
+import {
+  faLink,
+  faSearch,
+  faRedoAlt,
+  faBook,
+  faPlusCircle,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import MultipleSelectField from "../../FormElements/MultipleSelectField";
-import StringField from "../../FormElements/StringField";
 import IconButton from "../../FormElements/IconButton";
 import CheckField from "../../FormElements/CheckField";
 import Item from "../../../Data/Item";
+import StringSearchField from "../../FormElements/StringSearchField";
 
 interface $Props {
   onSend: (filters: Filter[]) => void;
@@ -27,9 +36,9 @@ const ItemSearchBar = ({ onSend }: $Props) => {
     []
   );
   const [rarity, setRarity] = useState<string[]>([]);
-  const [rarityList, setRarityList] = useState<{ value: string; label: string }[]>(
-    []
-  );
+  const [rarityList, setRarityList] = useState<
+    { value: string; label: string }[]
+  >([]);
   const [base, setBase] = useState<string[]>([]);
   const [baseList, setBaseList] = useState<{ value: string; label: string }[]>(
     []
@@ -37,6 +46,16 @@ const ItemSearchBar = ({ onSend }: $Props) => {
   const [attunment, setAttunment] = useState<number>(0);
   const [sources, setSources] = useState<string>("");
   const [description, setDescription] = useState<string>("");
+
+  const [sort, setSort] = useState<{
+    name: string;
+    label: string;
+    sort: number;
+  }>({
+    name: "",
+    label: "",
+    sort: 0,
+  });
 
   useEffect(() => {
     reciveAttributeSelection("items", "type", function (result) {
@@ -91,6 +110,14 @@ const ItemSearchBar = ({ onSend }: $Props) => {
     if (attunment) {
       newFilters = [...newFilters, new Filter("attunment", attunment)];
     }
+
+    newFilters = newFilters.map((filter: Filter) => {
+      if (sort.name === filter.fieldName) {
+        return { ...filter, sort: sort.sort };
+      }
+      return filter;
+    });
+
     setOpen(false);
     onSend(newFilters);
   };
@@ -105,6 +132,11 @@ const ItemSearchBar = ({ onSend }: $Props) => {
       setAttunment(0);
       setDescription("");
       setOpen(false);
+      setSort({
+        name: "",
+        label: "",
+        sort: 0,
+      });
     });
     onSend([]);
   };
@@ -119,10 +151,18 @@ const ItemSearchBar = ({ onSend }: $Props) => {
 
   return (
     <Bar open={open}>
-      <StringField
+      <StringSearchField
         value={name}
+        sort={sort}
+        field={"name"}
         label="Name"
-        onChange={(name: string) => setName(name)}
+        onChange={(
+          name: string,
+          sort: { name: string; label: string; sort: number }
+        ) => {
+          setName(name);
+          setSort(sort);
+        }}
       />
       <MultipleSelectField
         options={typeList}
@@ -144,17 +184,33 @@ const ItemSearchBar = ({ onSend }: $Props) => {
         label="Attunment"
         onChange={(attunment) => setAttunment(attunment ? 1 : 0)}
       />
-      <StringField
+      <StringSearchField
         value={description}
+        sort={sort}
+        field={"text"}
         label="Text"
         icon={faBook}
-        onChange={(description) => setDescription(description)}
+        onChange={(
+          name: string,
+          sort: { name: string; label: string; sort: number }
+        ) => {
+          setDescription(name);
+          setSort(sort);
+        }}
       />
-      <StringField
+      <StringSearchField
         value={sources}
+        sort={sort}
+        field={"sources"}
         label="Sources"
         icon={faLink}
-        onChange={(sources) => setSources(sources)}
+        onChange={(
+          name: string,
+          sort: { name: string; label: string; sort: number }
+        ) => {
+          setSources(name);
+          setSort(sort);
+        }}
       />
       <IconButton onClick={() => search()} icon={faSearch} />
       <IconButton onClick={() => reset()} icon={faRedoAlt} />

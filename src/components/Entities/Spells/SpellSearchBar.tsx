@@ -22,7 +22,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import MultipleSelectField from "../../FormElements/MultipleSelectField";
-import StringField from "../../FormElements/StringField";
+import StringSearchField from "../../FormElements/StringSearchField";
 import CheckField from "../../FormElements/CheckField";
 import IconButton from "../../FormElements/IconButton";
 import Spell from "../../../Data/Spell";
@@ -52,6 +52,16 @@ const SpellSearchBar = ({ onSend }: $Props) => {
   const [text, setText] = useState<string>("");
   const [classes, setClasses] = useState<string>("");
   const [sources, setSources] = useState<string>("");
+
+  const [sort, setSort] = useState<{
+    name: string;
+    label: string;
+    sort: number;
+  }>({
+    name: "",
+    label: "",
+    sort: 0,
+  });
 
   useEffect(() => {
     reciveAttributeSelection("spells", "school", function (result) {
@@ -109,6 +119,14 @@ const SpellSearchBar = ({ onSend }: $Props) => {
     if (ritual) {
       newFilters = [...newFilters, new Filter("ritual", ritual)];
     }
+
+    newFilters = newFilters.map((filter: Filter) => {
+      if (sort.name === filter.fieldName) {
+        return { ...filter, sort: sort.sort };
+      }
+      return filter;
+    });
+
     setOpen(false);
     onSend(newFilters);
   };
@@ -127,6 +145,11 @@ const SpellSearchBar = ({ onSend }: $Props) => {
       setClasses("");
       setSources("");
       setOpen(false);
+      setSort({
+        name: "",
+        label: "",
+        sort: 0,
+      });
     });
     onSend([]);
   };
@@ -141,10 +164,18 @@ const SpellSearchBar = ({ onSend }: $Props) => {
 
   return (
     <Bar open={open}>
-      <StringField
+      <StringSearchField
         value={name}
+        sort={sort}
+        field={"name"}
         label="Name"
-        onChange={(name: string) => setName(name)}
+        onChange={(
+          name: string,
+          sort: { name: string; label: string; sort: number }
+        ) => {
+          setName(name);
+          setSort(sort);
+        }}
       />
       <MultipleSelectField
         options={schoolList}
@@ -169,48 +200,104 @@ const SpellSearchBar = ({ onSend }: $Props) => {
           onChange={(ritual) => setRitual(ritual ? 1 : 0)}
         />
       </FieldGroup>
-      <StringField
+      <StringSearchField
         value={time}
+        sort={sort}
+        field={"time"}
         label="Time"
         icon={faHistory}
-        onChange={(time) => setTime(time)}
+        onChange={(
+          time: string,
+          sort: { name: string; label: string; sort: number }
+        ) => {
+          setTime(time);
+          setSort(sort);
+        }}
       />
-      <StringField
+      <StringSearchField
         value={range}
+        sort={sort}
+        field={"range"}
         label="Range"
         icon={faPowerOff}
         transform={{ rotate: 42 }}
-        onChange={(range) => setRange(range)}
+        onChange={(
+          name: string,
+          sort: { name: string; label: string; sort: number }
+        ) => {
+          setRange(name);
+          setSort(sort);
+        }}
       />
-      <StringField
+      <StringSearchField
         value={duration}
+        sort={sort}
+        field={"duration"}
         label="Duration"
         icon={faHourglassHalf}
-        onChange={(duration) => setDuration(duration)}
+        onChange={(
+          name: string,
+          sort: { name: string; label: string; sort: number }
+        ) => {
+          setDuration(name);
+          setSort(sort);
+        }}
       />
-      <StringField
+      <StringSearchField
         value={components}
+        sort={sort}
+        field={"components"}
         label="Comp."
         icon={faMortarPestle}
-        onChange={(components) => setComponents(components)}
+        onChange={(
+          name: string,
+          sort: { name: string; label: string; sort: number }
+        ) => {
+          setComponents(name);
+          setSort(sort);
+        }}
       />
-      <StringField
+      <StringSearchField
         value={classes}
+        sort={sort}
+        field={"classes"}
         label="Classes"
         icon={faUser}
-        onChange={(classes) => setClasses(classes)}
+        onChange={(
+          name: string,
+          sort: { name: string; label: string; sort: number }
+        ) => {
+          setClasses(name);
+          setSort(sort);
+        }}
       />
-      <StringField
+      <StringSearchField
         value={sources}
+        sort={sort}
+        field={"sources"}
         label="Sources"
         icon={faLink}
-        onChange={(sources) => setSources(sources)}
+        onChange={(
+          name: string,
+          sort: { name: string; label: string; sort: number }
+        ) => {
+          setSources(name);
+          setSort(sort);
+        }}
       />
-      <StringField
+      <StringSearchField
         value={text}
+        sort={sort}
+        field={"text"}
         label="Text"
         icon={faBookOpen}
-        onChange={(text) => setText(text)}
+        onChange={(
+          name: string,
+          sort: { name: string; label: string; sort: number }
+        ) => {
+          setText(name);
+          setSort(sort);
+        }}
       />
       <IconButton onClick={() => search()} icon={faSearch} />
       <IconButton onClick={() => reset()} icon={faRedoAlt} />

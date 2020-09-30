@@ -90,13 +90,15 @@ const CharEditView = ({ char, onEdit }: $Props) => {
     items[i].origin = newItem;
     onEdit({ ...char, items: items });
   };
-  const onChangeItemAttribute = (newItem: {
-    origin: string;
-    attuned: boolean;
-    prof: boolean;
-    attribute: string;
-  },
-  i: number) => {
+  const onChangeItemAttribute = (
+    newItem: {
+      origin: string;
+      attuned: boolean;
+      prof: boolean;
+      attribute: string;
+    },
+    i: number
+  ) => {
     let items = char.items;
     items[i] = newItem;
     onEdit({ ...char, items: items });
@@ -192,6 +194,7 @@ const CharEditView = ({ char, onEdit }: $Props) => {
           value: char.classes.map((classe) => {
             return classe.classe;
           }),
+          sort: 0,
         },
       ],
       (results: any[]) => {

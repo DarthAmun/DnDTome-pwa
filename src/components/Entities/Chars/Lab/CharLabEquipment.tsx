@@ -34,6 +34,7 @@ const CharLabEquipment = ({ char, onChange, completed }: $Props) => {
           value: char.classes.map((classe) => {
             return classe.classe;
           }),
+          sort: 0,
         },
       ],
       (results: any[]) => {
@@ -68,13 +69,15 @@ const CharLabEquipment = ({ char, onChange, completed }: $Props) => {
     items[i].origin = newItem;
     onChange({ ...char, items: items });
   };
-  const onChangeItemAttribute = (newItem: {
-    origin: string;
-    attuned: boolean;
-    prof: boolean;
-    attribute: string;
-  },
-  i: number) => {
+  const onChangeItemAttribute = (
+    newItem: {
+      origin: string;
+      attuned: boolean;
+      prof: boolean;
+      attribute: string;
+    },
+    i: number
+  ) => {
     let items = char.items;
     items[i] = newItem;
     onChange({ ...char, items: items });

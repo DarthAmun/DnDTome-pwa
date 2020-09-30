@@ -24,7 +24,7 @@ const ClassView = ({ classe }: $Props) => {
   useEffect(() => {
     reciveAllFiltered(
       "subclasses",
-      [{ fieldName: "type", value: classe.name }],
+      [{ fieldName: "type", value: classe.name, sort: 0 }],
       (results: any[]) => {
         setSubclasses(results);
       }

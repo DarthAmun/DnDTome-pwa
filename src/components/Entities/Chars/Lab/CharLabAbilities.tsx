@@ -60,6 +60,7 @@ const CharLabAbilities = ({ char, onChange, completed }: $Props) => {
           value: char.classes.map((classe) => {
             return classe.classe;
           }),
+          sort: 0,
         },
       ],
       (results: any[]) => {
@@ -72,7 +73,7 @@ const CharLabAbilities = ({ char, onChange, completed }: $Props) => {
     if (char.race && char.race.race.length > 1) {
       reciveAllFiltered(
         "races",
-        [{ fieldName: "name", value: char.race.race }],
+        [{ fieldName: "name", value: char.race.race, sort: 0 }],
         (results: any[]) => {
           setRace(results[0]);
         }
@@ -84,7 +85,7 @@ const CharLabAbilities = ({ char, onChange, completed }: $Props) => {
     if (char.race && char.race.subrace.length > 1) {
       reciveAllFiltered(
         "subraces",
-        [{ fieldName: "name", value: char.race.subrace }],
+        [{ fieldName: "name", value: char.race.subrace, sort: 0 }],
         (results: any[]) => {
           setSubrace(results[0]);
         }

@@ -3,7 +3,10 @@ import styled from "styled-components";
 import { useHistory } from "react-router";
 import Filter from "../../../Data/Filter";
 import ReactDOM from "react-dom";
-import { reciveAttributeSelection, createNewWithId } from "../../../Services/DatabaseService";
+import {
+  reciveAttributeSelection,
+  createNewWithId,
+} from "../../../Services/DatabaseService";
 
 import {
   faLink,
@@ -17,9 +20,9 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import MultipleSelectField from "../../FormElements/MultipleSelectField";
-import StringField from "../../FormElements/StringField";
 import IconButton from "../../FormElements/IconButton";
 import Gear from "../../../Data/Gear";
+import StringSearchField from "../../FormElements/StringSearchField";
 
 interface $Props {
   onSend: (filters: Filter[]) => void;
@@ -40,6 +43,16 @@ const GearSearchBar = ({ onSend }: $Props) => {
   const [damage, setDamage] = useState<string>("");
   const [sources, setSources] = useState<string>("");
   const [description, setDescription] = useState<string>("");
+
+  const [sort, setSort] = useState<{
+    name: string;
+    label: string;
+    sort: number;
+  }>({
+    name: "",
+    label: "",
+    sort: 0,
+  });
 
   useEffect(() => {
     reciveAttributeSelection("gears", "type", function (result) {
@@ -79,6 +92,12 @@ const GearSearchBar = ({ onSend }: $Props) => {
     if (type.length !== 0) {
       newFilters = [...newFilters, new Filter("type", type)];
     }
+    newFilters = newFilters.map((filter: Filter) => {
+      if (sort.name === filter.fieldName) {
+        return { ...filter, sort: sort.sort };
+      }
+      return filter;
+    });
     setOpen(false);
     onSend(newFilters);
   };
@@ -94,6 +113,11 @@ const GearSearchBar = ({ onSend }: $Props) => {
       setType([]);
       setDescription("");
       setOpen(false);
+      setSort({
+        name: "",
+        label: "",
+        sort: 0,
+      });
     });
     onSend([]);
   };
@@ -108,50 +132,106 @@ const GearSearchBar = ({ onSend }: $Props) => {
 
   return (
     <Bar open={open}>
-      <StringField
+      <StringSearchField
         value={name}
+        sort={sort}
+        field={"name"}
         label="Name"
-        onChange={(name: string) => setName(name)}
+        onChange={(
+          name: string,
+          sort: { name: string; label: string; sort: number }
+        ) => {
+          setName(name);
+          setSort(sort);
+        }}
       />
-      <StringField
+      <StringSearchField
         value={cost}
+        sort={sort}
+        field={"cost"}
         label="Cost"
         icon={faCoins}
-        onChange={(cost) => setCost(cost)}
+        onChange={(
+          name: string,
+          sort: { name: string; label: string; sort: number }
+        ) => {
+          setCost(name);
+          setSort(sort);
+        }}
       />
-      <StringField
+      <StringSearchField
         value={weight}
+        sort={sort}
+        field={"weight"}
         label="Weight"
         icon={faWeightHanging}
-        onChange={(weight) => setWeight(weight)}
+        onChange={(
+          name: string,
+          sort: { name: string; label: string; sort: number }
+        ) => {
+          setWeight(name);
+          setSort(sort);
+        }}
       />
-      <StringField
+      <StringSearchField
         value={damage}
+        sort={sort}
+        field={"damage"}
         label="Damage"
         icon={faCrosshairs}
-        onChange={(damage) => setDamage(damage)}
+        onChange={(
+          name: string,
+          sort: { name: string; label: string; sort: number }
+        ) => {
+          setDamage(name);
+          setSort(sort);
+        }}
       />
-      <StringField
+      <StringSearchField
         value={properties}
+        sort={sort}
+        field={"properties"}
         label="Properties"
-        onChange={(properties) => setProperties(properties)}
+        onChange={(
+          name: string,
+          sort: { name: string; label: string; sort: number }
+        ) => {
+          setProperties(name);
+          setSort(sort);
+        }}
       />
       <MultipleSelectField
         options={typeList}
         label="Types"
         onChange={(types: string[]) => setType(types)}
       />
-      <StringField
+      <StringSearchField
         value={description}
+        sort={sort}
+        field={"text"}
         label="Text"
         icon={faBook}
-        onChange={(description) => setDescription(description)}
+        onChange={(
+          name: string,
+          sort: { name: string; label: string; sort: number }
+        ) => {
+          setDescription(name);
+          setSort(sort);
+        }}
       />
-      <StringField
+      <StringSearchField
         value={sources}
+        sort={sort}
+        field={"sources"}
         label="Sources"
         icon={faLink}
-        onChange={(sources) => setSources(sources)}
+        onChange={(
+          name: string,
+          sort: { name: string; label: string; sort: number }
+        ) => {
+          setSources(name);
+          setSort(sort);
+        }}
       />
       <IconButton onClick={() => search()} icon={faSearch} />
       <IconButton onClick={() => reset()} icon={faRedoAlt} />

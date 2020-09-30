@@ -84,6 +84,7 @@ const CharLabClass = ({ char, onChange, completed }: $Props) => {
             value: char.classes.map((classe) => {
               return classe.classe;
             }),
+            sort: 0,
           },
         ],
         (results: any[]) => {

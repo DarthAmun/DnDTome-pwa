@@ -25,7 +25,7 @@ const RaceView = ({ race }: $Props) => {
   useEffect(() => {
     reciveAllFiltered(
       "subraces",
-      [{ fieldName: "type", value: race.name }],
+      [{ fieldName: "type", value: race.name, sort: 0 }],
       (results: any[]) => {
         setSubraces(results);
       }

@@ -4,10 +4,15 @@ import styled from "styled-components";
 import Filter from "../../../Data/Filter";
 import ReactDOM from "react-dom";
 
-import { faLink, faSearch, faRedoAlt, faPlusCircle } from "@fortawesome/free-solid-svg-icons";
+import {
+  faLink,
+  faSearch,
+  faRedoAlt,
+  faPlusCircle,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import StringField from "../../FormElements/StringField";
 import IconButton from "../../FormElements/IconButton";
+import StringSearchField from "../../FormElements/StringSearchField";
 
 interface $Props {
   onSend: (filters: Filter[]) => void;
@@ -20,6 +25,16 @@ const CharSearchBar = ({ onSend }: $Props) => {
   const [name, setName] = useState<string>("");
   const [sources, setSources] = useState<string>("");
 
+  const [sort, setSort] = useState<{
+    name: string;
+    label: string;
+    sort: number;
+  }>({
+    name: "",
+    label: "",
+    sort: 0,
+  });
+
   const search = () => {
     let newFilters: Filter[] = [];
     if (name !== "") {
@@ -28,6 +43,12 @@ const CharSearchBar = ({ onSend }: $Props) => {
     if (sources !== "") {
       newFilters = [...newFilters, new Filter("sources", sources)];
     }
+    newFilters = newFilters.map((filter: Filter) => {
+      if (sort.name === filter.fieldName) {
+        return { ...filter, sort: sort.sort };
+      }
+      return filter;
+    });
     setOpen(false);
     onSend(newFilters);
   };
@@ -37,6 +58,11 @@ const CharSearchBar = ({ onSend }: $Props) => {
       setName("");
       setSources("");
       setOpen(false);
+      setSort({
+        name: "",
+        label: "",
+        sort: 0,
+      });
     });
     onSend([]);
   };
@@ -47,16 +73,32 @@ const CharSearchBar = ({ onSend }: $Props) => {
 
   return (
     <Bar open={open}>
-      <StringField
+      <StringSearchField
         value={name}
+        sort={sort}
+        field={"name"}
         label="Name"
-        onChange={(name: string) => setName(name)}
+        onChange={(
+          name: string,
+          sort: { name: string; label: string; sort: number }
+        ) => {
+          setName(name);
+          setSort(sort);
+        }}
       />
-      <StringField
+      <StringSearchField
         value={sources}
+        sort={sort}
+        field={"sources"}
         label="Sources"
         icon={faLink}
-        onChange={(sources) => setSources(sources)}
+        onChange={(
+          name: string,
+          sort: { name: string; label: string; sort: number }
+        ) => {
+          setSources(name);
+          setSort(sort);
+        }}
       />
       <IconButton onClick={() => search()} icon={faSearch} />
       <IconButton onClick={() => reset()} icon={faRedoAlt} />
