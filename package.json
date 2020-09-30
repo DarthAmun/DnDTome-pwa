@@ -1,9 +1,12 @@
 {
   "name": "dndtome",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "private": true,
   "homepage": "https://darthamun.github.io/DnDTome-pwa/",
   "devDependencies": {
+    "@types/react": "^16.9.49",
+    "@types/react-pdf": "^4.0.6",
+    "@types/react-router": "^5.1.8",
     "babel-core": "6.26.3",
     "babel-plugin-transform-class-properties": "6.24.1",
     "babel-preset-react": "6.24.1",
@@ -25,9 +28,6 @@
     "@fortawesome/react-fontawesome": "0.1.4",
     "@types/jest": "^24.0.19",
     "@types/node": "^12.11.1",
-    "@types/react": "^16.9.7",
-    "@types/react-dom": "^16.9.2",
-    "@types/react-router": "^5.1.7",
     "@types/react-router-dom": "^5.1.5",
     "@types/react-select": "^3.0.14",
     "@types/recharts": "^1.8.14",

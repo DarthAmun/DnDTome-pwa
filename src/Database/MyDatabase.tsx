@@ -9,6 +9,7 @@ import Class from "../Data/Classes/Class";
 import Subclass from "../Data/Classes/Subclass";
 import Char from "../Data/Chars/Char";
 import Encounter from "../Data/Encounter/Encounter";
+import Book from "../Data/Book";
 
 export class MyAppDatabase extends Dexie {
   spells: Dexie.Table<Spell, number>; // number = type of the primkey
@@ -21,6 +22,7 @@ export class MyAppDatabase extends Dexie {
   subclasses: Dexie.Table<Subclass, number>; // number = type of the primkey
   chars: Dexie.Table<Char, number>; // number = type of the primkey
   encounters: Dexie.Table<Encounter, number>; // number = type of the primkey
+  books: Dexie.Table<Book, number>; // number = type of the primkey
 
   constructor() {
     super("DnDTomeDB");
@@ -116,6 +118,26 @@ export class MyAppDatabase extends Dexie {
         "++id, name, player, pic, classes, race, background, spells, spellSlots, items, monsters, ac, hp, currentHp, init, speed, str, dex, con, int, wis, cha, saves, actions, bonusActions, reactions, profsLangs, senses, money, skills, spellNotes, alignment, inspiration, castingHit, castingDC",
       encounters: "++id, name, monsters, players",
     });
+    this.version(9).stores({
+      spells:
+        "++id, name, classes, sources, level, school, time, range, components, duration, ritual, text, pic",
+      items:
+        "++id, name, sources, pic, description, type, rarity, attunment, magicBonus, base, filename",
+      gears:
+        "++id, name, sources, pic, description, type, cost, damage, weight, properties, filename",
+      monsters:
+        "++id, name, type, subtype, cr, ac, hp, str, dex, con, int, wis, cha, senses, lang, speed, source, skills, savingThrows, dmgImmunities, dmgResistance, dmgVulnerabilitie, conImmunities, sAblt, ablt, lAblt, pic, size, alignment",
+      races:
+        "++id, name, abilityScores, age, alignment, size, speed, lang, traits, sources, pic, filename",
+      subraces: "++id, name, type, abilityScores, traits, sources, filename",
+      classes:
+        "++id, name, featureSets, hitDice, proficiencies, equipment, sources, pic, filename",
+      subclasses: "++id, name, type, features, sources, filename",
+      chars:
+        "++id, name, player, pic, classes, race, background, spells, spellSlots, items, monsters, ac, hp, currentHp, init, speed, str, dex, con, int, wis, cha, saves, actions, bonusActions, reactions, profsLangs, senses, money, skills, spellNotes, alignment, inspiration, castingHit, castingDC",
+      encounters: "++id, name, monsters, players",
+      books: "++id, name, cover, path, pages, tags",
+    });
 
     this.spells = this.table("spells");
     this.items = this.table("items");
@@ -127,5 +149,6 @@ export class MyAppDatabase extends Dexie {
     this.subclasses = this.table("subclasses");
     this.chars = this.table("chars");
     this.encounters = this.table("encounters");
+    this.books = this.table("books");
   }
 }
