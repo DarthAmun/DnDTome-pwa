@@ -59,7 +59,7 @@ const StringSearchField = ({
         onChange={(e) => onChange(e.target.value, sort)}
       ></Input>
       {sort.sort !== 0 && sort.label === label && (
-        <div>
+        <Sort>
           {sort.sort === 1 && (
             <IconButton onClick={() => changeSort()} icon={faChevronCircleUp} />
           )}
@@ -69,7 +69,7 @@ const StringSearchField = ({
               icon={faChevronCircleDown}
             />
           )}
-        </div>
+        </Sort>
       )}
     </Field>
   );
@@ -105,6 +105,7 @@ const Icon = styled(FontAwesomeIcon)`
 
 const LabelText = styled.div`
   flex: 1 1 auto;
+  min-width: max-content;
   cursor: pointer;
 `;
 
@@ -118,4 +119,11 @@ const Input = styled.input`
   color: ${({ theme }) => theme.input.color};
   margin-left: 5px;
   border-radius: 5px;
+  width: 0;
+  min-width: 100px;
+`;
+
+const Sort = styled.div`
+  flex: 1 1 auto;
+  cursor: pointer;
 `;

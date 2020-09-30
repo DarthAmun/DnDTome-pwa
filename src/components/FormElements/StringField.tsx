@@ -70,4 +70,6 @@ const Input = styled.input`
   color: ${({ theme }) => theme.input.color};
   margin-left: 5px;
   border-radius: 5px;
+  width: 0;
+  min-width: 100px;
 `;

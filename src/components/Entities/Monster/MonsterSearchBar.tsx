@@ -313,7 +313,7 @@ const MonsterSearchBar = ({ onSend }: $Props) => {
         value={conImmunities}
         sort={sort}
         field={"conImmunities"}
-        label="Condition Immunities"
+        label="Con. Immun."
         onChange={(
           name: string,
           sort: { name: string; label: string; sort: number }
