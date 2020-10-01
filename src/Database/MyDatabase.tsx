@@ -136,7 +136,7 @@ export class MyAppDatabase extends Dexie {
       chars:
         "++id, name, player, pic, classes, race, background, spells, spellSlots, items, monsters, ac, hp, currentHp, init, speed, str, dex, con, int, wis, cha, saves, actions, bonusActions, reactions, profsLangs, senses, money, skills, spellNotes, alignment, inspiration, castingHit, castingDC",
       encounters: "++id, name, monsters, players",
-      books: "++id, name, cover, path, pages, tags",
+      books: "++id, name, cover, data, pages, tags",
     });
 
     this.spells = this.table("spells");

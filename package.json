@@ -5,7 +5,6 @@
   "homepage": "https://darthamun.github.io/DnDTome-pwa/",
   "devDependencies": {
     "@types/react": "^16.9.49",
-    "@types/react-pdf": "^4.0.6",
     "@types/react-router": "^5.1.8",
     "babel-core": "6.26.3",
     "babel-plugin-transform-class-properties": "6.24.1",

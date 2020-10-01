@@ -5,9 +5,14 @@ import Book from "../../../Data/Book";
 import {
   faLink,
   faImage,
+  faFileImport,
+  faPlus,
+  faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import NumberField from "../../FormElements/NumberField";
 import StringField from "../../FormElements/StringField";
+import FileField from "../../FormElements/FileField";
+import IconButton from "../../FormElements/IconButton";
 
 interface $Props {
   book: Book;
@@ -15,6 +20,40 @@ interface $Props {
 }
 
 const BookEditView = ({ book, onEdit }: $Props) => {
+  const triggerImportFiles = (fileList: FileList | null) => {
+    if (fileList !== null) {
+      const files = Array.from(fileList);
+      if (files.length === 1) onEdit({ ...book, data: files[0] });
+    }
+  };
+
+  const onTagChange = (oldTag: string, value: string) => {
+    let tags = book.tags.map((tag: string) => {
+      if (tag === oldTag) {
+        return value;
+      } else {
+        return tag;
+      }
+    });
+    onEdit({ ...book, tags: tags });
+  };
+
+  const addNewTag = () => {
+    onEdit({
+      ...book,
+      tags: [...book.tags, ""],
+    });
+  };
+
+  const removeTag = (oldTag: string) => {
+    let tags = book.tags;
+    const index: number = tags.indexOf(oldTag);
+    if (index !== -1) {
+      tags.splice(index, 1);
+      onEdit({ ...book, tags: tags });
+    }
+  };
+
   return (
     <CenterWrapper>
       <BookView>
@@ -23,10 +62,11 @@ const BookEditView = ({ book, onEdit }: $Props) => {
           label="Name"
           onChange={(name) => onEdit({ ...book, name: name })}
         />
-        <StringField
-          value={book.path}
-          label="Path"
-          onChange={(path) => onEdit({ ...book, path: path })}
+        <FileField
+          label=""
+          isMulti={false}
+          icon={faFileImport}
+          onChange={(file) => triggerImportFiles(file)}
         />
         <StringField
           value={book.cover}
@@ -41,6 +81,23 @@ const BookEditView = ({ book, onEdit }: $Props) => {
           onChange={(pages) => onEdit({ ...book, pages: pages })}
         />
       </BookView>
+      <TagView>
+        {book.tags.map((tag: string, index: number) => {
+          return (
+            <TagWrapper key={index}>
+              <StringField
+                value={tag}
+                label="Tag"
+                onChange={(name) => onTagChange(tag, name)}
+              />
+              <IconButton icon={faTrash} onClick={() => removeTag(tag)} />
+            </TagWrapper>
+          );
+        })}
+        <TagWrapper>
+          <IconButton icon={faPlus} onClick={() => addNewTag()} />
+        </TagWrapper>
+      </TagView>
     </CenterWrapper>
   );
 };
@@ -69,4 +126,18 @@ const BookView = styled.div`
   justify-content: space-around;
   align-items: flex-start;
   align-content: flex-start;
+`;
+
+const TagView = styled(BookView)``;
+
+const TagWrapper = styled.div`
+  flex: 1 1 600px;
+  height: auto;
+  width: calc(100% - 6px);
+  float: left;
+  padding: 3px;
+
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
 `;

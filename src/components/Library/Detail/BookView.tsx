@@ -1,7 +1,14 @@
-import React, { useCallback, useEffect } from "react";
-
+import React, { useCallback } from "react";
 import styled from "styled-components";
 import Book from "../../../Data/Book";
+
+import {
+  faExternalLinkAlt,
+  faFileDownload,
+  faTag,
+} from "@fortawesome/free-solid-svg-icons";
+import TextButton from "../../FormElements/TextButton";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 interface $Props {
   book: Book;
@@ -18,22 +25,28 @@ const BookView = ({ book }: $Props) => {
     return "";
   }, [book]);
 
-  useEffect(() => {
-    loadData(book.path);
-  }, []);
+  const showPdf = () => {
+    if (navigator.appVersion.toString().indexOf(".NET") > 0) {
+      window.navigator.msSaveBlob(book.data, book.name + ".pdf"); // for IE browser
+    } else {
+      const url = URL.createObjectURL(book.data);
+      window.open(url, "_blank");
+    }
+  };
 
-  const loadData = (url: string) => {
-    fetch(url)
-      .then(function (response) {
-        console.log(url + " -> " + response.ok);
-        return response.body;
-      })
-      .then(function (data: any) {
-        console.log("data: ", data);
-      })
-      .catch(function (err) {
-        console.log("failed to load ", url, err.stack);
-      });
+  const downloadFile = (filename: string) => {
+    if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+      navigator.msSaveOrOpenBlob(book.data, filename);
+    } else {
+      var pdfURL = window.URL.createObjectURL(book.data);
+      var a = document.createElement("a");
+      a.download = filename;
+      a.href = pdfURL;
+      a.target = "_blank";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
   };
 
   return (
@@ -49,9 +62,22 @@ const BookView = ({ book }: $Props) => {
         <Name>
           <b>{book.name}</b>
         </Name>
-        <Link href={`${book.path}`} target="_blank">
-          Link
-        </Link>
+        <TagWrapper>
+          {book.tags &&
+            book.tags.map((tag: string, index: number) => (
+              <Tag key={index}><FontAwesomeIcon icon={faTag} /> {tag}</Tag>
+            ))}
+        </TagWrapper>
+        <TextButton
+          onClick={() => showPdf()}
+          text={"Show PDF"}
+          icon={faExternalLinkAlt}
+        />
+        <TextButton
+          onClick={() => downloadFile(book.name + ".pdf")}
+          text={"Downlaod PDF"}
+          icon={faFileDownload}
+        />
       </View>
     </CenterWrapper>
   );
@@ -119,14 +145,24 @@ const ImageElm = styled.img`
 `;
 const Empty = styled.div``;
 
-const Link = styled.a`
+const Tag = styled.span`
   display: inline-block;
   background-color: ${({ theme }) => theme.tile.backgroundColorLink};
   border-radius: 5px;
-  text-decoration: none;
   color: ${({ theme }) => theme.tile.backgroundColor};
   font-size: 10px;
-  text-decoration: none;
-  padding: 0px 5px 0px 5px;
-  cursor: pointer;
+  padding: 10px;
+  margin-right: 5px;
+`;
+
+const TagWrapper = styled.div`
+  flex: 1 1 600px;
+  height: auto;
+  width: calc(100% - 6px);
+  float: left;
+  padding: 3px;
+
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
 `;

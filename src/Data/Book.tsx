@@ -2,7 +2,7 @@ export default class Book {
   id?: number;
   name: string;
   cover: string;
-  path: string;
+  data: Blob;
   pages: number;
   tags: string[];
 
@@ -10,14 +10,14 @@ export default class Book {
     id?: number,
     name?: string,
     cover?: string,
-    path?: string,
+    data?: Blob,
     pages?: number,
     tags?: string[]
   ) {
     this.id = id;
     this.name = name || "";
     this.cover = cover || "";
-    this.path = path || "";
+    this.data = data || new Blob();
     this.pages = pages || 0;
     this.tags = tags || [];
   }

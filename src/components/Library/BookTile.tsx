@@ -3,9 +3,10 @@ import { Link } from "react-router-dom";
 import styled from "styled-components";
 import Book from "../../Data/Book";
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { GiResize } from "react-icons/gi";
 import { LoadingSpinner } from "../Loading";
+import { faTags } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 interface $Props {
   book: Book;
@@ -25,28 +26,25 @@ const BookTile = ({ book }: $Props) => {
   return (
     <Tile to={"/book-detail/id/" + book.id}>
       <Suspense fallback={<LoadingSpinner />}>
-        {getPicture() !== "" ? (
-          <ImageName>
-            <Image pic={getPicture()}></Image>
-            <b>{book.name}</b>
-          </ImageName>
-        ) : (
+        {getPicture() !== "" ? <Image pic={getPicture()}></Image> : ""}
+        <PropWrapper>
           <Name>
             <b>{book.name}</b>
           </Name>
-        )}
 
-        <PropWrapper>
-          <Prop>
-            <GiResize />
-            {book.pages}
-          </Prop>
-          <Prop>
-            {book.path}
-          </Prop>
-          <WideProp>
-            {book.tags}
-          </WideProp>
+          <PropRowWrapper>
+            <RowProp>
+              <GiResize />
+              {book.pages}
+            </RowProp>
+            <RowProp>
+              <FontAwesomeIcon icon={faTags} />
+              {book.tags &&
+                book.tags.map((tag: string, index: number) => (
+                  <Tag key={index}>{tag}</Tag>
+                ))}
+            </RowProp>
+          </PropRowWrapper>
         </PropWrapper>
       </Suspense>
     </Tile>
@@ -64,32 +62,24 @@ const Tile = styled(Link)`
   box-shadow: ${({ theme }) => theme.tile.boxShadow};
   overflow: hidden;
   cursor: pointer;
+  text-decoration: none;
+
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
 `;
 
 const Name = styled.div`
   height: auto;
-  float: left;
+  flex: 1 1 auto;
   padding: 10px;
-  margin: 0 5px 5px 5px;
+  margin: 5px 5px 5px 0;
   font-size: 14px;
-  width: calc(100% - 30px);
-  color: var(--card-title-color);
   text-align: center;
   border-radius: 5px;
-  box-shadow: inset 0px 0px 5px 0px rgba(0, 0, 0, 0.3);
-`;
-
-const ImageName = styled.div`
-  height: 40px;
-  float: left;
-  padding: 10px;
-  margin: 0 5px 5px 5px;
-  font-size: 14px;
-  width: calc(100% - 30px);
-  color: var(--card-title-color);
-  text-align: center;
-  border-radius: 50px 5px 5px 50px;
-  box-shadow: inset 0px 0px 5px 0px rgba(0, 0, 0, 0.3);
+  box-shadow: inset 0 0 5px 0 rgba(0, 0, 0, 0.3);
 `;
 
 const PropWrapper = styled.div`
@@ -100,12 +90,17 @@ const PropWrapper = styled.div`
   display: flex;
   flex-wrap: wrap;
 `;
+const PropRowWrapper = styled(PropWrapper)`
+  flex-wrap: nowrap;
+  padding: 0 0 5px 0;
+  flex: 1 1 auto;
+  width: 100%;
+`;
 
-const Prop = styled.div`
+const RowProp = styled.div`
   height: 12px;
-  width: calc(50% - 25px);
-  margin: 0 0 5px 5px;
-  float: left;
+  margin: 0 5px 0 0;
+  flex: 1 1 auto;
   line-height: 10px;
   padding: 10px;
   font-size: 12px;
@@ -115,36 +110,14 @@ const Prop = styled.div`
   text-overflow: ellipsis;
   overflow: hidden;
 
-  &:nth-child(odd) {
-    margin: 0 0 5px 0px;
-    width: calc(50% - 20px);
-  }
-
   svg {
     margin-right: 5px;
     height: auto;
     border-radius: 150px;
+    transition: color 0.2s;
     color: ${({ theme }) => theme.main.highlight};
   }
 }
-`;
-
-const WideProp = styled(Prop)`
-  margin: 0 0 5px 0px;
-  width: calc(100% - 20px);
-
-  &:nth-child(odd) {
-    margin: 0 0 5px 0px;
-    width: calc(100% - 20px);
-  }
-`;
-
-const Icon = styled(FontAwesomeIcon)`
-  margin-right: 5px;
-  width: 20px;
-  height: auto;
-  border-radius: 150px;
-  color: ${({ theme }) => theme.main.highlight};
 `;
 
 interface $ImageProps {
@@ -152,29 +125,33 @@ interface $ImageProps {
 }
 
 const Image = ({ pic }: $ImageProps) => {
-  const style = {
-    backgroundImage: `url(${pic})`,
-    backgroundPosition: "center",
-    backgroundSize: "cover",
-    backgroundRepeat: "no-repeat",
-  };
-
   if (pic !== "") {
-    return <ImageElm style={style}></ImageElm>;
+    return (
+      <ImgContainer>
+        <ImageElm src={pic}></ImageElm>
+      </ImgContainer>
+    );
   } else {
     return <Empty />;
   }
 };
 
-const ImageElm = styled.div`
-  margin: -10px 5px -10px -10px;
-  height: 57px;
-  width: 57px;
-  float: left;
-  border-radius: 100px;
-  border: 3px solid ${({ theme }) => theme.main.highlight};
-  box-shadow: 0px 0px 10px 0px rgba(172, 172, 172, 0.2);
-  background-color: white;
-  overflow: hidden;
+const ImgContainer = styled.div`
+  margin: 5px;
+`;
+const ImageElm = styled.img`
+  max-width: 200px;
+  max-height: 200px;
 `;
 const Empty = styled.div``;
+
+const Tag = styled.span`
+  display: inline-block;
+  background-color: ${({ theme }) => theme.tile.backgroundColorLink};
+  border-radius: 5px;
+  color: ${({ theme }) => theme.tile.backgroundColor};
+  font-size: 10px;
+  padding: 5px;
+  margin-top: -5px;
+  margin-right: 5px;
+`;
