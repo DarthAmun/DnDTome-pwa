@@ -1,29 +1,39 @@
-import React, { useCallback } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Book from "../../../Data/Book";
+import { Document, Page } from "react-pdf";
+import { pdfjs } from "react-pdf";
 
 import {
+  faArrowLeft,
+  faArrowRight,
   faExternalLinkAlt,
   faFileDownload,
   faTag,
 } from "@fortawesome/free-solid-svg-icons";
 import TextButton from "../../FormElements/TextButton";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { LocalLoadingSpinner } from "../../Loading";
+
+pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
 interface $Props {
   book: Book;
 }
 
 const BookView = ({ book }: $Props) => {
-  const getPicture = useCallback(() => {
-    if (book !== undefined) {
-      if (book.cover === "" || book.cover === null) {
-        return "";
-      }
-      return book.cover;
-    }
-    return "";
-  }, [book]);
+  const [base, setBase] = useState<string>("");
+  const [numPages, setNumPages] = useState<number>(0);
+  const [pageNumber, setPageNumber] = useState<number>(1);
+
+  useEffect(() => {
+    const reader = new FileReader();
+    reader.readAsDataURL(book.data);
+    reader.onloadend = function () {
+      var base64data = reader.result;
+      if (base64data !== null) setBase(base64data.toString());
+    };
+  });
 
   const showPdf = () => {
     if (navigator.appVersion.toString().indexOf(".NET") > 0) {
@@ -49,25 +59,64 @@ const BookView = ({ book }: $Props) => {
     }
   };
 
+  const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
+    setNumPages(numPages);
+    setPageNumber(1);
+  };
+
+  const changePage = (offset: number) => {
+    setPageNumber((prevPageNumber) => prevPageNumber + offset);
+  };
+
+  const previousPage = () => {
+    changePage(-1);
+  };
+
+  const nextPage = () => {
+    changePage(1);
+  };
+
+  const onItemClick = ({
+    pageNumber: itemPageNumber,
+  }: {
+    pageNumber: string;
+  }) => {
+    setPageNumber(+itemPageNumber);
+  };
+
   return (
     <CenterWrapper>
-      {getPicture() !== "" ? (
-        <ImageView>
-          <Image pic={getPicture()}></Image>
-        </ImageView>
-      ) : (
-        ""
-      )}
+      <View>
+        <DocumentWrapper>
+          <div>
+            <TextButton
+              onClick={nextPage}
+              text={"Next"}
+              disabled={pageNumber >= numPages}
+              icon={faArrowRight}
+            />
+            <TextButton
+              onClick={previousPage}
+              text={"Previous"}
+              disabled={pageNumber <= 1}
+              icon={faArrowLeft}
+            />
+            Page {pageNumber || (numPages ? 1 : "--")} of {numPages || "--"}
+          </div>
+          <Document
+            file={base}
+            onLoadSuccess={onDocumentLoadSuccess}
+            onItemClick={onItemClick}
+            loading={LocalLoadingSpinner}
+          >
+            <Page pageNumber={pageNumber} loading={LocalLoadingSpinner} />
+          </Document>
+        </DocumentWrapper>
+      </View>
       <View>
         <Name>
           <b>{book.name}</b>
         </Name>
-        <TagWrapper>
-          {book.tags &&
-            book.tags.map((tag: string, index: number) => (
-              <Tag key={index}><FontAwesomeIcon icon={faTag} /> {tag}</Tag>
-            ))}
-        </TagWrapper>
         <TextButton
           onClick={() => showPdf()}
           text={"Show PDF"}
@@ -78,6 +127,14 @@ const BookView = ({ book }: $Props) => {
           text={"Downlaod PDF"}
           icon={faFileDownload}
         />
+        <TagWrapper>
+          {book.tags &&
+            book.tags.map((tag: string, index: number) => (
+              <Tag key={index}>
+                <FontAwesomeIcon icon={faTag} /> {tag}
+              </Tag>
+            ))}
+        </TagWrapper>
       </View>
     </CenterWrapper>
   );
@@ -97,22 +154,17 @@ const CenterWrapper = styled.div`
 const View = styled.div`
   color: ${({ theme }) => theme.tile.color};
   font-size: 16px;
-  flex: 1 1 auto;
-  max-width: 600px;
+  flex: 1 1 600px;
   padding: 5px;
   margin: 5px;
   height: 100%;
+  max-width: calc(100% - 20px);
 
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
   align-items: flex-start;
   align-content: flex-start;
-`;
-
-const ImageView = styled(View)`
-  justify-content: flex-end;
-  flex: 1 1 300px;
 `;
 
 const Name = styled.div`
@@ -127,24 +179,6 @@ const Name = styled.div`
   background-color: ${({ theme }) => theme.tile.backgroundColor};
 `;
 
-interface $ImageProps {
-  pic: string;
-}
-
-const Image = ({ pic }: $ImageProps) => {
-  if (pic !== "") {
-    return <ImageElm src={pic}></ImageElm>;
-  } else {
-    return <Empty />;
-  }
-};
-
-const ImageElm = styled.img`
-  margin: 5px;
-  max-height: 60vh;
-`;
-const Empty = styled.div``;
-
 const Tag = styled.span`
   display: inline-block;
   background-color: ${({ theme }) => theme.tile.backgroundColorLink};
@@ -156,13 +190,48 @@ const Tag = styled.span`
 `;
 
 const TagWrapper = styled.div`
-  flex: 1 1 600px;
+  flex: 1 1 auto;
   height: auto;
-  width: calc(100% - 6px);
   float: left;
   padding: 3px;
 
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
+`;
+
+const DocumentWrapper = styled.div`
+  flex: 1 1 auto;
+  max-width: 100%;
+
+  .react-pdf__Document {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  }
+  .react-pdf__Outline {
+    flex: 1 1 auto;
+    max-height: 600px;
+    overflow: hidden;
+  }
+  .react-pdf__Page {
+    flex: 1 1 auto;
+    width: 100%;
+    max-width: 600px;
+    overflow: hidden;
+    border-radius: 5px;
+
+    .react-pdf__Page__canvas {
+      width: 100% !important;
+      height: auto !important;
+    }
+    .react-pdf__Page__textContent {
+      width: 100% !important;
+      height: auto !important;
+      top: 0 !important;
+      left: 0 !important;
+      transform: none !important;
+    }
+  }
 `;

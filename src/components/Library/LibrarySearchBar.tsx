@@ -25,6 +25,7 @@ const LibrarySearchBar = ({ onSend }: $Props) => {
   let history = useHistory();
 
   const [name, setName] = useState<string>("");
+  const [tags, setTags] = useState<string>("");
   const [pages, setPages] = useState<number>(-1);
 
   const [sort, setSort] = useState<{
@@ -41,6 +42,9 @@ const LibrarySearchBar = ({ onSend }: $Props) => {
     let newFilters: Filter[] = [];
     if (name !== "") {
       newFilters = [...newFilters, new Filter("name", name)];
+    }
+    if (tags !== "") {
+      newFilters = [...newFilters, new Filter("tags", tags)];
     }
     if (pages !== -1) {
       newFilters = [...newFilters, new Filter("cr", pages)];
@@ -60,6 +64,7 @@ const LibrarySearchBar = ({ onSend }: $Props) => {
   const reset = () => {
     ReactDOM.unstable_batchedUpdates(() => {
       setName("");
+      setTags("");
       setPages(-1);
       setOpen(false);
       setSort({
@@ -91,6 +96,19 @@ const LibrarySearchBar = ({ onSend }: $Props) => {
           sort: { name: string; label: string; sort: number }
         ) => {
           setName(name);
+          setSort(sort);
+        }}
+      />
+      <StringSearchField
+        value={tags}
+        sort={sort}
+        field={"tags"}
+        label="Tags"
+        onChange={(
+          name: string,
+          sort: { name: string; label: string; sort: number }
+        ) => {
+          setTags(name);
           setSort(sort);
         }}
       />

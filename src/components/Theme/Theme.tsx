@@ -2,6 +2,7 @@ interface Theme {
   buttons: {
     color: string;
     backgroundColor: string;
+    disabled: string;
     height: string;
   };
   input: {
@@ -41,6 +42,7 @@ export const lightTheme: Theme = {
   buttons: {
     color: "white",
     backgroundColor: "#8000ff",
+    disabled: "#E1D0E5",
     height: "20px",
   },
   input: {
@@ -80,6 +82,7 @@ export const darkTheme: Theme = {
   buttons: {
     color: "#cfc8d8",
     backgroundColor: "#522a82",
+    disabled: "#E1D0E5",
     height: "20px",
   },
   input: {
