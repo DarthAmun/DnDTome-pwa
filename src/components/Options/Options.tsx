@@ -7,7 +7,10 @@ import {
   exportAllFromTable,
   exportAll,
 } from "../../Services/OptionService";
-import { import5eToolsMonstersFiles, import5eToolsSpellsFiles } from "../../Services/5eToolService";
+import {
+  import5eToolsMonstersFiles,
+  import5eToolsSpellsFiles,
+} from "../../Services/5eToolService";
 import { deleteAll, reciveCount } from "../../Services/DatabaseService";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -22,6 +25,7 @@ import TabBar from "../GeneralElements/TabBar";
 import FileField from "../FormElements/FileField";
 import IconButton from "../FormElements/IconButton";
 import { LoadingSpinner } from "../Loading";
+import P2P from "../P2P/P2P";
 
 const Options = () => {
   const { theme, setTheme } = useTheme();
@@ -152,6 +156,7 @@ const Options = () => {
           "Chars",
           "Encounters",
           "Others",
+          "Send/Recive",
         ]}
         onChange={(tab: string) => setTab(tab)}
       />
@@ -444,6 +449,13 @@ const Options = () => {
               icon={faFileImport}
               onChange={(file) => import5eToolsMonstersFiles(file)}
             />
+          </OptionSection>
+        </OptionTab>
+      )}
+      {activeTab === "Send/Recive" && (
+        <OptionTab>
+          <OptionSection>
+            <P2P />
           </OptionSection>
         </OptionTab>
       )}
