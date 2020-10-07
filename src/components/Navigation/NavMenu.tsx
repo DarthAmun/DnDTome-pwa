@@ -103,7 +103,7 @@ const NavMenu = ({ open }: $Props) => {
         className={location.pathname === "/library" ? "menuItemActiv" : ""}
       >
         <GiBookmarklet />
-        library
+        Library
       </Link>
       <Link
         to="/options"
