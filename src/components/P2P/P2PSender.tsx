@@ -27,7 +27,7 @@ const P2PSender = ({ data }: $Props) => {
 
   return (
     <>
-      <StringField value={brokerId} label={"Your ID:"} onChange={() => {}} />
+      <StringField value={brokerId} label={`Your ${data} ID:`} onChange={() => {}} />
       <IconButton icon={faSyncAlt} onClick={() => setId(generateBrokerId)} />
       {state && console.log(state)}
       {error && console.log(error)}

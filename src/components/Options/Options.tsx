@@ -245,6 +245,9 @@ const Options = () => {
               />
             </SectionRow>
           </OptionSection>
+          <OptionSection>
+            <P2PSender data={"gears"} />
+          </OptionSection>
         </OptionTab>
       )}
       {activeTab === "Magic Items" && (
@@ -271,6 +274,9 @@ const Options = () => {
               />
             </SectionRow>
           </OptionSection>
+          <OptionSection>
+            <P2PSender data={"items"} />
+          </OptionSection>
         </OptionTab>
       )}
       {activeTab === "Monsters" && (
@@ -296,6 +302,9 @@ const Options = () => {
                 onClick={() => triggerDeleteAll("monsters")}
               />
             </SectionRow>
+          </OptionSection>
+          <OptionSection>
+            <P2PSender data={"monsters"} />
           </OptionSection>
         </OptionTab>
       )}
@@ -339,6 +348,12 @@ const Options = () => {
               />
             </SectionRow>
           </OptionSection>
+          <OptionSection>
+            <P2PSender data={"races"} />
+          </OptionSection>
+          <OptionSection>
+            <P2PSender data={"subraces"} />
+          </OptionSection>
         </OptionTab>
       )}
       {activeTab === "Classes" && (
@@ -381,6 +396,12 @@ const Options = () => {
               />
             </SectionRow>
           </OptionSection>
+          <OptionSection>
+            <P2PSender data={"classes"} />
+          </OptionSection>
+          <OptionSection>
+            <P2PSender data={"subclasses"} />
+          </OptionSection>
         </OptionTab>
       )}
       {activeTab === "Chars" && (
@@ -406,6 +427,9 @@ const Options = () => {
                 onClick={() => triggerDeleteAll("chars")}
               />
             </SectionRow>
+          </OptionSection>
+          <OptionSection>
+            <P2PSender data={"chars"} />
           </OptionSection>
         </OptionTab>
       )}
