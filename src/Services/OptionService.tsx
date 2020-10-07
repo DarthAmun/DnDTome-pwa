@@ -44,11 +44,11 @@ export const scanImportFileTest = async (
   fileName: string,
   callback: (failed: number, failedObj: string[], max: number) => void
 ) => {
-  if (Array.isArray(json)) {
-    let failCount = 0;
-    let failedObj: string[] = [];
-    let promList: Promise<any>[] = [];
+  let failCount = 0;
+  let failedObj: string[] = [];
+  let promList: Promise<any>[] = [];
 
+  if (Array.isArray(json)) {
     json.forEach((obj: any) => {
       if (isClass(obj)) {
         promList.push(saveNew("classes", obj as Class, fileName));
@@ -79,6 +79,37 @@ export const scanImportFileTest = async (
         );
       }
     });
+    await Promise.all(promList);
+    callback(failCount, failedObj, json.length);
+  } else {
+    if (isClass(json)) {
+      promList.push(saveNew("classes", json as Class, fileName));
+    } else if (isSubclass(json)) {
+      promList.push(saveNew("subclasses", json as Subclass, fileName));
+    } else if (isRace(json)) {
+      promList.push(saveNew("races", json as Race, fileName));
+    } else if (isSubrace(json)) {
+      promList.push(saveNew("subraces", json as Subrace, fileName));
+    } else if (isMonster(json)) {
+      promList.push(saveNew("monsters", json as Monster, fileName));
+    } else if (isSpell(json)) {
+      promList.push(saveNew("spells", json as Spell, fileName));
+    } else if (isGear(json)) {
+      promList.push(saveNew("gears", json as Gear, fileName));
+    } else if (isItem(json)) {
+      promList.push(saveNew("items", json as Item, fileName));
+    } else if (isEncounter(json)) {
+      promList.push(saveNew("encounters", json as Encounter, fileName));
+    } else if (isChar(json)) {
+      saveNew("chars", json as Char, fileName);
+    } else {
+      failCount++;
+      failedObj.push(
+        scanForFormatErrors(json)
+          .replaceAll("true", "success!")
+          .replaceAll("false", "fail!")
+      );
+    }
     await Promise.all(promList);
     callback(failCount, failedObj, json.length);
   }

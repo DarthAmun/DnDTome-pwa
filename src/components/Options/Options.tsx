@@ -11,7 +11,11 @@ import {
   import5eToolsMonstersFiles,
   import5eToolsSpellsFiles,
 } from "../../Services/5eToolService";
-import { deleteAll, reciveCount } from "../../Services/DatabaseService";
+import {
+  deleteAll,
+  reciveCount,
+  reciveAllPromise,
+} from "../../Services/DatabaseService";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -82,6 +86,9 @@ const Options = () => {
       });
       reciveCount("encounters", (result: number) => {
         setEncounterAmount(result);
+      });
+      reciveAllPromise("chars").then((result: any[]) => {
+        return result;
       });
       isReload(false);
     }
@@ -219,7 +226,7 @@ const Options = () => {
             </SectionRow>
           </OptionSection>
           <OptionSection>
-            <P2PSender data={"spells"} />
+            <P2PSender data={"spells"} mode={"ALL"} />
           </OptionSection>
         </OptionTab>
       )}
@@ -246,7 +253,7 @@ const Options = () => {
             </SectionRow>
           </OptionSection>
           <OptionSection>
-            <P2PSender data={"gears"} />
+            <P2PSender data={"gears"} mode={"ALL"} />
           </OptionSection>
         </OptionTab>
       )}
@@ -275,7 +282,7 @@ const Options = () => {
             </SectionRow>
           </OptionSection>
           <OptionSection>
-            <P2PSender data={"items"} />
+            <P2PSender data={"items"} mode={"ALL"} />
           </OptionSection>
         </OptionTab>
       )}
@@ -304,7 +311,7 @@ const Options = () => {
             </SectionRow>
           </OptionSection>
           <OptionSection>
-            <P2PSender data={"monsters"} />
+            <P2PSender data={"monsters"} mode={"ALL"} />
           </OptionSection>
         </OptionTab>
       )}
@@ -349,10 +356,10 @@ const Options = () => {
             </SectionRow>
           </OptionSection>
           <OptionSection>
-            <P2PSender data={"races"} />
+            <P2PSender data={"races"} mode={"ALL"} />
           </OptionSection>
           <OptionSection>
-            <P2PSender data={"subraces"} />
+            <P2PSender data={"subraces"} mode={"ALL"} />
           </OptionSection>
         </OptionTab>
       )}
@@ -397,10 +404,10 @@ const Options = () => {
             </SectionRow>
           </OptionSection>
           <OptionSection>
-            <P2PSender data={"classes"} />
+            <P2PSender data={"classes"} mode={"ALL"} />
           </OptionSection>
           <OptionSection>
-            <P2PSender data={"subclasses"} />
+            <P2PSender data={"subclasses"} mode={"ALL"} />
           </OptionSection>
         </OptionTab>
       )}
@@ -429,7 +436,7 @@ const Options = () => {
             </SectionRow>
           </OptionSection>
           <OptionSection>
-            <P2PSender data={"chars"} />
+            <P2PSender data={"chars"} mode={"ALL"} />
           </OptionSection>
         </OptionTab>
       )}
@@ -486,7 +493,7 @@ const Options = () => {
       {activeTab === "Recive" && (
         <OptionTab>
           <OptionSection>
-            <P2PReciver reload={isReload}/>
+            <P2PReciver reload={isReload} />
           </OptionSection>
         </OptionTab>
       )}
@@ -530,6 +537,11 @@ const OptionSection = styled(General)`
   border-radius: 3px;
   box-shadow: ${({ theme }) => theme.tile.boxShadow};
   overflow: hidden;
+
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  align-content: flex-start;
 `;
 
 const Button = styled.button`

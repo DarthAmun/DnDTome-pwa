@@ -26,12 +26,16 @@ import CharCombat from "./DetailComponents/CharCombat";
 import MonsterTile from "../../Monster/MonsterTile";
 import FormatedText from "../../../GeneralElements/FormatedText";
 import CharSpell from "./DetailComponents/CharSpells";
+import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
+import TextButton from "../../../FormElements/TextButton";
+import P2PSender from "../../../P2P/P2PSender";
 
 interface $Props {
   character: Char;
 }
 
 const CharView = ({ character }: $Props) => {
+  const [send, setSend] = useState<boolean>(false);
   const [char, setChar] = useState<Char>(character);
 
   const [classes, setClasses] = useState<Class[]>([]);
@@ -340,6 +344,18 @@ const CharView = ({ character }: $Props) => {
           </PropWrapper>
         </View>
       )}
+      <View>
+        <PropWrapper>
+          {!send && (
+            <TextButton
+              text={`Send ${char.name}`}
+              icon={faPaperPlane}
+              onClick={() => setSend(true)}
+            />
+          )}
+          {!!send && <P2PSender data={char} mode={"THIS"} />}
+        </PropWrapper>
+      </View>
     </CenterWrapper>
   );
 };

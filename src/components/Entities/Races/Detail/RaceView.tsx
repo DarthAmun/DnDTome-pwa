@@ -10,15 +10,22 @@ import Subrace from "../../../../Data/Races/Subrace";
 import styled from "styled-components";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faLink, faPlusCircle } from "@fortawesome/free-solid-svg-icons";
+import {
+  faLink,
+  faPaperPlane,
+  faPlusCircle,
+} from "@fortawesome/free-solid-svg-icons";
 import { GiUpgrade } from "react-icons/gi";
 import FormatedText from "../../../GeneralElements/FormatedText";
+import TextButton from "../../../FormElements/TextButton";
+import P2PSender from "../../../P2P/P2PSender";
 
 interface $Props {
   race: Race;
 }
 
 const RaceView = ({ race }: $Props) => {
+  const [send, setSend] = useState<boolean>(false);
   const [subraces, setSubraces] = useState<Subrace[]>([]);
   let history = useHistory();
 
@@ -109,11 +116,21 @@ const RaceView = ({ race }: $Props) => {
             {race.sources}
           </Prop>
         </PropWrapper>
+        <PropWrapper>
+          {!send && (
+            <TextButton
+              text={`Send ${race.name}`}
+              icon={faPaperPlane}
+              onClick={() => setSend(true)}
+            />
+          )}
+          {!!send && <P2PSender data={race} mode={"THIS"} />}
+        </PropWrapper>
       </View>
       {race.traits.map((trait: Trait, index: number) => {
         return (
-          <View>
-            <TraitWrapper key={index}>
+          <View key={index}>
+            <TraitWrapper>
               <TraitName>{trait.name}</TraitName>
               <TraitLevel>{trait.level}</TraitLevel>
               <TraitText>

@@ -9,15 +9,18 @@ import Subclass from "../../../../Data/Classes/Subclass";
 import styled from "styled-components";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faLink, faPlusCircle } from "@fortawesome/free-solid-svg-icons";
+import { faLink, faPaperPlane, faPlusCircle } from "@fortawesome/free-solid-svg-icons";
 import { GiDiceEightFacesEight } from "react-icons/gi";
 import FormatedText from "../../../GeneralElements/FormatedText";
+import TextButton from "../../../FormElements/TextButton";
+import P2PSender from "../../../P2P/P2PSender";
 
 interface $Props {
   classe: Class;
 }
 
 const ClassView = ({ classe }: $Props) => {
+  const [send, setSend] = useState<boolean>(false);
   const [subclasses, setSubclasses] = useState<Subclass[]>([]);
   let history = useHistory();
 
@@ -110,6 +113,16 @@ const ClassView = ({ classe }: $Props) => {
                 <FontAwesomeIcon icon={faPlusCircle} />
               </CreateButton>
             </Text>
+          </PropWrapper>
+          <PropWrapper>
+            {!send && (
+              <TextButton
+                text={`Send ${classe.name}`}
+                icon={faPaperPlane}
+                onClick={() => setSend(true)}
+              />
+            )}
+            {!!send && <P2PSender data={classe} mode={"THIS"} />}
           </PropWrapper>
         </View>
         {classe.featureSets.length !== 0 &&

@@ -1,11 +1,13 @@
 import React, { useState } from "react";
+import styled from "styled-components";
 import { useReceivePeerState } from "react-peer";
 
-import { faCheck } from "@fortawesome/free-solid-svg-icons";
+import { faCheck, faExclamationCircle, faWifi } from "@fortawesome/free-solid-svg-icons";
 import StringField from "../FormElements/StringField";
 import TextButton from "../FormElements/TextButton";
 import { scanImportFileTest } from "../../Services/OptionService";
 import { LoadingSpinner } from "../Loading";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 interface $Props {
   reload: (value: boolean) => void;
@@ -14,7 +16,7 @@ interface $Props {
 const P2PReciver = ({ reload }: $Props) => {
   const [peerId, setId] = useState<string>("");
   const [loading, isLoading] = useState<boolean>(false);
-  const [state, error] = useReceivePeerState(peerId);
+  const [state, isConnected, error] = useReceivePeerState(peerId);
 
   const acceptData = () => {
     if (state !== undefined) {
@@ -49,9 +51,18 @@ const P2PReciver = ({ reload }: $Props) => {
         </>
       )}
       {!!loading && <LoadingSpinner />}
-      {error && console.log(error)}
+      {isConnected && <Icon icon={faWifi} />}
+      {error && <Icon icon={faExclamationCircle} />}
     </>
   );
 };
 
 export default P2PReciver;
+
+const Icon = styled(FontAwesomeIcon)`
+  margin-right: 5px;
+  width: 20px;
+  height: auto;
+  border-radius: 150px;
+  color: ${({ theme }) => theme.main.highlight};
+`;

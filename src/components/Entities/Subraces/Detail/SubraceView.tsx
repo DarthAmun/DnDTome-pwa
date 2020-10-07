@@ -1,18 +1,22 @@
-import React from "react";
+import React, { useState } from "react";
 import Trait from "../../../../Data/Races/Trait";
 import Subrace from "../../../../Data/Races/Subrace";
 import styled from "styled-components";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faLink } from "@fortawesome/free-solid-svg-icons";
+import { faLink, faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import { GiUpgrade } from "react-icons/gi";
 import FormatedText from "../../../GeneralElements/FormatedText";
+import TextButton from "../../../FormElements/TextButton";
+import P2PSender from "../../../P2P/P2PSender";
 
 interface $Props {
   subrace: Subrace;
 }
 
 const SubraceView = ({ subrace }: $Props) => {
+  const [send, setSend] = useState<boolean>(false);
+  
   return (
     <CenterWrapper>
       <View>
@@ -47,6 +51,18 @@ const SubraceView = ({ subrace }: $Props) => {
               </TraitWrapper>
             );
           })}
+        </PropWrapper>
+      </View>
+      <View>
+        <PropWrapper>
+          {!send && (
+            <TextButton
+              text={`Send ${subrace.name}`}
+              icon={faPaperPlane}
+              onClick={() => setSend(true)}
+            />
+          )}
+          {!!send && <P2PSender data={subrace} mode={"THIS"} />}
         </PropWrapper>
       </View>
     </CenterWrapper>

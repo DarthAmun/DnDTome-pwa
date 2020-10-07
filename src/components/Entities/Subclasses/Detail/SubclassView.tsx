@@ -1,16 +1,20 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import Subclass from "../../../../Data/Classes/Subclass";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faLink } from "@fortawesome/free-solid-svg-icons";
+import { faLink, faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import FormatedText from "../../../GeneralElements/FormatedText";
+import TextButton from "../../../FormElements/TextButton";
+import P2PSender from "../../../P2P/P2PSender";
 
 interface $Props {
   subclass: Subclass;
 }
 
 const SubclassView = ({ subclass }: $Props) => {
+  const [send, setSend] = useState<boolean>(false);
+  
   const printSpellslots = (length: number) => {
     let count = length - 3;
     let levels = [];
@@ -153,6 +157,20 @@ const SubclassView = ({ subclass }: $Props) => {
               );
             });
           })}
+        </View>
+      </CenterWrapper>
+      <CenterWrapper>
+        <View>
+          <PropWrapper>
+            {!send && (
+              <TextButton
+                text={`Send ${subclass.name}`}
+                icon={faPaperPlane}
+                onClick={() => setSend(true)}
+              />
+            )}
+            {!!send && <P2PSender data={subclass} mode={"THIS"} />}
+          </PropWrapper>
         </View>
       </CenterWrapper>
     </>
