@@ -31,7 +31,7 @@ export const importFiles = (
         const content = fileReader.result;
         if (content !== null) {
           let json = JSON.parse(content.toString());
-          scanImportFileTest(json, file, callback);
+          scanImportFileTest(json, file.name, callback);
         }
       };
       fileReader.readAsText(file);
@@ -39,9 +39,9 @@ export const importFiles = (
   }
 };
 
-const scanImportFileTest = async (
+export const scanImportFileTest = async (
   json: any,
-  file: File,
+  fileName: string,
   callback: (failed: number, failedObj: string[], max: number) => void
 ) => {
   if (Array.isArray(json)) {
@@ -51,25 +51,25 @@ const scanImportFileTest = async (
 
     json.forEach((obj: any) => {
       if (isClass(obj)) {
-        promList.push(saveNew("classes", obj as Class, file.name));
+        promList.push(saveNew("classes", obj as Class, fileName));
       } else if (isSubclass(obj)) {
-        promList.push(saveNew("subclasses", obj as Subclass, file.name));
+        promList.push(saveNew("subclasses", obj as Subclass, fileName));
       } else if (isRace(obj)) {
-        promList.push(saveNew("races", obj as Race, file.name));
+        promList.push(saveNew("races", obj as Race, fileName));
       } else if (isSubrace(obj)) {
-        promList.push(saveNew("subraces", obj as Subrace, file.name));
+        promList.push(saveNew("subraces", obj as Subrace, fileName));
       } else if (isMonster(obj)) {
-        promList.push(saveNew("monsters", obj as Monster, file.name));
+        promList.push(saveNew("monsters", obj as Monster, fileName));
       } else if (isSpell(obj)) {
-        promList.push(saveNew("spells", obj as Spell, file.name));
+        promList.push(saveNew("spells", obj as Spell, fileName));
       } else if (isGear(obj)) {
-        promList.push(saveNew("gears", obj as Gear, file.name));
+        promList.push(saveNew("gears", obj as Gear, fileName));
       } else if (isItem(obj)) {
-        promList.push(saveNew("items", obj as Item, file.name));
+        promList.push(saveNew("items", obj as Item, fileName));
       } else if (isEncounter(obj)) {
-        promList.push(saveNew("encounters", obj as Encounter, file.name));
+        promList.push(saveNew("encounters", obj as Encounter, fileName));
       } else if (isChar(obj)) {
-        promList.push(saveNew("chars", obj as Char, file.name));
+        promList.push(saveNew("chars", obj as Char, fileName));
       } else {
         failCount++;
         failedObj.push(

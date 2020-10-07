@@ -13,20 +13,18 @@ interface $Props {
   onChange: (value: string) => void;
 }
 
-const StringField = ({ value, label, icon, transform, onChange }: $Props) => {
-  return (
-    <Field>
-      <LabelText>
-        {icon ? <Icon icon={icon} transform={transform} /> : ""} {label}
-      </LabelText>
-      <Input
-        type="text"
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-      ></Input>
-    </Field>
-  );
-};
+const StringField = ({ value, label, icon, transform, onChange }: $Props) => (
+  <Field>
+    <LabelText>
+      {icon ? <Icon icon={icon} transform={transform} /> : ""} {label}
+    </LabelText>
+    <Input
+      type="text"
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+    ></Input>
+  </Field>
+);
 
 export default StringField;
 

@@ -25,7 +25,8 @@ import TabBar from "../GeneralElements/TabBar";
 import FileField from "../FormElements/FileField";
 import IconButton from "../FormElements/IconButton";
 import { LoadingSpinner } from "../Loading";
-import P2P from "../P2P/P2P";
+import P2PReciver from "../P2P/P2PReciver";
+import P2PSender from "../P2P/P2PSender";
 
 const Options = () => {
   const { theme, setTheme } = useTheme();
@@ -157,7 +158,7 @@ const Options = () => {
           "Chars",
           "Encounters",
           "Others",
-          "Send/Recive",
+          "Recive",
         ]}
         onChange={(tab: string) => setTab(tab)}
       />
@@ -216,6 +217,9 @@ const Options = () => {
                 onClick={() => triggerDeleteAll("spells")}
               />
             </SectionRow>
+          </OptionSection>
+          <OptionSection>
+            <P2PSender data={"spells"} />
           </OptionSection>
         </OptionTab>
       )}
@@ -455,10 +459,10 @@ const Options = () => {
           </OptionSection>
         </OptionTab>
       )}
-      {activeTab === "Send/Recive" && (
+      {activeTab === "Recive" && (
         <OptionTab>
           <OptionSection>
-            <P2P />
+            <P2PReciver reload={isReload}/>
           </OptionSection>
         </OptionTab>
       )}

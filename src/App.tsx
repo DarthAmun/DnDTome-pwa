@@ -33,9 +33,6 @@ import EncounterOverview from "./components/Encounters/EncounterOverview";
 import NameToEncounter from "./components/Encounters/Detail/LinkWrapper/NameToEncounter";
 import IdToEncounter from "./components/Encounters/Detail/LinkWrapper/IdToEncounter";
 import Statistics from "./components/Statistics/Statistics";
-import P2PSender from "./components/P2P/P2PSender";
-import P2PReciver from "./components/P2P/P2PReciver";
-import P2P from "./components/P2P/P2P";
 import Library from "./components/Library/Library";
 import IdToBook from "./components/Library/Detail/LinkWrapper/IdToBook";
 import NameToBook from "./components/Library/Detail/LinkWrapper/NameToBook";
@@ -77,8 +74,6 @@ const App = () => {
           <Route path="/encounter-detail/id/:id" component={IdToEncounter}></Route>
           <Route path="/encounter-overview" component={EncounterOverview}></Route>
           <Route path="/statistics" component={Statistics}></Route>
-          <Route path="/p2p-sender" component={P2PSender}></Route>
-          <Route path="/p2p-recive" component={P2PReciver}></Route>
           <Route path="/book-detail/name/:name" component={NameToBook}></Route>
           <Route path="/book-detail/id/:id" component={IdToBook}></Route>
           <Route path="/library" component={Library}></Route>

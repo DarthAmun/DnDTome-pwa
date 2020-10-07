@@ -1,22 +1,37 @@
 import React, { useEffect, useState } from "react";
-import { usePeerState  } from 'react-peer';
-import StringField from "../FormElements/StringField";
-import TextButton from "../FormElements/TextButton";
- 
-const P2PSender = () => {
-    const [msg, setMsg] = useState<string>("");
-    const [state, setState, brokerId, connections, error] = usePeerState({}, {brokerId: "ahdlasnlasgdvkahvskhd"});
+import { usePeerState } from "react-peer";
+import { reciveAllPromise } from "../../Services/DatabaseService";
 
-    useEffect(() =>{
-        setState({ message: 'hello' });
-    },[])
+import { faSyncAlt } from "@fortawesome/free-solid-svg-icons";
+import IconButton from "../FormElements/IconButton";
+import StringField from "../FormElements/StringField";
+
+interface $Props {
+  data: string;
+}
+
+const P2PSender = ({ data }: $Props) => {
+  const generateBrokerId = () => {
+    return Math.random().toString(36).slice(-8);
+  };
+
+  const [id, setId] = useState<string>(generateBrokerId);
+  const [state, setState, brokerId, error] = usePeerState({}, { brokerId: id });
+
+  useEffect(() => {
+    reciveAllPromise(data).then((results) => {
+      setState(results);
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
-    <div>
-      {console.log(brokerId)}{console.log(connections)}{console.log(state)}{console.log(error)}
-        <StringField value={msg} label={"Msg"} onChange={(id) => setMsg(id)}/>
-        <TextButton text={"Send"} onClick={() => setState({message: msg})} /> 
-    </div>
+    <>
+      <StringField value={brokerId} label={"Your ID:"} onChange={() => {}} />
+      <IconButton icon={faSyncAlt} onClick={() => setId(generateBrokerId)} />
+      {state && console.log(state)}
+      {error && console.log(error)}
+    </>
   );
 };
 
