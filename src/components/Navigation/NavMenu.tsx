@@ -16,6 +16,7 @@ import {
   GiCrystalWand,
   GiPlagueDoctorProfile,
   GiSwordClash,
+  GiBookmarklet,
 } from "react-icons/gi";
 
 interface $Props {
@@ -96,6 +97,13 @@ const NavMenu = ({ open }: $Props) => {
       >
         <GiSwordClash />
         Encounters
+      </Link>
+      <Link
+        to="/library"
+        className={location.pathname === "/library" ? "menuItemActiv" : ""}
+      >
+        <GiBookmarklet />
+        library
       </Link>
       <Link
         to="/options"
