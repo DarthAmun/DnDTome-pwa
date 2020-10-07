@@ -269,10 +269,27 @@ const applyFilters = (obj: any, filters: Filter[]) => {
   let test: boolean[] = [];
   filters.forEach((filter) => {
     if (typeof filter.value === "string") {
-      test.push(
-        // @ts-ignore
-        obj[filter.fieldName].toLowerCase().includes(filter.value.toLowerCase())
-      );
+      if (obj[filter.fieldName] instanceof Array) {
+        let hasTag = false;
+        obj[filter.fieldName].forEach((fieldPart: string) => {
+          // @ts-ignore
+          if (fieldPart.toLowerCase().includes(filter.value.toLowerCase())) {
+            hasTag = true;
+          }
+        });
+        if(hasTag) {
+          test.push(true);
+        } else {
+          test.push(false);
+        }
+      } else {
+        test.push(
+          // @ts-ignore
+          obj[filter.fieldName]
+            .toLowerCase()
+            .includes(filter.value.toLowerCase())
+        );
+      }
     } else if (typeof filter.value === "number") {
       // @ts-ignore
       test.push(obj[filter.fieldName] === filter.value);

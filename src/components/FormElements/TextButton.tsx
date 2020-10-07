@@ -7,14 +7,15 @@ import { Transform } from "@fortawesome/fontawesome-svg-core";
 
 interface $Props {
   text: string;
+  disabled?: boolean;
   icon?: IconDefinition;
   transform?: string | Transform;
   onClick: () => void;
 }
 
-const TextButton = ({ text, icon, transform, onClick }: $Props) => {
+const TextButton = ({ text, icon, transform, disabled, onClick }: $Props) => {
   return (
-    <SimpleButton onClick={onClick}>
+    <SimpleButton onClick={onClick} disabled={disabled}>
       {icon ? <Icon icon={icon} transform={transform} /> : ""} {text}
     </SimpleButton>
   );
@@ -22,7 +23,7 @@ const TextButton = ({ text, icon, transform, onClick }: $Props) => {
 
 export default TextButton;
 
-const SimpleButton = styled.div`
+const SimpleButton = styled.button`
   color: ${({ theme }) => theme.buttons.color};
   background-color: ${({ theme }) => theme.buttons.backgroundColor};
   font-size: 16px;
@@ -35,11 +36,17 @@ const SimpleButton = styled.div`
   border-radius: 5px;
   cursor: pointer;
   box-shadow: inset -2px -2px 5px 0px rgba(0, 0, 0, 0.3);
+  box-sizing: content-box;
+  border: none;
 
   transition: color 0.2s;
 
   &:hover {
     color: white;
+  }
+
+  &:disabled {
+    background-color: ${({ theme }) => theme.buttons.disabled};
   }
 
   display: flex;

@@ -36,13 +36,16 @@ import Statistics from "./components/Statistics/Statistics";
 import P2PSender from "./components/P2P/P2PSender";
 import P2PReciver from "./components/P2P/P2PReciver";
 import P2P from "./components/P2P/P2P";
+import Library from "./components/Library/Library";
+import IdToBook from "./components/Library/Detail/LinkWrapper/IdToBook";
+import NameToBook from "./components/Library/Detail/LinkWrapper/NameToBook";
 
 const App = () => {
   return (
     <MyThemeProvider>
       <MemoryRouter>
         <Switch>
-          <Route exact path="/" component={P2P}></Route>
+          <Route exact path="/" component={Library}></Route>
           <Route path="/spell-detail/name/:name" component={NameToSpell}></Route>
           <Route path="/spell-detail/id/:id" component={IdToSpell}></Route>
           <Route path="/spell-overview" component={SpellOverview}></Route>
@@ -76,6 +79,9 @@ const App = () => {
           <Route path="/statistics" component={Statistics}></Route>
           <Route path="/p2p-sender" component={P2PSender}></Route>
           <Route path="/p2p-recive" component={P2PReciver}></Route>
+          <Route path="/book-detail/name/:name" component={NameToBook}></Route>
+          <Route path="/book-detail/id/:id" component={IdToBook}></Route>
+          <Route path="/library" component={Library}></Route>
         </Switch>
       </MemoryRouter>
     </MyThemeProvider>

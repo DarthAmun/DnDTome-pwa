@@ -7,18 +7,28 @@ import { Transform } from "@fortawesome/fontawesome-svg-core";
 
 interface $Props {
   label: string;
+  isMulti: boolean;
   icon?: IconDefinition;
   transform?: string | Transform;
   onChange: (value: FileList | null) => void;
 }
 
-const FileField = ({ label, icon, transform, onChange }: $Props) => {
+const FileField = ({ label, isMulti, icon, transform, onChange }: $Props) => {
   return (
     <Field>
       <LabelText>
         {icon ? <Icon icon={icon} transform={transform} /> : ""} {label}
       </LabelText>
-      <Input onChange={(e) => onChange(e.target.files)} type="file" multiple></Input>
+      {isMulti && (
+        <Input
+          onChange={(e) => onChange(e.target.files)}
+          type="file"
+          multiple
+        ></Input>
+      )}
+      {!isMulti && (
+        <Input onChange={(e) => onChange(e.target.files)} type="file"></Input>
+      )}
     </Field>
   );
 };
