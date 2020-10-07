@@ -33,13 +33,16 @@ import EncounterOverview from "./components/Encounters/EncounterOverview";
 import NameToEncounter from "./components/Encounters/Detail/LinkWrapper/NameToEncounter";
 import IdToEncounter from "./components/Encounters/Detail/LinkWrapper/IdToEncounter";
 import Statistics from "./components/Statistics/Statistics";
+import P2PSender from "./components/P2P/P2PSender";
+import P2PReciver from "./components/P2P/P2PReciver";
+import P2P from "./components/P2P/P2P";
 
 const App = () => {
   return (
     <MyThemeProvider>
       <MemoryRouter>
         <Switch>
-          <Route exact path="/" component={Statistics}></Route>
+          <Route exact path="/" component={P2P}></Route>
           <Route path="/spell-detail/name/:name" component={NameToSpell}></Route>
           <Route path="/spell-detail/id/:id" component={IdToSpell}></Route>
           <Route path="/spell-overview" component={SpellOverview}></Route>
@@ -71,6 +74,8 @@ const App = () => {
           <Route path="/encounter-detail/id/:id" component={IdToEncounter}></Route>
           <Route path="/encounter-overview" component={EncounterOverview}></Route>
           <Route path="/statistics" component={Statistics}></Route>
+          <Route path="/p2p-sender" component={P2PSender}></Route>
+          <Route path="/p2p-recive" component={P2PReciver}></Route>
         </Switch>
       </MemoryRouter>
     </MyThemeProvider>

@@ -43,6 +43,7 @@
     "react-files": "^2.4.8",
     "react-icons": "^3.10.0",
     "react-infinite-scroll-component": "^5.0.5",
+    "react-peer": "^0.2.6",
     "react-scripts": "^3.4.1",
     "react-select": "^3.1.0",
     "recharts": "^1.8.5",
