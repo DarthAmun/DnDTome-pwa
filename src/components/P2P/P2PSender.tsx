@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { usePeerState } from "react-peer";
+import Peer from "peerjs";
 import { reciveAllPromise } from "../../Services/DatabaseService";
 import IEntity from "../../Data/IEntity";
 
 import {
   faExclamationCircle,
   faSyncAlt,
-  faWifi,
 } from "@fortawesome/free-solid-svg-icons";
 import IconButton from "../FormElements/IconButton";
 import StringField from "../FormElements/StringField";
@@ -23,14 +22,29 @@ const P2PSender = ({ data, mode }: $Props) => {
     return Math.random().toString(36).slice(-11);
   };
 
-  const [id, setId] = useState<string>(generateBrokerId);
+  const [id, setId] = useState<string>("");
   const [name, setName] = useState<string>("");
-  const [state, setState, brokerId, connections, error] = usePeerState(
-    {},
-    {
-      brokerId: id,
-    }
+  const [state, setState] = useState<any>();
+  const [error, setError] = useState<any>();
+  const [peer] = useState<Peer>(
+    new Peer(generateBrokerId(), {
+      host: "peerjs.thedndtome.com",
+      secure: true,
+    })
   );
+
+  useEffect(() => {
+    setId(peer.id);
+    peer.on("connection", function (conn) {
+      conn.on("error", function (data) {
+        setError(data);
+      });
+      conn.on("open", function () {
+        // Send messages
+        conn.send(state);
+      });
+    });
+  }, [peer, state]);
 
   useEffect(() => {
     if (mode === "ALL" && typeof data === "string") {
@@ -47,17 +61,9 @@ const P2PSender = ({ data, mode }: $Props) => {
 
   return (
     <>
-      <StringField
-        value={brokerId}
-        label={`Your ${name} ID:`}
-        onChange={() => {}}
-      />
+      <StringField value={id} label={`Your ${name} ID:`} onChange={() => {}} />
       <IconButton icon={faSyncAlt} onClick={() => setId(generateBrokerId)} />
-      {brokerId && console.log(brokerId)}
       {state && console.log(state)}
-      {connections && connections.length > 1 && (
-        <Icon icon={faWifi} />
-      )}
       {error && <Icon icon={faExclamationCircle} />}
     </>
   );

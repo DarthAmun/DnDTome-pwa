@@ -1,8 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { useReceivePeerState } from "react-peer";
+import Peer from "peerjs";
 
-import { faCheck, faExclamationCircle, faWifi } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCheck,
+  faExclamationCircle,
+} from "@fortawesome/free-solid-svg-icons";
 import StringField from "../FormElements/StringField";
 import TextButton from "../FormElements/TextButton";
 import { scanImportFileTest } from "../../Services/OptionService";
@@ -16,7 +19,27 @@ interface $Props {
 const P2PReciver = ({ reload }: $Props) => {
   const [peerId, setId] = useState<string>("");
   const [loading, isLoading] = useState<boolean>(false);
-  const [state, isConnected, error] = useReceivePeerState(peerId);
+  const [error, setError] = useState<any>();
+  const [state, setState] = useState<any>();
+  const [peer] = useState<Peer>(
+    new Peer(undefined, {
+      host: "peerjs.thedndtome.com",
+      secure: true,
+    })
+  );
+
+  useEffect(() => {
+    const conn = peer.connect(peerId);
+    conn.on("open", function () {
+      conn.on("error", function (data) {
+        setError(data);
+      });
+      // Receive messages
+      conn.on("data", function (data) {
+        setState(data);
+      });
+    });
+  }, [peer, peerId]);
 
   const acceptData = () => {
     if (state !== undefined) {
@@ -51,7 +74,6 @@ const P2PReciver = ({ reload }: $Props) => {
         </>
       )}
       {!!loading && <LoadingSpinner />}
-      {isConnected && <Icon icon={faWifi} />}
       {error && <Icon icon={faExclamationCircle} />}
     </>
   );
