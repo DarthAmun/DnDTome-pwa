@@ -3,12 +3,9 @@ import styled from "styled-components";
 import Peer from "peerjs";
 import { reciveAllPromise } from "../../Services/DatabaseService";
 import IEntity from "../../Data/IEntity";
+import { generateBrokerId } from "../../Services/peerIdService";
 
-import {
-  faExclamationCircle,
-  faSyncAlt,
-} from "@fortawesome/free-solid-svg-icons";
-import IconButton from "../FormElements/IconButton";
+import { faExclamationCircle } from "@fortawesome/free-solid-svg-icons";
 import StringField from "../FormElements/StringField";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -18,52 +15,72 @@ interface $Props {
 }
 
 const P2PSender = ({ data, mode }: $Props) => {
-  const generateBrokerId = () => {
-    return Math.random().toString(36).slice(-11);
-  };
-
-  const [id, setId] = useState<string>("");
   const [name, setName] = useState<string>("");
-  const [state, setState] = useState<any>();
+  const [peer, setPeer] = useState<Peer>();
   const [error, setError] = useState<any>();
-  const [peer] = useState<Peer>(
-    new Peer(generateBrokerId(), {
-      host: "peerjs.thedndtome.com",
-      secure: true,
-    })
-  );
 
   useEffect(() => {
-    setId(peer.id);
-    peer.on("connection", function (conn) {
-      conn.on("error", function (data) {
-        setError(data);
+    if (peer === undefined) {
+      const brokerId = generateBrokerId();
+      const newPeer = new Peer(brokerId, {
+        host: "peerjs.thedndtome.com",
+        secure: true,
       });
-      conn.on("open", function () {
-        // Send messages
-        conn.send(state);
+      console.log(newPeer);
+      newPeer.on("connection", function (conn) {
+        conn.on("error", function (errorData) {
+          setError(errorData);
+        });
+        conn.on("open", function () {
+          conn.send(data);
+        });
       });
-    });
-  }, [peer, state]);
-
-  useEffect(() => {
-    if (mode === "ALL" && typeof data === "string") {
-      reciveAllPromise(data).then((results) => {
-        setState(results);
-        setName(data);
-      });
-    } else if (mode === "THIS" && typeof data !== "string") {
-      setState(data);
-      setName(data.name);
+      setPeer(newPeer);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [data, peer]);
+
+  useEffect(() => {
+    if (peer !== undefined) {
+      if (peer.disconnected && !peer.destroyed) {
+        peer.reconnect();
+      }
+      if (mode === "ALL" && typeof data === "string") {
+        reciveAllPromise(data).then((results) => {
+          setName(data);
+          peer.on("connection", function (conn) {
+            conn.on("error", function (errorData) {
+              setError(errorData);
+            });
+            conn.on("open", function () {
+              conn.send(results);
+            });
+          });
+        });
+      } else if (mode === "THIS" && typeof data !== "string") {
+        setName(data.name);
+        peer.on("connection", function (conn) {
+          conn.on("error", function (errorData) {
+            setError(errorData);
+          });
+          conn.on("open", function () {
+            conn.send(data);
+          });
+        });
+      }
+    }
+  }, [data, mode, peer]);
 
   return (
     <>
-      <StringField value={id} label={`Your ${name} ID:`} onChange={() => {}} />
-      <IconButton icon={faSyncAlt} onClick={() => setId(generateBrokerId)} />
-      {state && console.log(state)}
+      {peer !== undefined && peer.id !== null && (
+        <>
+          <StringField
+            value={peer.id}
+            label={`Your ${name} ID:`}
+            onChange={() => {}}
+          />
+        </>
+      )}
       {error && <Icon icon={faExclamationCircle} />}
     </>
   );

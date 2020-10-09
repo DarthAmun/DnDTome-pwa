@@ -1,12 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { useTheme } from "../Theme/MyThemeProvider";
-import { darkTheme, lightTheme } from "../Theme/Theme";
-import {
-  importFiles,
-  exportAllFromTable,
-  exportAll,
-} from "../../Services/OptionService";
+import { importFiles, exportAll } from "../../Services/OptionService";
 import {
   import5eToolsMonstersFiles,
   import5eToolsSpellsFiles,
@@ -16,24 +10,44 @@ import {
   reciveCount,
   reciveAllPromise,
 } from "../../Services/DatabaseService";
+import IEntity from "../../Data/IEntity";
+import { isChar } from "../../Data/Chars/Char";
+import { isClass } from "../../Data/Classes/Class";
+import { isSubclass } from "../../Data/Classes/Subclass";
+import { isEncounter } from "../../Data/Encounter/Encounter";
+import { isGear } from "../../Data/Gear";
+import { isItem } from "../../Data/Item";
+import { isMonster } from "../../Data/Monster";
+import { isRace } from "../../Data/Races/Race";
+import { isSubrace } from "../../Data/Races/Subrace";
+import { isSpell } from "../../Data/Spell";
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faFileImport,
-  faTrashAlt,
-  faFileExport,
-} from "@fortawesome/free-solid-svg-icons";
-import { faPatreon, faDiscord } from "@fortawesome/free-brands-svg-icons";
+import { faFileImport, faFileExport } from "@fortawesome/free-solid-svg-icons";
 import AppWrapper from "../AppWrapper";
 import TabBar from "../GeneralElements/TabBar";
 import FileField from "../FormElements/FileField";
 import IconButton from "../FormElements/IconButton";
 import { LoadingSpinner } from "../Loading";
 import P2PReciver from "../P2P/P2PReciver";
-import P2PSender from "../P2P/P2PSender";
+import ClassTile from "../Entities/Classes/ClassTile";
+import EncounterTile from "../Encounters/EncounterTile";
+import CharTile from "../Entities/Chars/CharTile";
+import GearTile from "../Entities/Gear/GearTile";
+import ItemTile from "../Entities/Item/ItemTile";
+import MonsterTile from "../Entities/Monster/MonsterTile";
+import RaceTile from "../Entities/Races/RaceTile";
+import SpellTile from "../Entities/Spells/SpellTile";
+import GeneralOptions from "./GeneralOptions";
+import SpellsOptions from "./SpellsOptions";
+import GearsOptions from "./GearsOptions";
+import ItemsOptions from "./ItemsOptions";
+import MonstersOptions from "./MonstersOptions";
+import RacesOptions from "./RacesOptions";
+import ClassesOptions from "./ClassesOptions";
+import CharsOptions from "./CharsOptions";
+import EncountersOptions from "./EncountersOptions";
 
 const Options = () => {
-  const { theme, setTheme } = useTheme();
   const [activeTab, setTab] = useState<string>("General");
 
   const [spellAmount, setSpellAmount] = useState<number>(0);
@@ -54,6 +68,7 @@ const Options = () => {
   const [message, setMessage] = useState<string>("");
 
   const [failedObjs, setFailedObjs] = useState<string[]>([]);
+  const [data, setData] = useState<IEntity[] | IEntity>();
 
   useEffect(() => {
     if (reload) {
@@ -94,16 +109,6 @@ const Options = () => {
     }
   }, [reload]);
 
-  const toggleTheme = () => {
-    if (theme === darkTheme) {
-      setTheme(lightTheme);
-      localStorage.setItem("theme", "light");
-    } else {
-      setTheme(darkTheme);
-      localStorage.setItem("theme", "dark");
-    }
-  };
-
   const triggerImportFiles = (fileList: FileList | null) => {
     isLoading(true);
     importFiles(
@@ -126,9 +131,36 @@ const Options = () => {
       }
     );
   };
+
   const triggerDeleteAll = (tableName: string) => {
     deleteAll(tableName);
     isReload(true);
+  };
+
+  const returnTile = (entity: IEntity, index: number) => {
+    if (isClass(entity)) {
+      return <ClassTile key={index} classe={entity} />;
+    } else if (isSubclass(entity)) {
+      return <OptionSection key={index}>{entity.name}</OptionSection>;
+    } else if (isRace(entity)) {
+      return <RaceTile key={index} race={entity} />;
+    } else if (isSubrace(entity)) {
+      return <OptionSection key={index}>{entity.name}</OptionSection>;
+    } else if (isMonster(entity)) {
+      return <MonsterTile key={index} monster={entity} />;
+    } else if (isSpell(entity)) {
+      return <SpellTile key={index} spell={entity} />;
+    } else if (isGear(entity)) {
+      return <GearTile key={index} gear={entity} />;
+    } else if (isItem(entity)) {
+      return <ItemTile key={index} item={entity} />;
+    } else if (isEncounter(entity)) {
+      return <EncounterTile key={index} encounter={entity} />;
+    } else if (isChar(entity)) {
+      return <CharTile key={index} char={entity} />;
+    } else {
+      return <OptionSection key={index}>{entity.name}</OptionSection>;
+    }
   };
 
   return (
@@ -169,304 +201,45 @@ const Options = () => {
         ]}
         onChange={(tab: string) => setTab(tab)}
       />
-      {activeTab === "General" && (
-        <General>
-          <OptionSection>
-            <SelectionTitle>Want to support me?</SelectionTitle>
-            <ExternalLink
-              href="https://www.patreon.com/bePatron?u=25310394"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="patreon"
-            >
-              <FontAwesomeIcon icon={faPatreon} /> Become a patron
-            </ExternalLink>
-          </OptionSection>
-          <OptionSection>
-            <SelectionTitle>
-              Found some bugs? Or have some feedback?
-            </SelectionTitle>
-            <ExternalLink
-              href="https://discord.gg/2KB3tzG"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="discord"
-            >
-              <FontAwesomeIcon icon={faDiscord} /> Join the discord
-            </ExternalLink>
-          </OptionSection>
-          <OptionSection>
-            <SelectionTitle>Theme</SelectionTitle>
-            <Button onClick={() => toggleTheme()}>Toggle Style</Button>
-          </OptionSection>
-        </General>
-      )}
+      {activeTab === "General" && <GeneralOptions />}
       {activeTab === "Spells" && (
-        <OptionTab>
-          <OptionSection>
-            <SelectionTitle>Export</SelectionTitle>
-            <SectionRow>
-              <SectionText>Export all Spells?</SectionText>
-              <IconButton
-                icon={faFileExport}
-                onClick={() =>
-                  exportAllFromTable("spells", "DnDTome_spells.json")
-                }
-              />
-            </SectionRow>
-          </OptionSection>
-          <OptionSection>
-            <SelectionTitle>Delete</SelectionTitle>
-            <SectionRow>
-              <SectionText>Delete all {spellAmount} Spells?</SectionText>
-              <IconButton
-                icon={faTrashAlt}
-                onClick={() => triggerDeleteAll("spells")}
-              />
-            </SectionRow>
-          </OptionSection>
-          <OptionSection>
-            <P2PSender data={"spells"} mode={"ALL"} />
-          </OptionSection>
-        </OptionTab>
+        <SpellsOptions
+          amount={spellAmount}
+          triggerDeleteAll={triggerDeleteAll}
+        />
       )}
       {activeTab === "Gears" && (
-        <OptionTab>
-          <OptionSection>
-            <SelectionTitle>Export</SelectionTitle>
-            <SectionRow>
-              <SectionText>Export all Gear?</SectionText>
-              <IconButton
-                icon={faFileExport}
-                onClick={() => exportAllFromTable("gears", "DnDTome_gear.json")}
-              />
-            </SectionRow>
-          </OptionSection>
-          <OptionSection>
-            <SelectionTitle>Delete</SelectionTitle>
-            <SectionRow>
-              <SectionText>Delete all {gearAmount} Gear?</SectionText>
-              <IconButton
-                icon={faTrashAlt}
-                onClick={() => triggerDeleteAll("gears")}
-              />
-            </SectionRow>
-          </OptionSection>
-          <OptionSection>
-            <P2PSender data={"gears"} mode={"ALL"} />
-          </OptionSection>
-        </OptionTab>
+        <GearsOptions amount={gearAmount} triggerDeleteAll={triggerDeleteAll} />
       )}
       {activeTab === "Magic Items" && (
-        <OptionTab>
-          <OptionSection>
-            <SelectionTitle>Export</SelectionTitle>
-            <SectionRow>
-              <SectionText>Export all Items?</SectionText>
-              <IconButton
-                icon={faFileExport}
-                onClick={() =>
-                  exportAllFromTable("items", "DnDTome_items.json")
-                }
-              />
-            </SectionRow>
-          </OptionSection>
-          <OptionSection>
-            <SelectionTitle>Delete</SelectionTitle>
-            <SectionRow>
-              <SectionText>Delete all {itemAmount} Items?</SectionText>
-              <IconButton
-                icon={faTrashAlt}
-                onClick={() => triggerDeleteAll("items")}
-              />
-            </SectionRow>
-          </OptionSection>
-          <OptionSection>
-            <P2PSender data={"items"} mode={"ALL"} />
-          </OptionSection>
-        </OptionTab>
+        <ItemsOptions amount={itemAmount} triggerDeleteAll={triggerDeleteAll} />
       )}
       {activeTab === "Monsters" && (
-        <OptionTab>
-          <OptionSection>
-            <SelectionTitle>Export</SelectionTitle>
-            <SectionRow>
-              <SectionText>Export all Monsters?</SectionText>
-              <IconButton
-                icon={faFileExport}
-                onClick={() =>
-                  exportAllFromTable("monsters", "DnDTome_monsters.json")
-                }
-              />
-            </SectionRow>
-          </OptionSection>
-          <OptionSection>
-            <SelectionTitle>Delete</SelectionTitle>
-            <SectionRow>
-              <SectionText>Delete all {monsterAmount} Monsters?</SectionText>
-              <IconButton
-                icon={faTrashAlt}
-                onClick={() => triggerDeleteAll("monsters")}
-              />
-            </SectionRow>
-          </OptionSection>
-          <OptionSection>
-            <P2PSender data={"monsters"} mode={"ALL"} />
-          </OptionSection>
-        </OptionTab>
+        <MonstersOptions
+          amount={monsterAmount}
+          triggerDeleteAll={triggerDeleteAll}
+        />
       )}
       {activeTab === "Races" && (
-        <OptionTab>
-          <OptionSection>
-            <SelectionTitle>Export</SelectionTitle>
-            <SectionRow>
-              <SectionText>Export all Races?</SectionText>
-              <IconButton
-                icon={faFileExport}
-                onClick={() =>
-                  exportAllFromTable("races", "DnDTome_races.json")
-                }
-              />
-            </SectionRow>
-            <SectionRow>
-              <SectionText>Export all Subraces?</SectionText>
-              <IconButton
-                icon={faFileExport}
-                onClick={() =>
-                  exportAllFromTable("subraces", "DnDTome_subraces.json")
-                }
-              />
-            </SectionRow>
-          </OptionSection>
-          <OptionSection>
-            <SelectionTitle>Delete</SelectionTitle>
-            <SectionRow>
-              <SectionText>Delete all {raceAmount} Races?</SectionText>
-              <IconButton
-                icon={faTrashAlt}
-                onClick={() => triggerDeleteAll("races")}
-              />
-            </SectionRow>
-            <SectionRow>
-              <SectionText>Delete all {subraceAmount} Subraces?</SectionText>
-              <IconButton
-                icon={faTrashAlt}
-                onClick={() => triggerDeleteAll("subraces")}
-              />
-            </SectionRow>
-          </OptionSection>
-          <OptionSection>
-            <P2PSender data={"races"} mode={"ALL"} />
-          </OptionSection>
-          <OptionSection>
-            <P2PSender data={"subraces"} mode={"ALL"} />
-          </OptionSection>
-        </OptionTab>
+        <RacesOptions
+          amounts={[raceAmount, subraceAmount]}
+          triggerDeleteAll={triggerDeleteAll}
+        />
       )}
       {activeTab === "Classes" && (
-        <OptionTab>
-          <OptionSection>
-            <SelectionTitle>Export</SelectionTitle>
-            <SectionRow>
-              <SectionText>Export all Classes?</SectionText>
-              <IconButton
-                icon={faFileExport}
-                onClick={() =>
-                  exportAllFromTable("classes", "DnDTome_classes.json")
-                }
-              />
-            </SectionRow>
-            <SectionRow>
-              <SectionText>Export all Subclasses?</SectionText>
-              <IconButton
-                icon={faFileExport}
-                onClick={() =>
-                  exportAllFromTable("subclasses", "DnDTome_subclasses.json")
-                }
-              />
-            </SectionRow>
-          </OptionSection>
-          <OptionSection>
-            <SelectionTitle>Delete</SelectionTitle>
-            <SectionRow>
-              <SectionText>Delete all {classAmount} Classes?</SectionText>
-              <IconButton
-                icon={faTrashAlt}
-                onClick={() => triggerDeleteAll("classes")}
-              />
-            </SectionRow>
-            <SectionRow>
-              <SectionText>Delete all {subclassAmount} Subclasses?</SectionText>
-              <IconButton
-                icon={faTrashAlt}
-                onClick={() => triggerDeleteAll("subclasses")}
-              />
-            </SectionRow>
-          </OptionSection>
-          <OptionSection>
-            <P2PSender data={"classes"} mode={"ALL"} />
-          </OptionSection>
-          <OptionSection>
-            <P2PSender data={"subclasses"} mode={"ALL"} />
-          </OptionSection>
-        </OptionTab>
+        <ClassesOptions
+          amounts={[classAmount, subclassAmount]}
+          triggerDeleteAll={triggerDeleteAll}
+        />
       )}
       {activeTab === "Chars" && (
-        <OptionTab>
-          <OptionSection>
-            <SelectionTitle>Export</SelectionTitle>
-            <SectionRow>
-              <SectionText>Export all Chars?</SectionText>
-              <IconButton
-                icon={faFileExport}
-                onClick={() =>
-                  exportAllFromTable("chars", "DnDTome_chars.json")
-                }
-              />
-            </SectionRow>
-          </OptionSection>
-          <OptionSection>
-            <SelectionTitle>Delete</SelectionTitle>
-            <SectionRow>
-              <SectionText>Delete all {charAmount} Chars?</SectionText>
-              <IconButton
-                icon={faTrashAlt}
-                onClick={() => triggerDeleteAll("chars")}
-              />
-            </SectionRow>
-          </OptionSection>
-          <OptionSection>
-            <P2PSender data={"chars"} mode={"ALL"} />
-          </OptionSection>
-        </OptionTab>
+        <CharsOptions amount={charAmount} triggerDeleteAll={triggerDeleteAll} />
       )}
       {activeTab === "Encounters" && (
-        <OptionTab>
-          <OptionSection>
-            <SelectionTitle>Export</SelectionTitle>
-            <SectionRow>
-              <SectionText>Export all Encounters?</SectionText>
-              <IconButton
-                icon={faFileExport}
-                onClick={() =>
-                  exportAllFromTable("encounters", "DnDTome_encounters.json")
-                }
-              />
-            </SectionRow>
-          </OptionSection>
-          <OptionSection>
-            <SelectionTitle>Delete</SelectionTitle>
-            <SectionRow>
-              <SectionText>
-                Delete all {encounterAmount} Encounters?
-              </SectionText>
-              <IconButton
-                icon={faTrashAlt}
-                onClick={() => triggerDeleteAll("encounters")}
-              />
-            </SectionRow>
-          </OptionSection>
-        </OptionTab>
+        <EncountersOptions
+          amount={encounterAmount}
+          triggerDeleteAll={triggerDeleteAll}
+        />
       )}
       {activeTab === "Others" && (
         <OptionTab>
@@ -492,9 +265,15 @@ const Options = () => {
       )}
       {activeTab === "Recive" && (
         <OptionTab>
-          <OptionSection>
-            <P2PReciver reload={isReload} />
-          </OptionSection>
+          <OptionSectionLarge>
+            <P2PReciver reload={isReload} changeData={setData} />
+          </OptionSectionLarge>
+          {data !== undefined &&
+            Array.isArray(data) &&
+            data.map((entity: IEntity, index: number) => {
+              return returnTile(entity, index);
+            })}
+          {data !== undefined && !Array.isArray(data) && returnTile(data, 0)}
         </OptionTab>
       )}
       {loading && <LoadingSpinner />}
@@ -544,49 +323,8 @@ const OptionSection = styled(General)`
   align-content: flex-start;
 `;
 
-const Button = styled.button`
-  flex: 1 1 auto;
-  display: inline-block;
-  text-decoration: none;
-  background-color: ${({ theme }) => theme.buttons.backgroundColor};
-  height: 28px;
-  border: none;
-  border-radius: 5px;
-  padding-left: 10px;
-  padding-right: 10px;
-  margin: 5px;
-  text-align: center;
-  font-family: inherit;
-  font-size: 14px;
-  color: ${({ theme }) => theme.buttons.color};
-  cursor: pointer;
-  line-height: 26px;
-`;
-
-const ExternalLink = styled.a`
-  flex: 1 1 auto;
-  display: inline-block;
-  text-decoration: none;
-  background-color: ${({ theme }) => theme.buttons.backgroundColor};
-  height: 38px;
-  border: none;
-  border-radius: 5px;
-  padding-left: 10px;
-  padding-right: 10px;
-  margin: 5px;
-  text-align: center;
-  font-family: inherit;
-  font-size: 14px;
-  color: ${({ theme }) => theme.buttons.color};
-  cursor: pointer;
-  line-height: 36px;
-
-  &.patreon {
-    background-color: rgb(232, 91, 70);
-  }
-  &.discord {
-    background-color: #7289da;
-  }
+const OptionSectionLarge = styled(OptionSection)`
+  width: calc(100% - 1em);
 `;
 
 const SelectionTitle = styled.div`

@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Peer from "peerjs";
+import { scanImportFileTest } from "../../Services/OptionService";
+import IEntity from "../../Data/IEntity";
 
 import {
   faCheck,
@@ -8,15 +10,15 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import StringField from "../FormElements/StringField";
 import TextButton from "../FormElements/TextButton";
-import { scanImportFileTest } from "../../Services/OptionService";
 import { LoadingSpinner } from "../Loading";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 interface $Props {
+  changeData: (data: IEntity[] | IEntity | undefined) => void;
   reload: (value: boolean) => void;
 }
 
-const P2PReciver = ({ reload }: $Props) => {
+const P2PReciver = ({ changeData, reload }: $Props) => {
   const [peerId, setId] = useState<string>("");
   const [loading, isLoading] = useState<boolean>(false);
   const [error, setError] = useState<any>();
@@ -36,29 +38,44 @@ const P2PReciver = ({ reload }: $Props) => {
       });
       // Receive messages
       conn.on("data", function (data) {
+        console.log(data);
         setState(data);
+        changeData(data);
+        reload(true);
       });
     });
-  }, [peer, peerId]);
+  }, [peer, peerId, changeData, reload]);
 
   const acceptData = () => {
     if (state !== undefined) {
       isLoading(true);
       scanImportFileTest(state, "recived", () => {
         setId("");
+        changeData(undefined);
         reload(true);
         isLoading(false);
+        setState(undefined);
       });
     }
   };
 
+  const declineData = () => {
+    setId("");
+    changeData(undefined);
+    reload(true);
+    isLoading(false);
+    setState(undefined);
+  };
+
   return (
     <>
+      {!!loading && <LoadingSpinner />}
       <StringField
         value={peerId}
         label={"ID to recive from"}
         onChange={(id) => setId(id)}
       />
+      {error && <Icon icon={faExclamationCircle} />}
       {state !== undefined && peerId !== "" && (
         <>
           <TextButton
@@ -69,12 +86,10 @@ const P2PReciver = ({ reload }: $Props) => {
           <TextButton
             text={"Decline"}
             icon={faCheck}
-            onClick={() => setId("")}
+            onClick={() => declineData()}
           />
         </>
       )}
-      {!!loading && <LoadingSpinner />}
-      {error && <Icon icon={faExclamationCircle} />}
     </>
   );
 };
