@@ -7,13 +7,21 @@ import { Transform } from "@fortawesome/fontawesome-svg-core";
 
 interface $Props {
   label: string;
+  accept: string;
   isMulti: boolean;
   icon?: IconDefinition;
   transform?: string | Transform;
   onChange: (value: FileList | null) => void;
 }
 
-const FileField = ({ label, isMulti, icon, transform, onChange }: $Props) => {
+const FileField = ({
+  label,
+  accept,
+  isMulti,
+  icon,
+  transform,
+  onChange,
+}: $Props) => {
   return (
     <Field>
       <LabelText>
@@ -23,11 +31,16 @@ const FileField = ({ label, isMulti, icon, transform, onChange }: $Props) => {
         <Input
           onChange={(e) => onChange(e.target.files)}
           type="file"
+          accept={accept}
           multiple
         ></Input>
       )}
       {!isMulti && (
-        <Input onChange={(e) => onChange(e.target.files)} type="file"></Input>
+        <Input
+          onChange={(e) => onChange(e.target.files)}
+          accept={accept}
+          type="file"
+        ></Input>
       )}
     </Field>
   );

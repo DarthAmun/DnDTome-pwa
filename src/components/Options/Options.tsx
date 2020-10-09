@@ -171,6 +171,7 @@ const Options = () => {
         <FileField
           label=""
           isMulti={true}
+          accept={".json"}
           icon={faFileImport}
           onChange={(file) => triggerImportFiles(file)}
         />
@@ -247,6 +248,7 @@ const Options = () => {
             <SelectionTitle>Import 5eTools Spells</SelectionTitle>
             <FileField
               label=""
+              accept={".json"}
               isMulti={true}
               icon={faFileImport}
               onChange={(file) => import5eToolsSpellsFiles(file)}
@@ -256,6 +258,7 @@ const Options = () => {
             <SelectionTitle>Import 5eTools Monsters</SelectionTitle>
             <FileField
               label=""
+              accept={".json"}
               isMulti={true}
               icon={faFileImport}
               onChange={(file) => import5eToolsMonstersFiles(file)}

@@ -66,6 +66,7 @@ const BookEditView = ({ book, onEdit }: $Props) => {
           label=""
           isMulti={false}
           icon={faFileImport}
+          accept=".pdf"
           onChange={(file) => triggerImportFiles(file)}
         />
         <StringField
