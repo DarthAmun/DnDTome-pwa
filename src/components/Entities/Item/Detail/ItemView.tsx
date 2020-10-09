@@ -5,14 +5,17 @@ import { reciveAllFiltered } from "../../../../Services/DatabaseService";
 import styled from "styled-components";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faLink } from "@fortawesome/free-solid-svg-icons";
+import { faLink, faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import FormatedText from "../../../GeneralElements/FormatedText";
+import TextButton from "../../../FormElements/TextButton";
+import P2PSender from "../../../P2P/P2PSender";
 
 interface $Props {
   item: Item;
 }
 
 const ItemView = ({ item }: $Props) => {
+  const [send, setSend] = useState<boolean>(false);
   const [itemBase, setItemBase] = useState<Gear>();
 
   useEffect(() => {
@@ -81,6 +84,16 @@ const ItemView = ({ item }: $Props) => {
           <Text>
             <FormatedText text={item.description} />
           </Text>
+        </PropWrapper>
+        <PropWrapper>
+            {!send && (
+              <TextButton
+                text={`Send ${item.name}`}
+                icon={faPaperPlane}
+                onClick={() => setSend(true)}
+              />
+            )}
+            {!!send && <P2PSender data={item} mode={"THIS"} />}
         </PropWrapper>
       </View>
     </CenterWrapper>

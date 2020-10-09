@@ -31,7 +31,7 @@ export const importFiles = (
         const content = fileReader.result;
         if (content !== null) {
           let json = JSON.parse(content.toString());
-          scanImportFileTest(json, file, callback);
+          scanImportFileTest(json, file.name, callback);
         }
       };
       fileReader.readAsText(file);
@@ -39,37 +39,37 @@ export const importFiles = (
   }
 };
 
-const scanImportFileTest = async (
+export const scanImportFileTest = async (
   json: any,
-  file: File,
+  fileName: string,
   callback: (failed: number, failedObj: string[], max: number) => void
 ) => {
-  if (Array.isArray(json)) {
-    let failCount = 0;
-    let failedObj: string[] = [];
-    let promList: Promise<any>[] = [];
+  let failCount = 0;
+  let failedObj: string[] = [];
+  let promList: Promise<any>[] = [];
 
+  if (Array.isArray(json)) {
     json.forEach((obj: any) => {
       if (isClass(obj)) {
-        promList.push(saveNew("classes", obj as Class, file.name));
+        promList.push(saveNew("classes", obj as Class, fileName));
       } else if (isSubclass(obj)) {
-        promList.push(saveNew("subclasses", obj as Subclass, file.name));
+        promList.push(saveNew("subclasses", obj as Subclass, fileName));
       } else if (isRace(obj)) {
-        promList.push(saveNew("races", obj as Race, file.name));
+        promList.push(saveNew("races", obj as Race, fileName));
       } else if (isSubrace(obj)) {
-        promList.push(saveNew("subraces", obj as Subrace, file.name));
+        promList.push(saveNew("subraces", obj as Subrace, fileName));
       } else if (isMonster(obj)) {
-        promList.push(saveNew("monsters", obj as Monster, file.name));
+        promList.push(saveNew("monsters", obj as Monster, fileName));
       } else if (isSpell(obj)) {
-        promList.push(saveNew("spells", obj as Spell, file.name));
+        promList.push(saveNew("spells", obj as Spell, fileName));
       } else if (isGear(obj)) {
-        promList.push(saveNew("gears", obj as Gear, file.name));
+        promList.push(saveNew("gears", obj as Gear, fileName));
       } else if (isItem(obj)) {
-        promList.push(saveNew("items", obj as Item, file.name));
+        promList.push(saveNew("items", obj as Item, fileName));
       } else if (isEncounter(obj)) {
-        promList.push(saveNew("encounters", obj as Encounter, file.name));
+        promList.push(saveNew("encounters", obj as Encounter, fileName));
       } else if (isChar(obj)) {
-        promList.push(saveNew("chars", obj as Char, file.name));
+        promList.push(saveNew("chars", obj as Char, fileName));
       } else {
         failCount++;
         failedObj.push(
@@ -79,6 +79,37 @@ const scanImportFileTest = async (
         );
       }
     });
+    await Promise.all(promList);
+    callback(failCount, failedObj, json.length);
+  } else {
+    if (isClass(json)) {
+      promList.push(saveNew("classes", json as Class, fileName));
+    } else if (isSubclass(json)) {
+      promList.push(saveNew("subclasses", json as Subclass, fileName));
+    } else if (isRace(json)) {
+      promList.push(saveNew("races", json as Race, fileName));
+    } else if (isSubrace(json)) {
+      promList.push(saveNew("subraces", json as Subrace, fileName));
+    } else if (isMonster(json)) {
+      promList.push(saveNew("monsters", json as Monster, fileName));
+    } else if (isSpell(json)) {
+      promList.push(saveNew("spells", json as Spell, fileName));
+    } else if (isGear(json)) {
+      promList.push(saveNew("gears", json as Gear, fileName));
+    } else if (isItem(json)) {
+      promList.push(saveNew("items", json as Item, fileName));
+    } else if (isEncounter(json)) {
+      promList.push(saveNew("encounters", json as Encounter, fileName));
+    } else if (isChar(json)) {
+      saveNew("chars", json as Char, fileName);
+    } else {
+      failCount++;
+      failedObj.push(
+        scanForFormatErrors(json)
+          .replaceAll("true", "success!")
+          .replaceAll("false", "fail!")
+      );
+    }
     await Promise.all(promList);
     callback(failCount, failedObj, json.length);
   }

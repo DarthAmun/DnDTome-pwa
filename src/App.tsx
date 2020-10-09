@@ -42,7 +42,7 @@ const App = () => {
     <MyThemeProvider>
       <MemoryRouter>
         <Switch>
-          <Route exact path="/" component={Library}></Route>
+          <Route exact path="/" component={Options}></Route>
           <Route path="/spell-detail/name/:name" component={NameToSpell}></Route>
           <Route path="/spell-detail/id/:id" component={IdToSpell}></Route>
           <Route path="/spell-overview" component={SpellOverview}></Route>

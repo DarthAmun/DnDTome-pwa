@@ -1,22 +1,27 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import styled from "styled-components";
 import Monster from "../../../../Data/Monster";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faLink,
+  faPaperPlane,
   faRunning,
   faShieldAlt,
 } from "@fortawesome/free-solid-svg-icons";
 import { GiResize, GiAngelOutfit, GiLifeBar } from "react-icons/gi";
 import { MdRecordVoiceOver, MdRemoveRedEye } from "react-icons/md";
 import FormatedText from "../../../GeneralElements/FormatedText";
+import TextButton from "../../../FormElements/TextButton";
+import P2PSender from "../../../P2P/P2PSender";
 
 interface $Props {
   monster: Monster;
 }
 
 const MonsterView = ({ monster }: $Props) => {
+  const [send, setSend] = useState<boolean>(false);
+  
   const isLegendary = useCallback(() => {
     if (monster !== undefined) {
       if (monster.lAblt.trim() !== "" || monster.sAblt.includes("Legendary")) {
@@ -45,7 +50,7 @@ const MonsterView = ({ monster }: $Props) => {
       } else if (monster.cr === 0.5) {
         return "½";
       } else {
-        return monster.cr
+        return monster.cr;
       }
     }
     return "";
@@ -163,6 +168,16 @@ const MonsterView = ({ monster }: $Props) => {
             {monster.sources}
           </Prop>
         </PropWrapper>
+        <PropWrapper>
+        {!send && (
+          <TextButton
+            text={`Send ${monster.name}`}
+            icon={faPaperPlane}
+            onClick={() => setSend(true)}
+          />
+        )}
+        {!!send && <P2PSender data={monster} mode={"THIS"} />}
+      </PropWrapper>
       </View>
       {monster.ablt && (
         <View>

@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import Gear from "../../../../Data/Gear";
 import styled from "styled-components";
 
@@ -8,13 +8,19 @@ import {
   faCoins,
   faWeightHanging,
   faCrosshairs,
+  faPaperPlane,
 } from "@fortawesome/free-solid-svg-icons";
 import FormatedText from "../../../GeneralElements/FormatedText";
+import TextButton from "../../../FormElements/TextButton";
+import P2PSender from "../../../P2P/P2PSender";
+
 interface $Props {
   gear: Gear;
 }
 
 const GearView = ({ gear }: $Props) => {
+  const [send, setSend] = useState<boolean>(false);
+
   const getPicture = useCallback(() => {
     if (gear !== undefined) {
       if (gear.pic === "" || gear.pic === null) {
@@ -63,6 +69,16 @@ const GearView = ({ gear }: $Props) => {
           <Text>
             <FormatedText text={gear.description} />
           </Text>
+        </PropWrapper>
+        <PropWrapper>
+          {!send && (
+            <TextButton
+              text={`Send ${gear.name}`}
+              icon={faPaperPlane}
+              onClick={() => setSend(true)}
+            />
+          )}
+          {!!send && <P2PSender data={gear} mode={"THIS"} />}
         </PropWrapper>
       </View>
     </CenterWrapper>

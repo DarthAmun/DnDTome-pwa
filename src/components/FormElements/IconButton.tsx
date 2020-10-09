@@ -9,7 +9,7 @@ interface $Props {
   icon: IconDefinition;
   disabled?: boolean;
   transform?: string | Transform;
-  onClick: () => void;
+  onClick: (() => void) | ((e:any) => void);
 }
 
 const IconButton = ({ icon, disabled, transform, onClick }: $Props) => {

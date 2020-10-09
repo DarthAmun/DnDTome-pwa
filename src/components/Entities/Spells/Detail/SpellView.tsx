@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import styled from "styled-components";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -9,15 +9,20 @@ import {
   faPowerOff,
   faUser,
   faLink,
+  faPaperPlane,
 } from "@fortawesome/free-solid-svg-icons";
 import Spell from "../../../../Data/Spell";
 import FormatedText from "../../../GeneralElements/FormatedText";
+import P2PSender from "../../../P2P/P2PSender";
+import TextButton from "../../../FormElements/TextButton";
 
 interface $Props {
   spell: Spell;
 }
 
 const SpellView = ({ spell }: $Props) => {
+  const [send, setSend] = useState<boolean>(false);
+
   const formatLevel = useCallback(() => {
     if (spell !== undefined) {
       if (spell.level === 0) {
@@ -113,6 +118,16 @@ const SpellView = ({ spell }: $Props) => {
         <Text>
           <FormatedText text={spell.text} />
         </Text>
+        <PropWrapper>
+            {!send && (
+              <TextButton
+                text={`Send ${spell.name}`}
+                icon={faPaperPlane}
+                onClick={() => setSend(true)}
+              />
+            )}
+            {!!send && <P2PSender data={spell} mode={"THIS"} />}
+        </PropWrapper>
       </View>
     </CenterWrapper>
   );
