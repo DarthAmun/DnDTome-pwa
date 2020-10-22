@@ -13,8 +13,12 @@ import SpellEditView from "./SpellEditView";
 import BackButton from "../../../FormElements/BackButton";
 import Spell from "../../../../Data/Spell";
 import IconButton from "../../../FormElements/IconButton";
-import { remove, updateWithCallback } from "../../../../Services/DatabaseService";
+import {
+  remove,
+  updateWithCallback,
+} from "../../../../Services/DatabaseService";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Dialog from "../../../GeneralElements/Dialog";
 
 interface $Props {
   spell: Spell;
@@ -25,20 +29,20 @@ const SpellDetail = ({ spell, isNew }: $Props) => {
   const [editMode, setMode] = useState<boolean>(isNew);
   const [spellObj, editSpell] = useState<Spell>(spell);
   const [showAlert, setAlert] = useState<boolean>(false);
+  const [showDeleteDialog, setDeleteDialog] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
   const [unsavedChanges, setUnsavedChanges] = useState<boolean>(false);
   let history = useHistory();
 
-  const deleteSpell = (spellId: number | undefined) => {
-    remove("spells", spellId);
-    history.goBack();
+  const deleteSpell = () => {
+    setDeleteDialog(true);
   };
 
   useEffect(() => {
     if (spellObj !== spell) {
       setUnsavedChanges(true);
     }
-  }, [spellObj,spell]);
+  }, [spellObj, spell]);
 
   const updateSpell = (tableName: string, spellObj: Spell) => {
     updateWithCallback(tableName, spellObj, (result) => {
@@ -58,23 +62,37 @@ const SpellDetail = ({ spell, isNew }: $Props) => {
 
   return (
     <>
+      {showDeleteDialog && (
+        <Dialog
+          message={`Delete ${spell.name}?`}
+          icon={faExclamationTriangle}
+          confirmeText={"Delete"}
+          confirmeClick={() => {
+            remove("spells", spell.id);
+            history.goBack();
+          }}
+          abortText={"Back"}
+          abortClick={() => {
+            setDeleteDialog(false);
+          }}
+        />
+      )}
       <TopBar>
         <BackButton icon={faArrowLeft} action={() => history.goBack()} />
         <EditToggle mode={editMode.toString()}>
           <ToggleLeft onClick={() => setMode(false)}>View</ToggleLeft>
           <ToggleRight onClick={() => setMode(true)}>Edit</ToggleRight>
         </EditToggle>
-        {unsavedChanges && <Icon icon={faExclamationTriangle} />}
+        {unsavedChanges && (
+          <Icon icon={faExclamationTriangle} title={"Unsaved changes!"} />
+        )}
         {editMode && (
           <>
             <IconButton
               onClick={() => updateSpell("spells", spellObj)}
               icon={faSave}
             />
-            <IconButton
-              onClick={() => deleteSpell(spellObj.id)}
-              icon={faTrash}
-            />
+            <IconButton onClick={() => deleteSpell()} icon={faTrash} />
             {message && showAlert && <Message>{message}</Message>}
           </>
         )}

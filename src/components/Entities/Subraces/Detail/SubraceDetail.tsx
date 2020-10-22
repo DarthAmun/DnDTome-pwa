@@ -13,8 +13,12 @@ import SubraceEditView from "./SubraceEditView";
 import BackButton from "../../../FormElements/BackButton";
 import Subrace from "../../../../Data/Races/Subrace";
 import IconButton from "../../../FormElements/IconButton";
-import { remove, updateWithCallback } from "../../../../Services/DatabaseService";
+import {
+  remove,
+  updateWithCallback,
+} from "../../../../Services/DatabaseService";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Dialog from "../../../GeneralElements/Dialog";
 
 interface $Props {
   subrace: Subrace;
@@ -25,20 +29,20 @@ const SubraceDetail = ({ subrace, isNew }: $Props) => {
   const [editMode, setMode] = useState<boolean>(isNew);
   const [subraceObj, editSubrace] = useState<Subrace>(subrace);
   const [showAlert, setAlert] = useState<boolean>(false);
+  const [showDeleteDialog, setDeleteDialog] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
   const [unsavedChanges, setUnsavedChanges] = useState<boolean>(false);
   let history = useHistory();
 
-  const deleteSubrace = (subraceId: number | undefined) => {
-    remove("subraces", subraceId);
-    history.goBack();
+  const deleteSubrace = () => {
+    setDeleteDialog(true);
   };
 
   useEffect(() => {
     if (subraceObj !== subrace) {
       setUnsavedChanges(true);
     }
-  }, [subraceObj,subrace]);
+  }, [subraceObj, subrace]);
 
   const updateSubclass = (tableName: string, subraceObj: Subrace) => {
     updateWithCallback(tableName, subraceObj, (result) => {
@@ -58,29 +62,46 @@ const SubraceDetail = ({ subrace, isNew }: $Props) => {
 
   return (
     <>
+      {showDeleteDialog && (
+        <Dialog
+          message={`Delete ${subrace.name}?`}
+          icon={faExclamationTriangle}
+          confirmeText={"Delete"}
+          confirmeClick={() => {
+            remove("subraces", subrace.id);
+            history.goBack();
+          }}
+          abortText={"Back"}
+          abortClick={() => {
+            setDeleteDialog(false);
+          }}
+        />
+      )}
       <TopBar>
         <BackButton icon={faArrowLeft} action={() => history.goBack()} />
         <EditToggle mode={editMode.toString()}>
           <ToggleLeft onClick={() => setMode(false)}>View</ToggleLeft>
           <ToggleRight onClick={() => setMode(true)}>Edit</ToggleRight>
         </EditToggle>
-        {unsavedChanges && <Icon icon={faExclamationTriangle} />}
+        {unsavedChanges && (
+          <Icon icon={faExclamationTriangle} title={"Unsaved changes!"} />
+        )}
         {editMode && (
           <>
             <IconButton
               onClick={() => updateSubclass("subraces", subraceObj)}
               icon={faSave}
             />
-            <IconButton
-              onClick={() => deleteSubrace(subraceObj.id)}
-              icon={faTrash}
-            />
+            <IconButton onClick={() => deleteSubrace()} icon={faTrash} />
             {message && showAlert && <Message>{message}</Message>}
           </>
         )}
       </TopBar>
       {editMode ? (
-        <SubraceEditView subrace={subraceObj} onEdit={(value) => editSubrace(value)} />
+        <SubraceEditView
+          subrace={subraceObj}
+          onEdit={(value) => editSubrace(value)}
+        />
       ) : (
         <SubraceView subrace={subraceObj} />
       )}

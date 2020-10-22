@@ -13,8 +13,12 @@ import GearEditView from "./GearEditView";
 import BackButton from "../../../FormElements/BackButton";
 import Gear from "../../../../Data/Gear";
 import IconButton from "../../../FormElements/IconButton";
-import { remove, updateWithCallback } from "../../../../Services/DatabaseService";
+import {
+  remove,
+  updateWithCallback,
+} from "../../../../Services/DatabaseService";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Dialog from "../../../GeneralElements/Dialog";
 
 interface $Props {
   gear: Gear;
@@ -25,13 +29,13 @@ const GearDetail = ({ gear, isNew }: $Props) => {
   const [editMode, setMode] = useState<boolean>(isNew);
   const [gearObj, editGear] = useState<Gear>(gear);
   const [showAlert, setAlert] = useState<boolean>(false);
+  const [showDeleteDialog, setDeleteDialog] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
   const [unsavedChanges, setUnsavedChanges] = useState<boolean>(false);
   let history = useHistory();
 
-  const deleteGear = (gearId: number | undefined) => {
-    remove("gears", gearId);
-    history.goBack();
+  const deleteGear = () => {
+    setDeleteDialog(true);
   };
 
   useEffect(() => {
@@ -58,23 +62,37 @@ const GearDetail = ({ gear, isNew }: $Props) => {
 
   return (
     <>
+      {showDeleteDialog && (
+        <Dialog
+          message={`Delete ${gear.name}?`}
+          icon={faExclamationTriangle}
+          confirmeText={"Delete"}
+          confirmeClick={() => {
+            remove("gears", gear.id);
+            history.goBack();
+          }}
+          abortText={"Back"}
+          abortClick={() => {
+            setDeleteDialog(false);
+          }}
+        />
+      )}
       <TopBar>
         <BackButton icon={faArrowLeft} action={() => history.goBack()} />
         <EditToggle mode={editMode.toString()}>
           <ToggleLeft onClick={() => setMode(false)}>View</ToggleLeft>
           <ToggleRight onClick={() => setMode(true)}>Edit</ToggleRight>
         </EditToggle>
-        {unsavedChanges && <Icon icon={faExclamationTriangle} />}
+        {unsavedChanges && (
+          <Icon icon={faExclamationTriangle} title={"Unsaved changes!"} />
+        )}
         {editMode && (
           <>
             <IconButton
               onClick={() => updateGear("gears", gearObj)}
               icon={faSave}
             />
-            <IconButton
-              onClick={() => deleteGear(gearObj.id)}
-              icon={faTrash}
-            />
+            <IconButton onClick={() => deleteGear()} icon={faTrash} />
             {message && showAlert && <Message>{message}</Message>}
           </>
         )}

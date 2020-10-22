@@ -13,8 +13,12 @@ import SubclassEditView from "./SubclassEditView";
 import BackButton from "../../../FormElements/BackButton";
 import Subclass from "../../../../Data/Classes/Subclass";
 import IconButton from "../../../FormElements/IconButton";
-import { remove, updateWithCallback } from "../../../../Services/DatabaseService";
+import {
+  remove,
+  updateWithCallback,
+} from "../../../../Services/DatabaseService";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Dialog from "../../../GeneralElements/Dialog";
 
 interface $Props {
   subclass: Subclass;
@@ -25,20 +29,20 @@ const SubclassDetail = ({ subclass, isNew }: $Props) => {
   const [editMode, setMode] = useState<boolean>(isNew);
   const [subclassObj, editSubclass] = useState<Subclass>(subclass);
   const [showAlert, setAlert] = useState<boolean>(false);
+  const [showDeleteDialog, setDeleteDialog] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
   const [unsavedChanges, setUnsavedChanges] = useState<boolean>(false);
   let history = useHistory();
 
-  const deleteSubclass = (subclassId: number | undefined) => {
-    remove("subclasses", subclassId);
-    history.goBack();
+  const deleteSubclass = () => {
+    setDeleteDialog(true);
   };
 
   useEffect(() => {
     if (subclassObj !== subclass) {
       setUnsavedChanges(true);
     }
-  }, [subclassObj,subclass]);
+  }, [subclassObj, subclass]);
 
   const updateSubclass = (tableName: string, subclassObj: Subclass) => {
     updateWithCallback(tableName, subclassObj, (result) => {
@@ -58,29 +62,46 @@ const SubclassDetail = ({ subclass, isNew }: $Props) => {
 
   return (
     <>
+      {showDeleteDialog && (
+        <Dialog
+          message={`Delete ${subclass.name}?`}
+          icon={faExclamationTriangle}
+          confirmeText={"Delete"}
+          confirmeClick={() => {
+            remove("subclasses", subclass.id);
+            history.goBack();
+          }}
+          abortText={"Back"}
+          abortClick={() => {
+            setDeleteDialog(false);
+          }}
+        />
+      )}
       <TopBar>
         <BackButton icon={faArrowLeft} action={() => history.goBack()} />
         <EditToggle mode={editMode.toString()}>
           <ToggleLeft onClick={() => setMode(false)}>View</ToggleLeft>
           <ToggleRight onClick={() => setMode(true)}>Edit</ToggleRight>
         </EditToggle>
-        {unsavedChanges && <Icon icon={faExclamationTriangle} />}
+        {unsavedChanges && (
+          <Icon icon={faExclamationTriangle} title={"Unsaved changes!"} />
+        )}
         {editMode && (
           <>
             <IconButton
               onClick={() => updateSubclass("subclasses", subclassObj)}
               icon={faSave}
             />
-            <IconButton
-              onClick={() => deleteSubclass(subclassObj.id)}
-              icon={faTrash}
-            />
+            <IconButton onClick={() => deleteSubclass()} icon={faTrash} />
             {message && showAlert && <Message>{message}</Message>}
           </>
         )}
       </TopBar>
       {editMode ? (
-        <SubclassEditView subclass={subclassObj} onEdit={(value) => editSubclass(value)} />
+        <SubclassEditView
+          subclass={subclassObj}
+          onEdit={(value) => editSubclass(value)}
+        />
       ) : (
         <SubclassView subclass={subclassObj} />
       )}

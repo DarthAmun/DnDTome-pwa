@@ -23,6 +23,7 @@ import CharView from "./CharView";
 import CharEditView from "./CharEditView";
 import BackButton from "../../../FormElements/BackButton";
 import IconButton from "../../../FormElements/IconButton";
+import Dialog from "../../../GeneralElements/Dialog";
 
 interface $Props {
   char: Char;
@@ -33,13 +34,13 @@ const CharDetail = ({ char, isNew }: $Props) => {
   const [editMode, setMode] = useState<boolean>(isNew);
   const [charObj, editChar] = useState<Char>(char);
   const [showAlert, setAlert] = useState<boolean>(false);
+  const [showDeleteDialog, setDeleteDialog] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
   const [unsavedChanges, setUnsavedChanges] = useState<boolean>(false);
   let history = useHistory();
 
-  const deleteChar = (charId: number | undefined) => {
-    remove("chars", charId);
-    history.goBack();
+  const deleteChar = () => {
+    setDeleteDialog(true);
   };
 
   useEffect(() => {
@@ -195,20 +196,37 @@ const CharDetail = ({ char, isNew }: $Props) => {
 
   return (
     <>
+      {showDeleteDialog && (
+        <Dialog
+          message={`Delete ${char.name}?`}
+          icon={faExclamationTriangle}
+          confirmeText={"Delete"}
+          confirmeClick={() => {
+            remove("chars", char.id);
+            history.goBack();
+          }}
+          abortText={"Back"}
+          abortClick={() => {
+            setDeleteDialog(false);
+          }}
+        />
+      )}
       <TopBar>
         <BackButton icon={faArrowLeft} action={() => history.goBack()} />
         <EditToggle mode={editMode.toString()}>
           <ToggleLeft onClick={() => setMode(false)}>View</ToggleLeft>
           <ToggleRight onClick={() => setMode(true)}>Edit</ToggleRight>
         </EditToggle>
-        {unsavedChanges && <Icon icon={faExclamationTriangle} />}
+        {unsavedChanges && (
+          <Icon icon={faExclamationTriangle} title={"Unsaved changes!"} />
+        )}
         {editMode && (
           <>
             <IconButton
               onClick={() => updateChar("chars", charObj)}
               icon={faSave}
             />
-            <IconButton onClick={() => deleteChar(charObj.id)} icon={faTrash} />
+            <IconButton onClick={() => deleteChar()} icon={faTrash} />
             {message && showAlert && <Message>{message}</Message>}
           </>
         )}

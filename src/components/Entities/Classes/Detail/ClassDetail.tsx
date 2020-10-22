@@ -13,8 +13,12 @@ import ClassEditView from "./ClassEditView";
 import BackButton from "../../../FormElements/BackButton";
 import Class from "../../../../Data/Classes/Class";
 import IconButton from "../../../FormElements/IconButton";
-import { remove, updateWithCallback } from "../../../../Services/DatabaseService";
+import {
+  remove,
+  updateWithCallback,
+} from "../../../../Services/DatabaseService";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Dialog from "../../../GeneralElements/Dialog";
 
 interface $Props {
   classe: Class;
@@ -25,13 +29,13 @@ const ClassDetail = ({ classe, isNew }: $Props) => {
   const [editMode, setMode] = useState<boolean>(isNew);
   const [classObj, editClass] = useState<Class>(classe);
   const [showAlert, setAlert] = useState<boolean>(false);
+  const [showDeleteDialog, setDeleteDialog] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
   const [unsavedChanges, setUnsavedChanges] = useState<boolean>(false);
   let history = useHistory();
 
-  const deleteClass = (classeId: number | undefined) => {
-    remove("classes", classeId);
-    history.goBack();
+  const deleteClass = () => {
+    setDeleteDialog(true);
   };
 
   useEffect(() => {
@@ -58,23 +62,37 @@ const ClassDetail = ({ classe, isNew }: $Props) => {
 
   return (
     <>
+      {showDeleteDialog && (
+        <Dialog
+          message={`Delete ${classe.name}?`}
+          icon={faExclamationTriangle}
+          confirmeText={"Delete"}
+          confirmeClick={() => {
+            remove("classes", classe.id);
+            history.goBack();
+          }}
+          abortText={"Back"}
+          abortClick={() => {
+            setDeleteDialog(false);
+          }}
+        />
+      )}
       <TopBar>
         <BackButton icon={faArrowLeft} action={() => history.goBack()} />
         <EditToggle mode={editMode.toString()}>
           <ToggleLeft onClick={() => setMode(false)}>View</ToggleLeft>
           <ToggleRight onClick={() => setMode(true)}>Edit</ToggleRight>
         </EditToggle>
-        {unsavedChanges && <Icon icon={faExclamationTriangle} />}
+        {unsavedChanges && (
+          <Icon icon={faExclamationTriangle} title={"Unsaved changes!"} />
+        )}
         {editMode && (
           <>
             <IconButton
               onClick={() => updateClass("classes", classObj)}
               icon={faSave}
             />
-            <IconButton
-              onClick={() => deleteClass(classObj.id)}
-              icon={faTrash}
-            />
+            <IconButton onClick={() => deleteClass()} icon={faTrash} />
             {message && showAlert && <Message>{message}</Message>}
           </>
         )}

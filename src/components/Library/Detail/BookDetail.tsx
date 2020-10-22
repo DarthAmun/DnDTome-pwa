@@ -15,6 +15,7 @@ import BookView from "./BookView";
 import BookEditView from "./BookEditView";
 import BackButton from "../../FormElements/BackButton";
 import IconButton from "../../FormElements/IconButton";
+import Dialog from "../../GeneralElements/Dialog";
 
 interface $Props {
   book: Book;
@@ -25,20 +26,20 @@ const BookDetail = ({ book, isNew }: $Props) => {
   const [editMode, setMode] = useState<boolean>(isNew);
   const [bookObj, editBook] = useState<Book>(book);
   const [showAlert, setAlert] = useState<boolean>(false);
+  const [showDeleteDialog, setDeleteDialog] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
   const [unsavedChanges, setUnsavedChanges] = useState<boolean>(false);
   let history = useHistory();
 
-  const deleteBook = (bookId: number | undefined) => {
-    remove("books", bookId);
-    history.goBack();
+  const deleteBook = () => {
+    setDeleteDialog(true);
   };
 
   useEffect(() => {
     if (bookObj !== book) {
       setUnsavedChanges(true);
     }
-  }, [bookObj,book]);
+  }, [bookObj, book]);
 
   const updateBook = (tableName: string, bookObj: Book) => {
     updateWithCallback(tableName, bookObj, (result) => {
@@ -58,23 +59,37 @@ const BookDetail = ({ book, isNew }: $Props) => {
 
   return (
     <>
+      {showDeleteDialog && (
+        <Dialog
+          message={`Delete ${book.name}?`}
+          icon={faExclamationTriangle}
+          confirmeText={"Delete"}
+          confirmeClick={() => {
+            remove("books", book.id);
+            history.goBack();
+          }}
+          abortText={"Back"}
+          abortClick={() => {
+            setDeleteDialog(false);
+          }}
+        />
+      )}
       <TopBar>
         <BackButton icon={faArrowLeft} action={() => history.goBack()} />
         <EditToggle mode={editMode.toString()}>
           <ToggleLeft onClick={() => setMode(false)}>View</ToggleLeft>
           <ToggleRight onClick={() => setMode(true)}>Edit</ToggleRight>
         </EditToggle>
-        {unsavedChanges && <Icon icon={faExclamationTriangle} />}
+        {unsavedChanges && (
+          <Icon icon={faExclamationTriangle} title={"Unsaved changes!"} />
+        )}
         {editMode && (
           <>
             <IconButton
               onClick={() => updateBook("books", bookObj)}
               icon={faSave}
             />
-            <IconButton
-              onClick={() => deleteBook(bookObj.id)}
-              icon={faTrash}
-            />
+            <IconButton onClick={() => deleteBook()} icon={faTrash} />
             {message && showAlert && <Message>{message}</Message>}
           </>
         )}

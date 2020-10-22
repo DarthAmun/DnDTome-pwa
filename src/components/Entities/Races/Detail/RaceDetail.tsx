@@ -13,8 +13,12 @@ import RaceEditView from "./RaceEditView";
 import BackButton from "../../../FormElements/BackButton";
 import Race from "../../../../Data/Races/Race";
 import IconButton from "../../../FormElements/IconButton";
-import { remove, updateWithCallback } from "../../../../Services/DatabaseService";
+import {
+  remove,
+  updateWithCallback,
+} from "../../../../Services/DatabaseService";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Dialog from "../../../GeneralElements/Dialog";
 
 interface $Props {
   race: Race;
@@ -25,20 +29,20 @@ const RaceDetail = ({ race, isNew }: $Props) => {
   const [editMode, setMode] = useState<boolean>(isNew);
   const [raceObj, editRace] = useState<Race>(race);
   const [showAlert, setAlert] = useState<boolean>(false);
+  const [showDeleteDialog, setDeleteDialog] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
   const [unsavedChanges, setUnsavedChanges] = useState<boolean>(false);
   let history = useHistory();
 
-  const deleteRace = (raceId: number | undefined) => {
-    remove("races", raceId);
-    history.goBack();
+  const deleteRace = () => {
+    setDeleteDialog(true);
   };
 
   useEffect(() => {
     if (raceObj !== race) {
       setUnsavedChanges(true);
     }
-  }, [raceObj,race]);
+  }, [raceObj, race]);
 
   const updateRace = (tableName: string, raceObj: Race) => {
     updateWithCallback(tableName, raceObj, (result) => {
@@ -58,23 +62,37 @@ const RaceDetail = ({ race, isNew }: $Props) => {
 
   return (
     <>
+      {showDeleteDialog && (
+        <Dialog
+          message={`Delete ${race.name}?`}
+          icon={faExclamationTriangle}
+          confirmeText={"Delete"}
+          confirmeClick={() => {
+            remove("races", race.id);
+            history.goBack();
+          }}
+          abortText={"Back"}
+          abortClick={() => {
+            setDeleteDialog(false);
+          }}
+        />
+      )}
       <TopBar>
         <BackButton icon={faArrowLeft} action={() => history.goBack()} />
         <EditToggle mode={editMode.toString()}>
           <ToggleLeft onClick={() => setMode(false)}>View</ToggleLeft>
           <ToggleRight onClick={() => setMode(true)}>Edit</ToggleRight>
         </EditToggle>
-        {unsavedChanges && <Icon icon={faExclamationTriangle} />}
+        {unsavedChanges && (
+          <Icon icon={faExclamationTriangle} title={"Unsaved changes!"} />
+        )}
         {editMode && (
           <>
             <IconButton
               onClick={() => updateRace("races", raceObj)}
               icon={faSave}
             />
-            <IconButton
-              onClick={() => deleteRace(raceObj.id)}
-              icon={faTrash}
-            />
+            <IconButton onClick={() => deleteRace()} icon={faTrash} />
             {message && showAlert && <Message>{message}</Message>}
           </>
         )}

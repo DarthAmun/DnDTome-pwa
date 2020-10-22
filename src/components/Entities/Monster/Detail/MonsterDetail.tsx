@@ -13,8 +13,12 @@ import MonsterEditView from "./MonsterEditView";
 import BackButton from "../../../FormElements/BackButton";
 import Monster from "../../../../Data/Monster";
 import IconButton from "../../../FormElements/IconButton";
-import { remove, updateWithCallback } from "../../../../Services/DatabaseService";
+import {
+  remove,
+  updateWithCallback,
+} from "../../../../Services/DatabaseService";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Dialog from "../../../GeneralElements/Dialog";
 
 interface $Props {
   monster: Monster;
@@ -25,20 +29,20 @@ const MonsterDetail = ({ monster, isNew }: $Props) => {
   const [editMode, setMode] = useState<boolean>(isNew);
   const [monsterObj, editMonster] = useState<Monster>(monster);
   const [showAlert, setAlert] = useState<boolean>(false);
+  const [showDeleteDialog, setDeleteDialog] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
   const [unsavedChanges, setUnsavedChanges] = useState<boolean>(false);
   let history = useHistory();
 
-  const deleteMonster = (monsterId: number | undefined) => {
-    remove("monsters", monsterId);
-    history.goBack();
+  const deleteMonster = () => {
+    setDeleteDialog(true);
   };
-  
+
   useEffect(() => {
     if (monsterObj !== monster) {
       setUnsavedChanges(true);
     }
-  }, [monsterObj,monster]);
+  }, [monsterObj, monster]);
 
   const updateMonster = (tableName: string, monsterObj: Monster) => {
     updateWithCallback(tableName, monsterObj, (result) => {
@@ -58,29 +62,46 @@ const MonsterDetail = ({ monster, isNew }: $Props) => {
 
   return (
     <>
+      {showDeleteDialog && (
+        <Dialog
+          message={`Delete ${monster.name}?`}
+          icon={faExclamationTriangle}
+          confirmeText={"Delete"}
+          confirmeClick={() => {
+            remove("monsters", monster.id);
+            history.goBack();
+          }}
+          abortText={"Back"}
+          abortClick={() => {
+            setDeleteDialog(false);
+          }}
+        />
+      )}
       <TopBar>
         <BackButton icon={faArrowLeft} action={() => history.goBack()} />
         <EditToggle mode={editMode.toString()}>
           <ToggleLeft onClick={() => setMode(false)}>View</ToggleLeft>
           <ToggleRight onClick={() => setMode(true)}>Edit</ToggleRight>
         </EditToggle>
-        {unsavedChanges && <Icon icon={faExclamationTriangle} />}
+        {unsavedChanges && (
+          <Icon icon={faExclamationTriangle} title={"Unsaved changes!"} />
+        )}
         {editMode && (
           <>
             <IconButton
               onClick={() => updateMonster("monsters", monsterObj)}
               icon={faSave}
             />
-            <IconButton
-              onClick={() => deleteMonster(monsterObj.id)}
-              icon={faTrash}
-            />
+            <IconButton onClick={() => deleteMonster()} icon={faTrash} />
             {message && showAlert && <Message>{message}</Message>}
           </>
         )}
       </TopBar>
       {editMode ? (
-        <MonsterEditView monster={monsterObj} onEdit={(value) => editMonster(value)} />
+        <MonsterEditView
+          monster={monsterObj}
+          onEdit={(value) => editMonster(value)}
+        />
       ) : (
         <MonsterView monster={monsterObj} />
       )}
