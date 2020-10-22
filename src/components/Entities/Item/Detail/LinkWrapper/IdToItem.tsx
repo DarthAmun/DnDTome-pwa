@@ -16,10 +16,8 @@ const IdToItem = ({ match }: RouteComponentProps<TParams>) => {
     <AppWrapper>
       {!error && loading && <LoadingSpinner />}
       {error && !loading && <>Fail by Id</>}
-      {!error && !loading && item !== undefined ? (
-        <ItemDetail item={item} />
-      ) : (
-        ""
+      {!error && !loading && item !== undefined && (
+        <ItemDetail item={item} isNew={item.name === "" ? true : false} />
       )}
     </AppWrapper>
   );

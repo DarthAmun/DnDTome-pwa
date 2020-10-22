@@ -16,10 +16,8 @@ const IdToMonster = ({ match }: RouteComponentProps<TParams>) => {
     <AppWrapper>
       {!error && loading && <LoadingSpinner />}
       {error && !loading && <>Fail by Id</>}
-      {!error && !loading && monster !== undefined ? (
-        <MonsterDetail monster={monster} />
-      ) : (
-        ""
+      {!error && !loading && monster !== undefined && (
+        <MonsterDetail monster={monster} isNew={monster.name === "" ? true : false} />
       )}
     </AppWrapper>
   );

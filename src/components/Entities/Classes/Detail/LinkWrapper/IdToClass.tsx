@@ -15,10 +15,8 @@ const IdToClass = ({ match }: RouteComponentProps<TParams>) => {
     <AppWrapper>
       {!error && loading && <LoadingSpinner />}
       {error && !loading && <>Fail by Id</>}
-      {!error && !loading && classe !== undefined ? (
-        <ClassDetail classe={classe} />
-      ) : (
-        ""
+      {!error && !loading && classe !== undefined && (
+        <ClassDetail classe={classe} isNew={classe.name === "" ? true : false} />
       )}
     </AppWrapper>
   );

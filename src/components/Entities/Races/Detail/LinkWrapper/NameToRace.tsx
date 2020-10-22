@@ -20,10 +20,8 @@ const NameToRace = ({ match }: RouteComponentProps<TParams>) => {
     <AppWrapper>
       {!error && loading && <LoadingSpinner />}
       {error && !loading && <>Fail by Name</>}
-      {!error && !loading && race !== undefined ? (
-        <RaceDetail race={race} />
-      ) : (
-        ""
+      {!error && !loading && race !== undefined && (
+        <RaceDetail race={race} isNew={race.name === "" ? true : false} />
       )}
     </AppWrapper>
   );

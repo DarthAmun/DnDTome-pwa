@@ -20,10 +20,8 @@ const NameToSpell = ({ match }: RouteComponentProps<TParams>) => {
     <AppWrapper>
       {!error && loading && <LoadingSpinner />}
       {error && !loading && <>Fail by Name</>}
-      {!error && !loading && spell !== undefined ? (
-        <SpellDetail spell={spell} />
-      ) : (
-        ""
+      {!error && !loading && spell !== undefined && (
+        <SpellDetail spell={spell} isNew={spell.name === "" ? true : false} />
       )}
     </AppWrapper>
   );

@@ -18,10 +18,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 interface $Props {
   spell: Spell;
+  isNew: boolean;
 }
 
-const SpellDetail = ({ spell }: $Props) => {
-  const [editMode, setMode] = useState<boolean>(false);
+const SpellDetail = ({ spell, isNew }: $Props) => {
+  const [editMode, setMode] = useState<boolean>(isNew);
   const [spellObj, editSpell] = useState<Spell>(spell);
   const [showAlert, setAlert] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");

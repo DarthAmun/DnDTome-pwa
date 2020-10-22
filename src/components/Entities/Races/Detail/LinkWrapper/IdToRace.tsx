@@ -15,10 +15,8 @@ const IdToRace = ({ match }: RouteComponentProps<TParams>) => {
     <AppWrapper>
       {!error && loading && <LoadingSpinner />}
       {error && !loading && <>Fail by Id</>}
-      {!error && !loading && race !== undefined ? (
-        <RaceDetail race={race} />
-      ) : (
-        ""
+      {!error && !loading && race !== undefined && (
+        <RaceDetail race={race} isNew={race.name === "" ? true : false} />
       )}
     </AppWrapper>
   );

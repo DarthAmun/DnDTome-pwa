@@ -20,10 +20,8 @@ const NameToChar = ({ match }: RouteComponentProps<TParams>) => {
     <AppWrapper>
       {!error && loading && <LoadingSpinner />}
       {error && !loading && <>Fail by Name</>}
-      {!error && !loading && char !== undefined ? (
-        <CharDetail char={char} />
-      ) : (
-        ""
+      {!error && !loading && char !== undefined && (
+        <CharDetail char={char} isNew={char.name === "" ? true : false} />
       )}
     </AppWrapper>
   );

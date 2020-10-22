@@ -20,10 +20,8 @@ const NameToBook = ({ match }: RouteComponentProps<TParams>) => {
     <AppWrapper>
       {!error && loading && <LoadingSpinner />}
       {error && !loading && <>Fail by Name</>}
-      {!error && !loading && book !== undefined ? (
-        <BookDetail book={book} />
-      ) : (
-        ""
+      {!error && !loading && book !== undefined && (
+        <BookDetail book={book} isNew={book.name === "" ? true : false} />
       )}
     </AppWrapper>
   );

@@ -133,6 +133,60 @@ const Options = () => {
     );
   };
 
+  const trigger5eToolsSpellImport = (fileList: FileList | null) => {
+    isLoading(true);
+    import5eToolsSpellsFiles(
+      fileList,
+      (max: number) => {
+        isReload(true);
+        isLoading(false);
+
+        setMessage(max + " imported successfully!");
+        setAlert(true);
+
+        setTimeout(() => {
+          setAlert(false);
+        }, 5000);
+      }
+    );
+  };
+
+  const trigger5eToolsMonsterImport = (fileList: FileList | null) => {
+    isLoading(true);
+    import5eToolsMonstersFiles(
+      fileList,
+      (max: number) => {
+        isReload(true);
+        isLoading(false);
+
+        setMessage(max + " imported successfully!");
+        setAlert(true);
+
+        setTimeout(() => {
+          setAlert(false);
+        }, 5000);
+      }
+    );
+  };
+
+  const trigger5eToolsItemsImport = (fileList: FileList | null) => {
+    isLoading(true);
+    import5eToolsItemsFiles(
+      fileList,
+      (max: number) => {
+        isReload(true);
+        isLoading(false);
+
+        setMessage(max + " imported successfully!");
+        setAlert(true);
+
+        setTimeout(() => {
+          setAlert(false);
+        }, 5000);
+      }
+    );
+  };
+
   const triggerDeleteAll = (tableName: string) => {
     deleteAll(tableName);
     isReload(true);
@@ -252,7 +306,7 @@ const Options = () => {
               accept={".json"}
               isMulti={true}
               icon={faFileImport}
-              onChange={(file) => import5eToolsSpellsFiles(file)}
+              onChange={(file) => trigger5eToolsSpellImport(file)}
             />
           </OptionSection>
           <OptionSection>
@@ -262,7 +316,7 @@ const Options = () => {
               accept={".json"}
               isMulti={true}
               icon={faFileImport}
-              onChange={(file) => import5eToolsMonstersFiles(file)}
+              onChange={(file) => trigger5eToolsMonsterImport(file)}
             />
           </OptionSection>
           <OptionSection>
@@ -272,7 +326,7 @@ const Options = () => {
               accept={".json"}
               isMulti={true}
               icon={faFileImport}
-              onChange={(file) => import5eToolsItemsFiles(file)}
+              onChange={(file) => trigger5eToolsItemsImport(file)}
             />
           </OptionSection>
         </OptionTab>

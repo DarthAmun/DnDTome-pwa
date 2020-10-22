@@ -18,10 +18,11 @@ import IconButton from "../../FormElements/IconButton";
 
 interface $Props {
   book: Book;
+  isNew: boolean;
 }
 
-const BookDetail = ({ book }: $Props) => {
-  const [editMode, setMode] = useState<boolean>(false);
+const BookDetail = ({ book, isNew }: $Props) => {
+  const [editMode, setMode] = useState<boolean>(isNew);
   const [bookObj, editBook] = useState<Book>(book);
   const [showAlert, setAlert] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");

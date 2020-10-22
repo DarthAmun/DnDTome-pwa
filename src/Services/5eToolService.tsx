@@ -4,7 +4,10 @@ import Monster from "../Data/Monster";
 import Spell from "../Data/Spell";
 import { saveNew } from "./DatabaseService";
 
-export const import5eToolsSpellsFiles = (fileList: FileList | null) => {
+export const import5eToolsSpellsFiles = (
+  fileList: FileList | null,
+  callback: (max: number) => void
+) => {
   if (fileList !== null) {
     const files = Array.from(fileList);
 
@@ -162,6 +165,7 @@ export const import5eToolsSpellsFiles = (fileList: FileList | null) => {
             promList.push(saveNew("spells", newSpell, file.name));
           });
           await Promise.all(promList);
+          callback(json.spell.length);
         }
       };
       fileReader.readAsText(file);
@@ -169,7 +173,10 @@ export const import5eToolsSpellsFiles = (fileList: FileList | null) => {
   }
 };
 
-export const import5eToolsMonstersFiles = (fileList: FileList | null) => {
+export const import5eToolsMonstersFiles = (
+  fileList: FileList | null,
+  callback: (max: number) => void
+) => {
   if (fileList !== null) {
     const files = Array.from(fileList);
 
@@ -440,6 +447,7 @@ export const import5eToolsMonstersFiles = (fileList: FileList | null) => {
             }
           });
           await Promise.all(promList);
+          callback(json.monster.length);
         }
       };
       fileReader.readAsText(file);
@@ -448,7 +456,10 @@ export const import5eToolsMonstersFiles = (fileList: FileList | null) => {
   }
 };
 
-export const import5eToolsItemsFiles = (fileList: FileList | null) => {
+export const import5eToolsItemsFiles = (
+  fileList: FileList | null,
+  callback: (max: number) => void
+) => {
   if (fileList !== null) {
     const files = Array.from(fileList);
 
@@ -477,6 +488,7 @@ export const import5eToolsItemsFiles = (fileList: FileList | null) => {
             }
           });
           await Promise.all(promList);
+          callback(items.length);
         }
       };
       fileReader.readAsText(file);

@@ -20,10 +20,8 @@ const NameToItem = ({ match }: RouteComponentProps<TParams>) => {
     <AppWrapper>
       {!error && loading && <LoadingSpinner />}
       {error && !loading && <>Fail by Name</>}
-      {!error && !loading && item !== undefined ? (
-        <ItemDetail item={item} />
-      ) : (
-        ""
+      {!error && !loading && item !== undefined && (
+        <ItemDetail item={item} isNew={item.name === "" ? true : false} />
       )}
     </AppWrapper>
   );

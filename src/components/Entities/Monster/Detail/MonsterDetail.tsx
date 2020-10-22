@@ -18,10 +18,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 interface $Props {
   monster: Monster;
+  isNew: boolean;
 }
 
-const MonsterDetail = ({ monster }: $Props) => {
-  const [editMode, setMode] = useState<boolean>(false);
+const MonsterDetail = ({ monster, isNew }: $Props) => {
+  const [editMode, setMode] = useState<boolean>(isNew);
   const [monsterObj, editMonster] = useState<Monster>(monster);
   const [showAlert, setAlert] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");

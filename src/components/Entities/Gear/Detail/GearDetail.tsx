@@ -18,10 +18,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 interface $Props {
   gear: Gear;
+  isNew: boolean;
 }
 
-const GearDetail = ({ gear }: $Props) => {
-  const [editMode, setMode] = useState<boolean>(false);
+const GearDetail = ({ gear, isNew }: $Props) => {
+  const [editMode, setMode] = useState<boolean>(isNew);
   const [gearObj, editGear] = useState<Gear>(gear);
   const [showAlert, setAlert] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");

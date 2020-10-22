@@ -20,10 +20,8 @@ const NameToClass = ({ match }: RouteComponentProps<TParams>) => {
     <AppWrapper>
       {!error && loading && <LoadingSpinner />}
       {error && !loading && <>Fail by Name</>}
-      {!error && !loading && classe !== undefined ? (
-        <ClassDetail classe={classe} />
-      ) : (
-        ""
+      {!error && !loading && classe !== undefined && (
+        <ClassDetail classe={classe} isNew={classe.name === "" ? true : false} />
       )}
     </AppWrapper>
   );

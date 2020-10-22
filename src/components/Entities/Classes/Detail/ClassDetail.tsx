@@ -18,10 +18,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 interface $Props {
   classe: Class;
+  isNew: boolean;
 }
 
-const ClassDetail = ({ classe }: $Props) => {
-  const [editMode, setMode] = useState<boolean>(false);
+const ClassDetail = ({ classe, isNew }: $Props) => {
+  const [editMode, setMode] = useState<boolean>(isNew);
   const [classObj, editClass] = useState<Class>(classe);
   const [showAlert, setAlert] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");

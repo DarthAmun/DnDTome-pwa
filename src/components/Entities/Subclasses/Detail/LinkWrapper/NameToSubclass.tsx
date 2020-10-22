@@ -20,10 +20,8 @@ const NameToSubclass = ({ match }: RouteComponentProps<TParams>) => {
     <AppWrapper>
       {!error && loading && <LoadingSpinner />}
       {error && !loading && <>Fail by Name</>}
-      {!error && !loading && subclass !== undefined ? (
-        <SubclassDetail subclass={subclass} />
-      ) : (
-        ""
+      {!error && !loading && subclass !== undefined && (
+        <SubclassDetail subclass={subclass} isNew={subclass.name === "" ? true : false} />
       )}
     </AppWrapper>
   );

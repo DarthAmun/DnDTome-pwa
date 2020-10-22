@@ -15,10 +15,8 @@ const IdToBook = ({ match }: RouteComponentProps<TParams>) => {
     <AppWrapper>
       {!error && loading && <LoadingSpinner />}
       {error && !loading && <>Fail by Id</>}
-      {!error && !loading && book !== undefined ? (
-        <BookDetail book={book} />
-      ) : (
-        ""
+      {!error && !loading && book !== undefined && (
+        <BookDetail book={book} isNew={book.name === "" ? true : false} />
       )}
     </AppWrapper>
   );

@@ -16,10 +16,8 @@ const IdToGear = ({ match }: RouteComponentProps<TParams>) => {
     <AppWrapper>
       {!error && loading && <LoadingSpinner />}
       {error && !loading && <>Fail by Id</>}
-      {!error && !loading && gear !== undefined ? (
-        <GearDetail gear={gear} />
-      ) : (
-        ""
+      {!error && !loading && gear !== undefined && (
+        <GearDetail gear={gear} isNew={gear.name === "" ? true : false} />
       )}
     </AppWrapper>
   );
