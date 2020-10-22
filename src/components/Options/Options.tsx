@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { importFiles, exportAll } from "../../Services/OptionService";
 import {
+  import5eToolsItemsFiles,
   import5eToolsMonstersFiles,
   import5eToolsSpellsFiles,
 } from "../../Services/5eToolService";
@@ -262,6 +263,16 @@ const Options = () => {
               isMulti={true}
               icon={faFileImport}
               onChange={(file) => import5eToolsMonstersFiles(file)}
+            />
+          </OptionSection>
+          <OptionSection>
+            <SelectionTitle>Import 5eTools Items/Gear</SelectionTitle>
+            <FileField
+              label=""
+              accept={".json"}
+              isMulti={true}
+              icon={faFileImport}
+              onChange={(file) => import5eToolsItemsFiles(file)}
             />
           </OptionSection>
         </OptionTab>

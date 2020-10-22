@@ -95,72 +95,67 @@ export const useTableByFilter = <T, U>(
 
   useEffect(() => {
     if (effect) {
-      const getAndDispatch = () =>
-      console.time("filtered get all");
-        table
-          .filter((obj: T) => {
-            let test: boolean[] = [];
-            filters.forEach((filter) => {
-              if (typeof filter.value === "string") {
-                test.push(
+      const getAndDispatch = () => console.time("filtered get all");
+      table
+        .filter((obj: T) => {
+          let test: boolean[] = [];
+          filters.forEach((filter) => {
+            if (typeof filter.value === "string") {
+              test.push(
+                // @ts-ignore
+                obj[filter.fieldName]
+                  .toLowerCase()
+                  .includes(filter.value.toLowerCase())
+              );
+            } else if (typeof filter.value === "number") {
+              // @ts-ignore
+              test.push(obj[filter.fieldName] === filter.value);
+            } else if (typeof filter.value === "boolean") {
+              // @ts-ignore
+              test.push(obj[filter.fieldName] === filter.value);
+            } else if (filter.value instanceof Array) {
+              let arrayTest: boolean = false;
+              filter.value.forEach((filterPart: string | boolean | number) => {
+                if (typeof filterPart === "string") {
+                  if (
+                    // @ts-ignore
+                    obj[filter.fieldName]
+                      .toLowerCase()
+                      .includes(filterPart.toLowerCase())
+                  )
+                    arrayTest = true;
+                } else if (typeof filterPart === "number") {
                   // @ts-ignore
-                  obj[filter.fieldName]
-                    .toLowerCase()
-                    .includes(filter.value.toLowerCase())
-                );
-              } else if (typeof filter.value === "number") {
-                // @ts-ignore
-                test.push(obj[filter.fieldName] === filter.value);
-              } else if (typeof filter.value === "boolean") {
-                // @ts-ignore
-                test.push(obj[filter.fieldName] === filter.value);
-              } else if (filter.value instanceof Array) {
-                let arrayTest: boolean = false;
-                filter.value.forEach(
-                  (filterPart: string | boolean | number) => {
-                    if (typeof filterPart === "string") {
-                      if (
-                        // @ts-ignore
-                        obj[filter.fieldName]
-                          .toLowerCase()
-                          .includes(filterPart.toLowerCase())
-                      )
-                        arrayTest = true;
-                    } else if (typeof filterPart === "number") {
-                      // @ts-ignore
-                      if (obj[filter.fieldName] === filterPart)
-                        arrayTest = true;
-                    } else if (typeof filterPart === "boolean") {
-                      // @ts-ignore
-                      if (obj[filter.fieldName] === filterPart)
-                        arrayTest = true;
-                    }
-                  }
-                );
-                test.push(arrayTest);
-              }
-            });
-
-            let result = true;
-            test.forEach((val) => {
-              if (!val) result = false;
-            });
-            return result;
-          })
-          .sortBy("name")
-          .then((data) => {
-            console.timeEnd("filtered get all");
-            dispatch({
-              type: "resolved",
-              data,
-            });
-          })
-          .catch((error) => {
-            dispatch({
-              type: "error",
-              error,
-            });
+                  if (obj[filter.fieldName] === filterPart) arrayTest = true;
+                } else if (typeof filterPart === "boolean") {
+                  // @ts-ignore
+                  if (obj[filter.fieldName] === filterPart) arrayTest = true;
+                }
+              });
+              test.push(arrayTest);
+            }
           });
+
+          let result = true;
+          test.forEach((val) => {
+            if (!val) result = false;
+          });
+          return result;
+        })
+        .sortBy("name")
+        .then((data) => {
+          console.timeEnd("filtered get all");
+          dispatch({
+            type: "resolved",
+            data,
+          });
+        })
+        .catch((error) => {
+          dispatch({
+            type: "error",
+            error,
+          });
+        });
 
       getAndDispatch();
       setEffect(false);
