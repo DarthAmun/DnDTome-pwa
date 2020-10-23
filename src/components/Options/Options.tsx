@@ -252,7 +252,7 @@ const Options = () => {
           "Classes",
           "Chars",
           "Encounters",
-          "Others",
+          "Other Import",
           "Recive",
         ]}
         onChange={(tab: string) => setTab(tab)}
@@ -297,7 +297,7 @@ const Options = () => {
           triggerDeleteAll={triggerDeleteAll}
         />
       )}
-      {activeTab === "Others" && (
+      {activeTab === "Other Import" && (
         <OptionTab>
           <OptionSection>
             <SelectionTitle>Import 5eTools Spells</SelectionTitle>

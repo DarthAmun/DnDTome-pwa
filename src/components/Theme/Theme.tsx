@@ -34,8 +34,8 @@ interface Theme {
         width: string;
         height: string;
       };
-    }
-  }
+    };
+  };
 }
 
 export const lightTheme: Theme = {
@@ -102,9 +102,9 @@ export const darkTheme: Theme = {
   },
   nav: {
     size: {
-      ...lightTheme.nav.size
-    }
-  }
+      ...lightTheme.nav.size,
+    },
+  },
 };
 
 export default Theme;

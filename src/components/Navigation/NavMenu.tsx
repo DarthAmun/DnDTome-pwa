@@ -9,6 +9,7 @@ import {
   faDragon,
   faIdCard,
   faChartPie,
+  faHome,
 } from "@fortawesome/free-solid-svg-icons";
 import {
   GiBackpack,
@@ -28,6 +29,15 @@ const NavMenu = ({ open }: $Props) => {
 
   return (
     <Menu open={open}>
+      <Link
+        to="/home"
+        className={
+          location.pathname === "/home" || location.pathname === "/" ? "menuItemActiv" : ""
+        }
+      >
+        <FontAwesomeIcon icon={faHome} />
+        Home
+      </Link>
       <Link
         to="/spell-overview"
         className={
@@ -74,15 +84,6 @@ const NavMenu = ({ open }: $Props) => {
         Classes
       </Link>
       <Link
-        to="/monster-overview"
-        className={
-          location.pathname === "/monster-overview" ? "menuItemActiv" : ""
-        }
-      >
-        <FontAwesomeIcon icon={faDragon} />
-        Monsters
-      </Link>
-      <Link
         to="/char-overview"
         className={
           location.pathname === "/char-overview" ? "menuItemActiv" : ""
@@ -92,8 +93,17 @@ const NavMenu = ({ open }: $Props) => {
         Chars
       </Link>
       <Link
+        to="/monster-overview"
+        className={
+          location.pathname === "/monster-overview" ? "menuItemActiv" : ""
+        }
+      >
+        <FontAwesomeIcon icon={faDragon} />
+        Monsters
+      </Link>
+      <Link
         to="/encounter-overview"
-        className={location.pathname === "/encounters" ? "menuItemActiv" : ""}
+        className={location.pathname === "/encounter-overview" ? "menuItemActiv" : ""}
       >
         <GiSwordClash />
         Encounters
@@ -163,9 +173,13 @@ export const Menu = styled.div<MenuType>`
       font-size: 16px;
       text-align: center;
     }
+  }
 
-    &:hover {
-      color: ${({ theme }) => theme.primaryHover};
-    }
+  a:hover {
+    color: ${({ theme }) => theme.tile.color};
+  }
+
+  a.menuItemActiv {
+    color: ${({ theme }) => theme.tile.color};
   }
 `;

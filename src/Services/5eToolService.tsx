@@ -261,13 +261,13 @@ export const import5eToolsMonstersFiles = (
                 } else if (typeof value === "boolean") {
                 } else {
                   speed += key + " ";
-                  for (const [key2, value2] of Object.entries(
+                  for (const value2 of Object.entries(
                     value as Object
                   )) {
-                    if (typeof value2 === "number") {
-                      speed += value2 + "ft, ";
-                    } else if (typeof value2 === "string") {
-                      speed += value2;
+                    if (typeof value2[1] === "number") {
+                      speed += value2[1] + "ft, ";
+                    } else if (typeof value2[1] === "string") {
+                      speed += value2[1];
                     }
                   }
                   speed += ", ";

@@ -36,13 +36,16 @@ import Statistics from "./components/Statistics/Statistics";
 import Library from "./components/Library/Library";
 import IdToBook from "./components/Library/Detail/LinkWrapper/IdToBook";
 import NameToBook from "./components/Library/Detail/LinkWrapper/NameToBook";
+import Home from "./components/Home/Home";
+import Help from "./components/Help/Help";
 
 const App = () => {
   return (
     <MyThemeProvider>
       <MemoryRouter>
         <Switch>
-          <Route exact path="/" component={Options}></Route>
+          <Route exact path="/" component={Home}></Route>
+          <Route exact path="/home" component={Home}></Route>
           <Route path="/spell-detail/name/:name" component={NameToSpell}></Route>
           <Route path="/spell-detail/id/:id" component={IdToSpell}></Route>
           <Route path="/spell-overview" component={SpellOverview}></Route>
@@ -77,6 +80,7 @@ const App = () => {
           <Route path="/book-detail/name/:name" component={NameToBook}></Route>
           <Route path="/book-detail/id/:id" component={IdToBook}></Route>
           <Route path="/library" component={Library}></Route>
+          <Route path="/help" component={Help}></Route>
         </Switch>
       </MemoryRouter>
     </MyThemeProvider>
