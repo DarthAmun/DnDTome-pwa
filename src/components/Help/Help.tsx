@@ -192,7 +192,6 @@ const SelectionTitle = styled.div`
   padding: 5px;
   margin: 5px;
   min-width: calc(100% - 20px);
-  max-height: 20px;
   font-weight: bold;
   text-algin: center;
   border-radius: 5px;
