@@ -1,4 +1,6 @@
-export default class Item {
+import IEntity from "./IEntity";
+
+export default class Item implements IEntity {
   id?: number;
   name: string;
   sources: string;

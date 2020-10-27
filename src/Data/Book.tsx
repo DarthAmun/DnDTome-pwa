@@ -1,4 +1,6 @@
-export default class Book {
+import IEntity from "./IEntity";
+
+export default class Book implements IEntity{
   id?: number;
   name: string;
   cover: string;
