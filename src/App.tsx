@@ -38,13 +38,16 @@ import IdToBook from "./components/Library/Detail/LinkWrapper/IdToBook";
 import NameToBook from "./components/Library/Detail/LinkWrapper/NameToBook";
 import Home from "./components/Home/Home";
 import Help from "./components/Help/Help";
+import NameToSelection from "./components/Entities/Selections/Detail/LinkWrapper/NameToSelection";
+import SelectionOverview from "./components/Entities/Selections/SelectionOverview";
+import IdToSelection from "./components/Entities/Selections/Detail/LinkWrapper/IdToSelection";
 
 const App = () => {
   return (
     <MyThemeProvider>
       <MemoryRouter>
         <Switch>
-          <Route exact path="/" component={Home}></Route>
+          <Route exact path="/" component={SelectionOverview}></Route>
           <Route exact path="/home" component={Home}></Route>
           <Route path="/spell-detail/name/:name" component={NameToSpell}></Route>
           <Route path="/spell-detail/id/:id" component={IdToSpell}></Route>
@@ -72,13 +75,16 @@ const App = () => {
           <Route path="/char-detail/id/:id" component={IdToChar}></Route>
           <Route path="/char-overview" component={CharOverview}></Route>
           <Route path="/char-lab" component={CharLab}></Route>
-          <Route path="/options" component={Options}></Route>
           <Route path="/encounter-detail/name/:name" component={NameToEncounter}></Route>
           <Route path="/encounter-detail/id/:id" component={IdToEncounter}></Route>
           <Route path="/encounter-overview" component={EncounterOverview}></Route>
-          <Route path="/statistics" component={Statistics}></Route>
           <Route path="/book-detail/name/:name" component={NameToBook}></Route>
           <Route path="/book-detail/id/:id" component={IdToBook}></Route>
+          <Route path="/selection-detail/name/:name" component={NameToSelection}></Route>
+          <Route path="/selection-detail/id/:id" component={IdToSelection}></Route>
+          <Route path="/selection-overview" component={SelectionOverview}></Route>
+          <Route path="/statistics" component={Statistics}></Route>
+          <Route path="/options" component={Options}></Route>
           <Route path="/library" component={Library}></Route>
           <Route path="/help" component={Help}></Route>
         </Switch>

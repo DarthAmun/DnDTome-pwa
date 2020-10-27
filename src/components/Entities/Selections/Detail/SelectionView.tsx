@@ -1,16 +1,11 @@
-import React, { useCallback, useState } from "react";
+import React, { useState } from "react";
 import Selection from "../../../../Data/Selection";
 import styled from "styled-components";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faLink,
-  faCoins,
-  faWeightHanging,
-  faCrosshairs,
   faPaperPlane,
 } from "@fortawesome/free-solid-svg-icons";
-import FormatedText from "../../../GeneralElements/FormatedText";
 import TextButton from "../../../FormElements/TextButton";
 import P2PSender from "../../../P2P/P2PSender";
 
