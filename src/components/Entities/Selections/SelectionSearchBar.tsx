@@ -1,25 +1,18 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { useHistory } from "react-router";
 import Filter from "../../../Data/Filter";
 import ReactDOM from "react-dom";
 import {
-  reciveAttributeSelection,
   createNewWithId,
 } from "../../../Services/DatabaseService";
 
 import {
-  faLink,
   faSearch,
   faRedoAlt,
-  faCoins,
-  faWeightHanging,
-  faCrosshairs,
-  faBook,
   faPlusCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import MultipleSelectField from "../../FormElements/MultipleSelectField";
 import IconButton from "../../FormElements/IconButton";
 import Selection from "../../../Data/Selection";
 import StringSearchField from "../../FormElements/StringSearchField";

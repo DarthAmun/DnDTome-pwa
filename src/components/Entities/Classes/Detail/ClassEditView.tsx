@@ -1,9 +1,9 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Class from "../../../../Data/Classes/Class";
-
-import StringField from "../../../FormElements/StringField";
-import ShortTextField from "../../../FormElements/ShortTextField";
+import FeatureSet from "../../../../Data/Classes/FeatureSet";
+import Boni from "../../../../Data/Classes/Boni";
+import Selection from "../../../../Data/Selection";
 
 import {
   faLink,
@@ -12,16 +12,21 @@ import {
   faTrash,
   faMinus,
 } from "@fortawesome/free-solid-svg-icons";
-import NumberField from "../../../FormElements/NumberField";
-import IconButton from "../../../FormElements/IconButton";
-import TextField from "../../../FormElements/TextField";
-import FeatureSet from "../../../../Data/Classes/FeatureSet";
-import NumberArrayField from "../../../FormElements/NumberArrayField";
-import Boni from "../../../../Data/Classes/Boni";
-import Feature, { featureType, featureTypeArray, getOptionFromEnum } from "../../../../Data/Classes/Feature";
+import Feature, {
+  featureType,
+  featureTypeArray,
+  getOptionFromEnum,
+} from "../../../../Data/Classes/Feature";
 import TextButton from "../../../FormElements/TextButton";
 import CheckField from "../../../FormElements/CheckField";
 import EnumField from "../../../FormElements/EnumField";
+import NumberField from "../../../FormElements/NumberField";
+import IconButton from "../../../FormElements/IconButton";
+import TextField from "../../../FormElements/TextField";
+import NumberArrayField from "../../../FormElements/NumberArrayField";
+import StringField from "../../../FormElements/StringField";
+import ShortTextField from "../../../FormElements/ShortTextField";
+import { reciveAll } from "../../../../Services/DatabaseService";
 
 interface $Props {
   classe: Class;
@@ -29,6 +34,20 @@ interface $Props {
 }
 
 const ClassEditView = ({ classe, onEdit }: $Props) => {
+  const [selections, setSelections] = useState<
+    { value: string; label: string }[]
+  >([]);
+
+  useEffect(() => {
+    reciveAll("selections", (data: any[]) => {
+      let selectionsData = data as Selection[];
+      let selectionOptions = selectionsData.map((select: Selection) => {
+        return { value: select.name, label: select.name };
+      });
+      setSelections(selectionOptions);
+    });
+  }, []);
+
   const onFeatureSetChange = (
     oldFeature: FeatureSet,
     field: string,
@@ -107,6 +126,27 @@ const ClassEditView = ({ classe, onEdit }: $Props) => {
     });
     onEdit({ ...classe, featureSets: features });
   };
+  const onSelectionChange = (
+    oldFeatureSet: FeatureSet,
+    oldSelection: string,
+    value: string
+  ) => {
+    let features = classe.featureSets.map((featureSet: FeatureSet) => {
+      if (featureSet === oldFeatureSet && featureSet.features !== undefined) {
+        let selections = featureSet.selections?.map((selection: string) => {
+          if (selection === oldSelection) {
+            return value;
+          } else {
+            return selection;
+          }
+        });
+        return { ...featureSet, selections: selections };
+      } else {
+        return featureSet;
+      }
+    });
+    onEdit({ ...classe, featureSets: features });
+  };
 
   const removeFeatureSet = (oldFeatureSet: FeatureSet) => {
     let featureSets = classe.featureSets;
@@ -138,6 +178,19 @@ const ClassEditView = ({ classe, onEdit }: $Props) => {
         features.splice(index, 1);
       }
       return { ...featureSet, features: features };
+    });
+    onEdit({ ...classe, featureSets: featureSets });
+  };
+  const removeSelection = (oldSelection: string) => {
+    let featureSets = classe.featureSets.map((featureSet) => {
+      let selections = featureSet.selections;
+      if (selections !== undefined) {
+        const index: number = selections.indexOf(oldSelection);
+        if (index !== -1) {
+          selections.splice(index, 1);
+        }
+      }
+      return { ...featureSet, selections: selections };
     });
     onEdit({ ...classe, featureSets: featureSets });
   };
@@ -195,6 +248,20 @@ const ClassEditView = ({ classe, onEdit }: $Props) => {
     });
     onEdit({ ...classe, featureSets: featureSets });
   };
+  const addNewSelection = (oldFeatureSet: FeatureSet) => {
+    let featureSets = classe.featureSets.map((featureSet) => {
+      let selections: string[] = featureSet.selections;
+      if (selections === undefined) {
+        selections = [];
+      }
+      if (featureSet === oldFeatureSet) {
+        selections.push("");
+        return { ...featureSet, selections: selections };
+      }
+      return featureSet;
+    });
+    onEdit({ ...classe, featureSets: featureSets });
+  };
   const addNewFeatureSet = () => {
     if (classe.featureSets.length - 1 >= 0) {
       onEdit({
@@ -206,6 +273,7 @@ const ClassEditView = ({ classe, onEdit }: $Props) => {
             profBonus:
               classe.featureSets[classe.featureSets.length - 1].profBonus,
             features: [],
+            selections: [],
             bonis: classe.featureSets[classe.featureSets.length - 1].bonis,
             spellslots:
               classe.featureSets[classe.featureSets.length - 1].spellslots,
@@ -221,6 +289,7 @@ const ClassEditView = ({ classe, onEdit }: $Props) => {
             level: classe.featureSets.length + 1,
             profBonus: 0,
             features: [],
+            selections: [],
             bonis: [],
             spellslots: [],
           },
@@ -384,6 +453,36 @@ const ClassEditView = ({ classe, onEdit }: $Props) => {
                 text={"Add new Feature"}
                 icon={faPlus}
                 onClick={() => addNewFeature(featureSet)}
+              />
+            </FeatureWrapper>
+            <FeatureWrapper>
+              {featureSet.selections &&
+                featureSet.selections.map(
+                  (selection: string, index: number) => {
+                    return (
+                      <FeatureContainer key={index}>
+                        <EnumField
+                          options={selections}
+                          value={{ value: selection, label: selection }}
+                          label="Name"
+                          onChange={(name) =>
+                            onSelectionChange(featureSet, selection, name)
+                          }
+                        />
+                        <IconButton
+                          icon={faTrash}
+                          onClick={() => removeSelection(selection)}
+                        />
+                      </FeatureContainer>
+                    );
+                  }
+                )}
+            </FeatureWrapper>
+            <FeatureWrapper>
+              <TextButton
+                text={"Add Selection"}
+                icon={faPlus}
+                onClick={() => addNewSelection(featureSet)}
               />
             </FeatureWrapper>
           </FeatureView>

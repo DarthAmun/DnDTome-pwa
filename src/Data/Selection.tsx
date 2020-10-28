@@ -1,16 +1,20 @@
 import IEntity, { isIEntity } from "./IEntity";
 
-export default class Selection implements IEntity{
+export default class Selection implements IEntity {
   id?: number;
   name: string;
-  selectionOptions: { entity: IEntity; level: number }[];
+  selectionOptions: { entityName: string; entityText: string; level: number }[];
   filename?: string;
 
   constructor(
     id?: number,
     name?: string,
     filename?: string,
-    selectionOptions?: { entity: IEntity; level: number }[]
+    selectionOptions?: {
+      entityName: string;
+      entityText: string;
+      level: number;
+    }[]
   ) {
     this.id = id;
     this.filename = filename || "";

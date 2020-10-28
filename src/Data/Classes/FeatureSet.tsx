@@ -5,6 +5,7 @@ export default class FeatureSet {
   level: number;
   profBonus: number;
   features: Feature[];
+  selections: string[];
   bonis?: Boni[];
   spellslots?: number[];
 
@@ -12,12 +13,14 @@ export default class FeatureSet {
     level: number,
     profBonus: number,
     features: Feature[],
+    selections: string[],
     bonis?: Boni[],
     spellslots?: number[]
   ) {
     this.level = level;
     this.profBonus = profBonus;
     this.features = features;
+    this.selections = selections;
     this.bonis = bonis;
     this.spellslots = spellslots;
   }
@@ -31,5 +34,11 @@ export function isFeatureSet(arg: any): arg is FeatureSet {
     arg.features !== undefined &&
     Array.isArray(arg.features) &&
     isFeature(arg.features[0]);
-  return arg && levelCheck && profBonusCheck && featuresCheck;
+  const selectionsCheck =
+    arg.selections !== undefined &&
+    Array.isArray(arg.selections) &&
+    typeof arg.selections[0] == "string"
+  return (
+    arg && levelCheck && profBonusCheck && featuresCheck && selectionsCheck
+  );
 }

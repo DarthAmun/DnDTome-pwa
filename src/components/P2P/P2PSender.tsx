@@ -3,7 +3,7 @@ import styled from "styled-components";
 import Peer from "peerjs";
 import { reciveAllPromise } from "../../Services/DatabaseService";
 import IEntity from "../../Data/IEntity";
-import { generateBrokerId } from "../../Services/peerIdService";
+import { generateBrokerId } from "../../Services/PeerIdService";
 
 import { faExclamationCircle } from "@fortawesome/free-solid-svg-icons";
 import StringField from "../FormElements/StringField";

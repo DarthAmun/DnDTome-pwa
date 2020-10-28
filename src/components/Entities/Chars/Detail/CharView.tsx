@@ -1,5 +1,6 @@
 import React, { useCallback, useState, useEffect } from "react";
 import styled from "styled-components";
+import P2PSender from "../../../P2P/P2PSender";
 import {
   reciveAllFiltered,
   reciveByAttribute,
@@ -28,7 +29,6 @@ import FormatedText from "../../../GeneralElements/FormatedText";
 import CharSpell from "./DetailComponents/CharSpells";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import TextButton from "../../../FormElements/TextButton";
-import P2PSender from "../../../P2P/P2PSender";
 
 interface $Props {
   character: Char;
@@ -246,7 +246,21 @@ const CharView = ({ character }: $Props) => {
       <CharHeader char={char} />
       <TabBar children={tabs} onChange={(tab: string) => setTab(tab)} />
       {activeTab === "General" && (
-        <CharGeneral char={char} onChange={saveChar} classes={classes} />
+        <>
+          <CharGeneral char={char} onChange={saveChar} classes={classes} />
+          <View>
+            <PropWrapper>
+              {!send && (
+                <TextButton
+                  text={`Send ${char.name}`}
+                  icon={faPaperPlane}
+                  onClick={() => setSend(true)}
+                />
+              )}
+              {!!send && <P2PSender data={char} mode={"THIS"} />}
+            </PropWrapper>
+          </View>
+        </>
       )}
       {activeTab === "Combat" && (
         <CharCombat
@@ -344,18 +358,6 @@ const CharView = ({ character }: $Props) => {
           </PropWrapper>
         </View>
       )}
-      <View>
-        <PropWrapper>
-          {!send && (
-            <TextButton
-              text={`Send ${char.name}`}
-              icon={faPaperPlane}
-              onClick={() => setSend(true)}
-            />
-          )}
-          {!!send && <P2PSender data={char} mode={"THIS"} />}
-        </PropWrapper>
-      </View>
     </CenterWrapper>
   );
 };

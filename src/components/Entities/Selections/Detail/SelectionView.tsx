@@ -2,12 +2,10 @@ import React, { useState } from "react";
 import Selection from "../../../../Data/Selection";
 import styled from "styled-components";
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faPaperPlane,
-} from "@fortawesome/free-solid-svg-icons";
+import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import TextButton from "../../../FormElements/TextButton";
 import P2PSender from "../../../P2P/P2PSender";
+import FormatedText from "../../../GeneralElements/FormatedText";
 
 interface $Props {
   selection: Selection;
@@ -22,8 +20,6 @@ const SelectionView = ({ selection }: $Props) => {
         <Name>
           <b>{selection.name}</b>
         </Name>
-
-        <PropWrapper></PropWrapper>
         <PropWrapper>
           {!send && (
             <TextButton
@@ -35,6 +31,34 @@ const SelectionView = ({ selection }: $Props) => {
           {!!send && <P2PSender data={selection} mode={"THIS"} />}
         </PropWrapper>
       </View>
+      {selection.selectionOptions.map(
+        (
+          trait: {
+            entityName: string;
+            entityText: string;
+            level: number;
+          },
+          index: number
+        ) => {
+          return (
+            <View key={index}>
+              <PropWrapper>
+                <Prop>
+                  <PropTitle>Name:</PropTitle>
+                  {trait.entityName}
+                </Prop>
+                <Prop>
+                  <PropTitle>Level:</PropTitle>
+                  {trait.level}
+                </Prop>
+                <Text>
+                  <FormatedText text={trait.entityText} />
+                </Text>
+              </PropWrapper>
+            </View>
+          );
+        }
+      )}
     </CenterWrapper>
   );
 };
@@ -89,22 +113,20 @@ const Prop = styled.div`
   background-color: ${({ theme }) => theme.tile.backgroundColor};
 `;
 
+const PropTitle = styled.span`
+  display: inline-block;
+  color: ${({ theme }) => theme.tile.backgroundColorLink};
+  text-decoration: none;
+  margin: 0px 5px 0px 5px;
+`;
+
 const Text = styled.div`
   height: auto;
-  width: calc(100% - 30px);
-  margin: 10px 5px 5px 5px;
+  width: calc(100% - 24px);
+  margin: 5px 2px 5px 2px;
   float: left;
   line-height: 18px;
   padding: 10px;
   border-radius: 5px;
   background-color: ${({ theme }) => theme.tile.backgroundColor};
-`;
-
-const Icon = styled(FontAwesomeIcon)`
-  margin-right: 5px;
-  width: 20px;
-  height: auto;
-  border-radius: 150px;
-  transition: color 0.2s;
-  color: ${({ theme }) => theme.main.highlight};
 `;
