@@ -1,6 +1,10 @@
 import { reciveAll, reciveAllPromise, saveNew } from "./DatabaseService";
 import { IndexableType } from "dexie";
 import Spell, { findSpellFormattError, isSpell } from "../Data/Spell";
+import Selection, {
+  findSelectionFormattError,
+  isSelection,
+} from "../Data/Selection";
 import Gear, { findGearFormattError, isGear } from "../Data/Gear";
 import Monster, { findMonsterFormattError, isMonster } from "../Data/Monster";
 import Race, { findRaceFormattError, isRace } from "../Data/Races/Race";
@@ -68,6 +72,8 @@ export const scanImportFileTest = async (
         promList.push(saveNew("items", obj as Item, fileName));
       } else if (isEncounter(obj)) {
         promList.push(saveNew("encounters", obj as Encounter, fileName));
+      } else if (isSelection(obj)) {
+        promList.push(saveNew("selections", obj as Selection, fileName));
       } else if (isChar(obj)) {
         promList.push(saveNew("chars", obj as Char, fileName));
       } else {
@@ -100,6 +106,8 @@ export const scanImportFileTest = async (
       promList.push(saveNew("items", json as Item, fileName));
     } else if (isEncounter(json)) {
       promList.push(saveNew("encounters", json as Encounter, fileName));
+    } else if (isSelection(json)) {
+      promList.push(saveNew("selections", json as Selection, fileName));
     } else if (isChar(json)) {
       saveNew("chars", json as Char, fileName);
     } else {
@@ -156,6 +164,11 @@ const scanForFormatErrors = (obj: any) => {
   for (const value of Object.entries(subclassFormatErrors)) {
     if (!value[1]) subclassFailCount++;
   }
+  const selectionFormatErrors = findSelectionFormattError(obj);
+  let selectionFailCount: number = 0;
+  for (const value of Object.entries(selectionFormatErrors)) {
+    if (!value[1]) selectionFailCount++;
+  }
 
   let errors: any[] = [];
   if (
@@ -165,6 +178,7 @@ const scanForFormatErrors = (obj: any) => {
     itemFailCount <= subraceFailCount &&
     itemFailCount <= classFailCount &&
     itemFailCount <= subclassFailCount &&
+    itemFailCount <= selectionFailCount &&
     itemFailCount <= monsterFailCount
   ) {
     errors.push({ item: itemFormatErrors });
@@ -176,6 +190,7 @@ const scanForFormatErrors = (obj: any) => {
     gearFailCount <= subraceFailCount &&
     gearFailCount <= classFailCount &&
     gearFailCount <= subclassFailCount &&
+    gearFailCount <= selectionFailCount &&
     gearFailCount <= monsterFailCount
   ) {
     errors.push({ gear: gearFormatErrors });
@@ -187,6 +202,7 @@ const scanForFormatErrors = (obj: any) => {
     spellFailCount <= subraceFailCount &&
     spellFailCount <= classFailCount &&
     spellFailCount <= subclassFailCount &&
+    spellFailCount <= selectionFailCount &&
     spellFailCount <= monsterFailCount
   ) {
     errors.push({ spell: spellFormatErrors });
@@ -198,6 +214,7 @@ const scanForFormatErrors = (obj: any) => {
     monsterFailCount <= subraceFailCount &&
     monsterFailCount <= classFailCount &&
     monsterFailCount <= subclassFailCount &&
+    monsterFailCount <= selectionFailCount &&
     monsterFailCount <= spellFailCount
   ) {
     errors.push({ monster: monsterFormatErrors });
@@ -209,6 +226,7 @@ const scanForFormatErrors = (obj: any) => {
     raceFailCount <= subraceFailCount &&
     raceFailCount <= classFailCount &&
     raceFailCount <= subclassFailCount &&
+    raceFailCount <= selectionFailCount &&
     raceFailCount <= spellFailCount
   ) {
     errors.push({ race: raceFormatErrors });
@@ -220,6 +238,7 @@ const scanForFormatErrors = (obj: any) => {
     subraceFailCount <= raceFailCount &&
     subraceFailCount <= classFailCount &&
     subraceFailCount <= subclassFailCount &&
+    subraceFailCount <= selectionFailCount &&
     subraceFailCount <= spellFailCount
   ) {
     errors.push({ subrace: subraceFormatErrors });
@@ -231,6 +250,7 @@ const scanForFormatErrors = (obj: any) => {
     classFailCount <= raceFailCount &&
     classFailCount <= subraceFailCount &&
     classFailCount <= subclassFailCount &&
+    classFailCount <= selectionFailCount &&
     classFailCount <= spellFailCount
   ) {
     errors.push({ class: classFormatErrors });
@@ -242,9 +262,22 @@ const scanForFormatErrors = (obj: any) => {
     subclassFailCount <= raceFailCount &&
     subclassFailCount <= subraceFailCount &&
     subclassFailCount <= classFailCount &&
+    subclassFailCount <= selectionFailCount &&
     subclassFailCount <= spellFailCount
   ) {
     errors.push({ subclass: subclassFormatErrors });
+  }
+  if (
+    selectionFailCount <= itemFailCount &&
+    selectionFailCount <= gearFailCount &&
+    selectionFailCount <= monsterFailCount &&
+    selectionFailCount <= raceFailCount &&
+    selectionFailCount <= subraceFailCount &&
+    selectionFailCount <= classFailCount &&
+    selectionFailCount <= subclassFailCount &&
+    selectionFailCount <= spellFailCount
+  ) {
+    errors.push({ selection: selectionFormatErrors });
   }
   return JSON.stringify({ failedObject: obj, Errors: errors }, null, 2);
 };
@@ -283,6 +316,7 @@ export const exportAll = async (filename: string) => {
   tableList.push(reciveAllPromise("subclasses"));
   tableList.push(reciveAllPromise("chars"));
   tableList.push(reciveAllPromise("encounters"));
+  tableList.push(reciveAllPromise("selections"));
   const results = await Promise.all(tableList);
   let all: IEntity[] = [];
   results.forEach((list: IEntity[]) => {
