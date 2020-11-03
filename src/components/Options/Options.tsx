@@ -47,6 +47,7 @@ import RacesOptions from "./RacesOptions";
 import ClassesOptions from "./ClassesOptions";
 import CharsOptions from "./CharsOptions";
 import EncountersOptions from "./EncountersOptions";
+import SelectionsOptions from "./SelectionsOptions";
 
 const Options = () => {
   const [activeTab, setTab] = useState<string>("General");
@@ -61,6 +62,7 @@ const Options = () => {
   const [subclassAmount, setSubclassAmount] = useState<number>(0);
   const [charAmount, setCharAmount] = useState<number>(0);
   const [encounterAmount, setEncounterAmount] = useState<number>(0);
+  const [selectionAmount, setSelectionAmount] = useState<number>(0);
 
   const [reload, isReload] = useState<boolean>(true);
 
@@ -102,6 +104,9 @@ const Options = () => {
       });
       reciveCount("encounters", (result: number) => {
         setEncounterAmount(result);
+      });
+      reciveCount("selections", (result: number) => {
+        setSelectionAmount(result);
       });
       reciveAllPromise("chars").then((result: any[]) => {
         return result;
@@ -250,6 +255,7 @@ const Options = () => {
           "Monsters",
           "Races",
           "Classes",
+          "Selections",
           "Chars",
           "Encounters",
           "Other Import",
@@ -285,6 +291,12 @@ const Options = () => {
       {activeTab === "Classes" && (
         <ClassesOptions
           amounts={[classAmount, subclassAmount]}
+          triggerDeleteAll={triggerDeleteAll}
+        />
+      )}
+      {activeTab === "Selections" && (
+        <SelectionsOptions
+          amount={selectionAmount}
           triggerDeleteAll={triggerDeleteAll}
         />
       )}

@@ -3,6 +3,7 @@ import { useHistory } from "react-router";
 import styled from "styled-components";
 
 import Book from "../../Data/Book";
+import Selection from "../../Data/Selection";
 import Class from "../../Data/Classes/Class";
 import Subclass from "../../Data/Classes/Subclass";
 import Encounter from "../../Data/Encounter/Encounter";
@@ -39,6 +40,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import AppWrapper from "../AppWrapper";
 import TextButton from "../FormElements/TextButton";
 import logo from "../../dndtome icon_v2.png";
+import { BiSelectMultiple } from "react-icons/bi";
 
 const Home = () => {
   let history = useHistory();
@@ -55,6 +57,7 @@ const Home = () => {
   const [charAmount, setCharAmount] = useState<number>(0);
   const [encounterAmount, setEncounterAmount] = useState<number>(0);
   const [bookAmount, setBookAmount] = useState<number>(0);
+  const [selectionAmount, setSelectionAmount] = useState<number>(0);
 
   useEffect(() => {
     if (reload) {
@@ -90,6 +93,9 @@ const Home = () => {
       });
       reciveCount("books", (result: number) => {
         setBookAmount(result);
+      });
+      reciveCount("selections", (result: number) => {
+        setSelectionAmount(result);
       });
       reciveAllPromise("chars").then((result: any[]) => {
         return result;
@@ -178,11 +184,18 @@ const Home = () => {
     });
   };
 
+  const createNewSelection = () => {
+    let newSelection = new Selection();
+    delete newSelection.id;
+    createNewWithId("selections", newSelection, (id) => {
+      history.push(`/selection-detail/id/${id}`);
+    });
+  };
   return (
     <AppWrapper>
       <General>
         <HomeSectionLarge>
-          <img src={logo} alt="logo"/>
+          <img src={logo} alt="logo" />
         </HomeSectionLarge>
         <HomeSection>
           <SelectionTitle>
@@ -314,6 +327,26 @@ const Home = () => {
         </HomeSection>
         <HomeSection>
           <SelectionTitle>
+            <BiSelectMultiple /> Selection
+          </SelectionTitle>
+          <SectionText>
+            {`You have ${selectionAmount} selections in your collection. `}
+            {selectionAmount <= 0 && `Try import some in the options.`}
+          </SectionText>
+          <ButtonBar>
+            <TextButton
+              text={"Go to selections"}
+              onClick={() => history.push(`/selection-overview`)}
+            />
+            <TextButton
+              icon={faPlusCircle}
+              text={"Create"}
+              onClick={() => createNewSelection()}
+            />
+          </ButtonBar>
+        </HomeSection>
+        <HomeSection>
+          <SelectionTitle>
             <FontAwesomeIcon icon={faIdCard} /> Characters
           </SelectionTitle>
           <SectionText>
@@ -423,13 +456,11 @@ const Home = () => {
             <FontAwesomeIcon icon={faQuestionCircle} /> Help
           </SelectionTitle>
           <SectionText>
-            Help on where to find what and how to add tables or hyperlinks inside of text fields.
+            Help on where to find what and how to add tables or hyperlinks
+            inside of text fields.
           </SectionText>
           <ButtonBar>
-            <TextButton
-              text={"Help"}
-              onClick={() => history.push(`/help`)}
-            />
+            <TextButton text={"Help"} onClick={() => history.push(`/help`)} />
           </ButtonBar>
         </HomeSection>
       </General>
