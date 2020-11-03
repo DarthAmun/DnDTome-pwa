@@ -128,24 +128,32 @@ const ClassEditView = ({ classe, onEdit }: $Props) => {
   };
   const onSelectionChange = (
     oldFeatureSet: FeatureSet,
+    oldFeature: Feature,
     oldSelection: string,
     value: string
   ) => {
-    let features = classe.featureSets.map((featureSet: FeatureSet) => {
+    let featuresets = classe.featureSets.map((featureSet: FeatureSet) => {
       if (featureSet === oldFeatureSet && featureSet.features !== undefined) {
-        let selections = featureSet.selections?.map((selection: string) => {
-          if (selection === oldSelection) {
-            return value;
+        let features = featureSet.features.map((feature: Feature) => {
+          if (feature === oldFeature) {
+            let selections = feature.selections.map((select: string) => {
+              if (select === oldSelection) {
+                return value;
+              } else {
+                return select;
+              }
+            });
+            return {...feature, selections: selections};
           } else {
-            return selection;
+            return feature;
           }
         });
-        return { ...featureSet, selections: selections };
+        return { ...featureSet, features: features };
       } else {
         return featureSet;
       }
     });
-    onEdit({ ...classe, featureSets: features });
+    onEdit({ ...classe, featureSets: featuresets });
   };
 
   const removeFeatureSet = (oldFeatureSet: FeatureSet) => {
@@ -183,14 +191,17 @@ const ClassEditView = ({ classe, onEdit }: $Props) => {
   };
   const removeSelection = (oldSelection: string) => {
     let featureSets = classe.featureSets.map((featureSet) => {
-      let selections = featureSet.selections;
-      if (selections !== undefined) {
-        const index: number = selections.indexOf(oldSelection);
-        if (index !== -1) {
-          selections.splice(index, 1);
+      let features = featureSet.features.map((feature: Feature) => {
+        let selections = feature.selections;
+        if (selections !== undefined) {
+          const index: number = selections.indexOf(oldSelection);
+          if (index !== -1) {
+            selections.splice(index, 1);
+          }
         }
-      }
-      return { ...featureSet, selections: selections };
+        return { ...feature, selections: selections };
+      })
+      return { ...featureSet, features: features };
     });
     onEdit({ ...classe, featureSets: featureSets });
   };
@@ -241,6 +252,7 @@ const ClassEditView = ({ classe, onEdit }: $Props) => {
           name: "",
           text: "",
           type: featureType.normal,
+          selections: []
         });
         return { ...featureSet, features: features };
       }
@@ -248,17 +260,20 @@ const ClassEditView = ({ classe, onEdit }: $Props) => {
     });
     onEdit({ ...classe, featureSets: featureSets });
   };
-  const addNewSelection = (oldFeatureSet: FeatureSet) => {
+  const addNewSelection = (oldFeatureSet: FeatureSet, oldFeature: Feature) => {
     let featureSets = classe.featureSets.map((featureSet) => {
-      let selections: string[] = featureSet.selections;
-      if (selections === undefined) {
-        selections = [];
-      }
-      if (featureSet === oldFeatureSet) {
-        selections.push("");
-        return { ...featureSet, selections: selections };
-      }
-      return featureSet;
+      let features = featureSet.features.map((feature: Feature) => {
+        let selections: string[] = feature.selections;
+        if (selections === undefined) {
+          selections = [];
+        }
+        if (feature === oldFeature) {
+          selections.push("");
+          return { ...feature, selections: selections };
+        }
+        return feature;
+      })
+      return { ...featureSet, features: features };
     });
     onEdit({ ...classe, featureSets: featureSets });
   };
@@ -273,7 +288,6 @@ const ClassEditView = ({ classe, onEdit }: $Props) => {
             profBonus:
               classe.featureSets[classe.featureSets.length - 1].profBonus,
             features: [],
-            selections: [],
             bonis: classe.featureSets[classe.featureSets.length - 1].bonis,
             spellslots:
               classe.featureSets[classe.featureSets.length - 1].spellslots,
@@ -289,7 +303,6 @@ const ClassEditView = ({ classe, onEdit }: $Props) => {
             level: classe.featureSets.length + 1,
             profBonus: 0,
             features: [],
-            selections: [],
             bonis: [],
             spellslots: [],
           },
@@ -444,6 +457,37 @@ const ClassEditView = ({ classe, onEdit }: $Props) => {
                           onFeatureChange(featureSet, feature, "text", text)
                         }
                       />
+                      {feature.selections &&
+                        feature.selections.map(
+                          (selection: string, index: number) => {
+                            return (
+                              <FeatureContainer key={index}>
+                                <EnumField
+                                  options={selections}
+                                  value={{ value: selection, label: selection }}
+                                  label="Name"
+                                  onChange={(name) =>
+                                    onSelectionChange(
+                                      featureSet,
+                                      feature,
+                                      selection,
+                                      name
+                                    )
+                                  }
+                                />
+                                <IconButton
+                                  icon={faTrash}
+                                  onClick={() => removeSelection(selection)}
+                                />
+                              </FeatureContainer>
+                            );
+                          }
+                        )}
+                      <TextButton
+                        text={"Add Selection"}
+                        icon={faPlus}
+                        onClick={() => addNewSelection(featureSet, feature)}
+                      />
                     </FeatureContainer>
                   );
                 })}
@@ -453,36 +497,6 @@ const ClassEditView = ({ classe, onEdit }: $Props) => {
                 text={"Add new Feature"}
                 icon={faPlus}
                 onClick={() => addNewFeature(featureSet)}
-              />
-            </FeatureWrapper>
-            <FeatureWrapper>
-              {featureSet.selections &&
-                featureSet.selections.map(
-                  (selection: string, index: number) => {
-                    return (
-                      <FeatureContainer key={index}>
-                        <EnumField
-                          options={selections}
-                          value={{ value: selection, label: selection }}
-                          label="Name"
-                          onChange={(name) =>
-                            onSelectionChange(featureSet, selection, name)
-                          }
-                        />
-                        <IconButton
-                          icon={faTrash}
-                          onClick={() => removeSelection(selection)}
-                        />
-                      </FeatureContainer>
-                    );
-                  }
-                )}
-            </FeatureWrapper>
-            <FeatureWrapper>
-              <TextButton
-                text={"Add Selection"}
-                icon={faPlus}
-                onClick={() => addNewSelection(featureSet)}
               />
             </FeatureWrapper>
           </FeatureView>

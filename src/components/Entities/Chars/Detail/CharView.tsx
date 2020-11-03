@@ -41,7 +41,6 @@ const CharView = ({ character }: $Props) => {
   const [classes, setClasses] = useState<Class[]>([]);
   // const [subclasses, setSubclasses] = useState<Subclass[]>([]);
   const [classesFeatures, setClassesFeatures] = useState<FeatureSet[]>([]);
-
   // const [race, setRace] = useState<Race>();
   // const [subrace, setSubrace] = useState<Subrace>();
   const [raceFeatures, setRaceFeatures] = useState<Trait[]>([]);
@@ -291,10 +290,38 @@ const CharView = ({ character }: $Props) => {
                 .map((featureSet: FeatureSet) => {
                   return featureSet.features.map(
                     (feature: Feature, index: number) => {
+                      let selectionsData: {
+                        entityName: string;
+                        entityText: string;
+                        level: number;
+                      }[] = [];
+                      if (
+                        feature.selections !== undefined &&
+                        feature.selections.length > 0
+                      ) {
+                        char.activeSelections.forEach((activeSelect) => {
+                          if (activeSelect.featureName === feature.name) {
+                            selectionsData.push(activeSelect.activeOption);
+                          }
+                        });
+                      }
                       return (
                         <Text key={index}>
                           <PropTitle>{feature.name}:</PropTitle>
                           <FormatedText text={feature.text} />
+                          {selectionsData.map((activeSelectOption) => {
+                            return (
+                              <>
+                                <br />
+                                <PropTitle>
+                                  Choosen {activeSelectOption.entityName}:
+                                </PropTitle>
+                                <FormatedText
+                                  text={activeSelectOption.entityText}
+                                />
+                              </>
+                            );
+                          })}
                         </Text>
                       );
                     }

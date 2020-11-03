@@ -15,6 +15,17 @@ export default class Char implements IEntity {
   background: string;
   spells: string[];
   spellSlots: { origin: string; slots: number[]; max: number[] }[];
+  activeSelections: {
+    selectionName: string;
+    activeOption: {
+      entityName: string;
+      entityText: string;
+      level: number;
+    };
+    featureName: string;
+    featureCount: number;
+    className: string;
+  }[];
   currencyBonis: { origin: string; value: number; max: number }[];
   items: {
     origin: string;
@@ -56,6 +67,17 @@ export default class Char implements IEntity {
     background?: string,
     spells?: string[],
     spellSlots?: { origin: string; slots: number[]; max: number[] }[],
+    activeSelections?: {
+      selectionName: string;
+      activeOption: {
+        entityName: string;
+        entityText: string;
+        level: number;
+      };
+      featureName: string;
+      featureCount: number;
+      className: string;
+    }[],
     currencyBonis?: { origin: string; value: number; max: number }[],
     items?: {
       origin: string;
@@ -96,6 +118,7 @@ export default class Char implements IEntity {
     this.background = background || "";
     this.spells = spells || [];
     this.spellSlots = spellSlots || [];
+    this.activeSelections = activeSelections || [];
     this.currencyBonis = currencyBonis || [];
     this.items = items || [];
     this.monsters = monsters || [];
@@ -110,7 +133,7 @@ export default class Char implements IEntity {
     this.int = int || 0;
     this.wis = wis || 0;
     this.cha = cha || 0;
-    this.saves = saves  || new Saves();
+    this.saves = saves || new Saves();
     this.actions = actions || "";
     this.profsLangs = profsLangs || "";
     this.senses = senses || "";
