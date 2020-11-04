@@ -8,6 +8,7 @@ import Saves from "../../../../Data/Chars/Saves";
 import ClassSet from "../../../../Data/Chars/ClassSet";
 import Selection from "../../../../Data/Selection";
 import Feature from "../../../../Data/Classes/Feature";
+import Subclass from "../../../../Data/Classes/Subclass";
 import {
   reciveAll,
   reciveAllFiltered,
@@ -39,6 +40,7 @@ interface $Props {
 const CharEditView = ({ char, onEdit }: $Props) => {
   const [activeTab, setTab] = useState<string>("General");
   const [classes, setClasses] = useState<Class[]>([]);
+  const [subclasses, setSubclasses] = useState<Subclass[]>([]);
   const [selections, setSelections] = useState<Selection[]>([]);
   const [prof, setProf] = useState<number>(0);
 
@@ -75,6 +77,24 @@ const CharEditView = ({ char, onEdit }: $Props) => {
       ],
       (results: any[]) => {
         setClasses(results);
+      }
+    );
+  }, [char.classes, calcLevel]);
+
+  useEffect(() => {
+    reciveAllFiltered(
+      "subclasses",
+      [
+        {
+          fieldName: "name",
+          value: char.classes.map((classe) => {
+            return classe.subclasse;
+          }),
+          sort: 0,
+        },
+      ],
+      (results: any[]) => {
+        setSubclasses(results);
       }
     );
   }, [char.classes, calcLevel]);
@@ -177,6 +197,7 @@ const CharEditView = ({ char, onEdit }: $Props) => {
     newClassList.push({ classe: "", subclasse: "", level: 0 });
     onEdit({ ...char, classes: newClassList });
   };
+
   const recalcSelections = useCallback(() => {
     let newActiveSelections: {
       selectionName: string;
@@ -214,9 +235,38 @@ const CharEditView = ({ char, onEdit }: $Props) => {
           }
         });
       });
+      subclasses.forEach((subclass: Subclass) => {
+        if (classe.name === subclass.type) {
+          subclass.features.forEach((featureSet: FeatureSet) => {
+            featureSet.features.forEach((feature: Feature) => {
+              if (
+                feature.selections !== undefined &&
+                feature.selections.length > 0
+              ) {
+                let count = 1;
+                feature.selections.forEach((select: string) => {
+                  selections.forEach((selection: Selection) => {
+                    if (selection.name === select) {
+                      newActiveSelections.push({
+                        selectionName: selection.name,
+                        activeOption: selection.selectionOptions[0],
+                        featureName: feature.name,
+                        featureCount: count,
+                        className: subclass.name,
+                      });
+                      count++;
+                    }
+                  });
+                });
+              }
+            });
+          });
+        }
+      });
     });
     return newActiveSelections;
-  }, [classes, selections]);
+  }, [classes, subclasses, selections]);
+
   const changeClassLevel = useCallback(
     (oldClassSet: ClassSet, level: number) => {
       let classes: ClassSet[] = char.classes.map((classSet: ClassSet) => {
@@ -338,14 +388,14 @@ const CharEditView = ({ char, onEdit }: $Props) => {
               level: 0,
             };
             selections.forEach((selection: Selection) => {
-              if(selection.name === activeSelection.selectionName){
+              if (selection.name === activeSelection.selectionName) {
                 selection.selectionOptions.forEach((option) => {
-                  if(option.entityName === select){
+                  if (option.entityName === select) {
                     activSelect = option;
                   }
                 });
               }
-            })
+            });
             return { ...activeSelection, activeOption: activSelect };
           } else {
             return activeSelection;
@@ -521,10 +571,10 @@ const CharEditView = ({ char, onEdit }: $Props) => {
               ) => {
                 return (
                   <PropWrapper key={index}>
-                    <PropTitle>
+                    <SelectionTitle>
                       {activeSelection.featureName} of{" "}
                       {activeSelection.className}
-                    </PropTitle>
+                    </SelectionTitle>
                     <EnumField
                       options={
                         selections
@@ -1031,6 +1081,20 @@ const PropTitle = styled.span`
   color: ${({ theme }) => theme.tile.backgroundColorLink};
   text-decoration: none;
   margin: 0px 5px 0px 5px;
+`;
+
+const SelectionTitle = styled.div`
+  color: ${({ theme }) => theme.tile.color};
+  background-color: ${({ theme }) => theme.tile.backgroundColor};
+  font-size: 16px;
+  flex: 1 1 auto;
+  padding: 5px;
+  margin: 5px;
+  border-radius: 5px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 const Icon = styled(FontAwesomeIcon)`

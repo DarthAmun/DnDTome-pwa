@@ -9,7 +9,6 @@ export default class Subclass implements IEntity {
   sources: string;
   filename: string;
 
-  constructor();
   constructor(
     id?: number,
     name?: string,

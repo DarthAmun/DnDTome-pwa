@@ -46,6 +46,7 @@ const P2PSender = ({ data, mode }: $Props) => {
       }
       if (mode === "ALL" && typeof data === "string") {
         reciveAllPromise(data).then((results) => {
+          console.log(results);
           setName(data);
           peer.on("connection", function (conn) {
             conn.on("error", function (errorData) {
