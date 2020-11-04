@@ -1,5 +1,6 @@
 import React, { useCallback, useState, useEffect } from "react";
 import styled from "styled-components";
+import P2PSender from "../../../P2P/P2PSender";
 import {
   reciveAllFiltered,
   reciveByAttribute,
@@ -28,7 +29,6 @@ import FormatedText from "../../../GeneralElements/FormatedText";
 import CharSpell from "./DetailComponents/CharSpells";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import TextButton from "../../../FormElements/TextButton";
-import P2PSender from "../../../P2P/P2PSender";
 
 interface $Props {
   character: Char;
@@ -41,7 +41,6 @@ const CharView = ({ character }: $Props) => {
   const [classes, setClasses] = useState<Class[]>([]);
   // const [subclasses, setSubclasses] = useState<Subclass[]>([]);
   const [classesFeatures, setClassesFeatures] = useState<FeatureSet[]>([]);
-
   // const [race, setRace] = useState<Race>();
   // const [subrace, setSubrace] = useState<Subrace>();
   const [raceFeatures, setRaceFeatures] = useState<Trait[]>([]);
@@ -246,7 +245,21 @@ const CharView = ({ character }: $Props) => {
       <CharHeader char={char} />
       <TabBar children={tabs} onChange={(tab: string) => setTab(tab)} />
       {activeTab === "General" && (
-        <CharGeneral char={char} onChange={saveChar} classes={classes} />
+        <>
+          <CharGeneral char={char} onChange={saveChar} classes={classes} />
+          <View>
+            <PropWrapper>
+              {!send && (
+                <TextButton
+                  text={`Send ${char.name}`}
+                  icon={faPaperPlane}
+                  onClick={() => setSend(true)}
+                />
+              )}
+              {!!send && <P2PSender data={char} mode={"THIS"} />}
+            </PropWrapper>
+          </View>
+        </>
       )}
       {activeTab === "Combat" && (
         <CharCombat
@@ -277,10 +290,38 @@ const CharView = ({ character }: $Props) => {
                 .map((featureSet: FeatureSet) => {
                   return featureSet.features.map(
                     (feature: Feature, index: number) => {
+                      let selectionsData: {
+                        entityName: string;
+                        entityText: string;
+                        level: number;
+                      }[] = [];
+                      if (
+                        feature.selections !== undefined &&
+                        feature.selections.length > 0
+                      ) {
+                        char.activeSelections.forEach((activeSelect) => {
+                          if (activeSelect.featureName === feature.name) {
+                            selectionsData.push(activeSelect.activeOption);
+                          }
+                        });
+                      }
                       return (
                         <Text key={index}>
                           <PropTitle>{feature.name}:</PropTitle>
                           <FormatedText text={feature.text} />
+                          {selectionsData.map((activeSelectOption) => {
+                            return (
+                              <>
+                                <br />
+                                <PropTitle>
+                                  Choosen {activeSelectOption.entityName}:
+                                </PropTitle>
+                                <FormatedText
+                                  text={activeSelectOption.entityText}
+                                />
+                              </>
+                            );
+                          })}
                         </Text>
                       );
                     }
@@ -344,18 +385,6 @@ const CharView = ({ character }: $Props) => {
           </PropWrapper>
         </View>
       )}
-      <View>
-        <PropWrapper>
-          {!send && (
-            <TextButton
-              text={`Send ${char.name}`}
-              icon={faPaperPlane}
-              onClick={() => setSend(true)}
-            />
-          )}
-          {!!send && <P2PSender data={char} mode={"THIS"} />}
-        </PropWrapper>
-      </View>
     </CenterWrapper>
   );
 };

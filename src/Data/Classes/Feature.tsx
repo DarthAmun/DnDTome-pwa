@@ -29,15 +29,26 @@ export default class Feature implements IEntity {
   name: string;
   text: string;
   type: featureType;
-  constructor(name: string, text: string, type?: featureType) {
+  selections: string[];
+  constructor(
+    name: string,
+    text: string,
+    selections: string[],
+    type?: featureType
+  ) {
     this.name = name;
     this.text = text;
     this.type = type || featureType.normal;
+    this.selections = selections;
   }
 }
 
 export function isFeature(arg: any): arg is Feature {
   const nameCheck = arg.name !== undefined && typeof arg.name == "string";
   const textCheck = arg.text !== undefined && typeof arg.text == "string";
-  return arg && nameCheck && textCheck;
+  const selectionsCheck =
+    arg.selections !== undefined &&
+    Array.isArray(arg.selections) &&
+    typeof arg.selections[0] == "string";
+  return arg && nameCheck && textCheck && selectionsCheck;
 }

@@ -31,5 +31,6 @@ export function isFeatureSet(arg: any): arg is FeatureSet {
     arg.features !== undefined &&
     Array.isArray(arg.features) &&
     isFeature(arg.features[0]);
+
   return arg && levelCheck && profBonusCheck && featuresCheck;
 }

@@ -19,6 +19,7 @@ import {
   GiSwordClash,
   GiBookmarklet,
 } from "react-icons/gi";
+import { BiSelectMultiple } from "react-icons/bi";
 
 interface $Props {
   open: boolean;
@@ -32,7 +33,9 @@ const NavMenu = ({ open }: $Props) => {
       <Link
         to="/home"
         className={
-          location.pathname === "/home" || location.pathname === "/" ? "menuItemActiv" : ""
+          location.pathname === "/home" || location.pathname === "/"
+            ? "menuItemActiv"
+            : ""
         }
       >
         <FontAwesomeIcon icon={faHome} />
@@ -84,6 +87,15 @@ const NavMenu = ({ open }: $Props) => {
         Classes
       </Link>
       <Link
+        to="/selection-overview"
+        className={
+          location.pathname === "/selection-overview" ? "menuItemActiv" : ""
+        }
+      >
+        <BiSelectMultiple />
+        Selections
+      </Link>
+      <Link
         to="/char-overview"
         className={
           location.pathname === "/char-overview" ? "menuItemActiv" : ""
@@ -103,7 +115,9 @@ const NavMenu = ({ open }: $Props) => {
       </Link>
       <Link
         to="/encounter-overview"
-        className={location.pathname === "/encounter-overview" ? "menuItemActiv" : ""}
+        className={
+          location.pathname === "/encounter-overview" ? "menuItemActiv" : ""
+        }
       >
         <GiSwordClash />
         Encounters
@@ -160,6 +174,7 @@ export const Menu = styled.div<MenuType>`
 
   @media (max-width: 576px) {
     width: calc(100% - 4rem);
+    height: calc(100vh - 2em);
   }
 
   a {
@@ -170,7 +185,7 @@ export const Menu = styled.div<MenuType>`
     transition: color 0.3s linear;
 
     @media (max-width: 576px) {
-      font-size: 16px;
+      font-size: 20px;
       text-align: center;
     }
   }

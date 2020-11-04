@@ -6,14 +6,14 @@ import FeatureSet from "../../../../Data/Classes/FeatureSet";
 import Skills from "../../../../Data/Chars/Skills";
 import Saves from "../../../../Data/Chars/Saves";
 import ClassSet from "../../../../Data/Chars/ClassSet";
-import { reciveAllFiltered } from "../../../../Services/DatabaseService";
+import Selection from "../../../../Data/Selection";
+import Feature from "../../../../Data/Classes/Feature";
+import Subclass from "../../../../Data/Classes/Subclass";
+import {
+  reciveAll,
+  reciveAllFiltered,
+} from "../../../../Services/DatabaseService";
 
-import StringField from "../../../FormElements/StringField";
-import TabBar from "../../../GeneralElements/TabBar";
-import NumberField from "../../../FormElements/NumberField";
-import TextField from "../../../FormElements/TextField";
-import IconButton from "../../../FormElements/IconButton";
-import TextButton from "../../../FormElements/TextButton";
 import {
   faTrash,
   faPlus,
@@ -25,6 +25,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import AutoStringField from "../../../FormElements/AutoStringField";
 import CheckField from "../../../FormElements/CheckField";
 import EnumField from "../../../FormElements/EnumField";
+import StringField from "../../../FormElements/StringField";
+import TabBar from "../../../GeneralElements/TabBar";
+import NumberField from "../../../FormElements/NumberField";
+import TextField from "../../../FormElements/TextField";
+import IconButton from "../../../FormElements/IconButton";
+import TextButton from "../../../FormElements/TextButton";
 
 interface $Props {
   char: Char;
@@ -34,6 +40,8 @@ interface $Props {
 const CharEditView = ({ char, onEdit }: $Props) => {
   const [activeTab, setTab] = useState<string>("General");
   const [classes, setClasses] = useState<Class[]>([]);
+  const [subclasses, setSubclasses] = useState<Subclass[]>([]);
+  const [selections, setSelections] = useState<Selection[]>([]);
   const [prof, setProf] = useState<number>(0);
 
   const calcLevel = useCallback(() => {
@@ -43,6 +51,60 @@ const CharEditView = ({ char, onEdit }: $Props) => {
     });
     return level;
   }, [char]);
+
+  useEffect(() => {
+    if (classes && classes.length > 0) {
+      const level = calcLevel();
+      classes[0].featureSets.forEach((featureSet: FeatureSet) => {
+        if (featureSet.level === level) {
+          setProf(featureSet.profBonus);
+        }
+      });
+    }
+  }, [classes, calcLevel]);
+
+  useEffect(() => {
+    reciveAllFiltered(
+      "classes",
+      [
+        {
+          fieldName: "name",
+          value: char.classes.map((classe) => {
+            return classe.classe;
+          }),
+          sort: 0,
+        },
+      ],
+      (results: any[]) => {
+        setClasses(results);
+      }
+    );
+  }, [char.classes, calcLevel]);
+
+  useEffect(() => {
+    reciveAllFiltered(
+      "subclasses",
+      [
+        {
+          fieldName: "name",
+          value: char.classes.map((classe) => {
+            return classe.subclasse;
+          }),
+          sort: 0,
+        },
+      ],
+      (results: any[]) => {
+        setSubclasses(results);
+      }
+    );
+  }, [char.classes, calcLevel]);
+
+  useEffect(() => {
+    reciveAll("selections", (data: any[]) => {
+      let selectionsData = data as Selection[];
+      setSelections(selectionsData);
+    });
+  }, []);
 
   const removeSpell = (oldSpell: string) => {
     let newSpellList = char.spells.filter((spell) => spell !== oldSpell);
@@ -135,18 +197,93 @@ const CharEditView = ({ char, onEdit }: $Props) => {
     newClassList.push({ classe: "", subclasse: "", level: 0 });
     onEdit({ ...char, classes: newClassList });
   };
+
+  const recalcSelections = useCallback(() => {
+    let newActiveSelections: {
+      selectionName: string;
+      activeOption: {
+        entityName: string;
+        entityText: string;
+        level: number;
+      };
+      featureName: string;
+      featureCount: number;
+      className: string;
+    }[] = [];
+    classes.forEach((classe: Class) => {
+      classe.featureSets.forEach((featureSet: FeatureSet) => {
+        featureSet.features.forEach((feature: Feature) => {
+          if (
+            feature.selections !== undefined &&
+            feature.selections.length > 0
+          ) {
+            let count = 1;
+            feature.selections.forEach((select: string) => {
+              selections.forEach((selection: Selection) => {
+                if (selection.name === select) {
+                  newActiveSelections.push({
+                    selectionName: selection.name,
+                    activeOption: selection.selectionOptions[0],
+                    featureName: feature.name,
+                    featureCount: count,
+                    className: classe.name,
+                  });
+                  count++;
+                }
+              });
+            });
+          }
+        });
+      });
+      subclasses.forEach((subclass: Subclass) => {
+        if (classe.name === subclass.type) {
+          subclass.features.forEach((featureSet: FeatureSet) => {
+            featureSet.features.forEach((feature: Feature) => {
+              if (
+                feature.selections !== undefined &&
+                feature.selections.length > 0
+              ) {
+                let count = 1;
+                feature.selections.forEach((select: string) => {
+                  selections.forEach((selection: Selection) => {
+                    if (selection.name === select) {
+                      newActiveSelections.push({
+                        selectionName: selection.name,
+                        activeOption: selection.selectionOptions[0],
+                        featureName: feature.name,
+                        featureCount: count,
+                        className: subclass.name,
+                      });
+                      count++;
+                    }
+                  });
+                });
+              }
+            });
+          });
+        }
+      });
+    });
+    return newActiveSelections;
+  }, [classes, subclasses, selections]);
+
   const changeClassLevel = useCallback(
     (oldClassSet: ClassSet, level: number) => {
-      let classes = char.classes.map((classSet: ClassSet) => {
+      let classes: ClassSet[] = char.classes.map((classSet: ClassSet) => {
         if (classSet === oldClassSet) {
           return { ...classSet, level: level };
         } else {
           return classSet;
         }
       });
-      onEdit({ ...char, classes: classes });
+      let newActiveSelections = recalcSelections();
+      onEdit({
+        ...char,
+        classes: classes,
+        activeSelections: newActiveSelections,
+      });
     },
-    [char, onEdit]
+    [char, onEdit, recalcSelections]
   );
   const changeClass = useCallback(
     (oldClassSet: ClassSet, classe: string) => {
@@ -185,35 +322,6 @@ const CharEditView = ({ char, onEdit }: $Props) => {
     }
   }, []);
 
-  useEffect(() => {
-    reciveAllFiltered(
-      "classes",
-      [
-        {
-          fieldName: "name",
-          value: char.classes.map((classe) => {
-            return classe.classe;
-          }),
-          sort: 0,
-        },
-      ],
-      (results: any[]) => {
-        setClasses(results);
-      }
-    );
-  }, [char.classes, calcLevel]);
-
-  useEffect(() => {
-    if (classes && classes.length > 0) {
-      const level = calcLevel();
-      classes[0].featureSets.forEach((featureSet: FeatureSet) => {
-        if (featureSet.level === level) {
-          setProf(featureSet.profBonus);
-        }
-      });
-    }
-  }, [classes, calcLevel]);
-
   const formatScore = useCallback((score: number) => {
     let mod = Math.floor((score - 10) / 2);
     return mod;
@@ -245,6 +353,58 @@ const CharEditView = ({ char, onEdit }: $Props) => {
       onEdit({ ...char, saves: { ...char.saves, [profName]: profValue } });
     },
     [char, onEdit]
+  );
+
+  const onChangeActiveSelection = useCallback(
+    (
+      oldActiveSelection: {
+        selectionName: string;
+        activeOption: {
+          entityName: string;
+          entityText: string;
+          level: number;
+        };
+        featureName: string;
+        className: string;
+      },
+      select: string
+    ) => {
+      let newActiveSelections = char.activeSelections.map(
+        (activeSelection: {
+          selectionName: string;
+          activeOption: {
+            entityName: string;
+            entityText: string;
+            level: number;
+          };
+          featureName: string;
+          featureCount: number;
+          className: string;
+        }) => {
+          if (activeSelection === oldActiveSelection) {
+            let activSelect = {
+              entityName: "",
+              entityText: "",
+              level: 0,
+            };
+            selections.forEach((selection: Selection) => {
+              if (selection.name === activeSelection.selectionName) {
+                selection.selectionOptions.forEach((option) => {
+                  if (option.entityName === select) {
+                    activSelect = option;
+                  }
+                });
+              }
+            });
+            return { ...activeSelection, activeOption: activSelect };
+          } else {
+            return activeSelection;
+          }
+        }
+      );
+      onEdit({ ...char, activeSelections: newActiveSelections });
+    },
+    [char, selections, onEdit]
   );
 
   return (
@@ -395,6 +555,53 @@ const CharEditView = ({ char, onEdit }: $Props) => {
               icon={faPlus}
               onClick={() => addNewClass()}
             />
+            {char.activeSelections?.map(
+              (
+                activeSelection: {
+                  selectionName: string;
+                  activeOption: {
+                    entityName: string;
+                    entityText: string;
+                    level: number;
+                  };
+                  featureName: string;
+                  className: string;
+                },
+                index: number
+              ) => {
+                return (
+                  <PropWrapper key={index}>
+                    <SelectionTitle>
+                      {activeSelection.featureName} of{" "}
+                      {activeSelection.className}
+                    </SelectionTitle>
+                    <EnumField
+                      options={
+                        selections
+                          .find(
+                            (select) =>
+                              select.name === activeSelection.selectionName
+                          )
+                          ?.selectionOptions.map((option) => {
+                            return {
+                              value: option.entityName,
+                              label: option.entityName,
+                            };
+                          }) || []
+                      }
+                      value={{
+                        value: activeSelection.activeOption.entityName,
+                        label: activeSelection.activeOption.entityName,
+                      }}
+                      label={activeSelection.selectionName}
+                      onChange={(select) =>
+                        onChangeActiveSelection(activeSelection, select)
+                      }
+                    />
+                  </PropWrapper>
+                );
+              }
+            )}
           </>
         )}
         {activeTab === "Races" && (
@@ -874,6 +1081,20 @@ const PropTitle = styled.span`
   color: ${({ theme }) => theme.tile.backgroundColorLink};
   text-decoration: none;
   margin: 0px 5px 0px 5px;
+`;
+
+const SelectionTitle = styled.div`
+  color: ${({ theme }) => theme.tile.color};
+  background-color: ${({ theme }) => theme.tile.backgroundColor};
+  font-size: 16px;
+  flex: 1 1 auto;
+  padding: 5px;
+  margin: 5px;
+  border-radius: 5px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 const Icon = styled(FontAwesomeIcon)`

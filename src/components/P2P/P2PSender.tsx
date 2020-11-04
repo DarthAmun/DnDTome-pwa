@@ -3,7 +3,7 @@ import styled from "styled-components";
 import Peer from "peerjs";
 import { reciveAllPromise } from "../../Services/DatabaseService";
 import IEntity from "../../Data/IEntity";
-import { generateBrokerId } from "../../Services/peerIdService";
+import { generateBrokerId } from "../../Services/PeerIdService";
 
 import { faExclamationCircle } from "@fortawesome/free-solid-svg-icons";
 import StringField from "../FormElements/StringField";
@@ -46,6 +46,7 @@ const P2PSender = ({ data, mode }: $Props) => {
       }
       if (mode === "ALL" && typeof data === "string") {
         reciveAllPromise(data).then((results) => {
+          console.log(results);
           setName(data);
           peer.on("connection", function (conn) {
             conn.on("error", function (errorData) {

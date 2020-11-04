@@ -12,6 +12,7 @@ import {
   reciveAllPromise,
 } from "../../Services/DatabaseService";
 import IEntity from "../../Data/IEntity";
+import P2PReciver from "../P2P/P2PReciver";
 import { isChar } from "../../Data/Chars/Char";
 import { isClass } from "../../Data/Classes/Class";
 import { isSubclass } from "../../Data/Classes/Subclass";
@@ -24,12 +25,11 @@ import { isSubrace } from "../../Data/Races/Subrace";
 import { isSpell } from "../../Data/Spell";
 
 import { faFileImport, faFileExport } from "@fortawesome/free-solid-svg-icons";
+import { LoadingSpinner } from "../Loading";
 import AppWrapper from "../AppWrapper";
 import TabBar from "../GeneralElements/TabBar";
 import FileField from "../FormElements/FileField";
 import IconButton from "../FormElements/IconButton";
-import { LoadingSpinner } from "../Loading";
-import P2PReciver from "../P2P/P2PReciver";
 import ClassTile from "../Entities/Classes/ClassTile";
 import EncounterTile from "../Encounters/EncounterTile";
 import CharTile from "../Entities/Chars/CharTile";
@@ -47,6 +47,7 @@ import RacesOptions from "./RacesOptions";
 import ClassesOptions from "./ClassesOptions";
 import CharsOptions from "./CharsOptions";
 import EncountersOptions from "./EncountersOptions";
+import SelectionsOptions from "./SelectionsOptions";
 
 const Options = () => {
   const [activeTab, setTab] = useState<string>("General");
@@ -61,6 +62,7 @@ const Options = () => {
   const [subclassAmount, setSubclassAmount] = useState<number>(0);
   const [charAmount, setCharAmount] = useState<number>(0);
   const [encounterAmount, setEncounterAmount] = useState<number>(0);
+  const [selectionAmount, setSelectionAmount] = useState<number>(0);
 
   const [reload, isReload] = useState<boolean>(true);
 
@@ -102,6 +104,9 @@ const Options = () => {
       });
       reciveCount("encounters", (result: number) => {
         setEncounterAmount(result);
+      });
+      reciveCount("selections", (result: number) => {
+        setSelectionAmount(result);
       });
       reciveAllPromise("chars").then((result: any[]) => {
         return result;
@@ -250,6 +255,7 @@ const Options = () => {
           "Monsters",
           "Races",
           "Classes",
+          "Selections",
           "Chars",
           "Encounters",
           "Other Import",
@@ -285,6 +291,12 @@ const Options = () => {
       {activeTab === "Classes" && (
         <ClassesOptions
           amounts={[classAmount, subclassAmount]}
+          triggerDeleteAll={triggerDeleteAll}
+        />
+      )}
+      {activeTab === "Selections" && (
+        <SelectionsOptions
+          amount={selectionAmount}
           triggerDeleteAll={triggerDeleteAll}
         />
       )}
