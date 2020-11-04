@@ -150,7 +150,27 @@ const Help = () => {
               <SectionText>
                 Result:{" "}
                 <FormatedText
-                  text={`||table||||"Header1"|"Header2"|"Header3"|...||||"Cell1"|"Cell2"|"Cell3"|...||`}
+                  text={`||table||||Header1|Header2|Header3|...||||Cell1|Cell2|Cell3|...||`}
+                />
+              </SectionText>
+            </HelpSection>
+            <HelpSection>
+              <SelectionTitle>How to create a table with links in it</SelectionTitle>
+              <SectionText>You can add a link to every cell of a table in every textarea.</SectionText>
+              <SectionText>
+                To do so write: <br />
+                ||table||
+                <br />
+                ||"Header1"|"Header2"|"Header3"|...||
+                <br />
+                ||"[[spell.Heal Me]]"|"Cell2"|"Cell3"|...||
+                <br />
+                ||...||
+              </SectionText>
+              <SectionText>
+                Result:{" "}
+                <FormatedText
+                  text={`||table||||Header1|Header2|Header|...||||[[spell.Heal Me]]|Cell2|Cell3|...||`}
                 />
               </SectionText>
             </HelpSection>

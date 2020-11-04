@@ -7,8 +7,41 @@ interface $Props {
 }
 
 const FormatedText = ({ text }: $Props) => {
-  const [formatedText, setFormatedText] = useState<JSX.Element[]>();
+  const [formatedText, setFormatedText] = useState<JSX.Element>();
   let history = useHistory();
+
+  const formatLink = useCallback(
+    (text: string) => {
+      if (text !== undefined) {
+        if (text.includes("[[") && text.includes("]]")) {
+          const parts = text.split("[[");
+          let formattedParts: any[] = [];
+          parts.forEach((part: string, index: number) => {
+            if (part.includes("]]")) {
+              const codePart: string[] = part.split("]]");
+              const linkParts: string[] = codePart[0].split(".");
+              const link: string =
+                "/" + linkParts[0] + "-detail/name/" + linkParts[1];
+              formattedParts.push(
+                <TextPart key={index}>
+                  <Link onClick={() => history.push(link)}>{linkParts[1]}</Link>
+                  <TextPart>{codePart[1]}</TextPart>
+                </TextPart>
+              );
+            } else {
+              if (part !== "")
+                formattedParts.push(<TextPart key={index}>{part}</TextPart>);
+            }
+          });
+          console.log(formattedParts);
+          return <>{formattedParts}</>;
+        } else {
+          return <TextPart>{text}</TextPart>;
+        }
+      }
+    },
+    [history]
+  );
 
   const formatTable = useCallback(
     (textPart: string) => {
@@ -18,7 +51,7 @@ const FormatedText = ({ text }: $Props) => {
         let isHead = true;
         return (
           <>
-            {table[0]}
+            {formatLink(table[0])}
             <table>
               <tbody>
                 {tableRows.map((row: string, index: number) => {
@@ -40,55 +73,39 @@ const FormatedText = ({ text }: $Props) => {
                       return (
                         <tr key={index}>
                           {cells.map((cell: string, index: number) => {
-                            return <TableProp key={index}>{cell}</TableProp>;
+                            return (
+                              <TableProp key={index}>
+                                {formatLink(cell)}
+                              </TableProp>
+                            );
                           })}
                         </tr>
                       );
                     }
                   } else {
-                    return "";
+                    return <></>;
                   }
                 })}
               </tbody>
             </table>
-            {table[2]}
+            {formatLink(table[2])}
           </>
         );
       } else {
-        return textPart;
+        return formatLink(textPart);
       }
     },
-    [text]
+    [text, formatLink]
   );
 
   useEffect(() => {
-    const parts: string[] = text.split("[[");
-    let formatedText = parts.map((part: string, index: number) => {
-      if (part.includes("]]")) {
-        const codePart: string[] = part.split("]]");
-        const linkParts: string[] = codePart[0].split(".");
-        const link: string =
-          "/" + linkParts[0] + "-detail/name/" + linkParts[1];
-        return (
-          <TextPart key={index}>
-            <Link onClick={() => history.push(link)}>{linkParts[1]}</Link>
-            {formatTable(codePart[1])}
-          </TextPart>
-        );
-      } else {
-        return <TextPart key={index}>{formatTable(part)}</TextPart>;
-      }
-    });
-    setFormatedText(formatedText);
+    if (text !== undefined) {
+      let formatedText = formatTable(text);
+      setFormatedText(formatedText);
+    }
   }, [text, history, formatTable]);
 
-  return (
-    <>
-      {formatedText?.map((textElm) => {
-        return textElm;
-      })}
-    </>
-  );
+  return <>{formatedText}</>;
 };
 
 export default FormatedText;
@@ -99,7 +116,7 @@ const Link = styled.span`
   border-radius: 5px;
   text-decoration: none;
   color: ${({ theme }) => theme.tile.backgroundColor};
-  font-size: 10px;
+  font-size: 14px;
   padding: 0px 5px 0px 5px;
   cursor: pointer;
 `;
