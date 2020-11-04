@@ -14,12 +14,6 @@ import {
   reciveAllFiltered,
 } from "../../../../Services/DatabaseService";
 
-import StringField from "../../../FormElements/StringField";
-import TabBar from "../../../GeneralElements/TabBar";
-import NumberField from "../../../FormElements/NumberField";
-import TextField from "../../../FormElements/TextField";
-import IconButton from "../../../FormElements/IconButton";
-import TextButton from "../../../FormElements/TextButton";
 import {
   faTrash,
   faPlus,
@@ -31,6 +25,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import AutoStringField from "../../../FormElements/AutoStringField";
 import CheckField from "../../../FormElements/CheckField";
 import EnumField from "../../../FormElements/EnumField";
+import StringField from "../../../FormElements/StringField";
+import TabBar from "../../../GeneralElements/TabBar";
+import NumberField from "../../../FormElements/NumberField";
+import TextField from "../../../FormElements/TextField";
+import IconButton from "../../../FormElements/IconButton";
+import TextButton from "../../../FormElements/TextButton";
 
 interface $Props {
   char: Char;

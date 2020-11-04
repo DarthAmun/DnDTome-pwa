@@ -12,6 +12,7 @@ import {
   reciveAllPromise,
 } from "../../Services/DatabaseService";
 import IEntity from "../../Data/IEntity";
+import P2PReciver from "../P2P/P2PReciver";
 import { isChar } from "../../Data/Chars/Char";
 import { isClass } from "../../Data/Classes/Class";
 import { isSubclass } from "../../Data/Classes/Subclass";
@@ -24,12 +25,11 @@ import { isSubrace } from "../../Data/Races/Subrace";
 import { isSpell } from "../../Data/Spell";
 
 import { faFileImport, faFileExport } from "@fortawesome/free-solid-svg-icons";
+import { LoadingSpinner } from "../Loading";
 import AppWrapper from "../AppWrapper";
 import TabBar from "../GeneralElements/TabBar";
 import FileField from "../FormElements/FileField";
 import IconButton from "../FormElements/IconButton";
-import { LoadingSpinner } from "../Loading";
-import P2PReciver from "../P2P/P2PReciver";
 import ClassTile from "../Entities/Classes/ClassTile";
 import EncounterTile from "../Encounters/EncounterTile";
 import CharTile from "../Entities/Chars/CharTile";
