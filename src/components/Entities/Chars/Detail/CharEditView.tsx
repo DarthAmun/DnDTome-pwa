@@ -582,7 +582,10 @@ const CharEditView = ({ char, onEdit }: $Props) => {
                             (select) =>
                               select.name === activeSelection.selectionName
                           )
-                          ?.selectionOptions.map((option) => {
+                          ?.selectionOptions.filter(
+                            (option) => option.level <= calcLevel()
+                          )
+                          .map((option) => {
                             return {
                               value: option.entityName,
                               label: option.entityName,
