@@ -171,14 +171,16 @@ type MenuType = {
 export const Menu = styled.div<MenuType>`
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   background: ${({ theme }) => theme.main.backgroundColor};
-  height: calc(100vh - 4em);
+  height: calc(100vh - 4em - 50px);
   text-align: left;
   padding: 2rem;
   position: fixed;
   z-index: 950;
-  top: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  top: 50px;
   left: 0;
   transition: transform 0.3s ease-in-out;
   transform: ${({ open }) => (open ? "translateX(0)" : "translateX(-100%)")};
@@ -189,19 +191,15 @@ export const Menu = styled.div<MenuType>`
 
   @media (max-width: 576px) {
     width: calc(100% - 4rem);
-    height: calc(100vh - 2em);
   }
 
   a {
+    flex: 1 1 auto;
     font-size: 20px;
     padding: 1rem 0;
     color: ${({ theme }) => theme.main.highlight};
     text-decoration: none;
     transition: color 0.3s linear;
-
-    @media (max-width: 576px) {
-      font-size: 20px;
-    }
   }
 
   a:hover {
