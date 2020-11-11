@@ -1,12 +1,10 @@
-import React, { useCallback, Suspense } from "react";
+import React, { Suspense } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import RandomTable from "../../Data/RandomTable";
 
 import { GiResize } from "react-icons/gi";
 import { LoadingSpinner } from "../Loading";
-import { faTags } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 interface $Props {
   randomTable: RandomTable;
@@ -100,40 +98,4 @@ const RowProp = styled.div`
     color: ${({ theme }) => theme.main.highlight};
   }
 }
-`;
-
-interface $ImageProps {
-  pic: string;
-}
-
-const Image = ({ pic }: $ImageProps) => {
-  if (pic !== "") {
-    return (
-      <ImgContainer>
-        <ImageElm src={pic}></ImageElm>
-      </ImgContainer>
-    );
-  } else {
-    return <Empty />;
-  }
-};
-
-const ImgContainer = styled.div`
-  margin: 5px;
-`;
-const ImageElm = styled.img`
-  max-width: 200px;
-  max-height: 200px;
-`;
-const Empty = styled.div``;
-
-const Tag = styled.span`
-  display: inline-block;
-  background-color: ${({ theme }) => theme.tile.backgroundColorLink};
-  border-radius: 5px;
-  color: ${({ theme }) => theme.tile.backgroundColor};
-  font-size: 10px;
-  padding: 5px;
-  margin-top: -5px;
-  margin-right: 5px;
 `;

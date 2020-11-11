@@ -12,16 +12,16 @@ interface $Props {
 }
 
 const RandomTableEditView = ({ randomTable, onEdit }: $Props) => {
-  const onRowChange = (oldRow: string, value: string, index: number) => {
+  const onRowChange = (field: string, value: string, index: number) => {
     let rows = randomTable.rows;
-    rows[index] = value;
+    rows[index] = { ...rows[index], [field]: value };
     onEdit({ ...randomTable, rows: rows });
   };
 
   const addNewRow = () => {
     onEdit({
       ...randomTable,
-      rows: [...randomTable.rows, ""],
+      rows: [...randomTable.rows, { value: "", cells: "" }],
     });
   };
 
@@ -49,20 +49,28 @@ const RandomTableEditView = ({ randomTable, onEdit }: $Props) => {
         />
       </RandomTableView>
       <RandomTableView>
-        {randomTable.rows.map((row: string, index: number) => {
-          return (
-            <RowWrapper key={index}>
-              <RowCount>{index}</RowCount>
-              <StringField
-                value={row}
-                label={"Row " + index}
-                onChange={(text) => onRowChange(row, text, index)}
-                placeholder={`Item ${index}, Description ${index},...`}
-              />
-              <IconButton icon={faTrash} onClick={() => removeRow(index)} />
-            </RowWrapper>
-          );
-        })}
+        {randomTable.rows.map(
+          (row: { value: string; cells: string }, index: number) => {
+            return (
+              <RowWrapper key={index}>
+                <RowCount>{index}</RowCount>
+                <StringField
+                  value={row.value}
+                  label={"Row values " + index}
+                  onChange={(text) => onRowChange("value", text, index)}
+                  placeholder={`${index + 1} or 0-5`}
+                />
+                <StringField
+                  value={row.cells}
+                  label={"Row " + index}
+                  onChange={(text) => onRowChange("cells", text, index)}
+                  placeholder={`Item ${index}, Description ${index},...`}
+                />
+                <IconButton icon={faTrash} onClick={() => removeRow(index)} />
+              </RowWrapper>
+            );
+          }
+        )}
         <RowWrapper>
           <IconButton icon={faPlus} onClick={() => addNewRow()} />
         </RowWrapper>

@@ -16,7 +16,17 @@ const RandomTableView = ({ randomTable }: $Props) => {
 
   const rollForRandom = () => {
     const min = 1;
-    const max = randomTable.rows.length;
+    let max = 10;
+    const lastRowValues = randomTable.rows[randomTable.rows.length - 1].value;
+    if (lastRowValues.includes("-")) {
+      let range = lastRowValues.trim().split("-");
+      max = +range[1];
+    } else if (lastRowValues.includes("–")) {
+      let range = lastRowValues.trim().split("–");
+      max = +range[1];
+    } else {
+      max = +lastRowValues;
+    }
     const rand = Math.round(min + Math.random() * (max - min));
     setRand(rand);
   };
@@ -35,7 +45,26 @@ const RandomTableView = ({ randomTable }: $Props) => {
         {rand >= 0 && (
           <Prop>
             {rand} <Icon icon={faArrowRight} />
-            <FormatedText text={randomTable.rows[rand - 1]} />
+            {randomTable.rows.map((row: { value: string; cells: string }) => {
+              if (row.value.includes("-")) { // normal -
+                let range = row.value.trim().split("-");
+                const min: number = +range[0];
+                const max: number = +range[1];
+                if (min <= rand && rand <= max)
+                  return <FormatedText text={row.cells} />;
+              } else if (row.value.includes("–")) { // – used by DnDBeyond 
+                let range = row.value.trim().split("–");
+                const min: number = +range[0];
+                const max: number = +range[1];
+                if (min <= rand && rand <= max)
+                  return <FormatedText text={row.cells} />;
+              } else {
+                const valueNumber = +row.value;
+                if (valueNumber === rand)
+                  return <FormatedText text={row.cells} />;
+              }
+              return <></>;
+            })}
           </Prop>
         )}
       </View>
@@ -52,20 +81,24 @@ const RandomTableView = ({ randomTable }: $Props) => {
                   })}
             </tr>
             {randomTable.rows &&
-              randomTable.rows.map((row: string, index: number) => {
-                return (
-                  <tr key={index}>
-                    <TableProp>{index + 1}</TableProp>
-                    {row.split(",").map((cell: string, index: number) => {
-                      return (
-                        <TableProp key={index}>
-                          <FormatedText text={cell} />
-                        </TableProp>
-                      );
-                    })}
-                  </tr>
-                );
-              })}
+              randomTable.rows.map(
+                (row: { value: string; cells: string }, index: number) => {
+                  return (
+                    <tr key={index}>
+                      <TableProp key={index}>{row.value}</TableProp>
+                      {row.cells
+                        .split(",")
+                        .map((cell: string, index: number) => {
+                          return (
+                            <TableProp key={index}>
+                              <FormatedText text={cell} />
+                            </TableProp>
+                          );
+                        })}
+                    </tr>
+                  );
+                }
+              )}
           </tbody>
         </table>
       </View>

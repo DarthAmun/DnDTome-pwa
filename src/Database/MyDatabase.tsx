@@ -207,7 +207,6 @@ export class MyAppDatabase extends Dexie {
       randomTables: "++id, name, rows, header, filename",
     });
 
-
     this.spells = this.table("spells");
     this.items = this.table("items");
     this.gears = this.table("gears");

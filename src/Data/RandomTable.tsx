@@ -4,7 +4,7 @@ export default class RandomTable implements IEntity {
   id?: number;
   name: string;
   header: string;
-  rows: string[];
+  rows: { value: string; cells: string }[];
   filename?: string;
 
   constructor(
@@ -12,7 +12,7 @@ export default class RandomTable implements IEntity {
     name?: string,
     filename?: string,
     header?: string,
-    rows?: string[]
+    rows?: { value: string; cells: string }[]
   ) {
     this.id = id;
     this.filename = filename || "";
@@ -25,10 +25,7 @@ export default class RandomTable implements IEntity {
 export function isRandomTable(arg: any): arg is RandomTable {
   const nameCheck = arg.name !== undefined && typeof arg.name == "string";
   const headerCheck = arg.header !== undefined && typeof arg.header == "string";
-  const rowsCheck =
-    arg.rows !== undefined &&
-    Array.isArray(arg.rows) &&
-    typeof arg.rows[0] == "string";
+  const rowsCheck = arg.rows !== undefined && Array.isArray(arg.rows);
 
   return arg && nameCheck && headerCheck && rowsCheck;
 }
@@ -42,10 +39,7 @@ export function findRandomTableFormattError(
 } {
   const nameCheck = arg.name !== undefined && typeof arg.name == "string";
   const headerCheck = arg.header !== undefined && typeof arg.header == "string";
-  const rowsCheck =
-    arg.rows !== undefined &&
-    Array.isArray(arg.rows) &&
-    typeof arg.rows[0] == "string";
+  const rowsCheck = arg.rows !== undefined && Array.isArray(arg.rows);
 
   return {
     nameCheck: nameCheck,
