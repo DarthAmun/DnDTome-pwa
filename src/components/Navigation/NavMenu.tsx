@@ -10,6 +10,7 @@ import {
   faIdCard,
   faChartPie,
   faHome,
+  faTable,
 } from "@fortawesome/free-solid-svg-icons";
 import {
   GiBackpack,
@@ -41,6 +42,7 @@ const NavMenu = ({ open }: $Props) => {
         <FontAwesomeIcon icon={faHome} />
         Home
       </Link>
+      <Seperator />
       <Link
         to="/spell-overview"
         className={
@@ -104,6 +106,7 @@ const NavMenu = ({ open }: $Props) => {
         <FontAwesomeIcon icon={faIdCard} />
         Chars
       </Link>
+      <Seperator />
       <Link
         to="/monster-overview"
         className={
@@ -122,6 +125,17 @@ const NavMenu = ({ open }: $Props) => {
         <GiSwordClash />
         Encounters
       </Link>
+      <Seperator />
+      <Link
+        to="/randomTable-overview"
+        className={
+          location.pathname === "/randomTable-overview" ? "menuItemActiv" : ""
+        }
+      >
+        <FontAwesomeIcon icon={faTable} />
+        Random Tables
+      </Link>
+      <Seperator />
       <Link
         to="/library"
         className={location.pathname === "/library" ? "menuItemActiv" : ""}
@@ -129,6 +143,7 @@ const NavMenu = ({ open }: $Props) => {
         <GiBookmarklet />
         Library
       </Link>
+      <Seperator />
       <Link
         to="/options"
         className={location.pathname === "/options" ? "menuItemActiv" : ""}
@@ -186,7 +201,6 @@ export const Menu = styled.div<MenuType>`
 
     @media (max-width: 576px) {
       font-size: 20px;
-      text-align: center;
     }
   }
 
@@ -197,4 +211,10 @@ export const Menu = styled.div<MenuType>`
   a.menuItemActiv {
     color: ${({ theme }) => theme.tile.color};
   }
+`;
+
+const Seperator = styled.div`
+  width: 100%;
+  height: 1px;
+  border-bottom: 1px solid #a64dff;
 `;

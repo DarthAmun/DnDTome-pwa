@@ -41,6 +41,9 @@ import Help from "./components/Help/Help";
 import NameToSelection from "./components/Entities/Selections/Detail/LinkWrapper/NameToSelection";
 import SelectionOverview from "./components/Entities/Selections/SelectionOverview";
 import IdToSelection from "./components/Entities/Selections/Detail/LinkWrapper/IdToSelection";
+import IdToRandomTable from "./components/RandomTables/Detail/LinkWrapper/IdToRandomTable";
+import NameToRandomTable from "./components/RandomTables/Detail/LinkWrapper/NameToRandomTable";
+import RandomTableOverview from "./components/RandomTables/RandomTableOverview";
 
 const App = () => {
   return (
@@ -83,6 +86,9 @@ const App = () => {
           <Route path="/selection-detail/name/:name" component={NameToSelection}></Route>
           <Route path="/selection-detail/id/:id" component={IdToSelection}></Route>
           <Route path="/selection-overview" component={SelectionOverview}></Route>
+          <Route path="/randomTable-detail/name/:name" component={NameToRandomTable}></Route>
+          <Route path="/randomTable-detail/id/:id" component={IdToRandomTable}></Route>
+          <Route path="/randomTable-overview" component={RandomTableOverview}></Route>
           <Route path="/statistics" component={Statistics}></Route>
           <Route path="/options" component={Options}></Route>
           <Route path="/library" component={Library}></Route>

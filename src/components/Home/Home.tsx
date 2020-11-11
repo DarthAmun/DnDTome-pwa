@@ -35,12 +35,14 @@ import {
   faMeteor,
   faPlusCircle,
   faQuestionCircle,
+  faTable,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import AppWrapper from "../AppWrapper";
 import TextButton from "../FormElements/TextButton";
 import logo from "../../dndtome icon_v2.png";
 import { BiSelectMultiple } from "react-icons/bi";
+import RandomTable from "../../Data/RandomTable";
 
 const Home = () => {
   let history = useHistory();
@@ -58,6 +60,7 @@ const Home = () => {
   const [encounterAmount, setEncounterAmount] = useState<number>(0);
   const [bookAmount, setBookAmount] = useState<number>(0);
   const [selectionAmount, setSelectionAmount] = useState<number>(0);
+  const [tableAmount, setTableAmount] = useState<number>(0);
 
   useEffect(() => {
     if (reload) {
@@ -96,6 +99,9 @@ const Home = () => {
       });
       reciveCount("selections", (result: number) => {
         setSelectionAmount(result);
+      });
+      reciveCount("randomTables", (result: number) => {
+        setTableAmount(result);
       });
       reciveAllPromise("chars").then((result: any[]) => {
         return result;
@@ -191,6 +197,15 @@ const Home = () => {
       history.push(`/selection-detail/id/${id}`);
     });
   };
+
+  const createNewRandomTable = () => {
+    let newRandomTable = new RandomTable();
+    delete newRandomTable.id;
+    createNewWithId("randomTables", newRandomTable, (id) => {
+      history.push(`/randomTable-detail/id/${id}`);
+    });
+  };
+
   return (
     <AppWrapper>
       <General>
@@ -402,6 +417,26 @@ const Home = () => {
               icon={faPlusCircle}
               text={"Create"}
               onClick={() => createNewEncounter()}
+            />
+          </ButtonBar>
+        </HomeSection>
+        <HomeSection>
+          <SelectionTitle>
+            <FontAwesomeIcon icon={faTable} /> Random Tables
+          </SelectionTitle>
+          <SectionText>
+            {`You have ${tableAmount} random tables in your collection. `}
+            {tableAmount <= 0 && `Try creating one.`}
+          </SectionText>
+          <ButtonBar>
+            <TextButton
+              text={"Go to Tables"}
+              onClick={() => history.push(`/randomTable-overview`)}
+            />
+            <TextButton
+              icon={faPlusCircle}
+              text={"Create"}
+              onClick={() => createNewRandomTable()}
             />
           </ButtonBar>
         </HomeSection>
