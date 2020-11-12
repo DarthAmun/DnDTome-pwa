@@ -27,8 +27,9 @@ import CharCombat from "./DetailComponents/CharCombat";
 import MonsterTile from "../../Monster/MonsterTile";
 import FormatedText from "../../../GeneralElements/FormatedText";
 import CharSpell from "./DetailComponents/CharSpells";
-import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
+import { faFilePdf, faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import TextButton from "../../../FormElements/TextButton";
+import { exportPdf } from "../../../../Services/PdfService";
 
 interface $Props {
   character: Char;
@@ -258,6 +259,11 @@ const CharView = ({ character }: $Props) => {
               )}
               {!!send && <P2PSender data={char} mode={"THIS"} />}
             </PropWrapper>
+            <TextButton 
+              text={`Export ${char.name} to Pdf`}
+              icon={faFilePdf}
+              onClick={() => exportPdf(char)}
+            />
           </View>
         </>
       )}
