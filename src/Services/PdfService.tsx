@@ -1,92 +1,276 @@
-import { PDFDocument, PDFField } from "pdf-lib";
+import { PDFDocument } from "pdf-lib";
 import Char from "../Data/Chars/Char";
 import ClassSet from "../Data/Chars/ClassSet";
+import Feature from "../Data/Classes/Feature";
+import FeatureSet from "../Data/Classes/FeatureSet";
+import { buildCharacter } from "./CharacterService";
+
+const formatScore = (score: number) => {
+  let mod = Math.floor((score - 10) / 2);
+  if (score > 9) {
+    return "+" + mod;
+  }
+  return "" + mod;
+};
+
+const calcSkill = (skillProf: number, prof: number, stat: number) => {
+  return "" + (skillProf * prof + Math.floor((stat - 10) / 2));
+};
 
 const fillTemplate = async (template: string | ArrayBuffer, char: Char) => {
+  let completeChar = await buildCharacter(char);
+
+  completeChar.items.forEach((element) => {
+    console.log(element);
+  });
+
   // Load a PDF with form fields
   const pdfDoc = await PDFDocument.load(template);
 
   // Get the form containing all the fields
   const form = pdfDoc.getForm();
 
-  const nameField = form.getTextField("CharacterName");
-  nameField.setText(char.name);
-  const playerNameField = form.getTextField("PlayerName");
-  playerNameField.setText(char.player);
-  const alignmentField = form.getTextField("Alignment");
-  alignmentField.setText(char.alignment);
-  const acField = form.getTextField("AC");
-  acField.setText("" + char.ac);
-  const initiativeField = form.getTextField("Initiative");
-  initiativeField.setText("" + char.init);
-  const speedField = form.getTextField("Speed");
-  speedField.setText(char.speed);
-  const hpMaxField = form.getTextField("HPMax");
-  hpMaxField.setText("" + char.hp);
-  const hpCurrentField = form.getTextField("HPCurrent");
-  hpCurrentField.setText("" + char.currentHp);
-  const hdField = form.getTextField("HD");
-  const hdTotalField = form.getTextField("HDTotal");
-  const backgroundField = form.getTextField("Background");
-  backgroundField.setText(char.background);
-  const xpField = form.getTextField("XP");
-  xpField.setText("Milestone");
+  form.getTextField("CharacterName").setText(char.name);
+  form.getTextField("PlayerName").setText(char.player);
+  form.getTextField("Alignment").setText(char.alignment);
+  form.getTextField("AC").setText("" + char.ac);
+  form.getTextField("Initiative").setText("" + char.init);
+  form.getTextField("Speed").setText(char.speed);
+  form.getTextField("HPMax").setText("" + char.hp);
+  form.getTextField("HPCurrent").setText("" + char.currentHp);
+  form.getTextField("HD");
+  form.getTextField("HDTotal");
+  form.getTextField("Background").setText(char.background);
+  form.getTextField("XP").setText("Milestone");
 
-  const raceField = form.getTextField("Race");
-  raceField.setText(char.race.race + " (" + char.race.subrace + ")");
-  const classLevelField = form.getTextField("ClassLevel");
+  form
+    .getTextField("Race")
+    .setText(char.race.race + " (" + char.race.subrace + ")");
   let classes = "";
   char.classes.forEach((classSet: ClassSet) => {
     classes += `${classSet.classe} ${classSet.level} (${classSet.subclasse}), `;
   });
-  classLevelField.setText(classes);
+  form.getTextField("ClassLevel").setText(classes);
 
-  const cpField = form.getTextField("CP");
-  cpField.setText(""+char.money.copper);
-  const spField = form.getTextField("SP");
-  spField.setText(""+char.money.silver);
-  const epField = form.getTextField("EP");
-  epField.setText(""+char.money.electrum);
-  const gpField = form.getTextField("GP");
-  gpField.setText(""+char.money.gold);
-  const ppField = form.getTextField("PP");
-  ppField.setText(""+char.money.platinum);
+  form.getTextField("CP").setText("" + char.money.copper);
+  form.getTextField("SP").setText("" + char.money.silver);
+  form.getTextField("EP").setText("" + char.money.electrum);
+  form.getTextField("GP").setText("" + char.money.gold);
+  form.getTextField("PP").setText("" + char.money.platinum);
 
-  const strField = form.getTextField("STR");
-  strField.setText(""+char.str);
-  const strmodField = form.getTextField("STRmod");
-  const dexField = form.getTextField("DEX");
-  dexField.setText(""+char.dex);
-  const dexmodField = form.getTextField("DEXmod");
-  const conField = form.getTextField("CON");
-  conField.setText(""+char.con);
-  const conmodField = form.getTextField("CONmod");
-  const intField = form.getTextField("INT");
-  intField.setText(""+char.int);
-  const intmodField = form.getTextField("INTmod");
-  const wisField = form.getTextField("WIS");
-  wisField.setText(""+char.wis);
-  const wismodField = form.getTextField("WISmod");
-  const chaField = form.getTextField("CHA");
-  chaField.setText(""+char.cha);
-  const chamodField = form.getTextField("CHAmod");
+  form.getTextField("STR").setText("" + char.str);
+  form.getTextField("STRmod").setText(formatScore(char.str));
+  form.getTextField("DEX").setText("" + char.dex);
+  form.getTextField("DEXmod").setText(formatScore(char.dex));
+  form.getTextField("CON").setText("" + char.con);
+  form.getTextField("CONmod").setText(formatScore(char.con));
+  form.getTextField("INT").setText("" + char.int);
+  form.getTextField("INTmod").setText(formatScore(char.int));
+  form.getTextField("WIS").setText("" + char.wis);
+  form.getTextField("WISmod").setText(formatScore(char.wis));
+  form.getTextField("CHA").setText("" + char.cha);
+  form.getTextField("CHAmod").setText(formatScore(char.cha));
 
-  const equipmentField = form.getTextField("Equipment");
-  const featTraitsField = form.getTextField("Feat+Traits");
-  const featTraits2Field = form.getTextField("Features and Traits");
-  const treasureField = form.getTextField("Treasure");
+  form
+    .getTextField("ST Strength")
+    .setText(calcSkill(char.saves.strSaveProf, completeChar.prof, char.str));
+  if (char.saves.strSaveProf === 1) form.getCheckBox("Check Box 11").check();
+  form
+    .getTextField("ST Dexterity")
+    .setText(calcSkill(char.saves.dexSaveProf, completeChar.prof, char.dex));
+  if (char.saves.dexSaveProf === 1) form.getCheckBox("Check Box 18").check();
+  form
+    .getTextField("ST Constitution")
+    .setText(calcSkill(char.saves.conSaveProf, completeChar.prof, char.con));
+  if (char.saves.conSaveProf === 1) form.getCheckBox("Check Box 19").check();
+  form
+    .getTextField("ST Intelligence")
+    .setText(calcSkill(char.saves.intSaveProf, completeChar.prof, char.int));
+  if (char.saves.intSaveProf === 1) form.getCheckBox("Check Box 20").check();
+  form
+    .getTextField("ST Wisdom")
+    .setText(calcSkill(char.saves.wisSaveProf, completeChar.prof, char.wis));
+  if (char.saves.wisSaveProf === 1) form.getCheckBox("Check Box 21").check();
+  form
+    .getTextField("ST Charisma")
+    .setText(calcSkill(char.saves.chaSaveProf, completeChar.prof, char.cha));
+  if (char.saves.chaSaveProf === 1) form.getCheckBox("Check Box 22").check();
 
-  const spellSaveDCField = form.getTextField("SpellSaveDC  2");
-  const spellAtkBonusDCField = form.getTextField("SpellAtkBonus 2");
-  const spellcastingAbilityDCField = form.getTextField("SpellcastingAbility 2");
-  const spellcastingClassField = form.getTextField("Spellcasting Class 2");
+  form
+    .getTextField("Acrobatics")
+    .setText(
+      calcSkill(char.skills.acrobaticsProf, completeChar.prof, char.str)
+    );
+  if (char.skills.acrobaticsProf > 0) form.getCheckBox("Check Box 23").check();
+  form
+    .getTextField("Animal")
+    .setText(
+      calcSkill(char.skills.animalHandlingProf, completeChar.prof, char.wis)
+    );
+  if (char.skills.animalHandlingProf > 0)
+    form.getCheckBox("Check Box 24").check();
+  form
+    .getTextField("Arcana")
+    .setText(calcSkill(char.skills.arcanaProf, completeChar.prof, char.int));
+  if (char.skills.arcanaProf > 0) form.getCheckBox("Check Box 25").check();
+  form
+    .getTextField("Athletics")
+    .setText(calcSkill(char.skills.athleticsProf, completeChar.prof, char.dex));
+  if (char.skills.athleticsProf > 0) form.getCheckBox("Check Box 26").check();
+  form
+    .getTextField("Deception")
+    .setText(calcSkill(char.skills.deceptionProf, completeChar.prof, char.cha));
+  if (char.skills.deceptionProf > 0) form.getCheckBox("Check Box 27").check();
+  form
+    .getTextField("History")
+    .setText(calcSkill(char.skills.historyProf, completeChar.prof, char.int));
+  if (char.skills.historyProf > 0) form.getCheckBox("Check Box 28").check();
+  form
+    .getTextField("Insight")
+    .setText(calcSkill(char.skills.insightProf, completeChar.prof, char.wis));
+  if (char.skills.insightProf > 0) form.getCheckBox("Check Box 29").check();
+  form
+    .getTextField("Intimidation")
+    .setText(
+      calcSkill(char.skills.intimidationProf, completeChar.prof, char.cha)
+    );
+  if (char.skills.intimidationProf > 0)
+    form.getCheckBox("Check Box 30").check();
+  form
+    .getTextField("Investigation")
+    .setText(
+      calcSkill(char.skills.investigationProf, completeChar.prof, char.int)
+    );
+  if (char.skills.investigationProf > 0)
+    form.getCheckBox("Check Box 31").check();
+  form
+    .getTextField("Medicine")
+    .setText(calcSkill(char.skills.medicineProf, completeChar.prof, char.wis));
+  if (char.skills.medicineProf > 0) form.getCheckBox("Check Box 32").check();
+  form
+    .getTextField("Nature")
+    .setText(calcSkill(char.skills.natureProf, completeChar.prof, char.int));
+  if (char.skills.natureProf > 0) form.getCheckBox("Check Box 33").check();
+  form
+    .getTextField("Perception")
+    .setText(
+      calcSkill(char.skills.perceptionProf, completeChar.prof, char.wis)
+    );
+  if (char.skills.perceptionProf > 0) form.getCheckBox("Check Box 34").check();
+  form
+    .getTextField("Performance")
+    .setText(
+      calcSkill(char.skills.performanceProf, completeChar.prof, char.cha)
+    );
+  if (char.skills.performanceProf > 0) form.getCheckBox("Check Box 35").check();
+  form
+    .getTextField("Persuasion")
+    .setText(
+      calcSkill(char.skills.persuasionProf, completeChar.prof, char.cha)
+    );
+  if (char.skills.persuasionProf > 0) form.getCheckBox("Check Box 35").check();
+  form
+    .getTextField("Religion")
+    .setText(calcSkill(char.skills.religionProf, completeChar.prof, char.int));
+  if (char.skills.religionProf > 0) form.getCheckBox("Check Box 36").check();
+  form
+    .getTextField("SleightofHand")
+    .setText(
+      calcSkill(char.skills.sleightOfHandProf, completeChar.prof, char.dex)
+    );
+  if (char.skills.sleightOfHandProf > 0)
+    form.getCheckBox("Check Box 37").check();
+  form
+    .getTextField("Stealth")
+    .setText(calcSkill(char.skills.stealthProf, completeChar.prof, char.dex));
+  if (char.skills.stealthProf > 0) form.getCheckBox("Check Box 38").check();
+  form
+    .getTextField("Survival")
+    .setText(calcSkill(char.skills.survivalProf, completeChar.prof, char.wis));
+  if (char.skills.survivalProf > 0) form.getCheckBox("Check Box 38").check();
+
+  form.getTextField("Treasure");
+
+  let equipments: string = "";
+  char.items.forEach(
+    (item: {
+      origin: string;
+      attuned: boolean;
+      prof: boolean;
+      attribute: string;
+    }) => {
+      equipments += item.origin + ", ";
+    }
+  );
+  form.getTextField("Equipment").setText(equipments);
+
+  let featureText = "";
+  let feature2Text = "";
+  completeChar.classFeatures.forEach((features: FeatureSet) => {
+    features.features.forEach((featur: Feature) => {
+      if (featur.type.toString() !== "normal") {
+        feature2Text += featur.type + " - " + featur.name + "\n";
+      } else {
+        featureText += featur.type + " - " + featur.name + "\n";
+      }
+    });
+  });
+  form.getTextField("Feat+Traits").setText(featureText);
+  form.getTextField("Features and Traits").setText(feature2Text);
+
+  form.getTextField("SpellSaveDC  2").setText("" + char.castingDC);
+  form.getTextField("SpellAtkBonus 2").setText("" + char.castingHit);
+  form.getTextField("SpellcastingAbility 2");
+  form.getTextField("Spellcasting Class 2");
+
+  let count = 0;
+  completeChar.items.forEach((item) => {
+    if (count <= 3 && item.base !== undefined) {
+      count++;
+      const bonus = Math.floor((char[item.attribute] - 10) / 2);
+      form.getTextField(`Wpn Name ${count}`).setText(item.item.name);
+      form
+        .getTextField(`Wpn${count} AtkBonus`)
+        .setText(
+          `+ ${
+            bonus + (item.prof ? completeChar.prof : 0) + item.item.magicBonus
+          }`
+        );
+      form
+        .getTextField(`Wpn${count} Damage`)
+        .setText(`${item.base.damage} +${item.item.magicBonus + bonus}`);
+    }
+  });
+  if (count <= 3) {
+    completeChar.gears.forEach((gear) => {
+      if (count <= 3 && gear.gear.damage !== "") {
+        count++;
+        const strBonus = Math.floor((char.str - 10) / 2);
+        const dexBonus = Math.floor((char.dex - 10) / 2);
+        if (gear.gear.properties.toLocaleLowerCase().includes("finesse")) {
+          form.getTextField(`Wpn Name ${count}`).setText(gear.gear.name);
+          form.getTextField(`Wpn${count} AtkBonus`).setText(
+            `${strBonus > dexBonus ? `+${strBonus + completeChar.prof}` : ""}
+            ${dexBonus > strBonus ? `+${dexBonus + completeChar.prof}` : ""}`
+          );
+          form.getTextField(`Wpn${count} Damage`).setText(gear.gear.damage);
+        } else {
+          form.getTextField(`Wpn Name ${count}`).setText(gear.gear.name);
+          form
+            .getTextField(`Wpn${count} AtkBonus`)
+            .setText(`+ ${strBonus + completeChar.prof}`);
+          form.getTextField(`Wpn${count} Damage`).setText(gear.gear.damage);
+        }
+      }
+    });
+  }
 
   // Serialize the PDFDocument to bytes (a Uint8Array)
   return pdfDoc.save();
 };
 
 const downloadFilledPdf = (pdfBytes: Uint8Array, filename: string) => {
-  let contentType = "application/json;charset=utf-8;";
+  let contentType = "application/pdf;charset=utf-8;";
   const blob = new Blob([pdfBytes], { type: contentType });
 
   if (window.navigator && window.navigator.msSaveOrOpenBlob) {
