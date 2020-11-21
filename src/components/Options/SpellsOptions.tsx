@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 
 import { faFileExport, faPaperPlane, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
@@ -6,6 +6,8 @@ import { exportAllFromTable } from "../../Services/OptionService";
 import IconButton from "../FormElements/IconButton";
 import P2PSender from "../P2P/P2PSender";
 import TextButton from "../FormElements/TextButton";
+import EnumField from "../FormElements/EnumField";
+import { reciveAttributeSelection } from "../../Services/DatabaseService";
 
 interface $Props {
   amount: number;
@@ -14,6 +16,20 @@ interface $Props {
 
 const SpellsOptions = ({ amount, triggerDeleteAll }: $Props) => {
   const [send, setSend] = useState<boolean>(false);
+  const [spellSourcen, setSpellSourcen] = useState<{ value: string; label: string }[]>([]);
+  const [spellSource, setSpellSource] = useState<string>("All");
+
+  useEffect(() => {
+    reciveAttributeSelection("spells", "filename", function (result) {
+      let filenames = result.map((filename) => {
+        if (filename === "") {
+          return { value: filename.toString(), label: "Empty" };
+        }
+        return { value: filename.toString(), label: filename.toString() };
+      });
+      setSpellSourcen([...filenames, {value: "All", label:"All"}]);
+    });
+  }, []);
 
   return (
     <OptionTab>
@@ -21,6 +37,12 @@ const SpellsOptions = ({ amount, triggerDeleteAll }: $Props) => {
         <SelectionTitle>Export</SelectionTitle>
         <SectionRow>
           <SectionText>Export all Spells?</SectionText>
+          <EnumField
+            options={spellSourcen}
+            value={{value: spellSource, label: spellSource}}
+            label="Filenames"
+            onChange={(type) => setSpellSource(type)}
+          />
           <IconButton
             icon={faFileExport}
             onClick={() => exportAllFromTable("spells", "DnDTome_spells.json")}
@@ -31,19 +53,12 @@ const SpellsOptions = ({ amount, triggerDeleteAll }: $Props) => {
         <SelectionTitle>Delete</SelectionTitle>
         <SectionRow>
           <SectionText>Delete all {amount} Spells?</SectionText>
-          <IconButton
-            icon={faTrashAlt}
-            onClick={() => triggerDeleteAll("spells")}
-          />
+          <IconButton icon={faTrashAlt} onClick={() => triggerDeleteAll("spells")} />
         </SectionRow>
       </OptionSection>
       <OptionSection>
         {!send && (
-          <TextButton
-            text={`Send all spells`}
-            icon={faPaperPlane}
-            onClick={() => setSend(true)}
-          />
+          <TextButton text={`Send all spells`} icon={faPaperPlane} onClick={() => setSend(true)} />
         )}
         {!!send && <P2PSender data={"spells"} mode={"ALL"} />}
       </OptionSection>
@@ -73,7 +88,6 @@ const OptionSection = styled(General)`
   margin: 0.5em;
   border-radius: 3px;
   box-shadow: ${({ theme }) => theme.tile.boxShadow};
-  overflow: hidden;
 
   display: flex;
   flex-wrap: wrap;

@@ -10,6 +10,9 @@ import { exportAllFromTable } from "../../Services/OptionService";
 import IconButton from "../FormElements/IconButton";
 import P2PSender from "../P2P/P2PSender";
 import TextButton from "../FormElements/TextButton";
+import { useEffect } from "react";
+import { reciveAttributeSelection } from "../../Services/DatabaseService";
+import EnumField from "../FormElements/EnumField";
 
 interface $Props {
   amount: number;
@@ -18,12 +21,33 @@ interface $Props {
 
 const GearsOptions = ({ amount, triggerDeleteAll }: $Props) => {
   const [send, setSend] = useState<boolean>(false);
+  const [gearSourcen, setGearSourcen] = useState<{ value: string; label: string }[]>([]);
+  const [gearSource, setGearSource] = useState<string>("All");
+
+  useEffect(() => {
+    reciveAttributeSelection("gears", "filename", function (result) {
+      let filenames = result.map((filename) => {
+        if (filename === "") {
+          return { value: filename.toString(), label: "Empty" };
+        }
+        return { value: filename.toString(), label: filename.toString() };
+      });
+      setGearSourcen([...filenames, {value: "All", label:"All"}]);
+    });
+  }, []);
+
   return (
     <OptionTab>
       <OptionSection>
         <SelectionTitle>Export</SelectionTitle>
         <SectionRow>
           <SectionText>Export all Gear?</SectionText>
+          <EnumField
+            options={gearSourcen}
+            value={{value: gearSource, label: gearSource}}
+            label="Filenames"
+            onChange={(type) => setGearSource(type)}
+          />
           <IconButton
             icon={faFileExport}
             onClick={() => exportAllFromTable("gears", "DnDTome_gear.json")}
@@ -76,7 +100,6 @@ const OptionSection = styled(General)`
   margin: 0.5em;
   border-radius: 3px;
   box-shadow: ${({ theme }) => theme.tile.boxShadow};
-  overflow: hidden;
 
   display: flex;
   flex-wrap: wrap;
