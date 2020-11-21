@@ -3,6 +3,7 @@ import Char from "../Data/Chars/Char";
 import ClassSet from "../Data/Chars/ClassSet";
 import Feature from "../Data/Classes/Feature";
 import FeatureSet from "../Data/Classes/FeatureSet";
+import Spell from "../Data/Spell";
 import { buildCharacter } from "./CharacterService";
 
 const formatScore = (score: number) => {
@@ -43,9 +44,7 @@ const fillTemplate = async (template: string | ArrayBuffer, char: Char) => {
   form.getTextField("Background").setText(char.background);
   form.getTextField("XP").setText("Milestone");
 
-  form
-    .getTextField("Race")
-    .setText(char.race.race + " (" + char.race.subrace + ")");
+  form.getTextField("Race").setText(char.race.race + " (" + char.race.subrace + ")");
   let classes = "";
   char.classes.forEach((classSet: ClassSet) => {
     classes += `${classSet.classe} ${classSet.level} (${classSet.subclasse}), `;
@@ -98,17 +97,12 @@ const fillTemplate = async (template: string | ArrayBuffer, char: Char) => {
 
   form
     .getTextField("Acrobatics")
-    .setText(
-      calcSkill(char.skills.acrobaticsProf, completeChar.prof, char.str)
-    );
+    .setText(calcSkill(char.skills.acrobaticsProf, completeChar.prof, char.str));
   if (char.skills.acrobaticsProf > 0) form.getCheckBox("Check Box 23").check();
   form
     .getTextField("Animal")
-    .setText(
-      calcSkill(char.skills.animalHandlingProf, completeChar.prof, char.wis)
-    );
-  if (char.skills.animalHandlingProf > 0)
-    form.getCheckBox("Check Box 24").check();
+    .setText(calcSkill(char.skills.animalHandlingProf, completeChar.prof, char.wis));
+  if (char.skills.animalHandlingProf > 0) form.getCheckBox("Check Box 24").check();
   form
     .getTextField("Arcana")
     .setText(calcSkill(char.skills.arcanaProf, completeChar.prof, char.int));
@@ -131,18 +125,12 @@ const fillTemplate = async (template: string | ArrayBuffer, char: Char) => {
   if (char.skills.insightProf > 0) form.getCheckBox("Check Box 29").check();
   form
     .getTextField("Intimidation")
-    .setText(
-      calcSkill(char.skills.intimidationProf, completeChar.prof, char.cha)
-    );
-  if (char.skills.intimidationProf > 0)
-    form.getCheckBox("Check Box 30").check();
+    .setText(calcSkill(char.skills.intimidationProf, completeChar.prof, char.cha));
+  if (char.skills.intimidationProf > 0) form.getCheckBox("Check Box 30").check();
   form
     .getTextField("Investigation")
-    .setText(
-      calcSkill(char.skills.investigationProf, completeChar.prof, char.int)
-    );
-  if (char.skills.investigationProf > 0)
-    form.getCheckBox("Check Box 31").check();
+    .setText(calcSkill(char.skills.investigationProf, completeChar.prof, char.int));
+  if (char.skills.investigationProf > 0) form.getCheckBox("Check Box 31").check();
   form
     .getTextField("Medicine")
     .setText(calcSkill(char.skills.medicineProf, completeChar.prof, char.wis));
@@ -153,21 +141,15 @@ const fillTemplate = async (template: string | ArrayBuffer, char: Char) => {
   if (char.skills.natureProf > 0) form.getCheckBox("Check Box 33").check();
   form
     .getTextField("Perception")
-    .setText(
-      calcSkill(char.skills.perceptionProf, completeChar.prof, char.wis)
-    );
+    .setText(calcSkill(char.skills.perceptionProf, completeChar.prof, char.wis));
   if (char.skills.perceptionProf > 0) form.getCheckBox("Check Box 34").check();
   form
     .getTextField("Performance")
-    .setText(
-      calcSkill(char.skills.performanceProf, completeChar.prof, char.cha)
-    );
+    .setText(calcSkill(char.skills.performanceProf, completeChar.prof, char.cha));
   if (char.skills.performanceProf > 0) form.getCheckBox("Check Box 35").check();
   form
     .getTextField("Persuasion")
-    .setText(
-      calcSkill(char.skills.persuasionProf, completeChar.prof, char.cha)
-    );
+    .setText(calcSkill(char.skills.persuasionProf, completeChar.prof, char.cha));
   if (char.skills.persuasionProf > 0) form.getCheckBox("Check Box 35").check();
   form
     .getTextField("Religion")
@@ -175,11 +157,8 @@ const fillTemplate = async (template: string | ArrayBuffer, char: Char) => {
   if (char.skills.religionProf > 0) form.getCheckBox("Check Box 36").check();
   form
     .getTextField("SleightofHand")
-    .setText(
-      calcSkill(char.skills.sleightOfHandProf, completeChar.prof, char.dex)
-    );
-  if (char.skills.sleightOfHandProf > 0)
-    form.getCheckBox("Check Box 37").check();
+    .setText(calcSkill(char.skills.sleightOfHandProf, completeChar.prof, char.dex));
+  if (char.skills.sleightOfHandProf > 0) form.getCheckBox("Check Box 37").check();
   form
     .getTextField("Stealth")
     .setText(calcSkill(char.skills.stealthProf, completeChar.prof, char.dex));
@@ -193,12 +172,7 @@ const fillTemplate = async (template: string | ArrayBuffer, char: Char) => {
 
   let equipments: string = "";
   char.items.forEach(
-    (item: {
-      origin: string;
-      attuned: boolean;
-      prof: boolean;
-      attribute: string;
-    }) => {
+    (item: { origin: string; attuned: boolean; prof: boolean; attribute: string }) => {
       equipments += item.origin + ", ";
     }
   );
@@ -231,11 +205,7 @@ const fillTemplate = async (template: string | ArrayBuffer, char: Char) => {
       form.getTextField(`Wpn Name ${count}`).setText(item.item.name);
       form
         .getTextField(`Wpn${count} AtkBonus`)
-        .setText(
-          `+ ${
-            bonus + (item.prof ? completeChar.prof : 0) + item.item.magicBonus
-          }`
-        );
+        .setText(`+ ${bonus + (item.prof ? completeChar.prof : 0) + item.item.magicBonus}`);
       form
         .getTextField(`Wpn${count} Damage`)
         .setText(`${item.base.damage} +${item.item.magicBonus + bonus}`);
@@ -256,14 +226,31 @@ const fillTemplate = async (template: string | ArrayBuffer, char: Char) => {
           form.getTextField(`Wpn${count} Damage`).setText(gear.gear.damage);
         } else {
           form.getTextField(`Wpn Name ${count}`).setText(gear.gear.name);
-          form
-            .getTextField(`Wpn${count} AtkBonus`)
-            .setText(`+ ${strBonus + completeChar.prof}`);
+          form.getTextField(`Wpn${count} AtkBonus`).setText(`+ ${strBonus + completeChar.prof}`);
           form.getTextField(`Wpn${count} Damage`).setText(gear.gear.damage);
         }
       }
     });
   }
+
+  let spellFieldNumbers = [
+    [1014, 1016, 1017, 1018, 1019, 1020, 1021, 1022],
+    [1015, 1023, 1024, 1025, 1026, 1027, 1028, 1029, 1030, 1031, 1032, 1033],
+    [1046, 1034, 1035, 1036, 1037, 1038, 1039, 1040, 1041, 1042, 1043, 1044, 1045],
+    [1048, 1047,  1049, 1050, 1051, 1052, 1053, 1054, 1055, 1056, 1057, 1058, 1059],
+    [1061, 1060, 1062, 1063, 1064, 1065, 1066, 1067, 1068, 1069, 1070, 1071, 1072],
+    [1074, 1073, 1075, 1076, 1077, 1078, 1079, 1080, 1081],
+    [1083, 1082, 1084, 1085, 1086, 1087, 1088, 1089, 1090],
+    [1092, 1091, 1093, 1094, 1095, 1096, 1097, 1098, 1099],
+    [10101, 10100, 10102, 10103, 10104, 10105, 10106],
+    [10108, 10107, 10109, 101010, 101011, 101012, 101013],
+  ];
+  completeChar.spells.forEach((spell: Spell) => {
+    if (spellFieldNumbers[spell.level].length > 0) {
+      form.getTextField(`Spells ${spellFieldNumbers[spell.level][0]}`).setText(spell.name);
+      spellFieldNumbers[spell.level].slice(1);
+    }
+  });
 
   // Serialize the PDFDocument to bytes (a Uint8Array)
   return pdfDoc.save();

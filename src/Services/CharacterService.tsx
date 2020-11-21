@@ -8,6 +8,7 @@ import Monster from "../Data/Monster";
 import Race from "../Data/Races/Race";
 import Subrace from "../Data/Races/Subrace";
 import Trait from "../Data/Races/Trait";
+import Spell from "../Data/Spell";
 import { recivePromiseByAttribute } from "./DatabaseService";
 
 const calcLevel = (char: Char) => {
@@ -43,6 +44,7 @@ export const buildCharacter = async (character: Char) => {
     prof: boolean;
     attribute: string;
   }[] = [];
+  let spells: Spell[];
   let monsters: Monster[] = [];
 
   let classList: Promise<Class>[] = [];
@@ -151,6 +153,12 @@ export const buildCharacter = async (character: Char) => {
   });
   monsters = await Promise.all(monsterList);
 
+  let spellList: Promise<Spell>[] = [];
+  character.spells.forEach((spell: string) => {
+    spellList.push(recivePromiseByAttribute("spells", "name", spell));
+  });
+  spells = await Promise.all(spellList);
+
   console.timeEnd("t");
   return {
     character: character,
@@ -164,6 +172,7 @@ export const buildCharacter = async (character: Char) => {
     raceFeatures: raceFeatures,
     gears: gears,
     items: items,
+    spells: spells,
     monsters: monsters,
   };
 };
