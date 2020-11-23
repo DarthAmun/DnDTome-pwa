@@ -13,7 +13,7 @@ import {
   faMinus,
 } from "@fortawesome/free-solid-svg-icons";
 import Feature, {
-  featureType,
+  FeatureType,
   featureTypeArray,
   getOptionFromEnum,
 } from "../../../../Data/Classes/Feature";
@@ -251,7 +251,7 @@ const ClassEditView = ({ classe, onEdit }: $Props) => {
         features.push({
           name: "",
           text: "",
-          type: featureType.normal,
+          type: FeatureType.normal,
           selections: []
         });
         return { ...featureSet, features: features };

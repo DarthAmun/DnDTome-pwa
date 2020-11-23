@@ -31,73 +31,17 @@ import NumberField from "../../../FormElements/NumberField";
 import TextField from "../../../FormElements/TextField";
 import IconButton from "../../../FormElements/IconButton";
 import TextButton from "../../../FormElements/TextButton";
+import { buildCharacter } from "../../../../Services/CharacterService";
 
 interface $Props {
-  char: Char;
+  character: Char;
   onEdit: (value: Char) => void;
 }
 
-const CharEditView = ({ char, onEdit }: $Props) => {
+const CharEditView = ({ character, onEdit }: $Props) => {
   const [activeTab, setTab] = useState<string>("General");
-  const [classes, setClasses] = useState<Class[]>([]);
-  const [subclasses, setSubclasses] = useState<Subclass[]>([]);
+  const [char, setChar] = useState<Char>(buildCharacter(character));
   const [selections, setSelections] = useState<Selection[]>([]);
-  const [prof, setProf] = useState<number>(0);
-
-  const calcLevel = useCallback(() => {
-    let level = 0;
-    char.classes.forEach((classe) => {
-      level += classe.level;
-    });
-    return level;
-  }, [char]);
-
-  useEffect(() => {
-    if (classes && classes.length > 0) {
-      const level = calcLevel();
-      classes[0].featureSets.forEach((featureSet: FeatureSet) => {
-        if (featureSet.level === level) {
-          setProf(featureSet.profBonus);
-        }
-      });
-    }
-  }, [classes, calcLevel]);
-
-  useEffect(() => {
-    reciveAllFiltered(
-      "classes",
-      [
-        {
-          fieldName: "name",
-          value: char.classes.map((classe) => {
-            return classe.classe;
-          }),
-          sort: 0,
-        },
-      ],
-      (results: any[]) => {
-        setClasses(results);
-      }
-    );
-  }, [char.classes, calcLevel]);
-
-  useEffect(() => {
-    reciveAllFiltered(
-      "subclasses",
-      [
-        {
-          fieldName: "name",
-          value: char.classes.map((classe) => {
-            return classe.subclasse;
-          }),
-          sort: 0,
-        },
-      ],
-      (results: any[]) => {
-        setSubclasses(results);
-      }
-    );
-  }, [char.classes, calcLevel]);
 
   useEffect(() => {
     reciveAll("selections", (data: any[]) => {
