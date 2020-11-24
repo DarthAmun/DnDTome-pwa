@@ -1,18 +1,12 @@
-import React, { useCallback, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import P2PSender from "../../../P2P/P2PSender";
-import { reciveAllFiltered, reciveByAttribute, update } from "../../../../Services/DatabaseService";
+import { update } from "../../../../Services/DatabaseService";
 import Char from "../../../../Data/Chars/Char";
 import Class from "../../../../Data/Classes/Class";
-// import Subclass from "../../../../Data/Classes/Subclass";
 import Feature from "../../../../Data/Classes/Feature";
 import FeatureSet from "../../../../Data/Classes/FeatureSet";
-// import Race from "../../../../Data/Races/Race";
-// import Subrace from "../../../../Data/Races/Subrace";
 import Trait from "../../../../Data/Races/Trait";
-import Item, { isItem } from "../../../../Data/Item";
-import Gear, { isGear } from "../../../../Data/Gear";
-import Monster, { isMonster } from "../../../../Data/Monster";
 
 import TabBar from "../../../GeneralElements/TabBar";
 import CharGeneral from "./DetailComponents/CharGeneral";
@@ -46,7 +40,7 @@ const CharView = ({ character }: $Props) => {
       setBuildChar(buildChar);
       setLoading(false);
     });
-  }, [buildCharacter, setBuildChar]);
+  }, [character, setBuildChar]);
 
   useEffect(() => {
     if (!tabs.includes("Monster") && character.monsters.length > 0)
@@ -61,7 +55,7 @@ const CharView = ({ character }: $Props) => {
 
   const saveChar = (char: BuildChar) => {
     setBuildChar(char);
-    update("chars", char.characterw);
+    update("chars", char.character);
   };
 
   return (
@@ -69,11 +63,11 @@ const CharView = ({ character }: $Props) => {
       {loading && <LoadingSpinner />}
       {!loading && buildChar && (
         <CenterWrapper>
-          <CharHeader char={buildChar} />
+          <CharHeader char={buildChar.character} />
           <TabBar children={tabs} onChange={(tab: string) => setTab(tab)} />
           {activeTab === "General" && (
             <>
-              <CharGeneral char={buildChar} onChange={saveChar} />
+              <CharGeneral buildChar={buildChar} onChange={saveChar} />
               <View>
                 <PropWrapper>
                   {!send && (
@@ -93,13 +87,7 @@ const CharView = ({ character }: $Props) => {
               </View>
             </>
           )}
-          {activeTab === "Combat" && (
-            <CharCombat
-              char={buildChar}
-              classes={buildChar.classes}
-              classesFeatures={buildChar.classFeatures}
-            />
-          )}
+          {activeTab === "Combat" && <CharCombat buildChar={buildChar} />}
           {activeTab === "Classes" && (
             <View>
               <PropWrapper>
@@ -171,7 +159,7 @@ const CharView = ({ character }: $Props) => {
               </PropWrapper>
             </View>
           )}
-          {activeTab === "Spells" && <CharSpell char={buildChar} saveChar={saveChar} />}
+          {activeTab === "Spells" && <CharSpell buildChar={buildChar} saveChar={saveChar} />}
           {activeTab === "Items" && (
             <View>
               <PropWrapper>

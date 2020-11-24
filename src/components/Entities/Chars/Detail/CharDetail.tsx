@@ -60,9 +60,7 @@ const CharDetail = ({ char, isNew }: $Props) => {
     let classList: Promise<Class>[] = [];
 
     char.classes.forEach((classe) => {
-      classList.push(
-        recivePromiseByAttribute("classes", "name", classe.classe)
-      );
+      classList.push(recivePromiseByAttribute("classes", "name", classe.classe));
     });
     const results = await Promise.all(classList);
     results.forEach((classe: Class) => {
@@ -217,22 +215,17 @@ const CharDetail = ({ char, isNew }: $Props) => {
           <ToggleLeft onClick={() => setMode(false)}>View</ToggleLeft>
           <ToggleRight onClick={() => setMode(true)}>Edit</ToggleRight>
         </EditToggle>
-        {unsavedChanges && (
-          <Icon icon={faExclamationTriangle} title={"Unsaved changes!"} />
-        )}
+        {unsavedChanges && <Icon icon={faExclamationTriangle} title={"Unsaved changes!"} />}
         {editMode && (
           <>
-            <IconButton
-              onClick={() => updateChar("chars", charObj)}
-              icon={faSave}
-            />
+            <IconButton onClick={() => updateChar("chars", charObj)} icon={faSave} />
             <IconButton onClick={() => deleteChar()} icon={faTrash} />
             {message && showAlert && <Message>{message}</Message>}
           </>
         )}
       </TopBar>
       {editMode ? (
-        <CharEditView char={charObj} onEdit={(value) => editChar(value)} />
+        <CharEditView character={charObj} onEdit={(value) => editChar(value)} />
       ) : (
         <CharView character={charObj} />
       )}

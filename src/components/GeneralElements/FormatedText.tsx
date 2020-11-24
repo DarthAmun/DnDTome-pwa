@@ -96,14 +96,11 @@ const FormatedText = ({ text }: $Props) => {
 
   const formatText = useCallback(
     (textPart: string) => {
-      console.log(textPart);
       while (textPart.includes("{{")) {
         const cutStart = textPart.indexOf("{{");
         const cutEnd = textPart.indexOf("}}") + 1;
         textPart = cut(textPart, cutStart, cutEnd);
       }
-      console.log(textPart);
-
       return formatTable(textPart);
     },
     [formatTable]
