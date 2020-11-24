@@ -12,7 +12,7 @@ const Help = () => {
     <AppWrapper>
       <General>
         <TabBar
-          children={["Create", "Import", "Export", "Text Formating"]}
+          children={["Create", "Import", "Export", "Text Formating", "Modifiers"]}
           onChange={(tab: string) => setTab(tab)}
         />
         {activeTab === "Create" && (
@@ -20,16 +20,15 @@ const Help = () => {
             <HelpSection>
               <SelectionTitle>How to create Entitys</SelectionTitle>
               <SectionText>
-                To create a new Spell for example go to Spells and hit "Add
-                Spell" in the top middle.
+                To create a new Spell for example go to Spells and hit "Add Spell" in the top
+                middle.
               </SectionText>
             </HelpSection>
             <HelpSection>
               <SelectionTitle>How to create Sub-Entitys</SelectionTitle>
               <SectionText>
-                For subclasses/subraces you need to visit a class/race and click
-                the little circled + in the subclass/subrace section of the
-                class/race.
+                For subclasses/subraces you need to visit a class/race and click the little circled
+                + in the subclass/subrace section of the class/race.
               </SectionText>
             </HelpSection>
           </>
@@ -37,33 +36,26 @@ const Help = () => {
         {activeTab === "Import" && (
           <>
             <HelpSection>
-              <SelectionTitle>
-                How to import Entitiys via .json files
-              </SelectionTitle>
+              <SelectionTitle>How to import Entitiys via .json files</SelectionTitle>
               <SectionText>
-                Go to options and select a file in the top left file select
-                dialog titled "Import".
+                Go to options and select a file in the top left file select dialog titled "Import".
               </SectionText>
             </HelpSection>
             <HelpSection>
-              <SelectionTitle>
-                How to import Entitiys via the send functionallity
-              </SelectionTitle>
+              <SelectionTitle>How to import Entitiys via the send functionallity</SelectionTitle>
               <SectionText>
-                Go to options and navigate to recive. Add the ID of the sender
-                to the filed and accept sended entities.
+                Go to options and navigate to recive. Add the ID of the sender to the filed and
+                accept sended entities.
               </SectionText>
             </HelpSection>
             <HelpSection>
               <SelectionTitle>How to import 5eTools files</SelectionTitle>
               <SectionText>
-                Go to options and navigate to "Other Import" and select the file
-                dialog suited for the entity you want to import.
+                Go to options and navigate to "Other Import" and select the file dialog suited for
+                the entity you want to import.
               </SectionText>
               <SectionText>Your entity is not listed there?</SectionText>
-              <SectionText>
-                Those will be updated and added gradually.
-              </SectionText>
+              <SectionText>Those will be updated and added gradually.</SectionText>
             </HelpSection>
             <HelpSection>
               <SelectionTitle>How to import from other sources</SelectionTitle>
@@ -76,33 +68,26 @@ const Help = () => {
         {activeTab === "Export" && (
           <>
             <HelpSection>
-              <SelectionTitle>
-                How to export Entitiys to .json files
-              </SelectionTitle>
+              <SelectionTitle>How to export Entitiys to .json files</SelectionTitle>
               <SectionText>
-                Go to options and click the "export"-Button located in the top
-                right section titled "Export". This will export your hole
-                collection to one big file! (Excluding your pdf library)
+                Go to options and click the "export"-Button located in the top right section titled
+                "Export". This will export your hole collection to one big file! (Excluding your pdf
+                library)
               </SectionText>
               <SectionText>
-                Or go to options and navigate to the entities you want to send
-                for example "Spells". There you can export all your spells to
-                one file.
+                Or go to options and navigate to the entities you want to send for example "Spells".
+                There you can export all your spells to one file.
               </SectionText>
             </HelpSection>
             <HelpSection>
-              <SelectionTitle>
-                How to send Entitiys via the send functionallity
-              </SelectionTitle>
+              <SelectionTitle>How to send Entitiys via the send functionallity</SelectionTitle>
               <SectionText>
-                Go to options and navigate to the entities you want to send for
-                example "Spells". Click the "Send all Spells"-Button and copy
-                the ID.
+                Go to options and navigate to the entities you want to send for example "Spells".
+                Click the "Send all Spells"-Button and copy the ID.
               </SectionText>
               <SectionText>
-                Or go to the entities overview and choose a single entity for
-                example a spell called "Heal". Click the "Send Heal"-Button and
-                copy the ID.
+                Or go to the entities overview and choose a single entity for example a spell called
+                "Heal". Click the "Send Heal"-Button and copy the ID.
               </SectionText>
               <SectionText>You can now send the ID to the reciver.</SectionText>
             </HelpSection>
@@ -112,9 +97,7 @@ const Help = () => {
             </HelpSection>
             <HelpSection>
               <SelectionTitle>How to export to other sources</SelectionTitle>
-              <SectionText>
-                As of now you can only export to dndtome .json files.
-              </SectionText>
+              <SectionText>As of now you can only export to dndtome .json files.</SectionText>
             </HelpSection>
           </>
         )}
@@ -122,12 +105,9 @@ const Help = () => {
           <>
             <HelpSection>
               <SelectionTitle>How to create a hyper-link</SelectionTitle>
+              <SectionText>You can add a hyper-link in every textarea.</SectionText>
               <SectionText>
-                You can add a hyper-link in every textarea.
-              </SectionText>
-              <SectionText>
-                To do so write: [[spell.Heal Me]] to link to the spell with the
-                name "Heal Me".
+                To do so write: [[spell.Heal Me]] to link to the spell with the name "Heal Me".
               </SectionText>
               <SectionText>
                 Result: <FormatedText text={"[[spell.Heal Me]]"} />
@@ -156,7 +136,9 @@ const Help = () => {
             </HelpSection>
             <HelpSection>
               <SelectionTitle>How to create a table with links in it</SelectionTitle>
-              <SectionText>You can add a link to every cell of a table in every textarea.</SectionText>
+              <SectionText>
+                You can add a link to every cell of a table in every textarea.
+              </SectionText>
               <SectionText>
                 To do so write: <br />
                 ||table||
@@ -173,6 +155,42 @@ const Help = () => {
                   text={`||table||||Header1|Header2|Header|...||||[[spell.Heal Me]]|Cell2|Cell3|...||`}
                 />
               </SectionText>
+            </HelpSection>
+          </>
+        )}
+        {activeTab === "Modifiers" && (
+          <>
+            <HelpSection>
+              <SelectionTitle>What are modifiers?</SelectionTitle>
+              <SectionText>
+                Modifiers enable you to give class-, subclass-, race-, subracefeatures and magic
+                items (for now) spezial modifiers that will directly modify the character using
+                those things.
+              </SectionText>
+            </HelpSection>
+            <HelpSection>
+              <SelectionTitle>Equal modifiers</SelectionTitle>
+              <SectionText>Add {"{{'target'='value'}}"} to a feature.</SectionText>
+              <SectionText>
+                For example: {"{{ac=15}}"} or {'{{alignment="Real Evil"}'}
+              </SectionText>
+              <SectionText>
+                Complex example: {"{{ac=10+(([dex]-10)/2)+(([con]-10)/2)}}"} where{" "}
+                {"(([dex]-10)/2)"} gives you the bonus for the stat.
+              </SectionText>
+            </HelpSection>
+            <HelpSection>
+              <SelectionTitle>Add modifiers</SelectionTitle>
+              <SectionText>Add {"{{'target'+'value'}}"} to a feature.</SectionText>
+              <SectionText>
+                For example: {"{{ac+3}}"} or {'{{profs+"Thiefs tools"}'}
+              </SectionText>
+            </HelpSection>
+            <HelpSection>
+              <SelectionTitle>Substract modifiers</SelectionTitle>
+              <SectionText>Add {"{{'target'-'value'}}"} to a feature.</SectionText>
+              <SectionText>For example: {"{{ac-3}}"}</SectionText>
+              <SectionText>No option for removing something from a text yet!</SectionText>
             </HelpSection>
           </>
         )}

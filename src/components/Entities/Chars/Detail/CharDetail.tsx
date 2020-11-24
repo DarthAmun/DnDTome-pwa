@@ -216,14 +216,16 @@ const CharDetail = ({ char, isNew }: $Props) => {
       )}
       <TopBar>
         <BackButton icon={faArrowLeft} action={() => history.goBack()} />
-        <EditToggle mode={(!modMode).toString()}>
-          <ToggleLeft onClick={() => setModMode(true)}>
-            <FontAwesomeIcon icon={faSlidersH} />
-          </ToggleLeft>
-          <ToggleRight onClick={() => setModMode(false)}>
-            <FontAwesomeIcon icon={faList} />
-          </ToggleRight>
-        </EditToggle>
+        {!editMode && (
+          <EditToggle mode={(!modMode).toString()}>
+            <ToggleLeft onClick={() => setModMode(true)}>
+              <FontAwesomeIcon icon={faSlidersH} />
+            </ToggleLeft>
+            <ToggleRight onClick={() => setModMode(false)}>
+              <FontAwesomeIcon icon={faList} />
+            </ToggleRight>
+          </EditToggle>
+        )}
         <EditToggle mode={editMode.toString()}>
           <ToggleLeft onClick={() => setMode(false)}>View</ToggleLeft>
           <ToggleRight onClick={() => setMode(true)}>Edit</ToggleRight>

@@ -237,6 +237,7 @@ export const applyMods = (char: BuildChar, modifiers: boolean): BuildChar => {
         };
       }
     });
+    console.log(newChar);
     return newChar;
   } else {
     return { ...char, character: char.oldCharacter };
