@@ -35,7 +35,6 @@ const FormatedText = ({ text }: $Props) => {
               if (part !== "") formattedParts.push(<TextPart key={index}>{part}</TextPart>);
             }
           });
-          console.log(formattedParts);
           return <>{formattedParts}</>;
         } else {
           return <TextPart>{text}</TextPart>;

@@ -13,6 +13,7 @@ import Char from "./Char";
 
 export default class BuildChar {
   character: Char;
+  oldCharacter: Char;
   level: number;
   prof: number;
   classes: Class[];
@@ -70,6 +71,7 @@ export default class BuildChar {
     modifiers: Modifier[]
   ) {
     this.character = character;
+    this.oldCharacter = character;
     this.level = level;
     this.prof = prof;
     this.classes = classes;
@@ -85,3 +87,4 @@ export default class BuildChar {
     this.modifiers = modifiers;
   }
 }
+

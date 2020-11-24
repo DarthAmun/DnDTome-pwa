@@ -105,7 +105,7 @@ export const buildCharacter = async (character: Char): Promise<BuildChar> => {
         }
       }
     });
-    subclasses.forEach((subclass: Subclass) => {
+    subclasses?.forEach((subclass: Subclass) => {
       if (subclass !== undefined)
         if (subclass.type === classe.name) {
           subclass.features.forEach((featureSet: FeatureSet) => {
@@ -122,7 +122,7 @@ export const buildCharacter = async (character: Char): Promise<BuildChar> => {
         raceFeatures.push(trait);
       }
   });
-  subrace.traits.forEach((trait: Trait) => {
+  subrace?.traits.forEach((trait: Trait) => {
     if (trait !== undefined)
       if (trait.level <= level) {
         raceFeatures.push(trait);
@@ -157,14 +157,14 @@ export const buildCharacter = async (character: Char): Promise<BuildChar> => {
   console.time("modifier");
   let modifiers: Modifier[] = [];
   items.forEach((item) => {
-    modifiers.concat(extractModifier(item.item.description));
+    modifiers = modifiers.concat(extractModifier(item.item.description));
   });
   raceFeatures.forEach((trait) => {
-    modifiers.concat(extractModifier(trait.text));
+    modifiers = modifiers.concat(extractModifier(trait.text));
   });
   classFeatures.forEach((featureSet) => {
     featureSet.features.forEach((feature) => {
-      modifiers.concat(extractModifier(feature.text));
+      modifiers = modifiers.concat(extractModifier(feature.text));
     });
   });
   console.timeEnd("modifier");
@@ -188,13 +188,18 @@ export const buildCharacter = async (character: Char): Promise<BuildChar> => {
   );
 };
 
+const cut = (str: string, cutStart: number, cutEnd: number) => {
+  return str.substr(0, cutStart) + str.substr(cutEnd + 1);
+};
+
 const extractModifier = (text: string): Modifier[] => {
   let newModifiers: Modifier[] = [];
 
   while (text.includes("{{")) {
-    const cutStart = text.indexOf("{{") + 1;
+    const cutStart = text.indexOf("{{");
     const cutEnd = text.indexOf("}}");
-    const rawModifier = text.substr(cutStart, cutEnd);
+    const rawModifier = text.substring(cutStart + 2, cutEnd);
+    text = cut(text, cutStart, cutEnd + 1);
 
     if (rawModifier.includes("=")) {
       const split = rawModifier.split("=");
@@ -209,4 +214,44 @@ const extractModifier = (text: string): Modifier[] => {
   }
 
   return newModifiers;
+};
+
+export const applyMods = (char: BuildChar, modifiers: boolean): BuildChar => {
+  if (modifiers) {
+    let newChar = char;
+    char.modifiers.forEach((mod: Modifier) => {
+      if (mod.operator === ModifierOperator.EQUAL) {
+        newChar = {
+          ...char,
+          character: { ...char.character, [mod.target]: replacePlaceholder(char, mod.value) },
+        };
+      } else if (mod.operator === ModifierOperator.ADD) {
+        newChar = {
+          ...char,
+          character: { ...char.character, [mod.value]: char.character[mod.target] + mod.value },
+        };
+      } else if (mod.operator === ModifierOperator.SUBSTRACT && typeof mod.value == "number") {
+        newChar = {
+          ...char,
+          character: { ...char.character, [mod.value]: char.character[mod.target] - mod.value },
+        };
+      }
+    });
+    return newChar;
+  } else {
+    return { ...char, character: char.oldCharacter };
+  }
+};
+
+export const replacePlaceholder = (char: BuildChar, text: string | number) => {
+  if (typeof text == "string" && text.includes("[") && text.includes("]")) {
+    while (text.includes("[") && text.includes("]")) {
+      const cutStart = text.indexOf("[");
+      const cutEnd = text.indexOf("]");
+      const rawPlaceholder = text.substring(cutStart + 1, cutEnd);
+      text = text.replace(text.substring(cutStart, cutEnd + 1), char.oldCharacter[rawPlaceholder]);
+    }
+    return Math.floor(eval(text));
+  }
+  return text;
 };

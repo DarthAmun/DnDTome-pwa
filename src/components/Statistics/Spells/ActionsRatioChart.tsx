@@ -21,7 +21,6 @@ const ActionsRatioChart = () => {
 
   const makeSchoolsData = async () => {
     let times = await reciveAttributeSelectionPromise("spells", "time");
-    console.log(times);
 
     let newTimes:string[] = [];
     times.forEach((time) => {

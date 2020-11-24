@@ -20,15 +20,16 @@ import CharSpell from "./DetailComponents/CharSpells";
 import { faFilePdf, faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import TextButton from "../../../FormElements/TextButton";
 import { exportPdf } from "../../../../Services/PdfService";
-import { buildCharacter } from "../../../../Services/CharacterService";
+import { buildCharacter, applyMods } from "../../../../Services/CharacterService";
 import BuildChar from "../../../../Data/Chars/BuildChar";
 import { LoadingSpinner } from "../../../Loading";
 
 interface $Props {
   character: Char;
+  modifications: boolean;
 }
 
-const CharView = ({ character }: $Props) => {
+const CharView = ({ character, modifications }: $Props) => {
   const [send, setSend] = useState<boolean>(false);
   const [buildChar, setBuildChar] = useState<BuildChar>();
   const [loading, setLoading] = useState<boolean>(true);
@@ -37,10 +38,10 @@ const CharView = ({ character }: $Props) => {
 
   useEffect(() => {
     buildCharacter(character).then((buildChar) => {
-      setBuildChar(buildChar);
+      setBuildChar(applyMods(buildChar, modifications));
       setLoading(false);
     });
-  }, [character, setBuildChar]);
+  }, [character, setBuildChar, modifications]);
 
   useEffect(() => {
     if (!tabs.includes("Monster") && character.monsters.length > 0)
