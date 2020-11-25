@@ -175,6 +175,9 @@ const Help = () => {
                 For example: {"{{ac=15}}"} or {'{{alignment="Real Evil"}'}
               </SectionText>
               <SectionText>
+                You can even alter deeper values like: {"{{saves.chaSaveProf=1}}"}
+              </SectionText>
+              <SectionText>
                 Complex example: {"{{ac=10+(([dex]-10)/2)+(([con]-10)/2)}}"} where{" "}
                 {"(([dex]-10)/2)"} gives you the bonus for the stat.
               </SectionText>
@@ -185,12 +188,88 @@ const Help = () => {
               <SectionText>
                 For example: {"{{ac+3}}"} or {'{{profs+"Thiefs tools"}'}
               </SectionText>
+              <SectionText>Deep example: {"{{skills.natureProf+1}}"}</SectionText>
             </HelpSection>
             <HelpSection>
               <SelectionTitle>Substract modifiers</SelectionTitle>
               <SectionText>Add {"{{'target'-'value'}}"} to a feature.</SectionText>
               <SectionText>For example: {"{{ac-3}}"}</SectionText>
+              <SectionText>Deep example: {"{{money.gold-100}}"}</SectionText>
               <SectionText>No option for removing something from a text yet!</SectionText>
+            </HelpSection>
+            <HelpSection>
+              <SelectionTitle>Character fields that can be accessed</SelectionTitle>
+              <SectionText>
+                name: text
+                <br /> player: text
+                <br /> pic: text
+                <br /> background: text
+                <br /> ac: number
+                <br /> hp: number
+                <br /> currentHp: number
+                <br /> init: number
+                <br /> speed: text
+                <br /> str: number
+                <br /> dex: number
+                <br /> con: number
+                <br /> int: number
+                <br /> wis: number
+                <br /> cha: number
+                <br /> actions: text
+                <br /> profsLangs: text
+                <br /> senses: text
+                <br /> alignment: text
+                <br /> inspiration: number
+                <br /> castingHit: number
+                <br /> castingDC: number
+                <br /> money: Money
+                <br /> skills: Skills
+                <br /> saves: Saves
+              </SectionText>
+            </HelpSection>
+            <HelpSection>
+              <SelectionTitle>Money fields that can be accessed</SelectionTitle>
+              <SectionText>
+                copper: number
+                <br /> silver: number
+                <br /> electrum: number
+                <br /> gold: number
+                <br /> platinum: number
+              </SectionText>
+            </HelpSection>
+            <HelpSection>
+              <SelectionTitle>Saves fields that can be accessed</SelectionTitle>
+              <SectionText>
+                strSaveProf: number
+                <br /> dexSaveProf: number
+                <br /> conSaveProf: number
+                <br /> intSaveProf: number
+                <br /> wisSaveProf: number
+                <br /> chaSaveProf: number
+              </SectionText>
+            </HelpSection>
+            <HelpSection>
+              <SelectionTitle>Skills fields that can be accessed</SelectionTitle>
+              <SectionText>
+                acrobaticsProf: number
+                <br /> animalHandlingProf: number
+                <br /> arcanaProf: number
+                <br /> athleticsProf: number
+                <br /> deceptionProf: number
+                <br /> historyProf: number
+                <br /> insightProf: number
+                <br /> intimidationProf: number
+                <br /> investigationProf: number
+                <br /> medicineProf: number
+                <br /> natureProf: number
+                <br /> perceptionProf: number
+                <br /> performanceProf: number
+                <br /> persuasionProf: number
+                <br /> religionProf: number
+                <br /> sleightOfHandProf: number
+                <br /> stealthProf: number
+                <br /> survivalProf: number
+              </SectionText>
             </HelpSection>
           </>
         )}

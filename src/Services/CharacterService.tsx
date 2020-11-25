@@ -192,6 +192,13 @@ const cut = (str: string, cutStart: number, cutEnd: number) => {
   return str.substr(0, cutStart) + str.substr(cutEnd + 1);
 };
 
+const extractTarget = (target: string): string | string[] => {
+  if (target.includes(".")) {
+    return target.split(".");
+  }
+  return target;
+};
+
 const extractModifier = (text: string): Modifier[] => {
   let newModifiers: Modifier[] = [];
 
@@ -203,16 +210,34 @@ const extractModifier = (text: string): Modifier[] => {
 
     if (rawModifier.includes("=")) {
       const split = rawModifier.split("=");
-      newModifiers.push(new Modifier(split[0], ModifierOperator.EQUAL, split[1]));
+
+      newModifiers.push(
+        new Modifier(
+          extractTarget(split[0]),
+          ModifierOperator.EQUAL,
+          split[1].includes('"') ? split[1] : parseInt(split[1])
+        )
+      );
     } else if (rawModifier.includes("+")) {
       const split = rawModifier.split("+");
-      newModifiers.push(new Modifier(split[0], ModifierOperator.ADD, split[1]));
+      newModifiers.push(
+        new Modifier(
+          extractTarget(split[0]),
+          ModifierOperator.ADD,
+          split[1].includes('"') ? split[1] : parseInt(split[1])
+        )
+      );
     } else if (rawModifier.includes("-")) {
       const split = rawModifier.split("-");
-      newModifiers.push(new Modifier(split[0], ModifierOperator.SUBSTRACT, split[1]));
+      newModifiers.push(
+        new Modifier(
+          extractTarget(split[0]),
+          ModifierOperator.SUBSTRACT,
+          split[1].includes('"') ? split[1] : parseInt(split[1])
+        )
+      );
     }
   }
-
   return newModifiers;
 };
 
@@ -220,24 +245,87 @@ export const applyMods = (char: BuildChar, modifiers: boolean): BuildChar => {
   if (modifiers) {
     let newChar = char;
     char.modifiers.forEach((mod: Modifier) => {
-      if (mod.operator === ModifierOperator.EQUAL) {
-        newChar = {
-          ...char,
-          character: { ...char.character, [mod.target]: replacePlaceholder(char, mod.value) },
-        };
-      } else if (mod.operator === ModifierOperator.ADD) {
-        newChar = {
-          ...char,
-          character: { ...char.character, [mod.value]: char.character[mod.target] + mod.value },
-        };
-      } else if (mod.operator === ModifierOperator.SUBSTRACT && typeof mod.value == "number") {
-        newChar = {
-          ...char,
-          character: { ...char.character, [mod.value]: char.character[mod.target] - mod.value },
-        };
+      if (typeof mod.target == "string") {
+        if (mod.operator === ModifierOperator.EQUAL) {
+          newChar = {
+            ...newChar,
+            character: { ...newChar.character, [mod.target]: replacePlaceholder(char, mod.value) },
+          };
+        } else if (mod.operator === ModifierOperator.ADD && typeof mod.value == "string") {
+          newChar = {
+            ...newChar,
+            character: {
+              ...newChar.character,
+              [mod.target]: char.character[mod.target] + mod.value,
+            },
+          };
+        } else if (mod.operator === ModifierOperator.ADD && typeof mod.value == "number") {
+          newChar = {
+            ...newChar,
+            character: {
+              ...newChar.character,
+              [mod.target]: (char.character[mod.target] as number) + mod.value,
+            },
+          };
+        } else if (mod.operator === ModifierOperator.SUBSTRACT && typeof mod.value == "number") {
+          newChar = {
+            ...newChar,
+            character: {
+              ...newChar.character,
+              [mod.target]: char.character[mod.target] - mod.value,
+            },
+          };
+        }
+      } else if (Array.isArray(mod.target)) {
+        if (mod.operator === ModifierOperator.EQUAL) {
+          newChar = {
+            ...newChar,
+            character: {
+              ...newChar.character,
+              [mod.target[0]]: {
+                ...newChar.character[mod.target[0]],
+                [mod.target[1]]: replacePlaceholder(char, mod.value),
+              },
+            },
+          };
+        } else if (mod.operator === ModifierOperator.ADD && typeof mod.value == "string") {
+          newChar = {
+            ...newChar,
+            character: {
+              ...newChar.character,
+              [mod.target[0]]: {
+                ...newChar.character[mod.target[0]],
+                [mod.target[1]]: char.character[mod.target[0]][mod.target[1]] + mod.value,
+              },
+            },
+          };
+        } else if (mod.operator === ModifierOperator.ADD && typeof mod.value == "number") {
+          newChar = {
+            ...newChar,
+            character: {
+              ...newChar.character,
+              [mod.target[0]]: {
+                ...newChar.character[mod.target[0]],
+                [mod.target[1]]:
+                  (char.character[mod.target[0]][mod.target[1]] as number) + mod.value,
+              },
+            },
+          };
+        } else if (mod.operator === ModifierOperator.SUBSTRACT && typeof mod.value == "number") {
+          newChar = {
+            ...newChar,
+            character: {
+              ...newChar.character,
+              [mod.target[0]]: {
+                ...newChar.character[mod.target[0]],
+                [mod.target[1]]: char.character[mod.target[0]][mod.target[1]] - mod.value,
+              },
+            },
+          };
+        }
       }
     });
-    console.log(newChar);
+    console.log(newChar.character);
     return newChar;
   } else {
     return { ...char, character: char.oldCharacter };
@@ -246,6 +334,7 @@ export const applyMods = (char: BuildChar, modifiers: boolean): BuildChar => {
 
 export const replacePlaceholder = (char: BuildChar, text: string | number) => {
   if (typeof text == "string" && text.includes("[") && text.includes("]")) {
+    text = text.replaceAll('"', "");
     while (text.includes("[") && text.includes("]")) {
       const cutStart = text.indexOf("[");
       const cutEnd = text.indexOf("]");
