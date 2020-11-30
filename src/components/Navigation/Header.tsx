@@ -14,10 +14,10 @@ const Header = () => {
 export default Header;
 
 const Bar = styled.div`
-width: calc(100% - 60px);
-height: 30px;
-line-height: 30px;
-padding: 10px 10px 10px 50px;
+  width: calc(100% - 60px);
+  height: 30px;
+  line-height: 30px;
+  padding: 10px 10px 10px 50px;
   background-color: ${({ theme }) => theme.buttons.backgroundColor};
   color: ${({ theme }) => theme.buttons.color};
   box-shadow: 0px 5px 5px 0px rgba(0, 0, 0, 0.75);

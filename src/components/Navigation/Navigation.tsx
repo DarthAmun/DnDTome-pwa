@@ -20,7 +20,7 @@ const Navigation = () => {
 export default Navigation;
 
 const Nav = styled.div`
-  width: ${({ theme }) => theme.nav.width};
+  max-width: 100px;
   height: auto;
   background-color: ${({ theme }) => theme.main.backgroundColor}
   display: flex;
