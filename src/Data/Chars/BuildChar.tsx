@@ -42,23 +42,23 @@ export default class BuildChar {
   modifiers: Modifier[];
 
   constructor(
-    character: Char,
-    level: number,
-    prof: number,
-    classes: Class[],
-    subclasses: Subclass[],
-    classFeatures: FeatureSet[],
-    race: Race,
-    subrace: Subrace,
-    raceFeatures: Trait[],
-    gears: {
+    character?: Char,
+    level?: number,
+    prof?: number,
+    classes?: Class[],
+    subclasses?: Subclass[],
+    classFeatures?: FeatureSet[],
+    race?: Race,
+    subrace?: Subrace,
+    raceFeatures?: Trait[],
+    gears?: {
       gear: Gear;
       origin: string;
       attuned: boolean;
       prof: boolean;
       attribute: string;
     }[],
-    items: {
+    items?: {
       item: Item;
       base: Gear | undefined;
       origin: string;
@@ -66,25 +66,24 @@ export default class BuildChar {
       prof: boolean;
       attribute: string;
     }[],
-    spells: Spell[],
-    monsters: Monster[],
-    modifiers: Modifier[]
+    spells?: Spell[],
+    monsters?: Monster[],
+    modifiers?: Modifier[]
   ) {
-    this.character = character;
-    this.oldCharacter = character;
-    this.level = level;
-    this.prof = prof;
-    this.classes = classes;
-    this.subclasses = subclasses;
-    this.classFeatures = classFeatures;
-    this.race = race;
-    this.subrace = subrace;
-    this.raceFeatures = raceFeatures;
-    this.gears = gears;
-    this.items = items;
-    this.spells = spells;
-    this.monsters = monsters;
-    this.modifiers = modifiers;
+    this.character = character || new Char();
+    this.oldCharacter = character || new Char();
+    this.level = level || 0;
+    this.prof = prof || 0;
+    this.classes = classes || [];
+    this.subclasses = subclasses || [];
+    this.classFeatures = classFeatures || [];
+    this.race = race || new Race();
+    this.subrace = subrace || new Subrace();
+    this.raceFeatures = raceFeatures || [];
+    this.gears = gears || [];
+    this.items = items || [];
+    this.spells = spells || [];
+    this.monsters = monsters || [];
+    this.modifiers = modifiers || [];
   }
 }
-

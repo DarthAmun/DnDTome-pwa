@@ -23,6 +23,7 @@ import { exportPdf } from "../../../../Services/PdfService";
 import { buildCharacter, applyMods } from "../../../../Services/CharacterService";
 import BuildChar from "../../../../Data/Chars/BuildChar";
 import { LoadingSpinner } from "../../../Loading";
+import Modifier from "../../../../Data/Modifier";
 
 interface $Props {
   character: Char;
@@ -31,10 +32,17 @@ interface $Props {
 
 const CharView = ({ character, modifications }: $Props) => {
   const [send, setSend] = useState<boolean>(false);
-  const [buildChar, setBuildChar] = useState<BuildChar>();
+  const [buildChar, setBuildChar] = useState<BuildChar>(new BuildChar());
   const [loading, setLoading] = useState<boolean>(true);
   const [activeTab, setTab] = useState<string>("General");
-  const [tabs, setTabs] = useState<string[]>(["General", "Combat", "Race", "Classes", "Notes"]);
+  const [tabs, setTabs] = useState<string[]>([
+    "General",
+    "Combat",
+    "Race",
+    "Classes",
+    "Notes",
+    "Modifications",
+  ]);
 
   useEffect(() => {
     buildCharacter(character).then((buildChar) => {
@@ -44,15 +52,15 @@ const CharView = ({ character, modifications }: $Props) => {
   }, [character, setBuildChar, modifications]);
 
   useEffect(() => {
-    if (!tabs.includes("Monster") && character.monsters.length > 0)
+    if (!tabs.includes("Monster") && buildChar.monsters.length > 0)
       setTabs((t) => [...t, "Monster"]);
-  }, [character, tabs]);
+  }, [buildChar.monsters, tabs]);
   useEffect(() => {
-    if (!tabs.includes("Items") && character.items.length > 0) setTabs((t) => [...t, "Items"]);
-  }, [character, tabs]);
+    if (!tabs.includes("Items") && buildChar.items.length > 0) setTabs((t) => [...t, "Items"]);
+  }, [buildChar.items, tabs]);
   useEffect(() => {
-    if (!tabs.includes("Spells") && character.spells.length > 0) setTabs((t) => [...t, "Spells"]);
-  }, [character, tabs]);
+    if (!tabs.includes("Spells") && buildChar.spells.length > 0) setTabs((t) => [...t, "Spells"]);
+  }, [buildChar.spells, tabs]);
 
   const saveChar = (char: BuildChar) => {
     setBuildChar(char);
@@ -192,6 +200,23 @@ const CharView = ({ character, modifications }: $Props) => {
                   <PropTitle>Notes:</PropTitle>
                   <FormatedText text={buildChar.character.spellNotes} />
                 </Text>
+              </PropWrapper>
+            </View>
+          )}
+          {activeTab === "Modifications" && (
+            <View>
+              <PropWrapper>
+                {buildChar.modifiers.map((mod: Modifier, index: number) => {
+                  return (
+                    <Text>
+                      <PropTitle>
+                        {mod.origin}
+                        {" | "}
+                      </PropTitle>
+                      <FormatedText text={mod.makeString()} />
+                    </Text>
+                  );
+                })}
               </PropWrapper>
             </View>
           )}

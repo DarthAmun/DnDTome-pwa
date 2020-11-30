@@ -157,14 +157,14 @@ export const buildCharacter = async (character: Char): Promise<BuildChar> => {
   console.time("modifier");
   let modifiers: Modifier[] = [];
   items.forEach((item) => {
-    modifiers = modifiers.concat(extractModifier(item.item.description));
+    modifiers = modifiers.concat(extractModifier(item.item.description, "Magic Item: " + item.origin));
   });
   raceFeatures.forEach((trait) => {
-    modifiers = modifiers.concat(extractModifier(trait.text));
+    modifiers = modifiers.concat(extractModifier(trait.text, "Race Feature: " + trait.name));
   });
   classFeatures.forEach((featureSet) => {
     featureSet.features.forEach((feature) => {
-      modifiers = modifiers.concat(extractModifier(feature.text));
+      modifiers = modifiers.concat(extractModifier(feature.text, "Class Feature: " +feature.name));
     });
   });
   console.timeEnd("modifier");
@@ -199,7 +199,7 @@ const extractTarget = (target: string): string | string[] => {
   return target;
 };
 
-const extractModifier = (text: string): Modifier[] => {
+const extractModifier = (text: string, origin: string): Modifier[] => {
   let newModifiers: Modifier[] = [];
 
   while (text.includes("{{")) {
@@ -215,7 +215,8 @@ const extractModifier = (text: string): Modifier[] => {
         new Modifier(
           extractTarget(split[0]),
           ModifierOperator.EQUAL,
-          split[1].includes('"') ? split[1] : parseInt(split[1])
+          split[1].includes('"') ? split[1] : parseInt(split[1]),
+          origin
         )
       );
     } else if (rawModifier.includes("+")) {
@@ -224,7 +225,8 @@ const extractModifier = (text: string): Modifier[] => {
         new Modifier(
           extractTarget(split[0]),
           ModifierOperator.ADD,
-          split[1].includes('"') ? split[1] : parseInt(split[1])
+          split[1].includes('"') ? split[1] : parseInt(split[1]),
+          origin
         )
       );
     } else if (rawModifier.includes("-")) {
@@ -233,7 +235,8 @@ const extractModifier = (text: string): Modifier[] => {
         new Modifier(
           extractTarget(split[0]),
           ModifierOperator.SUBSTRACT,
-          split[1].includes('"') ? split[1] : parseInt(split[1])
+          split[1].includes('"') ? split[1] : parseInt(split[1]),
+          origin
         )
       );
     }
@@ -244,7 +247,7 @@ const extractModifier = (text: string): Modifier[] => {
 export const applyMods = (char: BuildChar, modifiers: boolean): BuildChar => {
   if (modifiers) {
     let newChar = char;
-    char.modifiers.forEach((mod: Modifier) => {
+    char.modifiers.forEach(async (mod: Modifier) => {
       if (typeof mod.target == "string") {
         if (mod.operator === ModifierOperator.EQUAL) {
           newChar = {
@@ -325,7 +328,6 @@ export const applyMods = (char: BuildChar, modifiers: boolean): BuildChar => {
         }
       }
     });
-    console.log(newChar.character);
     return newChar;
   } else {
     return { ...char, character: char.oldCharacter };
