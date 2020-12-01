@@ -198,6 +198,11 @@ const Help = () => {
               <SectionText>No option for removing something from a text yet!</SectionText>
             </HelpSection>
             <HelpSection>
+              <SelectionTitle>Add modifiers</SelectionTitle>
+              <SectionText>Add {"{{'target'.add='value'}}"} to a feature.</SectionText>
+              <SectionText>For example: {'{{spells.add="Acid Splash"}}'}</SectionText>
+            </HelpSection>
+            <HelpSection>
               <SelectionTitle>Character fields that can be accessed</SelectionTitle>
               <SectionText>
                 name: text
@@ -269,6 +274,13 @@ const Help = () => {
                 <br /> sleightOfHandProf: number
                 <br /> stealthProf: number
                 <br /> survivalProf: number
+              </SectionText>
+            </HelpSection>
+            <HelpSection>
+              <SelectionTitle>Fields you can add something to</SelectionTitle>
+              <SectionText>
+                monsters
+                <br /> spells
               </SectionText>
             </HelpSection>
           </>

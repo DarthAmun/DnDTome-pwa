@@ -45,8 +45,8 @@ const CharView = ({ character, modifications }: $Props) => {
   ]);
 
   useEffect(() => {
-    buildCharacter(character).then((buildChar) => {
-      setBuildChar(applyMods(buildChar, modifications));
+    buildCharacter(character).then(async (buildChar) => {
+      setBuildChar(await applyMods(buildChar, modifications));
       setLoading(false);
     });
   }, [character, setBuildChar, modifications]);
