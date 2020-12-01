@@ -12,7 +12,7 @@ const AppWrapper = ({ children }: $Props) => {
     <App>
       <Header />
       <Navigation />
-      {children}
+      <Content>{children}</Content>
     </App>
   );
 };
@@ -26,7 +26,16 @@ const App = styled.div`
   min-height: calc(100vh - 4rem);
   background-color: ${({ theme }) => theme.main.backgroundColor};
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: no-wrap;
   align-items: flex-start;
   align-content: flex-start;
+`;
+
+const Content = styled.div`
+  margin-left: 90px;
+  width: 100%;
+
+  @media (max-width: 576px) {
+    margin-left: 0px;
+  }
 `;

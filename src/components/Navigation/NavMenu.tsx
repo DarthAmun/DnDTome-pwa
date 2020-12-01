@@ -34,135 +34,131 @@ const NavMenu = ({ open }: $Props) => {
       <Link
         to="/home"
         className={
-          location.pathname === "/home" || location.pathname === "/"
-            ? "menuItemActiv"
-            : ""
+          location.pathname === "/home" || location.pathname === "/" ? "menuItemActiv" : ""
         }
       >
         <FontAwesomeIcon icon={faHome} />
-        Home
+        <Tooltip>Home</Tooltip>
       </Link>
       <Seperator />
       <Link
         to="/spell-overview"
-        className={
-          location.pathname === "/spell-overview" ? "menuItemActiv" : ""
-        }
+        className={location.pathname === "/spell-overview" ? "menuItemActiv" : ""}
       >
         <FontAwesomeIcon icon={faMeteor} />
-        Spells
+        <Tooltip>Spells</Tooltip>
       </Link>
       <Link
         to="/item-overview"
-        className={
-          location.pathname === "/item-overview" ? "menuItemActiv" : ""
-        }
+        className={location.pathname === "/item-overview" ? "menuItemActiv" : ""}
       >
         <GiCrystalWand />
-        Magic Items
+        <Tooltip>Magic Items</Tooltip>
       </Link>
       <Link
         to="/gear-overview"
-        className={
-          location.pathname === "/gear-overview" ? "menuItemActiv" : ""
-        }
+        className={location.pathname === "/gear-overview" ? "menuItemActiv" : ""}
       >
         <GiBackpack />
-        Gear
+        <Tooltip>Gear</Tooltip>
       </Link>
       <Link
         to="/race-overview"
-        className={
-          location.pathname === "/race-overview" ? "menuItemActiv" : ""
-        }
+        className={location.pathname === "/race-overview" ? "menuItemActiv" : ""}
       >
         <GiWomanElfFace />
-        Races
+        <Tooltip>Races</Tooltip>
       </Link>
       <Link
         to="/class-overview"
-        className={
-          location.pathname === "/class-overview" ? "menuItemActiv" : ""
-        }
+        className={location.pathname === "/class-overview" ? "menuItemActiv" : ""}
       >
         <GiPlagueDoctorProfile />
-        Classes
+        <Tooltip>Classes</Tooltip>
       </Link>
       <Link
         to="/selection-overview"
-        className={
-          location.pathname === "/selection-overview" ? "menuItemActiv" : ""
-        }
+        className={location.pathname === "/selection-overview" ? "menuItemActiv" : ""}
       >
         <BiSelectMultiple />
-        Selections
+        <Tooltip>Selections</Tooltip>
       </Link>
       <Link
         to="/char-overview"
-        className={
-          location.pathname === "/char-overview" ? "menuItemActiv" : ""
-        }
+        className={location.pathname === "/char-overview" ? "menuItemActiv" : ""}
       >
         <FontAwesomeIcon icon={faIdCard} />
-        Chars
+        <Tooltip>Chars</Tooltip>
       </Link>
       <Seperator />
       <Link
         to="/monster-overview"
-        className={
-          location.pathname === "/monster-overview" ? "menuItemActiv" : ""
-        }
+        className={location.pathname === "/monster-overview" ? "menuItemActiv" : ""}
       >
         <FontAwesomeIcon icon={faDragon} />
-        Monsters
+        <Tooltip>Monsters</Tooltip>
       </Link>
       <Link
         to="/encounter-overview"
-        className={
-          location.pathname === "/encounter-overview" ? "menuItemActiv" : ""
-        }
+        className={location.pathname === "/encounter-overview" ? "menuItemActiv" : ""}
       >
         <GiSwordClash />
-        Encounters
+        <Tooltip>Encounters</Tooltip>
       </Link>
       <Seperator />
       <Link
         to="/randomTable-overview"
-        className={
-          location.pathname === "/randomTable-overview" ? "menuItemActiv" : ""
-        }
+        className={location.pathname === "/randomTable-overview" ? "menuItemActiv" : ""}
       >
         <FontAwesomeIcon icon={faTable} />
-        Random Tables
+        <Tooltip>Random Tables</Tooltip>
       </Link>
       <Seperator />
-      <Link
-        to="/library"
-        className={location.pathname === "/library" ? "menuItemActiv" : ""}
-      >
+      <Link to="/library" className={location.pathname === "/library" ? "menuItemActiv" : ""}>
         <GiBookmarklet />
-        Library
+        <Tooltip>Library</Tooltip>
       </Link>
       <Seperator />
-      <Link
-        to="/options"
-        className={location.pathname === "/options" ? "menuItemActiv" : ""}
-      >
-        <FontAwesomeIcon icon={faCog} />
-        Options
-      </Link>
-      <Link
-        to="/statistics"
-        className={location.pathname === "/statistics" ? "menuItemActiv" : ""}
-      >
+      <Link to="/statistics" className={location.pathname === "/statistics" ? "menuItemActiv" : ""}>
         <FontAwesomeIcon icon={faChartPie} />
-        Statistics
+        <Tooltip>Statistics</Tooltip>
+      </Link>
+      <Link to="/options" className={location.pathname === "/options" ? "menuItemActiv" : ""}>
+        <FontAwesomeIcon icon={faCog} />
+        <Tooltip>Options</Tooltip>
       </Link>
     </Menu>
   );
 };
 
 export default NavMenu;
+
+const Tooltip = styled.span`
+  visibility: hidden;
+  width: 120px;
+  font-size: 16px;
+  background-color: ${({ theme }) => theme.main.highlight};
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  position: absolute;
+  z-index: 1;
+  left: 150%;
+  opacity: 0.6;
+  transition: 0.3s;
+
+  &::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    right: 100%;
+    margin-top: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent ${({ theme }) => theme.main.highlight} transparent transparent;
+  }
+`;
 
 type MenuType = {
   open?: boolean;
@@ -172,38 +168,53 @@ export const Menu = styled.div<MenuType>`
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
+  align-items: center;
   background: ${({ theme }) => theme.main.backgroundColor};
-  height: calc(100vh - 4em - 50px);
+  height: calc(100vh - 3em - 50px);
   text-align: left;
-  padding: 2rem;
+  padding: 1rem 2rem 2rem 2rem;
+
+  overflow: visible;
+
   position: fixed;
   z-index: 950;
-  overflow-y: auto;
-  overflow-x: hidden;
   top: 50px;
   left: 0;
-  transition: transform 0.3s ease-in-out;
-  transform: ${({ open }) => (open ? "translateX(0)" : "translateX(-100%)")};
 
   svg {
     margin-right: 5px;
   }
 
   @media (max-width: 576px) {
-    width: calc(100% - 4rem);
+    transition: transform 0.3s ease-in-out;
+    transform: ${({ open }) => (open ? "translateX(0)" : "translateX(-100%)")};
   }
 
   a {
     flex: 1 1 auto;
+    max-height: 20px;
     font-size: 20px;
+    text-align: center;
     padding: 1rem 0;
     color: ${({ theme }) => theme.main.highlight};
     text-decoration: none;
     transition: color 0.3s linear;
+
+    position: relative;
+    display: inline-block;
+
+    svg {
+      padding: 0px;
+      margin: 0px;
+    }
   }
 
   a:hover {
     color: ${({ theme }) => theme.tile.color};
+    ${Tooltip} {
+      opacity: 1;
+      visibility: visible;
+    }
   }
 
   a.menuItemActiv {
@@ -212,7 +223,8 @@ export const Menu = styled.div<MenuType>`
 `;
 
 const Seperator = styled.div`
-  width: 100%;
-  height: 1px;
   border-bottom: 1px solid #a64dff;
+  flex: 1 1 auto;
+  min-width: 100%;
+  max-height: 0px;
 `;

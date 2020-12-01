@@ -10,6 +10,10 @@ const FormatedText = ({ text }: $Props) => {
   const [formatedText, setFormatedText] = useState<JSX.Element>();
   let history = useHistory();
 
+  const cut = (str: string, cutStart: number, cutEnd: number) => {
+    return str.substr(0, cutStart) + str.substr(cutEnd + 1);
+  };
+
   const formatLink = useCallback(
     (text: string) => {
       if (text !== undefined) {
@@ -20,8 +24,7 @@ const FormatedText = ({ text }: $Props) => {
             if (part.includes("]]")) {
               const codePart: string[] = part.split("]]");
               const linkParts: string[] = codePart[0].split(".");
-              const link: string =
-                "/" + linkParts[0] + "-detail/name/" + linkParts[1];
+              const link: string = "/" + linkParts[0] + "-detail/name/" + linkParts[1];
               formattedParts.push(
                 <TextPart key={index}>
                   <Link onClick={() => history.push(link)}>{linkParts[1]}</Link>
@@ -29,11 +32,9 @@ const FormatedText = ({ text }: $Props) => {
                 </TextPart>
               );
             } else {
-              if (part !== "")
-                formattedParts.push(<TextPart key={index}>{part}</TextPart>);
+              if (part !== "") formattedParts.push(<TextPart key={index}>{part}</TextPart>);
             }
           });
-          console.log(formattedParts);
           return <>{formattedParts}</>;
         } else {
           return <TextPart>{text}</TextPart>;
@@ -62,9 +63,7 @@ const FormatedText = ({ text }: $Props) => {
                       return (
                         <tr key={index}>
                           {cells.map((cell: string, index: number) => {
-                            return (
-                              <TableHeadProp key={index}>{cell}</TableHeadProp>
-                            );
+                            return <TableHeadProp key={index}>{cell}</TableHeadProp>;
                           })}
                         </tr>
                       );
@@ -73,11 +72,7 @@ const FormatedText = ({ text }: $Props) => {
                       return (
                         <tr key={index}>
                           {cells.map((cell: string, index: number) => {
-                            return (
-                              <TableProp key={index}>
-                                {formatLink(cell)}
-                              </TableProp>
-                            );
+                            return <TableProp key={index}>{formatLink(cell)}</TableProp>;
                           })}
                         </tr>
                       );
@@ -98,12 +93,24 @@ const FormatedText = ({ text }: $Props) => {
     [text, formatLink]
   );
 
+  const formatText = useCallback(
+    (textPart: string) => {
+      while (textPart.includes("{{")) {
+        const cutStart = textPart.indexOf("{{");
+        const cutEnd = textPart.indexOf("}}") + 1;
+        textPart = cut(textPart, cutStart, cutEnd);
+      }
+      return formatTable(textPart);
+    },
+    [formatTable]
+  );
+
   useEffect(() => {
     if (text !== undefined) {
-      let formatedText = formatTable(text);
+      let formatedText = formatText(text);
       setFormatedText(formatedText);
     }
-  }, [text, history, formatTable]);
+  }, [text, history, formatText]);
 
   return <>{formatedText}</>;
 };

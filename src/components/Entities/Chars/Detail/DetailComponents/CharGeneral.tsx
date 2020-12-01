@@ -1,7 +1,6 @@
 import React, { useCallback, useState, useEffect } from "react";
 import styled from "styled-components";
-import Char from "../../../../../Data/Chars/Char";
-import Class from "../../../../../Data/Classes/Class";
+import BuildChar from "../../../../../Data/Chars/BuildChar";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -16,33 +15,32 @@ import FeatureSet from "../../../../../Data/Classes/FeatureSet";
 import FormatedText from "../../../../GeneralElements/FormatedText";
 
 interface $Props {
-  char: Char;
-  onChange: (character: Char) => void;
-  classes: Class[];
+  buildChar: BuildChar;
+  onChange: (character: BuildChar) => void;
 }
 
-const CharGeneral = ({ char, classes, onChange }: $Props) => {
+const CharGeneral = ({ buildChar, onChange }: $Props) => {
   const [deathSaves, setDeathSaves] = useState<number[]>([0, 0, 0, 0, 0, 0]);
   const [prof, setProf] = useState<number>(0);
 
   const calcLevel = useCallback(() => {
     let level = 0;
-    char.classes.forEach((classe) => {
+    buildChar.character.classes.forEach((classe) => {
       level += classe.level;
     });
     return level;
-  }, [char]);
+  }, [buildChar]);
 
   useEffect(() => {
-    if (classes && classes.length > 0) {
+    if (buildChar.classes && buildChar.classes.length > 0) {
       const level = calcLevel();
-      classes[0].featureSets.forEach((featureSet: FeatureSet) => {
+      buildChar.classes[0].featureSets.forEach((featureSet: FeatureSet) => {
         if (featureSet.level === level) {
           setProf(featureSet.profBonus);
         }
       });
     }
-  }, [char, classes, calcLevel]);
+  }, [buildChar, calcLevel]);
 
   const formatProf = useCallback((prof: number) => {
     if (prof === undefined || prof === 0) {
@@ -59,17 +57,26 @@ const CharGeneral = ({ char, classes, onChange }: $Props) => {
     return mod;
   }, []);
 
-  const calcSkill = useCallback((skillProf: number, stat: number) => {
-    return (skillProf * prof) + formatScore(stat);
-  }, [formatScore, prof]);
+  const calcSkill = useCallback(
+    (skillProf: number, stat: number) => {
+      return skillProf * prof + formatScore(stat);
+    },
+    [formatScore, prof]
+  );
 
   const changeMoney = (field: string, value: number) => {
-    const newChar = { ...char, money: { ...char.money, [field]: value } };
+    const newChar: BuildChar = {
+      ...buildChar,
+      character: {
+        ...buildChar.character,
+        money: { ...buildChar.character.money, [field]: value },
+      },
+    };
     onChange(newChar);
   };
 
   const changeHp = (field: string, value: number) => {
-    const newChar = { ...char, [field]: value };
+    const newChar = { ...buildChar, character: { ...buildChar.character, [field]: value } };
     onChange(newChar);
   };
 
@@ -100,55 +107,55 @@ const CharGeneral = ({ char, classes, onChange }: $Props) => {
           <PropWithProf>
             <PropText>
               <PropTitle>Str Save:</PropTitle>
-              {calcSkill(char.saves.strSaveProf, char.str)}
+              {calcSkill(buildChar.character.saves.strSaveProf, buildChar.character.str)}
             </PropText>
             <PropProf>
-              <Icon icon={formatProf(char.saves.strSaveProf)} />
+              <Icon icon={formatProf(buildChar.character.saves.strSaveProf)} />
             </PropProf>
           </PropWithProf>
           <PropWithProf>
             <PropText>
               <PropTitle>Dex Save:</PropTitle>
-              {calcSkill(char.saves.dexSaveProf, char.dex)}
+              {calcSkill(buildChar.character.saves.dexSaveProf, buildChar.character.dex)}
             </PropText>
             <PropProf>
-              <Icon icon={formatProf(char.saves.dexSaveProf)} />
+              <Icon icon={formatProf(buildChar.character.saves.dexSaveProf)} />
             </PropProf>
           </PropWithProf>
           <PropWithProf>
             <PropText>
               <PropTitle>Con Save:</PropTitle>
-              {calcSkill(char.saves.conSaveProf, char.con)}
+              {calcSkill(buildChar.character.saves.conSaveProf, buildChar.character.con)}
             </PropText>
             <PropProf>
-              <Icon icon={formatProf(char.saves.conSaveProf)} />
+              <Icon icon={formatProf(buildChar.character.saves.conSaveProf)} />
             </PropProf>
           </PropWithProf>
           <PropWithProf>
             <PropText>
               <PropTitle>Int Save:</PropTitle>
-              {calcSkill(char.saves.intSaveProf, char.int)}
+              {calcSkill(buildChar.character.saves.intSaveProf, buildChar.character.int)}
             </PropText>
             <PropProf>
-              <Icon icon={formatProf(char.saves.intSaveProf)} />
+              <Icon icon={formatProf(buildChar.character.saves.intSaveProf)} />
             </PropProf>
           </PropWithProf>
           <PropWithProf>
             <PropText>
               <PropTitle>Wis Save:</PropTitle>
-              {calcSkill(char.saves.wisSaveProf, char.wis)}
+              {calcSkill(buildChar.character.saves.wisSaveProf, buildChar.character.wis)}
             </PropText>
             <PropProf>
-              <Icon icon={formatProf(char.saves.wisSaveProf)} />
+              <Icon icon={formatProf(buildChar.character.saves.wisSaveProf)} />
             </PropProf>
           </PropWithProf>
           <PropWithProf>
             <PropText>
               <PropTitle>Cha Save:</PropTitle>
-              {calcSkill(char.saves.chaSaveProf, char.cha)}
+              {calcSkill(buildChar.character.saves.chaSaveProf, buildChar.character.cha)}
             </PropText>
             <PropProf>
-              <Icon icon={formatProf(char.saves.chaSaveProf)} />
+              <Icon icon={formatProf(buildChar.character.saves.chaSaveProf)} />
             </PropProf>
           </PropWithProf>
         </PropColumnWrapper>
@@ -158,55 +165,55 @@ const CharGeneral = ({ char, classes, onChange }: $Props) => {
           <PropWithProf>
             <PropText>
               <PropTitle>Acrobatics:</PropTitle>
-              {calcSkill(char.skills.acrobaticsProf, char.str)}
+              {calcSkill(buildChar.character.skills.acrobaticsProf, buildChar.character.str)}
             </PropText>
             <PropProf>
-              <Icon icon={formatProf(char.skills.acrobaticsProf)} />
+              <Icon icon={formatProf(buildChar.character.skills.acrobaticsProf)} />
             </PropProf>
           </PropWithProf>
           <PropWithProf>
             <PropText>
               <PropTitle>Animal Handling:</PropTitle>
-              {calcSkill(char.skills.animalHandlingProf, char.wis)}
+              {calcSkill(buildChar.character.skills.animalHandlingProf, buildChar.character.wis)}
             </PropText>
             <PropProf>
-              <Icon icon={formatProf(char.skills.animalHandlingProf)} />
+              <Icon icon={formatProf(buildChar.character.skills.animalHandlingProf)} />
             </PropProf>
           </PropWithProf>
           <PropWithProf>
             <PropText>
               <PropTitle>Arcana:</PropTitle>
-              {calcSkill(char.skills.arcanaProf, char.int)}
+              {calcSkill(buildChar.character.skills.arcanaProf, buildChar.character.int)}
             </PropText>
             <PropProf>
-              <Icon icon={formatProf(char.skills.arcanaProf)} />
+              <Icon icon={formatProf(buildChar.character.skills.arcanaProf)} />
             </PropProf>
           </PropWithProf>
           <PropWithProf>
             <PropText>
               <PropTitle>Athletics:</PropTitle>
-              {calcSkill(char.skills.athleticsProf, char.dex)}
+              {calcSkill(buildChar.character.skills.athleticsProf, buildChar.character.dex)}
             </PropText>
             <PropProf>
-              <Icon icon={formatProf(char.skills.athleticsProf)} />
+              <Icon icon={formatProf(buildChar.character.skills.athleticsProf)} />
             </PropProf>
           </PropWithProf>
           <PropWithProf>
             <PropText>
               <PropTitle>Deception:</PropTitle>
-              {calcSkill(char.skills.deceptionProf, char.cha)}
+              {calcSkill(buildChar.character.skills.deceptionProf, buildChar.character.cha)}
             </PropText>
             <PropProf>
-              <Icon icon={formatProf(char.skills.deceptionProf)} />
+              <Icon icon={formatProf(buildChar.character.skills.deceptionProf)} />
             </PropProf>
           </PropWithProf>
           <PropWithProf>
             <PropText>
               <PropTitle>History:</PropTitle>
-              {calcSkill(char.skills.historyProf, char.int)}
+              {calcSkill(buildChar.character.skills.historyProf, buildChar.character.int)}
             </PropText>
             <PropProf>
-              <Icon icon={formatProf(char.skills.historyProf)} />
+              <Icon icon={formatProf(buildChar.character.skills.historyProf)} />
             </PropProf>
           </PropWithProf>
         </PropColumnWrapper>
@@ -216,55 +223,55 @@ const CharGeneral = ({ char, classes, onChange }: $Props) => {
           <PropWithProf>
             <PropText>
               <PropTitle>Insight:</PropTitle>
-              {calcSkill(char.skills.insightProf, char.wis)}
+              {calcSkill(buildChar.character.skills.insightProf, buildChar.character.wis)}
             </PropText>
             <PropProf>
-              <Icon icon={formatProf(char.skills.insightProf)} />
+              <Icon icon={formatProf(buildChar.character.skills.insightProf)} />
             </PropProf>
           </PropWithProf>
           <PropWithProf>
             <PropText>
               <PropTitle>Intimidation:</PropTitle>
-              {calcSkill(char.skills.intimidationProf, char.cha)}
+              {calcSkill(buildChar.character.skills.intimidationProf, buildChar.character.cha)}
             </PropText>
             <PropProf>
-              <Icon icon={formatProf(char.skills.intimidationProf)} />
+              <Icon icon={formatProf(buildChar.character.skills.intimidationProf)} />
             </PropProf>
           </PropWithProf>
           <PropWithProf>
             <PropText>
               <PropTitle>Investigation:</PropTitle>
-              {calcSkill(char.skills.investigationProf, char.int)}
+              {calcSkill(buildChar.character.skills.investigationProf, buildChar.character.int)}
             </PropText>
             <PropProf>
-              <Icon icon={formatProf(char.skills.investigationProf)} />
+              <Icon icon={formatProf(buildChar.character.skills.investigationProf)} />
             </PropProf>
           </PropWithProf>
           <PropWithProf>
             <PropText>
               <PropTitle>Medicine:</PropTitle>
-              {calcSkill(char.skills.medicineProf, char.wis)}
+              {calcSkill(buildChar.character.skills.medicineProf, buildChar.character.wis)}
             </PropText>
             <PropProf>
-              <Icon icon={formatProf(char.skills.medicineProf)} />
+              <Icon icon={formatProf(buildChar.character.skills.medicineProf)} />
             </PropProf>
           </PropWithProf>
           <PropWithProf>
             <PropText>
               <PropTitle>Nature:</PropTitle>
-              {calcSkill(char.skills.natureProf, char.int)}
+              {calcSkill(buildChar.character.skills.natureProf, buildChar.character.int)}
             </PropText>
             <PropProf>
-              <Icon icon={formatProf(char.skills.natureProf)} />
+              <Icon icon={formatProf(buildChar.character.skills.natureProf)} />
             </PropProf>
           </PropWithProf>
           <PropWithProf>
             <PropText>
               <PropTitle>Perception:</PropTitle>
-              {calcSkill(char.skills.perceptionProf, char.wis)}
+              {calcSkill(buildChar.character.skills.perceptionProf, buildChar.character.wis)}
             </PropText>
             <PropProf>
-              <Icon icon={formatProf(char.skills.perceptionProf)} />
+              <Icon icon={formatProf(buildChar.character.skills.perceptionProf)} />
             </PropProf>
           </PropWithProf>
         </PropColumnWrapper>
@@ -274,55 +281,55 @@ const CharGeneral = ({ char, classes, onChange }: $Props) => {
           <PropWithProf>
             <PropText>
               <PropTitle>Performance:</PropTitle>
-              {calcSkill(char.skills.performanceProf, char.cha)}
+              {calcSkill(buildChar.character.skills.performanceProf, buildChar.character.cha)}
             </PropText>
             <PropProf>
-              <Icon icon={formatProf(char.skills.performanceProf)} />
+              <Icon icon={formatProf(buildChar.character.skills.performanceProf)} />
             </PropProf>
           </PropWithProf>
           <PropWithProf>
             <PropText>
               <PropTitle>Persuasion:</PropTitle>
-              {calcSkill(char.skills.persuasionProf, char.cha)}
+              {calcSkill(buildChar.character.skills.persuasionProf, buildChar.character.cha)}
             </PropText>
             <PropProf>
-              <Icon icon={formatProf(char.skills.persuasionProf)} />
+              <Icon icon={formatProf(buildChar.character.skills.persuasionProf)} />
             </PropProf>
           </PropWithProf>
           <PropWithProf>
             <PropText>
               <PropTitle>Religion:</PropTitle>
-              {calcSkill(char.skills.religionProf, char.int)}
+              {calcSkill(buildChar.character.skills.religionProf, buildChar.character.int)}
             </PropText>
             <PropProf>
-              <Icon icon={formatProf(char.skills.religionProf)} />
+              <Icon icon={formatProf(buildChar.character.skills.religionProf)} />
             </PropProf>
           </PropWithProf>
           <PropWithProf>
             <PropText>
               <PropTitle>Sleight Of Hand:</PropTitle>
-              {calcSkill(char.skills.sleightOfHandProf, char.dex)}
+              {calcSkill(buildChar.character.skills.sleightOfHandProf, buildChar.character.dex)}
             </PropText>
             <PropProf>
-              <Icon icon={formatProf(char.skills.sleightOfHandProf)} />
+              <Icon icon={formatProf(buildChar.character.skills.sleightOfHandProf)} />
             </PropProf>
           </PropWithProf>
           <PropWithProf>
             <PropText>
               <PropTitle>Stealth:</PropTitle>
-              {calcSkill(char.skills.stealthProf, char.dex)}
+              {calcSkill(buildChar.character.skills.stealthProf, buildChar.character.dex)}
             </PropText>
             <PropProf>
-              <Icon icon={formatProf(char.skills.stealthProf)} />
+              <Icon icon={formatProf(buildChar.character.skills.stealthProf)} />
             </PropProf>
           </PropWithProf>
           <PropWithProf>
             <PropText>
               <PropTitle>Survival:</PropTitle>
-              {calcSkill(char.skills.survivalProf, char.wis)}
+              {calcSkill(buildChar.character.skills.survivalProf, buildChar.character.wis)}
             </PropText>
             <PropProf>
-              <Icon icon={formatProf(char.skills.survivalProf)} />
+              <Icon icon={formatProf(buildChar.character.skills.survivalProf)} />
             </PropProf>
           </PropWithProf>
         </PropColumnWrapper>
@@ -334,25 +341,25 @@ const CharGeneral = ({ char, classes, onChange }: $Props) => {
           </Prop>
           <Prop>
             <PropTitle>Initiative:</PropTitle>
-            {char.init}
+            {buildChar.character.init}
           </Prop>
           <Prop>
             <PropTitle>Armor Class:</PropTitle>
-            {char.ac}
+            {buildChar.character.ac}
           </Prop>
           <Prop>
             <PropTitle>Hit Points:</PropTitle>
-            {char.hp}
+            {buildChar.character.hp}
           </Prop>
           <SmallNumberField
-            value={char.currentHp}
+            value={buildChar.character.currentHp}
             label="Current Hp"
             onChange={(currentHp) => changeHp("currentHp", currentHp)}
           />
           <Prop>
             <PropTitle>Hit Die:</PropTitle>
-            {char.classes.map((classe) => {
-              return classes.map((classesClass) => {
+            {buildChar.character.classes.map((classe) => {
+              return buildChar.classes.map((classesClass) => {
                 if (classe.classe === classesClass.name) {
                   return classe.level + classesClass.hitDices + " ";
                 } else {
@@ -367,19 +374,19 @@ const CharGeneral = ({ char, classes, onChange }: $Props) => {
         <PropColumnWrapper>
           <Prop>
             <PropTitle>Passiv Perception:</PropTitle>
-            {calcSkill(char.skills.perceptionProf, char.wis) + 10}
+            {calcSkill(buildChar.character.skills.perceptionProf, buildChar.character.wis) + 10}
           </Prop>
           <Prop>
             <PropTitle>Passiv Investigation:</PropTitle>
-            {calcSkill(char.skills.investigationProf, char.int) + 10}
+            {calcSkill(buildChar.character.skills.investigationProf, buildChar.character.int) + 10}
           </Prop>
           <Prop>
             <PropTitle>Passiv Insight:</PropTitle>
-            {calcSkill(char.skills.insightProf, char.wis) + 10}
+            {calcSkill(buildChar.character.skills.insightProf, buildChar.character.wis) + 10}
           </Prop>
           <Text>
             <PropTitle>Senses:</PropTitle>
-            <FormatedText text={char.senses} />
+            <FormatedText text={buildChar.character.senses} />
           </Text>
         </PropColumnWrapper>
       </MinView>
@@ -387,34 +394,34 @@ const CharGeneral = ({ char, classes, onChange }: $Props) => {
         <PropColumnWrapper>
           <Text>
             <PropTitle>Proficiencies:</PropTitle>
-            <FormatedText text={char.profsLangs} />
+            <FormatedText text={buildChar.character.profsLangs} />
           </Text>
         </PropColumnWrapper>
       </MinView>
       <MinView>
         <PropColumnWrapper>
           <SmallNumberField
-            value={char.money.copper}
+            value={buildChar.character.money.copper}
             label="Copper"
             onChange={(copper) => changeMoney("copper", copper)}
           />
           <SmallNumberField
-            value={char.money.silver}
+            value={buildChar.character.money.silver}
             label="Silver"
             onChange={(silver) => changeMoney("silver", silver)}
           />
           <SmallNumberField
-            value={char.money.gold}
+            value={buildChar.character.money.gold}
             label="Gold"
             onChange={(gold) => changeMoney("gold", gold)}
           />
           <SmallNumberField
-            value={char.money.platinum}
+            value={buildChar.character.money.platinum}
             label="Platinum"
             onChange={(platinum) => changeMoney("platinum", platinum)}
           />
           <SmallNumberField
-            value={char.money.electrum}
+            value={buildChar.character.money.electrum}
             label="Electrum"
             onChange={(electrum) => changeMoney("electrum", electrum)}
           />

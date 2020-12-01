@@ -6,14 +6,14 @@ export const featureTypeArray: { value: string; label: string }[] = [
   { value: "bonusAction", label: "Bonus Action" },
   { value: "reaction", label: "Reaction" },
 ];
-export enum featureType {
+export enum FeatureType {
   normal,
   action,
   bonusAction,
   reaction,
 }
 export function getOptionFromEnum(
-  value: featureType
+  value: FeatureType
 ): { value: string; label: string } {
   let opt = undefined;
   featureTypeArray.forEach((option) => {
@@ -28,17 +28,17 @@ export function getOptionFromEnum(
 export default class Feature implements IEntity {
   name: string;
   text: string;
-  type: featureType;
+  type: FeatureType;
   selections: string[];
   constructor(
     name: string,
     text: string,
     selections: string[],
-    type?: featureType
+    type?: FeatureType
   ) {
     this.name = name;
     this.text = text;
-    this.type = type || featureType.normal;
+    this.type = type || FeatureType.normal;
     this.selections = selections;
   }
 }

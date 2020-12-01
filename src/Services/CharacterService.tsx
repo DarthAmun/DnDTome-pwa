@@ -1,9 +1,11 @@
+import BuildChar from "../Data/Chars/BuildChar";
 import Char from "../Data/Chars/Char";
 import Class from "../Data/Classes/Class";
 import FeatureSet from "../Data/Classes/FeatureSet";
 import Subclass from "../Data/Classes/Subclass";
 import Gear from "../Data/Gear";
 import Item from "../Data/Item";
+import Modifier, { ModifierOperator } from "../Data/Modifier";
 import Monster from "../Data/Monster";
 import Race from "../Data/Races/Race";
 import Subrace from "../Data/Races/Subrace";
@@ -11,7 +13,7 @@ import Trait from "../Data/Races/Trait";
 import Spell from "../Data/Spell";
 import { recivePromiseByAttribute } from "./DatabaseService";
 
-const calcLevel = (char: Char) => {
+const calcLevel = (char: Char): number => {
   let level = 0;
   char.classes.forEach((classe) => {
     level += classe.level;
@@ -19,7 +21,7 @@ const calcLevel = (char: Char) => {
   return level;
 };
 
-export const buildCharacter = async (character: Char) => {
+export const buildCharacter = async (character: Char): Promise<BuildChar> => {
   console.time("t");
   let level: number = calcLevel(character);
   let prof: number = 0;
@@ -47,16 +49,44 @@ export const buildCharacter = async (character: Char) => {
   let spells: Spell[];
   let monsters: Monster[] = [];
 
+  console.time("load");
   let classList: Promise<Class>[] = [];
   let subclassList: Promise<Subclass>[] = [];
+  let itemList: Promise<Item>[] = [];
+  let gearList: Promise<Gear>[] = [];
+  let baseList: Promise<Gear>[] = [];
+  let monsterList: Promise<Monster>[] = [];
+  let spellList: Promise<Spell>[] = [];
+
   character.classes.forEach((classe) => {
     classList.push(recivePromiseByAttribute("classes", "name", classe.classe));
-    subclassList.push(
-      recivePromiseByAttribute("subclasses", "name", classe.subclasse)
-    );
+    subclassList.push(recivePromiseByAttribute("subclasses", "name", classe.subclasse));
   });
+  character.items.forEach((item) => {
+    itemList.push(recivePromiseByAttribute("items", "name", item.origin));
+    gearList.push(recivePromiseByAttribute("gears", "name", item.origin));
+  });
+  character.monsters.forEach((monster: string) => {
+    monsterList.push(recivePromiseByAttribute("monsters", "name", monster));
+  });
+  character.spells.forEach((spell: string) => {
+    spellList.push(recivePromiseByAttribute("spells", "name", spell));
+  });
+
+  let currentItems = await Promise.all(itemList);
+  currentItems.forEach((item) => {
+    if (item !== undefined) baseList.push(recivePromiseByAttribute("gears", "name", item.base));
+  });
+
   classes = await Promise.all(classList);
   subclasses = await Promise.all(subclassList);
+  monsters = await Promise.all(monsterList);
+  spells = await Promise.all(spellList);
+  let currentGears = await Promise.all(gearList);
+  let currentBases = await Promise.all(baseList);
+  race = await recivePromiseByAttribute("races", "name", character.race.race);
+  subrace = await recivePromiseByAttribute("subraces", "name", character.race.subrace);
+
   classes.forEach((classe: Class) => {
     let classLevel = 0;
     character.classes.forEach((charClass) => {
@@ -75,7 +105,7 @@ export const buildCharacter = async (character: Char) => {
         }
       }
     });
-    subclasses.forEach((subclass: Subclass) => {
+    subclasses?.forEach((subclass: Subclass) => {
       if (subclass !== undefined)
         if (subclass.type === classe.name) {
           subclass.features.forEach((featureSet: FeatureSet) => {
@@ -86,42 +116,18 @@ export const buildCharacter = async (character: Char) => {
         }
     });
   });
-
-  race = await recivePromiseByAttribute("races", "name", character.race.race);
-  subrace = await recivePromiseByAttribute(
-    "subraces",
-    "name",
-    character.race.subrace
-  );
   race.traits.forEach((trait: Trait) => {
     if (trait !== undefined)
       if (trait.level <= level) {
         raceFeatures.push(trait);
       }
   });
-  subrace.traits.forEach((trait: Trait) => {
+  subrace?.traits.forEach((trait: Trait) => {
     if (trait !== undefined)
       if (trait.level <= level) {
         raceFeatures.push(trait);
       }
   });
-
-  let itemList: Promise<Item>[] = [];
-  let gearList: Promise<Gear>[] = [];
-  character.items.forEach((item) => {
-    itemList.push(recivePromiseByAttribute("items", "name", item.origin));
-    gearList.push(recivePromiseByAttribute("gears", "name", item.origin));
-  });
-  let currentItems = await Promise.all(itemList);
-  let currentGears = await Promise.all(gearList);
-
-  let baseList: Promise<Gear>[] = [];
-  currentItems.forEach((item) => {
-    if (item !== undefined)
-      baseList.push(recivePromiseByAttribute("gears", "name", item.base));
-  });
-  let currentBases = await Promise.all(baseList);
-
   character.items.forEach((originItem) => {
     if (originItem !== undefined) {
       currentItems.forEach(async (item: Item) => {
@@ -146,33 +152,264 @@ export const buildCharacter = async (character: Char) => {
       });
     }
   });
+  console.timeEnd("load");
 
-  let monsterList: Promise<Monster>[] = [];
-  character.monsters.forEach((monster: string) => {
-    monsterList.push(recivePromiseByAttribute("monsters", "name", monster));
+  console.time("modifier");
+  let modifiers: Modifier[] = [];
+  items.forEach((item) => {
+    modifiers = modifiers.concat(
+      extractModifier(item.item.description, "Magic Item: " + item.origin)
+    );
   });
-  monsters = await Promise.all(monsterList);
-
-  let spellList: Promise<Spell>[] = [];
-  character.spells.forEach((spell: string) => {
-    spellList.push(recivePromiseByAttribute("spells", "name", spell));
+  raceFeatures.forEach((trait) => {
+    modifiers = modifiers.concat(extractModifier(trait.text, "Race Feature: " + trait.name));
   });
-  spells = await Promise.all(spellList);
+  classFeatures.forEach((featureSet) => {
+    featureSet.features.forEach((feature) => {
+      modifiers = modifiers.concat(extractModifier(feature.text, "Class Feature: " + feature.name));
+    });
+  });
+  console.timeEnd("modifier");
 
   console.timeEnd("t");
-  return {
-    character: character,
-    level: level,
-    prof: prof,
-    classes: classes,
-    subclasses: subclasses,
-    classFeatures: classFeatures,
-    race: race,
-    subrace: subrace,
-    raceFeatures: raceFeatures,
-    gears: gears,
-    items: items,
-    spells: spells,
-    monsters: monsters,
-  };
+  return new BuildChar(
+    character,
+    level,
+    prof,
+    classes,
+    subclasses,
+    classFeatures,
+    race,
+    subrace,
+    raceFeatures,
+    gears,
+    items,
+    spells,
+    monsters,
+    modifiers
+  );
+};
+
+const cut = (str: string, cutStart: number, cutEnd: number) => {
+  return str.substr(0, cutStart) + str.substr(cutEnd + 1);
+};
+
+const extractTarget = (target: string): string | string[] => {
+  if (target.includes(".")) {
+    return target.split(".");
+  }
+  return target;
+};
+
+const extractModifier = (text: string, origin: string): Modifier[] => {
+  let newModifiers: Modifier[] = [];
+
+  while (text.includes("{{")) {
+    const cutStart = text.indexOf("{{");
+    const cutEnd = text.indexOf("}}");
+    const rawModifier = text.substring(cutStart + 2, cutEnd);
+    text = cut(text, cutStart, cutEnd + 1);
+
+    if (rawModifier.includes("=")) {
+      const split = rawModifier.split("=");
+
+      newModifiers.push(
+        new Modifier(
+          extractTarget(split[0]),
+          ModifierOperator.EQUAL,
+          split[1].includes('"') ? split[1] : parseInt(split[1]),
+          origin
+        )
+      );
+    } else if (rawModifier.includes("+")) {
+      const split = rawModifier.split("+");
+      newModifiers.push(
+        new Modifier(
+          extractTarget(split[0]),
+          ModifierOperator.ADD,
+          split[1].includes('"') ? split[1] : parseInt(split[1]),
+          origin
+        )
+      );
+    } else if (rawModifier.includes("-")) {
+      const split = rawModifier.split("-");
+      newModifiers.push(
+        new Modifier(
+          extractTarget(split[0]),
+          ModifierOperator.SUBSTRACT,
+          split[1].includes('"') ? split[1] : parseInt(split[1]),
+          origin
+        )
+      );
+    }
+  }
+  return newModifiers;
+};
+
+export const applyMods = async (char: BuildChar, modifiers: boolean): Promise<BuildChar> => {
+  if (modifiers) {
+    let newChar = char;
+    let modPromises: Promise<boolean>[] = [];
+    char.modifiers.forEach((mod: Modifier) => {
+      if (typeof mod.target == "string") {
+        const target: string = mod.target;
+        if (mod.operator === ModifierOperator.EQUAL) {
+          modPromises.push(
+            new Promise((resolve, reject) => {
+              newChar = {
+                ...newChar,
+                character: {
+                  ...newChar.character,
+                  [target]: replacePlaceholder(char, mod.value),
+                },
+              };
+              resolve(true);
+            })
+          );
+        } else if (mod.operator === ModifierOperator.ADD && typeof mod.value == "string") {
+          modPromises.push(
+            new Promise((resolve, reject) => {
+              newChar = {
+                ...newChar,
+                character: {
+                  ...newChar.character,
+                  [target]: char.character[target] + mod.value,
+                },
+              };
+              resolve(true);
+            })
+          );
+        } else if (mod.operator === ModifierOperator.ADD && typeof mod.value == "number") {
+          const value: number = mod.value;
+          modPromises.push(
+            new Promise((resolve, reject) => {
+              newChar = {
+                ...newChar,
+                character: {
+                  ...newChar.character,
+                  [target]: (char.character[target] as number) + value,
+                },
+              };
+              resolve(true);
+            })
+          );
+        } else if (mod.operator === ModifierOperator.SUBSTRACT && typeof mod.value == "number") {
+          const value: number = mod.value;
+          modPromises.push(
+            new Promise((resolve, reject) => {
+              newChar = {
+                ...newChar,
+                character: {
+                  ...newChar.character,
+                  [target]: (char.character[target] as number) - value,
+                },
+              };
+              resolve(true);
+            })
+          );
+        }
+      } else if (Array.isArray(mod.target)) {
+        if (mod.target[1] === "add" && typeof mod.value == "string") {
+          const value: string = mod.value;
+          modPromises.push(
+            new Promise((resolve, reject) => {
+              recivePromiseByAttribute(mod.target[0], "name", value.replaceAll('"', "")).then(
+                (entity) => {
+                  newChar = { ...newChar, [mod.target[0]]: [...newChar[mod.target[0]], entity] };
+                  resolve(true);
+                }
+              );
+            })
+          );
+        } else if (mod.operator === ModifierOperator.EQUAL) {
+          modPromises.push(
+            new Promise((resolve, reject) => {
+              newChar = {
+                ...newChar,
+                character: {
+                  ...newChar.character,
+                  [mod.target[0]]: {
+                    ...newChar.character[mod.target[0]],
+                    [mod.target[1]]: replacePlaceholder(char, mod.value),
+                  },
+                },
+              };
+              resolve(true);
+            })
+          );
+        } else if (mod.operator === ModifierOperator.ADD && typeof mod.value == "string") {
+          modPromises.push(
+            new Promise((resolve, reject) => {
+              newChar = {
+                ...newChar,
+                character: {
+                  ...newChar.character,
+                  [mod.target[0]]: {
+                    ...newChar.character[mod.target[0]],
+                    [mod.target[1]]: char.character[mod.target[0]][mod.target[1]] + mod.value,
+                  },
+                },
+              };
+              resolve(true);
+            })
+          );
+        } else if (mod.operator === ModifierOperator.ADD && typeof mod.value == "number") {
+          const value: number = mod.value;
+          modPromises.push(
+            new Promise((resolve, reject) => {
+              newChar = {
+                ...newChar,
+                character: {
+                  ...newChar.character,
+                  [mod.target[0]]: {
+                    ...newChar.character[mod.target[0]],
+                    [mod.target[1]]:
+                      (char.character[mod.target[0]][mod.target[1]] as number) + value,
+                  },
+                },
+              };
+              resolve(true);
+            })
+          );
+        } else if (mod.operator === ModifierOperator.SUBSTRACT && typeof mod.value == "number") {
+          const value: number = mod.value;
+          modPromises.push(
+            new Promise((resolve, reject) => {
+              newChar = {
+                ...newChar,
+                character: {
+                  ...newChar.character,
+                  [mod.target[0]]: {
+                    ...newChar.character[mod.target[0]],
+                    [mod.target[1]]:
+                      (char.character[mod.target[0]][mod.target[1]] as number) - value,
+                  },
+                },
+              };
+              resolve(true);
+            })
+          );
+        }
+      }
+    });
+    await Promise.all(modPromises);
+    console.log(newChar);
+    return newChar;
+  } else {
+    return { ...char, character: char.oldCharacter };
+  }
+};
+
+export const replacePlaceholder = (char: BuildChar, text: string | number) => {
+  if (typeof text == "string" && text.includes("[") && text.includes("]")) {
+    text = text.replaceAll('"', "");
+    while (text.includes("[") && text.includes("]")) {
+      const cutStart = text.indexOf("[");
+      const cutEnd = text.indexOf("]");
+      const rawPlaceholder = text.substring(cutStart + 1, cutEnd);
+      text = text.replace(text.substring(cutStart, cutEnd + 1), char.oldCharacter[rawPlaceholder]);
+    }
+    return Math.floor(eval(text));
+  }
+  return text;
 };

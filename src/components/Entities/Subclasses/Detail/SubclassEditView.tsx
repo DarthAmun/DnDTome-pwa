@@ -6,7 +6,7 @@ import FeatureSet from "../../../../Data/Classes/FeatureSet";
 import Boni from "../../../../Data/Classes/Boni";
 import Selection from "../../../../Data/Selection";
 import Feature, {
-  featureType,
+  FeatureType,
   featureTypeArray,
   getOptionFromEnum,
 } from "../../../../Data/Classes/Feature";
@@ -249,7 +249,7 @@ const SubclassEditView = ({ subclass, onEdit }: $Props) => {
           name: "",
           text: "",
           selections: [],
-          type: featureType.normal,
+          type: FeatureType.normal,
         });
         return { ...featureSet, features: features };
       }

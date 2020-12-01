@@ -1,38 +1,24 @@
-import React, { useCallback, useState, useEffect } from "react";
+import React, { useCallback } from "react";
 import styled from "styled-components";
-import Char from "../../../../../Data/Chars/Char";
-import Spell, { isSpell } from "../../../../../Data/Spell";
-import { reciveByAttribute } from "../../../../../Services/DatabaseService";
+import BuildChar from "../../../../../Data/Chars/BuildChar";
 
 import SmallNumberArrayField from "../../../../FormElements/SmallNumberArrayField";
 import SpellTile from "../../../Spells/SpellTile";
 import SmallNumberField from "../../../../FormElements/SmallNumberField";
 
 interface $Props {
-  char: Char;
-  saveChar: (char: Char) => void;
+  buildChar: BuildChar;
+  saveChar: (char: BuildChar) => void;
 }
 
-const CharSpell = ({ char, saveChar }: $Props) => {
-  const [spells, setSpells] = useState<Spell[]>([]);
-
-  useEffect(() => {
-    char.spells.forEach((spell) => {
-      reciveByAttribute("spells", "name", spell, (result) => {
-        if (result && isSpell(result)) {
-          setSpells((s) => [...s, result]);
-        }
-      });
-    });
-  }, [char.spells]);
-
+const CharSpell = ({ buildChar, saveChar }: $Props) => {
   const onSpellslotChange = useCallback(
     (
       oldSlots: { origin: string; slots: number[]; max: number[] },
       index: number,
       value: number
     ) => {
-      let newSpellSlots = char.spellSlots.map(
+      let newSpellSlots = buildChar.character.spellSlots.map(
         (slots: { origin: string; slots: number[]; max: number[] }) => {
           if (slots.origin === oldSlots.origin) {
             let oldSlotValues = Array.from(oldSlots.slots);
@@ -47,17 +33,14 @@ const CharSpell = ({ char, saveChar }: $Props) => {
           }
         }
       );
-      saveChar({ ...char, spellSlots: newSpellSlots });
+      saveChar({ ...buildChar, character: { ...buildChar.character, spellSlots: newSpellSlots } });
     },
-    [char, saveChar]
+    [buildChar, saveChar]
   );
 
   const onCurrencyBoniChange = useCallback(
-    (
-      oldBoni: { origin: string; value: number; max: number },
-      value: number
-    ) => {
-      let newBonis = char.currencyBonis.map(
+    (oldBoni: { origin: string; value: number; max: number }, value: number) => {
+      let newBonis = buildChar.character.currencyBonis.map(
         (boni: { origin: string; value: number; max: number }) => {
           if (boni === oldBoni) {
             return { ...boni, value: value };
@@ -66,9 +49,9 @@ const CharSpell = ({ char, saveChar }: $Props) => {
           }
         }
       );
-      saveChar({ ...char, currencyBonis: newBonis });
+      saveChar({ ...buildChar, character: { ...buildChar.character, currencyBonis: newBonis } });
     },
-    [char, saveChar]
+    [buildChar, saveChar]
   );
 
   return (
@@ -77,18 +60,15 @@ const CharSpell = ({ char, saveChar }: $Props) => {
         <PropWrapper>
           <Prop>
             <PropTitle>Casting Hit:</PropTitle>
-            {char.castingHit}
+            {buildChar.character.castingHit}
           </Prop>
           <Prop>
             <PropTitle>Casting Dc:</PropTitle>
-            {char.castingDC}
+            {buildChar.character.castingDC}
           </Prop>
-          {char.currencyBonis &&
-            char.currencyBonis.map(
-              (
-                boni: { origin: string; value: number; max: number },
-                index: number
-              ) => {
+          {buildChar.character.currencyBonis &&
+            buildChar.character.currencyBonis.map(
+              (boni: { origin: string; value: number; max: number }, index: number) => {
                 return (
                   <SmallNumberField
                     key={index}
@@ -96,15 +76,13 @@ const CharSpell = ({ char, saveChar }: $Props) => {
                     showMax={true}
                     value={boni.value}
                     label={boni.origin}
-                    onChange={(boniChange) =>
-                      onCurrencyBoniChange(boni, boniChange)
-                    }
+                    onChange={(boniChange) => onCurrencyBoniChange(boni, boniChange)}
                   />
                 );
               }
             )}
-          {char.spellSlots &&
-            char.spellSlots.map(
+          {buildChar.character.spellSlots &&
+            buildChar.character.spellSlots.map(
               (
                 classSlots: {
                   origin: string;
@@ -119,17 +97,15 @@ const CharSpell = ({ char, saveChar }: $Props) => {
                     values={classSlots.slots}
                     max={classSlots.max}
                     label={classSlots.origin}
-                    onChange={(i, value) =>
-                      onSpellslotChange(classSlots, i, value)
-                    }
+                    onChange={(i, value) => onSpellslotChange(classSlots, i, value)}
                   />
                 );
               }
             )}
         </PropWrapper>
         <PropWrapper>
-          {spells &&
-            spells.map((spell, index: number) => {
+          {buildChar.spells &&
+            buildChar.spells.map((spell, index: number) => {
               return <SpellTile key={index} spell={spell} />;
             })}
         </PropWrapper>

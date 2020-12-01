@@ -17,6 +17,8 @@ import {
   faSave,
   faTrash,
   faExclamationTriangle,
+  faSlidersH,
+  faList,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import CharView from "./CharView";
@@ -32,7 +34,10 @@ interface $Props {
 
 const CharDetail = ({ char, isNew }: $Props) => {
   const [editMode, setMode] = useState<boolean>(isNew);
+  const [modMode, setModMode] = useState<boolean>(true);
+
   const [charObj, editChar] = useState<Char>(char);
+
   const [showAlert, setAlert] = useState<boolean>(false);
   const [showDeleteDialog, setDeleteDialog] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
@@ -60,9 +65,7 @@ const CharDetail = ({ char, isNew }: $Props) => {
     let classList: Promise<Class>[] = [];
 
     char.classes.forEach((classe) => {
-      classList.push(
-        recivePromiseByAttribute("classes", "name", classe.classe)
-      );
+      classList.push(recivePromiseByAttribute("classes", "name", classe.classe));
     });
     const results = await Promise.all(classList);
     results.forEach((classe: Class) => {
@@ -213,28 +216,33 @@ const CharDetail = ({ char, isNew }: $Props) => {
       )}
       <TopBar>
         <BackButton icon={faArrowLeft} action={() => history.goBack()} />
+        {!editMode && (
+          <EditToggle mode={(!modMode).toString()}>
+            <ToggleLeft onClick={() => setModMode(true)}>
+              <FontAwesomeIcon icon={faSlidersH} />
+            </ToggleLeft>
+            <ToggleRight onClick={() => setModMode(false)}>
+              <FontAwesomeIcon icon={faList} />
+            </ToggleRight>
+          </EditToggle>
+        )}
         <EditToggle mode={editMode.toString()}>
           <ToggleLeft onClick={() => setMode(false)}>View</ToggleLeft>
           <ToggleRight onClick={() => setMode(true)}>Edit</ToggleRight>
         </EditToggle>
-        {unsavedChanges && (
-          <Icon icon={faExclamationTriangle} title={"Unsaved changes!"} />
-        )}
+        {unsavedChanges && <Icon icon={faExclamationTriangle} title={"Unsaved changes!"} />}
         {editMode && (
           <>
-            <IconButton
-              onClick={() => updateChar("chars", charObj)}
-              icon={faSave}
-            />
+            <IconButton onClick={() => updateChar("chars", charObj)} icon={faSave} />
             <IconButton onClick={() => deleteChar()} icon={faTrash} />
             {message && showAlert && <Message>{message}</Message>}
           </>
         )}
       </TopBar>
       {editMode ? (
-        <CharEditView char={charObj} onEdit={(value) => editChar(value)} />
+        <CharEditView character={charObj} onEdit={(value) => editChar(value)} />
       ) : (
-        <CharView character={charObj} />
+        <CharView character={charObj} modifications={modMode} />
       )}
     </>
   );

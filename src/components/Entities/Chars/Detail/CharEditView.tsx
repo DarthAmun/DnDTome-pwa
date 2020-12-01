@@ -9,10 +9,9 @@ import ClassSet from "../../../../Data/Chars/ClassSet";
 import Selection from "../../../../Data/Selection";
 import Feature from "../../../../Data/Classes/Feature";
 import Subclass from "../../../../Data/Classes/Subclass";
-import {
-  reciveAll,
-  reciveAllFiltered,
-} from "../../../../Services/DatabaseService";
+import { buildCharacter } from "../../../../Services/CharacterService";
+import BuildChar from "../../../../Data/Chars/BuildChar";
+import { reciveAll } from "../../../../Services/DatabaseService";
 
 import {
   faTrash,
@@ -31,73 +30,25 @@ import NumberField from "../../../FormElements/NumberField";
 import TextField from "../../../FormElements/TextField";
 import IconButton from "../../../FormElements/IconButton";
 import TextButton from "../../../FormElements/TextButton";
+import { LoadingSpinner } from "../../../Loading";
 
 interface $Props {
-  char: Char;
+  character: Char;
   onEdit: (value: Char) => void;
 }
 
-const CharEditView = ({ char, onEdit }: $Props) => {
+const CharEditView = ({ character, onEdit }: $Props) => {
   const [activeTab, setTab] = useState<string>("General");
-  const [classes, setClasses] = useState<Class[]>([]);
-  const [subclasses, setSubclasses] = useState<Subclass[]>([]);
+  const [buildChar, setBuildChar] = useState<BuildChar>();
+  const [loading, setLoading] = useState<boolean>(true);
   const [selections, setSelections] = useState<Selection[]>([]);
-  const [prof, setProf] = useState<number>(0);
 
-  const calcLevel = useCallback(() => {
-    let level = 0;
-    char.classes.forEach((classe) => {
-      level += classe.level;
+  useEffect(() => {
+    buildCharacter(character).then((buildChar) => {
+      setBuildChar(buildChar);
+      setLoading(false);
     });
-    return level;
-  }, [char]);
-
-  useEffect(() => {
-    if (classes && classes.length > 0) {
-      const level = calcLevel();
-      classes[0].featureSets.forEach((featureSet: FeatureSet) => {
-        if (featureSet.level === level) {
-          setProf(featureSet.profBonus);
-        }
-      });
-    }
-  }, [classes, calcLevel]);
-
-  useEffect(() => {
-    reciveAllFiltered(
-      "classes",
-      [
-        {
-          fieldName: "name",
-          value: char.classes.map((classe) => {
-            return classe.classe;
-          }),
-          sort: 0,
-        },
-      ],
-      (results: any[]) => {
-        setClasses(results);
-      }
-    );
-  }, [char.classes, calcLevel]);
-
-  useEffect(() => {
-    reciveAllFiltered(
-      "subclasses",
-      [
-        {
-          fieldName: "name",
-          value: char.classes.map((classe) => {
-            return classe.subclasse;
-          }),
-          sort: 0,
-        },
-      ],
-      (results: any[]) => {
-        setSubclasses(results);
-      }
-    );
-  }, [char.classes, calcLevel]);
+  }, [character, setBuildChar]);
 
   useEffect(() => {
     reciveAll("selections", (data: any[]) => {
@@ -107,23 +58,29 @@ const CharEditView = ({ char, onEdit }: $Props) => {
   }, []);
 
   const removeSpell = (oldSpell: string) => {
-    let newSpellList = char.spells.filter((spell) => spell !== oldSpell);
-    onEdit({ ...char, spells: newSpellList });
+    if (buildChar !== undefined) {
+      let newSpellList = buildChar.character.spells.filter((spell) => spell !== oldSpell);
+      onEdit({ ...buildChar.character, spells: newSpellList });
+    }
   };
   const addNewSpell = () => {
-    let newSpellList = char.spells;
-    newSpellList.push("");
-    onEdit({ ...char, spells: newSpellList });
+    if (buildChar !== undefined) {
+      let newSpellList = buildChar.character.spells;
+      newSpellList.push("");
+      onEdit({ ...buildChar.character, spells: newSpellList });
+    }
   };
   const onChangeSpell = (newSpell: string, oldSpell: string) => {
-    let spells = char.spells.map((spell) => {
-      if (spell === oldSpell) {
-        return newSpell;
-      } else {
-        return spell;
-      }
-    });
-    onEdit({ ...char, spells: spells });
+    if (buildChar !== undefined) {
+      let spells = buildChar.spells.map((spell) => {
+        if (spell.name === oldSpell) {
+          return newSpell;
+        } else {
+          return spell.name;
+        }
+      });
+      onEdit({ ...buildChar.character, spells: spells });
+    }
   };
 
   const removeItem = (oldItem: {
@@ -132,25 +89,29 @@ const CharEditView = ({ char, onEdit }: $Props) => {
     prof: boolean;
     attribute: string;
   }) => {
-    let newItemList = char.items.filter(
-      (item) => item.origin !== oldItem.origin
-    );
-    onEdit({ ...char, items: newItemList });
+    if (buildChar !== undefined) {
+      let newItemList = buildChar.items.filter((item) => item.origin !== oldItem.origin);
+      onEdit({ ...buildChar.character, items: newItemList });
+    }
   };
   const addNewItem = () => {
-    let newItemList = char.items;
-    newItemList.push({
-      origin: "",
-      attuned: false,
-      prof: false,
-      attribute: "str",
-    });
-    onEdit({ ...char, items: newItemList });
+    if (buildChar !== undefined) {
+      let newItemList = buildChar.character.items;
+      newItemList.push({
+        origin: "",
+        attuned: false,
+        prof: false,
+        attribute: "str",
+      });
+      onEdit({ ...buildChar.character, items: newItemList });
+    }
   };
   const onChangeItem = (newItem: string, i: number) => {
-    let items = char.items;
-    items[i].origin = newItem;
-    onEdit({ ...char, items: items });
+    if (buildChar !== undefined) {
+      let items = buildChar.character.items;
+      items[i].origin = newItem;
+      onEdit({ ...buildChar.character, items: items });
+    }
   };
   const onChangeItemAttribute = (
     newItem: {
@@ -161,41 +122,51 @@ const CharEditView = ({ char, onEdit }: $Props) => {
     },
     i: number
   ) => {
-    let items = char.items;
-    items[i] = newItem;
-    onEdit({ ...char, items: items });
+    if (buildChar !== undefined) {
+      let items = buildChar.character.items;
+      items[i] = newItem;
+      onEdit({ ...buildChar.character, items: items });
+    }
   };
 
   const removeMonster = (oldMonster: string) => {
-    let newMonsterList = char.monsters.filter(
-      (monster) => monster !== oldMonster
-    );
-    onEdit({ ...char, monsters: newMonsterList });
+    if (buildChar !== undefined) {
+      let newMonsterList = buildChar.character.monsters.filter((monster) => monster !== oldMonster);
+      onEdit({ ...buildChar.character, monsters: newMonsterList });
+    }
   };
   const addNewMonster = () => {
-    let newMonsterList = char.monsters;
-    newMonsterList.push("");
-    onEdit({ ...char, monsters: newMonsterList });
+    if (buildChar !== undefined) {
+      let newMonsterList = buildChar.character.monsters;
+      newMonsterList.push("");
+      onEdit({ ...buildChar.character, monsters: newMonsterList });
+    }
   };
   const onChangeMonster = (newMonster: string, oldMonster: string) => {
-    let monsters = char.monsters.map((monster) => {
-      if (monster === oldMonster) {
-        return newMonster;
-      } else {
-        return monster;
-      }
-    });
-    onEdit({ ...char, monsters: monsters });
+    if (buildChar !== undefined) {
+      let monsters = buildChar.character.monsters.map((monster) => {
+        if (monster === oldMonster) {
+          return newMonster;
+        } else {
+          return monster;
+        }
+      });
+      onEdit({ ...buildChar.character, monsters: monsters });
+    }
   };
 
   const removeClass = (oldClass: ClassSet) => {
-    let newClassList = char.classes.filter((classe) => classe !== oldClass);
-    onEdit({ ...char, classes: newClassList });
+    if (buildChar !== undefined) {
+      let newClassList = buildChar.character.classes.filter((classe) => classe !== oldClass);
+      onEdit({ ...buildChar.character, classes: newClassList });
+    }
   };
   const addNewClass = () => {
-    let newClassList = char.classes;
-    newClassList.push({ classe: "", subclasse: "", level: 0 });
-    onEdit({ ...char, classes: newClassList });
+    if (buildChar !== undefined) {
+      let newClassList = buildChar.character.classes;
+      newClassList.push({ classe: "", subclasse: "", level: 0 });
+      onEdit({ ...buildChar.character, classes: newClassList });
+    }
   };
 
   const recalcSelections = useCallback(() => {
@@ -210,106 +181,108 @@ const CharEditView = ({ char, onEdit }: $Props) => {
       featureCount: number;
       className: string;
     }[] = [];
-    classes.forEach((classe: Class) => {
-      classe.featureSets.forEach((featureSet: FeatureSet) => {
-        featureSet.features.forEach((feature: Feature) => {
-          if (
-            feature.selections !== undefined &&
-            feature.selections.length > 0
-          ) {
-            let count = 1;
-            feature.selections.forEach((select: string) => {
-              selections.forEach((selection: Selection) => {
-                if (selection.name === select) {
-                  newActiveSelections.push({
-                    selectionName: selection.name,
-                    activeOption: selection.selectionOptions[0],
-                    featureName: feature.name,
-                    featureCount: count,
-                    className: classe.name,
+    if (buildChar !== undefined) {
+      buildChar.classes.forEach((classe: Class) => {
+        classe.featureSets.forEach((featureSet: FeatureSet) => {
+          featureSet.features.forEach((feature: Feature) => {
+            if (feature.selections !== undefined && feature.selections.length > 0) {
+              let count = 1;
+              feature.selections.forEach((select: string) => {
+                selections.forEach((selection: Selection) => {
+                  if (selection.name === select) {
+                    newActiveSelections.push({
+                      selectionName: selection.name,
+                      activeOption: selection.selectionOptions[0],
+                      featureName: feature.name,
+                      featureCount: count,
+                      className: classe.name,
+                    });
+                    count++;
+                  }
+                });
+              });
+            }
+          });
+        });
+        buildChar.subclasses.forEach((subclass: Subclass) => {
+          if (classe.name === subclass.type) {
+            subclass.features.forEach((featureSet: FeatureSet) => {
+              featureSet.features.forEach((feature: Feature) => {
+                if (feature.selections !== undefined && feature.selections.length > 0) {
+                  let count = 1;
+                  feature.selections.forEach((select: string) => {
+                    selections.forEach((selection: Selection) => {
+                      if (selection.name === select) {
+                        newActiveSelections.push({
+                          selectionName: selection.name,
+                          activeOption: selection.selectionOptions[0],
+                          featureName: feature.name,
+                          featureCount: count,
+                          className: subclass.name,
+                        });
+                        count++;
+                      }
+                    });
                   });
-                  count++;
                 }
               });
             });
           }
         });
       });
-      subclasses.forEach((subclass: Subclass) => {
-        if (classe.name === subclass.type) {
-          subclass.features.forEach((featureSet: FeatureSet) => {
-            featureSet.features.forEach((feature: Feature) => {
-              if (
-                feature.selections !== undefined &&
-                feature.selections.length > 0
-              ) {
-                let count = 1;
-                feature.selections.forEach((select: string) => {
-                  selections.forEach((selection: Selection) => {
-                    if (selection.name === select) {
-                      newActiveSelections.push({
-                        selectionName: selection.name,
-                        activeOption: selection.selectionOptions[0],
-                        featureName: feature.name,
-                        featureCount: count,
-                        className: subclass.name,
-                      });
-                      count++;
-                    }
-                  });
-                });
-              }
-            });
-          });
-        }
-      });
-    });
+    }
     return newActiveSelections;
-  }, [classes, subclasses, selections]);
+  }, [buildChar, selections]);
 
   const changeClassLevel = useCallback(
     (oldClassSet: ClassSet, level: number) => {
-      let classes: ClassSet[] = char.classes.map((classSet: ClassSet) => {
-        if (classSet === oldClassSet) {
-          return { ...classSet, level: level };
-        } else {
-          return classSet;
-        }
-      });
-      let newActiveSelections = recalcSelections();
-      onEdit({
-        ...char,
-        classes: classes,
-        activeSelections: newActiveSelections,
-      });
+      if (buildChar !== undefined) {
+        let classes: ClassSet[] = buildChar.character.classes.map((classSet: ClassSet) => {
+          if (classSet === oldClassSet) {
+            return { ...classSet, level: level };
+          } else {
+            return classSet;
+          }
+        });
+        let newActiveSelections = recalcSelections();
+        onEdit({
+          ...buildChar.character,
+          classes: classes,
+          activeSelections: newActiveSelections,
+        });
+      }
     },
-    [char, onEdit, recalcSelections]
+    [buildChar, onEdit, recalcSelections]
   );
   const changeClass = useCallback(
     (oldClassSet: ClassSet, classe: string) => {
-      let classes = char.classes.map((classSet: ClassSet) => {
-        if (classSet === oldClassSet) {
-          return { ...classSet, classe: classe };
-        } else {
-          return classSet;
-        }
-      });
-      onEdit({ ...char, classes: classes });
+      if (buildChar !== undefined) {
+        let classes = buildChar.character.classes.map((classSet: ClassSet) => {
+          if (classSet === oldClassSet) {
+            return { ...classSet, classe: classe };
+          } else {
+            return classSet;
+          }
+        });
+        onEdit({ ...buildChar.character, classes: classes });
+      }
     },
-    [char, onEdit]
+    [buildChar, onEdit]
   );
   const changeClassSubclass = useCallback(
     (oldClassSet: ClassSet, subclass: string) => {
-      let classes = char.classes.map((classSet: ClassSet) => {
-        if (classSet === oldClassSet) {
-          return { ...classSet, subclasse: subclass };
-        } else {
-          return classSet;
-        }
-      });
-      onEdit({ ...char, classes: classes });
+      if (buildChar !== undefined) {
+        let classes = buildChar.character.classes.map((classSet: ClassSet) => {
+          if (classSet === oldClassSet) {
+            return { ...classSet, subclasse: subclass };
+          } else {
+            return classSet;
+          }
+        });
+        onEdit({ ...buildChar.character, classes: classes });
+      }
     },
-    [char, onEdit]
+    [buildChar, onEdit]
   );
 
   const formatProf = useCallback((prof: number) => {
@@ -329,30 +302,42 @@ const CharEditView = ({ char, onEdit }: $Props) => {
 
   const calcSkill = useCallback(
     (skillProf: number, stat: number) => {
-      return skillProf * prof + formatScore(stat);
+      if (buildChar !== undefined) {
+        return skillProf * buildChar.prof + formatScore(stat);
+      }
       // return `${skill} = ${skillProf * prof} (Prof) + ${formatScore(stat)} (Stat Bonus)`;
     },
-    [formatScore, prof]
+    [formatScore, buildChar]
   );
 
   const changeProf = useCallback(
     (profName: string) => {
-      const skills: Skills = char.skills;
-      let profValue = skills[profName];
-      profValue = (profValue + 1) % 3;
-      onEdit({ ...char, skills: { ...char.skills, [profName]: profValue } });
+      if (buildChar !== undefined) {
+        const skills: Skills = buildChar.character.skills;
+        let profValue = skills[profName];
+        profValue = (profValue + 1) % 3;
+        onEdit({
+          ...buildChar.character,
+          skills: { ...buildChar.character.skills, [profName]: profValue },
+        });
+      }
     },
-    [char, onEdit]
+    [buildChar, onEdit]
   );
 
   const changeSaveProf = useCallback(
     (profName: string) => {
-      const saves: Saves = char.saves;
-      let profValue = saves[profName];
-      profValue = (profValue + 1) % 2;
-      onEdit({ ...char, saves: { ...char.saves, [profName]: profValue } });
+      if (buildChar !== undefined) {
+        const saves: Saves = buildChar.character.saves;
+        let profValue = saves[profName];
+        profValue = (profValue + 1) % 2;
+        onEdit({
+          ...buildChar.character,
+          saves: { ...buildChar.character.saves, [profName]: profValue },
+        });
+      }
     },
-    [char, onEdit]
+    [buildChar, onEdit]
   );
 
   const onChangeActiveSelection = useCallback(
@@ -369,638 +354,622 @@ const CharEditView = ({ char, onEdit }: $Props) => {
       },
       select: string
     ) => {
-      let newActiveSelections = char.activeSelections.map(
-        (activeSelection: {
-          selectionName: string;
-          activeOption: {
-            entityName: string;
-            entityText: string;
-            level: number;
-          };
-          featureName: string;
-          featureCount: number;
-          className: string;
-        }) => {
-          if (activeSelection === oldActiveSelection) {
-            let activSelect = {
-              entityName: "",
-              entityText: "",
-              level: 0,
+      if (buildChar !== undefined) {
+        let newActiveSelections = buildChar.character.activeSelections.map(
+          (activeSelection: {
+            selectionName: string;
+            activeOption: {
+              entityName: string;
+              entityText: string;
+              level: number;
             };
-            selections.forEach((selection: Selection) => {
-              if (selection.name === activeSelection.selectionName) {
-                selection.selectionOptions.forEach((option) => {
-                  if (option.entityName === select) {
-                    activSelect = option;
-                  }
-                });
-              }
-            });
-            return { ...activeSelection, activeOption: activSelect };
-          } else {
-            return activeSelection;
+            featureName: string;
+            featureCount: number;
+            className: string;
+          }) => {
+            if (activeSelection === oldActiveSelection) {
+              let activSelect = {
+                entityName: "",
+                entityText: "",
+                level: 0,
+              };
+              selections.forEach((selection: Selection) => {
+                if (selection.name === activeSelection.selectionName) {
+                  selection.selectionOptions.forEach((option) => {
+                    if (option.entityName === select) {
+                      activSelect = option;
+                    }
+                  });
+                }
+              });
+              return { ...activeSelection, activeOption: activSelect };
+            } else {
+              return activeSelection;
+            }
           }
-        }
-      );
-      onEdit({ ...char, activeSelections: newActiveSelections });
+        );
+        onEdit({ ...buildChar.character, activeSelections: newActiveSelections });
+      }
     },
-    [char, selections, onEdit]
+    [buildChar, selections, onEdit]
   );
 
   return (
-    <CenterWrapper>
-      <CharView>
-        <StringField
-          value={char.name}
-          label="Name"
-          onChange={(name) => onEdit({ ...char, name: name })}
-        />
-        <StringField
-          value={char.player}
-          label="Player"
-          onChange={(player) => onEdit({ ...char, player: player })}
-        />
-        <StringField
-          value={char.pic}
-          label="Picture"
-          onChange={(pic) => onEdit({ ...char, pic: pic })}
-        />
-        <StringField
-          value={char.background}
-          label="Background"
-          onChange={(background) => onEdit({ ...char, background: background })}
-        />
-        <StringField
-          value={char.alignment}
-          label="Alignment"
-          onChange={(alignment) => onEdit({ ...char, alignment: alignment })}
-        />
-        <NumberField
-          value={char.ac}
-          label="Armor Class"
-          onChange={(ac) => onEdit({ ...char, ac: ac })}
-        />
-        <NumberField
-          value={char.hp}
-          label="Hit Points"
-          onChange={(hp) => onEdit({ ...char, hp: hp })}
-        />
-        <NumberField
-          value={char.init}
-          label="Initiative"
-          onChange={(init) => onEdit({ ...char, init: init })}
-        />
-        <NumberField
-          value={char.str}
-          label="Strength"
-          onChange={(str) => onEdit({ ...char, str: str })}
-        />
-        <NumberField
-          value={char.dex}
-          label="Dexterity"
-          onChange={(dex) => onEdit({ ...char, dex: dex })}
-        />
-        <NumberField
-          value={char.con}
-          label="Constitution"
-          onChange={(con) => onEdit({ ...char, con: con })}
-        />
-        <NumberField
-          value={char.int}
-          label="Intelligence"
-          onChange={(int) => onEdit({ ...char, int: int })}
-        />
-        <NumberField
-          value={char.wis}
-          label="Wisdome"
-          onChange={(wis) => onEdit({ ...char, wis: wis })}
-        />
-        <NumberField
-          value={char.cha}
-          label="Charisma"
-          onChange={(cha) => onEdit({ ...char, cha: cha })}
-        />
-        <TextField
-          value={char.spellNotes}
-          label="Notes"
-          onChange={(notes) => onEdit({ ...char, spellNotes: notes })}
-        />
-      </CharView>
-      <CharView>
-        <TabBar
-          children={[
-            "General",
-            "Abilities",
-            "Classes",
-            "Races",
-            "Spells",
-            "Items",
-            "Monster",
-          ]}
-          onChange={(tab: string) => setTab(tab)}
-        />
-        {activeTab === "General" && (
-          <>
-            <TextField
-              value={char.speed}
-              label="Speed"
-              onChange={(speed) => onEdit({ ...char, speed: speed })}
-            />
-            <TextField
-              value={char.profsLangs}
-              label="Languages"
-              onChange={(profsLangs) =>
-                onEdit({ ...char, profsLangs: profsLangs })
-              }
-            />
-            <TextField
-              value={char.senses}
-              label="Senses"
-              onChange={(senses) => onEdit({ ...char, senses: senses })}
-            />
-          </>
-        )}
-        {activeTab === "Classes" && (
-          <>
-            {char.classes.map((classSet: ClassSet, index: number) => {
-              return (
-                <PropWrapper key={index}>
-                  <NumberField
-                    value={classSet.level}
-                    label="Level"
-                    onChange={(level) => changeClassLevel(classSet, level)}
-                  />
-                  <IconButton
-                    icon={faTrash}
-                    onClick={() => removeClass(classSet)}
-                  />
-                  <AutoStringField
-                    optionTable={"classes"}
-                    value={classSet.classe}
-                    label="Class"
-                    onChange={(classe) => changeClass(classSet, classe)}
-                  />
-                  <StringField
-                    value={classSet.subclasse}
-                    label="Subclass"
-                    onChange={(subclasse) =>
-                      changeClassSubclass(classSet, subclasse)
-                    }
-                  />
-                </PropWrapper>
-              );
-            })}
-            <TextButton
-              text={"Add new Class"}
-              icon={faPlus}
-              onClick={() => addNewClass()}
-            />
-            {char.activeSelections?.map(
-              (
-                activeSelection: {
-                  selectionName: string;
-                  activeOption: {
-                    entityName: string;
-                    entityText: string;
-                    level: number;
-                  };
-                  featureName: string;
-                  className: string;
-                },
-                index: number
-              ) => {
-                return (
-                  <PropWrapper key={index}>
-                    <SelectionTitle>
-                      {activeSelection.featureName} of{" "}
-                      {activeSelection.className}
-                    </SelectionTitle>
-                    <EnumField
-                      options={
-                        selections
-                          .find(
-                            (select) =>
-                              select.name === activeSelection.selectionName
-                          )
-                          ?.selectionOptions.filter(
-                            (option) => option.level <= calcLevel()
-                          )
-                          .map((option) => {
-                            return {
-                              value: option.entityName,
-                              label: option.entityName,
-                            };
-                          }) || []
-                      }
-                      value={{
-                        value: activeSelection.activeOption.entityName,
-                        label: activeSelection.activeOption.entityName,
-                      }}
-                      label={activeSelection.selectionName}
-                      onChange={(select) =>
-                        onChangeActiveSelection(activeSelection, select)
-                      }
-                    />
-                  </PropWrapper>
-                );
-              }
-            )}
-          </>
-        )}
-        {activeTab === "Races" && (
-          <PropWrapper>
-            <AutoStringField
-              optionTable={"races"}
-              value={char.race.race}
-              label="Race"
-              onChange={(race) =>
-                onEdit({ ...char, race: { ...char.race, race: race } })
-              }
+    <>
+      {loading && <LoadingSpinner />}
+      {!loading && buildChar && (
+        <CenterWrapper>
+          <CharView>
+            <StringField
+              value={buildChar.character.name}
+              label="Name"
+              onChange={(name) => onEdit({ ...buildChar.character, name: name })}
             />
             <StringField
-              value={char.race.subrace}
-              label="Subrace"
-              onChange={(subrace) =>
-                onEdit({ ...char, race: { ...char.race, subrace: subrace } })
-              }
+              value={buildChar.character.player}
+              label="Player"
+              onChange={(player) => onEdit({ ...buildChar.character, player: player })}
             />
-          </PropWrapper>
-        )}
-        {activeTab === "Abilities" && (
-          <>
-            <PropWrapper>
-              <PropWithProf>
-                <PropText>
-                  <PropTitle>Str Save:</PropTitle>
-                  {calcSkill(char.saves.strSaveProf, char.str)}
-                </PropText>
-                <PropProf onClick={(e) => changeSaveProf("strSaveProf")}>
-                  <Icon icon={formatProf(char.saves.strSaveProf)} />
-                </PropProf>
-              </PropWithProf>
-              <PropWithProf>
-                <PropText>
-                  <PropTitle>Dex Save:</PropTitle>
-                  {calcSkill(char.saves.dexSaveProf, char.dex)}
-                </PropText>
-                <PropProf onClick={(e) => changeSaveProf("dexSaveProf")}>
-                  <Icon icon={formatProf(char.saves.dexSaveProf)} />
-                </PropProf>
-              </PropWithProf>
-              <PropWithProf>
-                <PropText>
-                  <PropTitle>Con Save:</PropTitle>
-                  {calcSkill(char.saves.conSaveProf, char.con)}
-                </PropText>
-                <PropProf onClick={(e) => changeSaveProf("conSaveProf")}>
-                  <Icon icon={formatProf(char.saves.conSaveProf)} />
-                </PropProf>
-              </PropWithProf>
-              <PropWithProf>
-                <PropText>
-                  <PropTitle>Int Save:</PropTitle>
-                  {calcSkill(char.saves.intSaveProf, char.int)}
-                </PropText>
-                <PropProf onClick={(e) => changeSaveProf("intSaveProf")}>
-                  <Icon icon={formatProf(char.saves.intSaveProf)} />
-                </PropProf>
-              </PropWithProf>
-              <PropWithProf>
-                <PropText>
-                  <PropTitle>Wis Save:</PropTitle>
-                  {calcSkill(char.saves.wisSaveProf, char.wis)}
-                </PropText>
-                <PropProf onClick={(e) => changeSaveProf("wisSaveProf")}>
-                  <Icon icon={formatProf(char.saves.wisSaveProf)} />
-                </PropProf>
-              </PropWithProf>
-              <PropWithProf>
-                <PropText>
-                  <PropTitle>Cha Save:</PropTitle>
-                  {calcSkill(char.saves.chaSaveProf, char.cha)}
-                </PropText>
-                <PropProf onClick={(e) => changeSaveProf("chaSaveProf")}>
-                  <Icon icon={formatProf(char.saves.chaSaveProf)} />
-                </PropProf>
-              </PropWithProf>
-            </PropWrapper>
-            <PropWrapper>
-              <PropWithProf>
-                <PropText>
-                  <PropTitle>Acrobatics:</PropTitle>
-                  {calcSkill(char.skills.acrobaticsProf, char.str)}
-                </PropText>
-                <PropProf onClick={(e) => changeProf("acrobaticsProf")}>
-                  <Icon icon={formatProf(char.skills.acrobaticsProf)} />
-                </PropProf>
-              </PropWithProf>
-              <PropWithProf>
-                <PropText>
-                  <PropTitle>Animal Handling:</PropTitle>
-                  {calcSkill(char.skills.animalHandlingProf, char.wis)}
-                </PropText>
-                <PropProf onClick={(e) => changeProf("animalHandlingProf")}>
-                  <Icon icon={formatProf(char.skills.animalHandlingProf)} />
-                </PropProf>
-              </PropWithProf>
-              <PropWithProf>
-                <PropText>
-                  <PropTitle>Arcana:</PropTitle>
-                  {calcSkill(char.skills.arcanaProf, char.int)}
-                </PropText>
-                <PropProf onClick={(e) => changeProf("arcanaProf")}>
-                  <Icon icon={formatProf(char.skills.arcanaProf)} />
-                </PropProf>
-              </PropWithProf>
-              <PropWithProf>
-                <PropText>
-                  <PropTitle>Athletics:</PropTitle>
-                  {calcSkill(char.skills.athleticsProf, char.dex)}
-                </PropText>
-                <PropProf onClick={(e) => changeProf("athleticsProf")}>
-                  <Icon icon={formatProf(char.skills.athleticsProf)} />
-                </PropProf>
-              </PropWithProf>
-              <PropWithProf>
-                <PropText>
-                  <PropTitle>Deception:</PropTitle>
-                  {calcSkill(char.skills.deceptionProf, char.cha)}
-                </PropText>
-                <PropProf onClick={(e) => changeProf("deceptionProf")}>
-                  <Icon icon={formatProf(char.skills.deceptionProf)} />
-                </PropProf>
-              </PropWithProf>
-              <PropWithProf>
-                <PropText>
-                  <PropTitle>History:</PropTitle>
-                  {calcSkill(char.skills.historyProf, char.int)}
-                </PropText>
-                <PropProf onClick={(e) => changeProf("historyProf")}>
-                  <Icon icon={formatProf(char.skills.historyProf)} />
-                </PropProf>
-              </PropWithProf>
-              <PropWithProf>
-                <PropText>
-                  <PropTitle>Insight:</PropTitle>
-                  {calcSkill(char.skills.insightProf, char.wis)}
-                </PropText>
-                <PropProf onClick={(e) => changeProf("insightProf")}>
-                  <Icon icon={formatProf(char.skills.insightProf)} />
-                </PropProf>
-              </PropWithProf>
-              <PropWithProf>
-                <PropText>
-                  <PropTitle>Intimidation:</PropTitle>
-                  {calcSkill(char.skills.intimidationProf, char.cha)}
-                </PropText>
-                <PropProf onClick={(e) => changeProf("intimidationProf")}>
-                  <Icon icon={formatProf(char.skills.intimidationProf)} />
-                </PropProf>
-              </PropWithProf>
-              <PropWithProf>
-                <PropText>
-                  <PropTitle>Investigation:</PropTitle>
-                  {calcSkill(char.skills.investigationProf, char.int)}
-                </PropText>
-                <PropProf onClick={(e) => changeProf("investigationProf")}>
-                  <Icon icon={formatProf(char.skills.investigationProf)} />
-                </PropProf>
-              </PropWithProf>
-              <PropWithProf>
-                <PropText>
-                  <PropTitle>Medicine:</PropTitle>
-                  {calcSkill(char.skills.medicineProf, char.wis)}
-                </PropText>
-                <PropProf onClick={(e) => changeProf("medicineProf")}>
-                  <Icon icon={formatProf(char.skills.medicineProf)} />
-                </PropProf>
-              </PropWithProf>
-              <PropWithProf>
-                <PropText>
-                  <PropTitle>Nature:</PropTitle>
-                  {calcSkill(char.skills.natureProf, char.int)}
-                </PropText>
-                <PropProf onClick={(e) => changeProf("natureProf")}>
-                  <Icon icon={formatProf(char.skills.natureProf)} />
-                </PropProf>
-              </PropWithProf>
-              <PropWithProf>
-                <PropText>
-                  <PropTitle>Perception:</PropTitle>
-                  {calcSkill(char.skills.perceptionProf, char.wis)}
-                </PropText>
-                <PropProf onClick={(e) => changeProf("perceptionProf")}>
-                  <Icon icon={formatProf(char.skills.perceptionProf)} />
-                </PropProf>
-              </PropWithProf>
-              <PropWithProf>
-                <PropText>
-                  <PropTitle>Performance:</PropTitle>
-                  {calcSkill(char.skills.performanceProf, char.cha)}
-                </PropText>
-                <PropProf onClick={(e) => changeProf("performanceProf")}>
-                  <Icon icon={formatProf(char.skills.performanceProf)} />
-                </PropProf>
-              </PropWithProf>
-              <PropWithProf>
-                <PropText>
-                  <PropTitle>Persuasion:</PropTitle>
-                  {calcSkill(char.skills.persuasionProf, char.cha)}
-                </PropText>
-                <PropProf onClick={(e) => changeProf("persuasionProf")}>
-                  <Icon icon={formatProf(char.skills.persuasionProf)} />
-                </PropProf>
-              </PropWithProf>
-              <PropWithProf>
-                <PropText>
-                  <PropTitle>Religion:</PropTitle>
-                  {calcSkill(char.skills.religionProf, char.int)}
-                </PropText>
-                <PropProf onClick={(e) => changeProf("religionProf")}>
-                  <Icon icon={formatProf(char.skills.religionProf)} />
-                </PropProf>
-              </PropWithProf>
-              <PropWithProf>
-                <PropText>
-                  <PropTitle>Sleight Of Hand:</PropTitle>
-                  {calcSkill(char.skills.sleightOfHandProf, char.dex)}
-                </PropText>
-                <PropProf onClick={(e) => changeProf("sleightOfHandProf")}>
-                  <Icon icon={formatProf(char.skills.sleightOfHandProf)} />
-                </PropProf>
-              </PropWithProf>
-              <PropWithProf>
-                <PropText>
-                  <PropTitle>Stealth:</PropTitle>
-                  {calcSkill(char.skills.stealthProf, char.dex)}
-                </PropText>
-                <PropProf onClick={(e) => changeProf("stealthProf")}>
-                  <Icon icon={formatProf(char.skills.stealthProf)} />
-                </PropProf>
-              </PropWithProf>
-              <PropWithProf>
-                <PropText>
-                  <PropTitle>Survival:</PropTitle>
-                  {calcSkill(char.skills.survivalProf, char.wis)}
-                </PropText>
-                <PropProf onClick={(e) => changeProf("survivalProf")}>
-                  <Icon icon={formatProf(char.skills.survivalProf)} />
-                </PropProf>
-              </PropWithProf>
-              <TextField
-                value={char.actions}
-                label="Actions"
-                onChange={(actions) => onEdit({ ...char, actions: actions })}
-              />
-            </PropWrapper>
-          </>
-        )}
-        {activeTab === "Spells" && (
-          <>
-            <NumberField
-              value={char.castingHit}
-              label="Casting Hit"
-              onChange={(castingHit) =>
-                onEdit({ ...char, castingHit: castingHit })
-              }
+            <StringField
+              value={buildChar.character.pic}
+              label="Picture"
+              onChange={(pic) => onEdit({ ...buildChar.character, pic: pic })}
+            />
+            <StringField
+              value={buildChar.character.background}
+              label="Background"
+              onChange={(background) => onEdit({ ...buildChar.character, background: background })}
+            />
+            <StringField
+              value={buildChar.character.alignment}
+              label="Alignment"
+              onChange={(alignment) => onEdit({ ...buildChar.character, alignment: alignment })}
             />
             <NumberField
-              value={char.castingDC}
-              label="Casting DC"
-              onChange={(castingDC) =>
-                onEdit({ ...char, castingDC: castingDC })
-              }
+              value={buildChar.character.ac}
+              label="Armor Class"
+              onChange={(ac) => onEdit({ ...buildChar.character, ac: ac })}
             />
-            {char.spells.map((spell: string, index: number) => {
-              return (
-                <Container key={index}>
-                  <AutoStringField
-                    optionTable={"spells"}
-                    value={spell}
-                    label="Spell"
-                    onChange={(newSpell) => onChangeSpell(newSpell, spell)}
-                  />
-                  <IconButton
-                    icon={faTrash}
-                    onClick={() => removeSpell(spell)}
-                  />
-                </Container>
-              );
-            })}
-            <TextButton
-              text={"Add new Spell"}
-              icon={faPlus}
-              onClick={() => addNewSpell()}
+            <NumberField
+              value={buildChar.character.hp}
+              label="Hit Points"
+              onChange={(hp) => onEdit({ ...buildChar.character, hp: hp })}
             />
-          </>
-        )}
-        {activeTab === "Items" && (
-          <>
-            {char.items.map(
-              (
-                item: {
-                  origin: string;
-                  attuned: boolean;
-                  prof: boolean;
-                  attribute: string;
-                },
-                index: number
-              ) => {
-                return (
-                  <Container key={index}>
-                    <AutoStringField
-                      optionTable={["items", "gears"]}
-                      value={item.origin}
-                      label="Item"
-                      onChange={(newItem) => onChangeItem(newItem, index)}
-                    />
-                    <CheckField
-                      value={!!item.attuned}
-                      label="Attunment"
-                      onChange={(attunment) =>
-                        onChangeItemAttribute(
-                          {
-                            ...item,
-                            attuned: attunment,
-                          },
-                          index
-                        )
-                      }
-                    />
-                    <CheckField
-                      value={!!item.prof}
-                      label="Prof"
-                      onChange={(prof) =>
-                        onChangeItemAttribute({ ...item, prof: prof }, index)
-                      }
-                    />
-                    <EnumField
-                      options={[
-                        { value: "str", label: "Str" },
-                        { value: "dex", label: "Dex" },
-                        { value: "con", label: "Con" },
-                        { value: "int", label: "Int" },
-                        { value: "wis", label: "Wis" },
-                        { value: "cha", label: "Cha" },
-                      ]}
-                      value={{
-                        value: item.attribute,
-                        label:
-                          item.attribute.charAt(0).toUpperCase() +
-                          item.attribute.slice(1),
-                      }}
-                      label="Attribute"
-                      onChange={(type) =>
-                        onChangeItemAttribute(
-                          { ...item, attribute: type },
-                          index
-                        )
-                      }
-                    />
-                    <IconButton
-                      icon={faTrash}
-                      onClick={() => removeItem(item)}
-                    />
-                  </Container>
-                );
-              }
+            <NumberField
+              value={buildChar.character.init}
+              label="Initiative"
+              onChange={(init) => onEdit({ ...buildChar.character, init: init })}
+            />
+            <NumberField
+              value={buildChar.character.str}
+              label="Strength"
+              onChange={(str) => onEdit({ ...buildChar.character, str: str })}
+            />
+            <NumberField
+              value={buildChar.character.dex}
+              label="Dexterity"
+              onChange={(dex) => onEdit({ ...buildChar.character, dex: dex })}
+            />
+            <NumberField
+              value={buildChar.character.con}
+              label="Constitution"
+              onChange={(con) => onEdit({ ...buildChar.character, con: con })}
+            />
+            <NumberField
+              value={buildChar.character.int}
+              label="Intelligence"
+              onChange={(int) => onEdit({ ...buildChar.character, int: int })}
+            />
+            <NumberField
+              value={buildChar.character.wis}
+              label="Wisdome"
+              onChange={(wis) => onEdit({ ...buildChar.character, wis: wis })}
+            />
+            <NumberField
+              value={buildChar.character.cha}
+              label="Charisma"
+              onChange={(cha) => onEdit({ ...buildChar.character, cha: cha })}
+            />
+            <TextField
+              value={buildChar.character.spellNotes}
+              label="Notes"
+              onChange={(notes) => onEdit({ ...buildChar.character, spellNotes: notes })}
+            />
+          </CharView>
+          <CharView>
+            <TabBar
+              children={["General", "Abilities", "Classes", "Races", "Spells", "Items", "Monster"]}
+              onChange={(tab: string) => setTab(tab)}
+            />
+            {activeTab === "General" && (
+              <>
+                <TextField
+                  value={buildChar.character.speed}
+                  label="Speed"
+                  onChange={(speed) => onEdit({ ...buildChar.character, speed: speed })}
+                />
+                <TextField
+                  value={buildChar.character.profsLangs}
+                  label="Languages"
+                  onChange={(profsLangs) =>
+                    onEdit({ ...buildChar.character, profsLangs: profsLangs })
+                  }
+                />
+                <TextField
+                  value={buildChar.character.senses}
+                  label="Senses"
+                  onChange={(senses) => onEdit({ ...buildChar.character, senses: senses })}
+                />
+              </>
             )}
-            <TextButton
-              text={"Add new Item"}
-              icon={faPlus}
-              onClick={() => addNewItem()}
-            />
-          </>
-        )}
-        {activeTab === "Monster" && (
-          <>
-            {char.monsters.map((monster: string, index: number) => {
-              return (
-                <Container key={index}>
-                  <AutoStringField
-                    optionTable={"monsters"}
-                    value={monster}
-                    label="Monster"
-                    onChange={(newMonster) =>
-                      onChangeMonster(newMonster, monster)
-                    }
+            {activeTab === "Classes" && (
+              <>
+                {buildChar.character.classes.map((classSet: ClassSet, index: number) => {
+                  return (
+                    <PropWrapper key={index}>
+                      <NumberField
+                        value={classSet.level}
+                        label="Level"
+                        onChange={(level) => changeClassLevel(classSet, level)}
+                      />
+                      <IconButton icon={faTrash} onClick={() => removeClass(classSet)} />
+                      <AutoStringField
+                        optionTable={"classes"}
+                        value={classSet.classe}
+                        label="Class"
+                        onChange={(classe) => changeClass(classSet, classe)}
+                      />
+                      <StringField
+                        value={classSet.subclasse}
+                        label="Subclass"
+                        onChange={(subclasse) => changeClassSubclass(classSet, subclasse)}
+                      />
+                    </PropWrapper>
+                  );
+                })}
+                <TextButton text={"Add new Class"} icon={faPlus} onClick={() => addNewClass()} />
+                {buildChar.character.activeSelections?.map(
+                  (
+                    activeSelection: {
+                      selectionName: string;
+                      activeOption: {
+                        entityName: string;
+                        entityText: string;
+                        level: number;
+                      };
+                      featureName: string;
+                      className: string;
+                    },
+                    index: number
+                  ) => {
+                    return (
+                      <PropWrapper key={index}>
+                        <SelectionTitle>
+                          {activeSelection.featureName} of {activeSelection.className}
+                        </SelectionTitle>
+                        <EnumField
+                          options={
+                            selections
+                              .find((select) => select.name === activeSelection.selectionName)
+                              ?.selectionOptions.filter((option) => option.level <= buildChar.level)
+                              .map((option) => {
+                                return {
+                                  value: option.entityName,
+                                  label: option.entityName,
+                                };
+                              }) || []
+                          }
+                          value={{
+                            value: activeSelection.activeOption.entityName,
+                            label: activeSelection.activeOption.entityName,
+                          }}
+                          label={activeSelection.selectionName}
+                          onChange={(select) => onChangeActiveSelection(activeSelection, select)}
+                        />
+                      </PropWrapper>
+                    );
+                  }
+                )}
+              </>
+            )}
+            {activeTab === "Races" && (
+              <PropWrapper>
+                <AutoStringField
+                  optionTable={"races"}
+                  value={buildChar.character.race.race}
+                  label="Race"
+                  onChange={(race) =>
+                    onEdit({
+                      ...buildChar.character,
+                      race: { ...buildChar.character.race, race: race },
+                    })
+                  }
+                />
+                <StringField
+                  value={buildChar.character.race.subrace}
+                  label="Subrace"
+                  onChange={(subrace) =>
+                    onEdit({
+                      ...buildChar.character,
+                      race: { ...buildChar.character.race, subrace: subrace },
+                    })
+                  }
+                />
+              </PropWrapper>
+            )}
+            {activeTab === "Abilities" && (
+              <>
+                <PropWrapper>
+                  <PropWithProf>
+                    <PropText>
+                      <PropTitle>Str Save:</PropTitle>
+                      {calcSkill(buildChar.character.saves.strSaveProf, buildChar.character.str)}
+                    </PropText>
+                    <PropProf onClick={(e) => changeSaveProf("strSaveProf")}>
+                      <Icon icon={formatProf(buildChar.character.saves.strSaveProf)} />
+                    </PropProf>
+                  </PropWithProf>
+                  <PropWithProf>
+                    <PropText>
+                      <PropTitle>Dex Save:</PropTitle>
+                      {calcSkill(buildChar.character.saves.dexSaveProf, buildChar.character.dex)}
+                    </PropText>
+                    <PropProf onClick={(e) => changeSaveProf("dexSaveProf")}>
+                      <Icon icon={formatProf(buildChar.character.saves.dexSaveProf)} />
+                    </PropProf>
+                  </PropWithProf>
+                  <PropWithProf>
+                    <PropText>
+                      <PropTitle>Con Save:</PropTitle>
+                      {calcSkill(buildChar.character.saves.conSaveProf, buildChar.character.con)}
+                    </PropText>
+                    <PropProf onClick={(e) => changeSaveProf("conSaveProf")}>
+                      <Icon icon={formatProf(buildChar.character.saves.conSaveProf)} />
+                    </PropProf>
+                  </PropWithProf>
+                  <PropWithProf>
+                    <PropText>
+                      <PropTitle>Int Save:</PropTitle>
+                      {calcSkill(buildChar.character.saves.intSaveProf, buildChar.character.int)}
+                    </PropText>
+                    <PropProf onClick={(e) => changeSaveProf("intSaveProf")}>
+                      <Icon icon={formatProf(buildChar.character.saves.intSaveProf)} />
+                    </PropProf>
+                  </PropWithProf>
+                  <PropWithProf>
+                    <PropText>
+                      <PropTitle>Wis Save:</PropTitle>
+                      {calcSkill(buildChar.character.saves.wisSaveProf, buildChar.character.wis)}
+                    </PropText>
+                    <PropProf onClick={(e) => changeSaveProf("wisSaveProf")}>
+                      <Icon icon={formatProf(buildChar.character.saves.wisSaveProf)} />
+                    </PropProf>
+                  </PropWithProf>
+                  <PropWithProf>
+                    <PropText>
+                      <PropTitle>Cha Save:</PropTitle>
+                      {calcSkill(buildChar.character.saves.chaSaveProf, buildChar.character.cha)}
+                    </PropText>
+                    <PropProf onClick={(e) => changeSaveProf("chaSaveProf")}>
+                      <Icon icon={formatProf(buildChar.character.saves.chaSaveProf)} />
+                    </PropProf>
+                  </PropWithProf>
+                </PropWrapper>
+                <PropWrapper>
+                  <PropWithProf>
+                    <PropText>
+                      <PropTitle>Acrobatics:</PropTitle>
+                      {calcSkill(
+                        buildChar.character.skills.acrobaticsProf,
+                        buildChar.character.str
+                      )}
+                    </PropText>
+                    <PropProf onClick={(e) => changeProf("acrobaticsProf")}>
+                      <Icon icon={formatProf(buildChar.character.skills.acrobaticsProf)} />
+                    </PropProf>
+                  </PropWithProf>
+                  <PropWithProf>
+                    <PropText>
+                      <PropTitle>Animal Handling:</PropTitle>
+                      {calcSkill(
+                        buildChar.character.skills.animalHandlingProf,
+                        buildChar.character.wis
+                      )}
+                    </PropText>
+                    <PropProf onClick={(e) => changeProf("animalHandlingProf")}>
+                      <Icon icon={formatProf(buildChar.character.skills.animalHandlingProf)} />
+                    </PropProf>
+                  </PropWithProf>
+                  <PropWithProf>
+                    <PropText>
+                      <PropTitle>Arcana:</PropTitle>
+                      {calcSkill(buildChar.character.skills.arcanaProf, buildChar.character.int)}
+                    </PropText>
+                    <PropProf onClick={(e) => changeProf("arcanaProf")}>
+                      <Icon icon={formatProf(buildChar.character.skills.arcanaProf)} />
+                    </PropProf>
+                  </PropWithProf>
+                  <PropWithProf>
+                    <PropText>
+                      <PropTitle>Athletics:</PropTitle>
+                      {calcSkill(buildChar.character.skills.athleticsProf, buildChar.character.dex)}
+                    </PropText>
+                    <PropProf onClick={(e) => changeProf("athleticsProf")}>
+                      <Icon icon={formatProf(buildChar.character.skills.athleticsProf)} />
+                    </PropProf>
+                  </PropWithProf>
+                  <PropWithProf>
+                    <PropText>
+                      <PropTitle>Deception:</PropTitle>
+                      {calcSkill(buildChar.character.skills.deceptionProf, buildChar.character.cha)}
+                    </PropText>
+                    <PropProf onClick={(e) => changeProf("deceptionProf")}>
+                      <Icon icon={formatProf(buildChar.character.skills.deceptionProf)} />
+                    </PropProf>
+                  </PropWithProf>
+                  <PropWithProf>
+                    <PropText>
+                      <PropTitle>History:</PropTitle>
+                      {calcSkill(buildChar.character.skills.historyProf, buildChar.character.int)}
+                    </PropText>
+                    <PropProf onClick={(e) => changeProf("historyProf")}>
+                      <Icon icon={formatProf(buildChar.character.skills.historyProf)} />
+                    </PropProf>
+                  </PropWithProf>
+                  <PropWithProf>
+                    <PropText>
+                      <PropTitle>Insight:</PropTitle>
+                      {calcSkill(buildChar.character.skills.insightProf, buildChar.character.wis)}
+                    </PropText>
+                    <PropProf onClick={(e) => changeProf("insightProf")}>
+                      <Icon icon={formatProf(buildChar.character.skills.insightProf)} />
+                    </PropProf>
+                  </PropWithProf>
+                  <PropWithProf>
+                    <PropText>
+                      <PropTitle>Intimidation:</PropTitle>
+                      {calcSkill(
+                        buildChar.character.skills.intimidationProf,
+                        buildChar.character.cha
+                      )}
+                    </PropText>
+                    <PropProf onClick={(e) => changeProf("intimidationProf")}>
+                      <Icon icon={formatProf(buildChar.character.skills.intimidationProf)} />
+                    </PropProf>
+                  </PropWithProf>
+                  <PropWithProf>
+                    <PropText>
+                      <PropTitle>Investigation:</PropTitle>
+                      {calcSkill(
+                        buildChar.character.skills.investigationProf,
+                        buildChar.character.int
+                      )}
+                    </PropText>
+                    <PropProf onClick={(e) => changeProf("investigationProf")}>
+                      <Icon icon={formatProf(buildChar.character.skills.investigationProf)} />
+                    </PropProf>
+                  </PropWithProf>
+                  <PropWithProf>
+                    <PropText>
+                      <PropTitle>Medicine:</PropTitle>
+                      {calcSkill(buildChar.character.skills.medicineProf, buildChar.character.wis)}
+                    </PropText>
+                    <PropProf onClick={(e) => changeProf("medicineProf")}>
+                      <Icon icon={formatProf(buildChar.character.skills.medicineProf)} />
+                    </PropProf>
+                  </PropWithProf>
+                  <PropWithProf>
+                    <PropText>
+                      <PropTitle>Nature:</PropTitle>
+                      {calcSkill(buildChar.character.skills.natureProf, buildChar.character.int)}
+                    </PropText>
+                    <PropProf onClick={(e) => changeProf("natureProf")}>
+                      <Icon icon={formatProf(buildChar.character.skills.natureProf)} />
+                    </PropProf>
+                  </PropWithProf>
+                  <PropWithProf>
+                    <PropText>
+                      <PropTitle>Perception:</PropTitle>
+                      {calcSkill(
+                        buildChar.character.skills.perceptionProf,
+                        buildChar.character.wis
+                      )}
+                    </PropText>
+                    <PropProf onClick={(e) => changeProf("perceptionProf")}>
+                      <Icon icon={formatProf(buildChar.character.skills.perceptionProf)} />
+                    </PropProf>
+                  </PropWithProf>
+                  <PropWithProf>
+                    <PropText>
+                      <PropTitle>Performance:</PropTitle>
+                      {calcSkill(
+                        buildChar.character.skills.performanceProf,
+                        buildChar.character.cha
+                      )}
+                    </PropText>
+                    <PropProf onClick={(e) => changeProf("performanceProf")}>
+                      <Icon icon={formatProf(buildChar.character.skills.performanceProf)} />
+                    </PropProf>
+                  </PropWithProf>
+                  <PropWithProf>
+                    <PropText>
+                      <PropTitle>Persuasion:</PropTitle>
+                      {calcSkill(
+                        buildChar.character.skills.persuasionProf,
+                        buildChar.character.cha
+                      )}
+                    </PropText>
+                    <PropProf onClick={(e) => changeProf("persuasionProf")}>
+                      <Icon icon={formatProf(buildChar.character.skills.persuasionProf)} />
+                    </PropProf>
+                  </PropWithProf>
+                  <PropWithProf>
+                    <PropText>
+                      <PropTitle>Religion:</PropTitle>
+                      {calcSkill(buildChar.character.skills.religionProf, buildChar.character.int)}
+                    </PropText>
+                    <PropProf onClick={(e) => changeProf("religionProf")}>
+                      <Icon icon={formatProf(buildChar.character.skills.religionProf)} />
+                    </PropProf>
+                  </PropWithProf>
+                  <PropWithProf>
+                    <PropText>
+                      <PropTitle>Sleight Of Hand:</PropTitle>
+                      {calcSkill(
+                        buildChar.character.skills.sleightOfHandProf,
+                        buildChar.character.dex
+                      )}
+                    </PropText>
+                    <PropProf onClick={(e) => changeProf("sleightOfHandProf")}>
+                      <Icon icon={formatProf(buildChar.character.skills.sleightOfHandProf)} />
+                    </PropProf>
+                  </PropWithProf>
+                  <PropWithProf>
+                    <PropText>
+                      <PropTitle>Stealth:</PropTitle>
+                      {calcSkill(buildChar.character.skills.stealthProf, buildChar.character.dex)}
+                    </PropText>
+                    <PropProf onClick={(e) => changeProf("stealthProf")}>
+                      <Icon icon={formatProf(buildChar.character.skills.stealthProf)} />
+                    </PropProf>
+                  </PropWithProf>
+                  <PropWithProf>
+                    <PropText>
+                      <PropTitle>Survival:</PropTitle>
+                      {calcSkill(buildChar.character.skills.survivalProf, buildChar.character.wis)}
+                    </PropText>
+                    <PropProf onClick={(e) => changeProf("survivalProf")}>
+                      <Icon icon={formatProf(buildChar.character.skills.survivalProf)} />
+                    </PropProf>
+                  </PropWithProf>
+                  <TextField
+                    value={buildChar.character.actions}
+                    label="Actions"
+                    onChange={(actions) => onEdit({ ...buildChar.character, actions: actions })}
                   />
-                  <IconButton
-                    icon={faTrash}
-                    onClick={() => removeMonster(monster)}
-                  />
-                </Container>
-              );
-            })}
-            <TextButton
-              text={"Add new Monster"}
-              icon={faPlus}
-              onClick={() => addNewMonster()}
-            />
-          </>
-        )}
-      </CharView>
-    </CenterWrapper>
+                </PropWrapper>
+              </>
+            )}
+            {activeTab === "Spells" && (
+              <>
+                <NumberField
+                  value={buildChar.character.castingHit}
+                  label="Casting Hit"
+                  onChange={(castingHit) =>
+                    onEdit({ ...buildChar.character, castingHit: castingHit })
+                  }
+                />
+                <NumberField
+                  value={buildChar.character.castingDC}
+                  label="Casting DC"
+                  onChange={(castingDC) => onEdit({ ...buildChar.character, castingDC: castingDC })}
+                />
+                {buildChar.character.spells.map((spell: string, index: number) => {
+                  return (
+                    <Container key={index}>
+                      <AutoStringField
+                        optionTable={"spells"}
+                        value={spell}
+                        label="Spell"
+                        onChange={(newSpell) => onChangeSpell(newSpell, spell)}
+                      />
+                      <IconButton icon={faTrash} onClick={() => removeSpell(spell)} />
+                    </Container>
+                  );
+                })}
+                <TextButton text={"Add new Spell"} icon={faPlus} onClick={() => addNewSpell()} />
+              </>
+            )}
+            {activeTab === "Items" && (
+              <>
+                {buildChar.character.items.map(
+                  (
+                    item: {
+                      origin: string;
+                      attuned: boolean;
+                      prof: boolean;
+                      attribute: string;
+                    },
+                    index: number
+                  ) => {
+                    return (
+                      <Container key={index}>
+                        <AutoStringField
+                          optionTable={["items", "gears"]}
+                          value={item.origin}
+                          label="Item"
+                          onChange={(newItem) => onChangeItem(newItem, index)}
+                        />
+                        <CheckField
+                          value={!!item.attuned}
+                          label="Attunment"
+                          onChange={(attunment) =>
+                            onChangeItemAttribute(
+                              {
+                                ...item,
+                                attuned: attunment,
+                              },
+                              index
+                            )
+                          }
+                        />
+                        <CheckField
+                          value={!!item.prof}
+                          label="Prof"
+                          onChange={(prof) => onChangeItemAttribute({ ...item, prof: prof }, index)}
+                        />
+                        <EnumField
+                          options={[
+                            { value: "str", label: "Str" },
+                            { value: "dex", label: "Dex" },
+                            { value: "con", label: "Con" },
+                            { value: "int", label: "Int" },
+                            { value: "wis", label: "Wis" },
+                            { value: "cha", label: "Cha" },
+                          ]}
+                          value={{
+                            value: item.attribute,
+                            label: item.attribute.charAt(0).toUpperCase() + item.attribute.slice(1),
+                          }}
+                          label="Attribute"
+                          onChange={(type) =>
+                            onChangeItemAttribute({ ...item, attribute: type }, index)
+                          }
+                        />
+                        <IconButton icon={faTrash} onClick={() => removeItem(item)} />
+                      </Container>
+                    );
+                  }
+                )}
+                <TextButton text={"Add new Item"} icon={faPlus} onClick={() => addNewItem()} />
+              </>
+            )}
+            {activeTab === "Monster" && (
+              <>
+                {buildChar.character.monsters.map((monster: string, index: number) => {
+                  return (
+                    <Container key={index}>
+                      <AutoStringField
+                        optionTable={"monsters"}
+                        value={monster}
+                        label="Monster"
+                        onChange={(newMonster) => onChangeMonster(newMonster, monster)}
+                      />
+                      <IconButton icon={faTrash} onClick={() => removeMonster(monster)} />
+                    </Container>
+                  );
+                })}
+                <TextButton
+                  text={"Add new Monster"}
+                  icon={faPlus}
+                  onClick={() => addNewMonster()}
+                />
+              </>
+            )}
+          </CharView>
+        </CenterWrapper>
+      )}
+    </>
   );
 };
 

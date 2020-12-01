@@ -1,67 +1,27 @@
-import React, { useCallback, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router";
 import styled from "styled-components";
-import Char from "../../../../../Data/Chars/Char";
-import Item from "../../../../../Data/Item";
-import Gear from "../../../../../Data/Gear";
-import { reciveByAttribute } from "../../../../../Services/DatabaseService";
-import Class from "../../../../../Data/Classes/Class";
-import FeatureSet from "../../../../../Data/Classes/FeatureSet";
+import BuildChar from "../../../../../Data/Chars/BuildChar";
+
 import FormatedText from "../../../../GeneralElements/FormatedText";
 import Feature from "../../../../../Data/Classes/Feature";
 
 interface $Props {
-  char: Char;
-  classes: Class[];
-  classesFeatures: FeatureSet[];
-  items: {
-    item: Item;
-    origin: string;
-    attuned: boolean;
-    prof: boolean;
-    attribute: string;
-  }[];
-  gears: {
-    gear: Gear;
-    origin: string;
-    attuned: boolean;
-    prof: boolean;
-    attribute: string;
-  }[];
+  buildChar: BuildChar;
 }
 
-const CharCombat = ({
-  char,
-  items,
-  gears,
-  classes,
-  classesFeatures,
-}: $Props) => {
+const CharCombat = ({ buildChar }: $Props) => {
   let history = useHistory();
-  const [baseItems, setBaseItems] = useState<
-    {
-      base: Gear;
-      item: {
-        item: Item;
-        origin: string;
-        attuned: boolean;
-        prof: boolean;
-        attribute: string;
-      };
-    }[]
-  >([]);
-  const [prof, setProf] = useState<number>(0);
-
   const [actions, setActions] = useState<Feature[]>([]);
   const [bonusActions, setBonusActions] = useState<Feature[]>([]);
   const [reactions, setReactions] = useState<Feature[]>([]);
 
   useEffect(() => {
-    if (classesFeatures && classesFeatures.length > 0) {
+    if (buildChar.classFeatures && buildChar.classFeatures.length > 0) {
       let newActions: Feature[] = [];
       let newBonusActions: Feature[] = [];
       let newReactions: Feature[] = [];
-      classesFeatures
+      buildChar.classFeatures
         .sort((f1, f2) => f1.level - f2.level)
         .forEach((featureSet) => {
           featureSet.features.forEach((feature: Feature) => {
@@ -78,107 +38,59 @@ const CharCombat = ({
       setBonusActions(newBonusActions);
       setReactions(newReactions);
     }
-  }, [classesFeatures]);
-
-  useEffect(() => {
-    items.forEach((item) => {
-      if (item.item.base !== "") {
-        reciveByAttribute("gears", "name", item.item.base, (result) => {
-          setBaseItems((b) => [...b, { item: item, base: result as Gear }]);
-        });
-      }
-    });
-  }, [items]);
-
-  const calcLevel = useCallback(() => {
-    let level = 0;
-    char.classes.forEach((classe) => {
-      level += classe.level;
-    });
-    return level;
-  }, [char]);
-
-  useEffect(() => {
-    if (classes && classes.length > 0) {
-      const level = calcLevel();
-      classes[0].featureSets.forEach((featureSet: FeatureSet) => {
-        if (featureSet.level === level) {
-          setProf(featureSet.profBonus);
-        }
-      });
-    }
-  }, [char, classes, calcLevel]);
+  }, [buildChar]);
 
   return (
     <>
       <MinView>
-        {baseItems &&
-          baseItems.length > 0 &&
-          baseItems.map((baseitem, index: number) => {
-            if (
-              baseitem.item.item.type.toLocaleLowerCase().includes("weapon")
-            ) {
-              const bonus = Math.floor(
-                (char[baseitem.item.attribute] - 10) / 2
-              );
+        {buildChar.items &&
+          buildChar.items.length > 0 &&
+          buildChar.items.map((baseitem, index: number) => {
+            if (baseitem.item.type.toLocaleLowerCase().includes("weapon")) {
+              const bonus = Math.floor((buildChar.character[baseitem.attribute] - 10) / 2);
               return (
                 <PropWrapper key={index}>
                   <Prop>
-                    <MainLink
-                      onClick={() =>
-                        history.push(
-                          `/item-detail/name/${baseitem.item.origin}`
-                        )
-                      }
-                    >
-                      {baseitem.item.item.name}
+                    <MainLink onClick={() => history.push(`/item-detail/name/${baseitem.origin}`)}>
+                      {baseitem.item.name}
                     </MainLink>
                   </Prop>
                   <Prop>
-                    +
-                    {bonus +
-                      (baseitem.item.prof ? prof : 0) +
-                      baseitem.item.item.magicBonus}
+                    +{bonus + (baseitem.prof ? buildChar.prof : 0) + baseitem.item.magicBonus}
                   </Prop>
-                  <Prop>
-                    {`${baseitem.base.damage} +${
-                      baseitem.item.item.magicBonus + bonus
-                    }`}
-                  </Prop>
-                  <Prop>{baseitem.base.properties}</Prop>
+                  <Prop>{`${baseitem.base?.damage} +${baseitem.item.magicBonus + bonus}`}</Prop>
+                  <Prop>{baseitem.base?.properties}</Prop>
                 </PropWrapper>
               );
             } else {
               return "";
             }
           })}
-        {gears &&
-          gears.length > 0 &&
-          gears.map((gear, index: number) => {
-            if (gear.gear.type.toLocaleLowerCase().includes("weapon")) {
-              const strBonus = Math.floor((char.str - 10) / 2);
-              const dexBonus = Math.floor((char.dex - 10) / 2);
-              if (
-                gear.gear.properties.toLocaleLowerCase().includes("finesse")
-              ) {
+        {buildChar.gears &&
+          buildChar.gears.length > 0 &&
+          buildChar.gears.map((baseGear, index: number) => {
+            if (baseGear.gear.type.toLocaleLowerCase().includes("weapon")) {
+              const strBonus = Math.floor((buildChar.character.str - 10) / 2);
+              const dexBonus = Math.floor((buildChar.character.dex - 10) / 2);
+              if (baseGear.gear.properties.toLocaleLowerCase().includes("finesse")) {
                 return (
                   <PropWrapper key={index}>
-                    <Prop>{gear.gear.name}</Prop>
+                    <Prop>{baseGear.gear.name}</Prop>
                     <Prop>
-                      {strBonus > dexBonus ? <>+{strBonus + prof}</> : ""}
-                      {dexBonus > strBonus ? <>+{dexBonus + prof}</> : ""}
+                      {strBonus > dexBonus ? <>+{strBonus + buildChar.prof}</> : ""}
+                      {dexBonus > strBonus ? <>+{dexBonus + buildChar.prof}</> : ""}
                     </Prop>
-                    <Prop>{gear.gear.damage}</Prop>
-                    <Prop>{gear.gear.properties}</Prop>
+                    <Prop>{baseGear.gear.damage}</Prop>
+                    <Prop>{baseGear.gear.properties}</Prop>
                   </PropWrapper>
                 );
               } else {
                 return (
                   <PropWrapper key={index}>
-                    <Prop>{gear.gear.name}</Prop>
-                    <Prop>+{strBonus + prof}</Prop>
-                    <Prop>{gear.gear.damage}</Prop>
-                    <Prop>{gear.gear.properties}</Prop>
+                    <Prop>{baseGear.gear.name}</Prop>
+                    <Prop>+{strBonus + buildChar.prof}</Prop>
+                    <Prop>{baseGear.gear.damage}</Prop>
+                    <Prop>{baseGear.gear.properties}</Prop>
                   </PropWrapper>
                 );
               }
@@ -233,7 +145,7 @@ const CharCombat = ({
         <PropWrapper>
           <Text>
             <PropTitle>Action Notes:</PropTitle>
-            <FormatedText text={char.actions} />
+            <FormatedText text={buildChar.character.actions} />
           </Text>
         </PropWrapper>
       </MinView>

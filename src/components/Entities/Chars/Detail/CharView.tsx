@@ -1,22 +1,12 @@
-import React, { useCallback, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import P2PSender from "../../../P2P/P2PSender";
-import {
-  reciveAllFiltered,
-  reciveByAttribute,
-  update,
-} from "../../../../Services/DatabaseService";
+import { update } from "../../../../Services/DatabaseService";
 import Char from "../../../../Data/Chars/Char";
 import Class from "../../../../Data/Classes/Class";
-// import Subclass from "../../../../Data/Classes/Subclass";
 import Feature from "../../../../Data/Classes/Feature";
 import FeatureSet from "../../../../Data/Classes/FeatureSet";
-// import Race from "../../../../Data/Races/Race";
-// import Subrace from "../../../../Data/Races/Subrace";
 import Trait from "../../../../Data/Races/Trait";
-import Item, { isItem } from "../../../../Data/Item";
-import Gear, { isGear } from "../../../../Data/Gear";
-import Monster, { isMonster } from "../../../../Data/Monster";
 
 import TabBar from "../../../GeneralElements/TabBar";
 import CharGeneral from "./DetailComponents/CharGeneral";
@@ -30,42 +20,20 @@ import CharSpell from "./DetailComponents/CharSpells";
 import { faFilePdf, faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import TextButton from "../../../FormElements/TextButton";
 import { exportPdf } from "../../../../Services/PdfService";
+import { buildCharacter, applyMods } from "../../../../Services/CharacterService";
+import BuildChar from "../../../../Data/Chars/BuildChar";
+import { LoadingSpinner } from "../../../Loading";
+import Modifier from "../../../../Data/Modifier";
 
 interface $Props {
   character: Char;
+  modifications: boolean;
 }
 
-const CharView = ({ character }: $Props) => {
+const CharView = ({ character, modifications }: $Props) => {
   const [send, setSend] = useState<boolean>(false);
-  const [char, setChar] = useState<Char>(character);
-
-  const [classes, setClasses] = useState<Class[]>([]);
-  // const [subclasses, setSubclasses] = useState<Subclass[]>([]);
-  const [classesFeatures, setClassesFeatures] = useState<FeatureSet[]>([]);
-  // const [race, setRace] = useState<Race>();
-  // const [subrace, setSubrace] = useState<Subrace>();
-  const [raceFeatures, setRaceFeatures] = useState<Trait[]>([]);
-
-  const [gears, setGears] = useState<
-    {
-      gear: Gear;
-      origin: string;
-      attuned: boolean;
-      prof: boolean;
-      attribute: string;
-    }[]
-  >([]);
-  const [items, setItems] = useState<
-    {
-      item: Item;
-      origin: string;
-      attuned: boolean;
-      prof: boolean;
-      attribute: string;
-    }[]
-  >([]);
-  const [monsters, setMonsters] = useState<Monster[]>([]);
-
+  const [buildChar, setBuildChar] = useState<BuildChar>(new BuildChar());
+  const [loading, setLoading] = useState<boolean>(true);
   const [activeTab, setTab] = useState<string>("General");
   const [tabs, setTabs] = useState<string[]>([
     "General",
@@ -73,325 +41,188 @@ const CharView = ({ character }: $Props) => {
     "Race",
     "Classes",
     "Notes",
+    "Modifications",
   ]);
 
-  const calcLevel = useCallback(() => {
-    let level = 0;
-    char.classes.forEach((classe) => {
-      level += classe.level;
+  useEffect(() => {
+    buildCharacter(character).then(async (buildChar) => {
+      setBuildChar(await applyMods(buildChar, modifications));
+      setLoading(false);
     });
-    return level;
-  }, [char]);
+  }, [character, setBuildChar, modifications]);
 
   useEffect(() => {
-    reciveAllFiltered(
-      "classes",
-      [
-        {
-          fieldName: "name",
-          value: character.classes.map((classe) => {
-            return classe.classe;
-          }),
-          sort: 0,
-        },
-      ],
-      (results: any[]) => {
-        setClasses(results);
-        results.forEach((classe) => {
-          let classLevel = 0;
-          character.classes.forEach((charClass) => {
-            if (classe.name === charClass.classe) {
-              classLevel = charClass.level;
-            }
-          });
-          classe.featureSets.forEach((featureSet: FeatureSet) => {
-            if (featureSet.level <= classLevel) {
-              setClassesFeatures((c) => [...c, featureSet]);
-            }
-          });
-        });
-      }
-    );
-  }, [character]);
-
-  useEffect(() => {
-    reciveAllFiltered(
-      "subclasses",
-      [
-        {
-          fieldName: "name",
-          value: character.classes.map((classe) => {
-            return classe.subclasse;
-          }),
-          sort: 0,
-        },
-      ],
-      (results: any[]) => {
-        // setSubclasses(results);
-        results.forEach((subclass) => {
-          let subclassLevel = 0;
-          character.classes.forEach((charClass) => {
-            if (subclass.name === charClass.subclasse) {
-              subclassLevel = charClass.level;
-            }
-          });
-          subclass.features.forEach((featureSet: FeatureSet) => {
-            if (featureSet.level <= subclassLevel) {
-              setClassesFeatures((c) => [...c, featureSet]);
-            }
-          });
-        });
-      }
-    );
-  }, [character]);
-
-  useEffect(() => {
-    reciveAllFiltered(
-      "races",
-      [{ fieldName: "name", value: character.race.race, sort: 0 }],
-      (results: any[]) => {
-        // setRace(results[0]);
-        if (results.length > 0) {
-          results[0].traits.forEach((trait: Trait) => {
-            if (trait.level <= calcLevel()) {
-              setRaceFeatures((c) => [...c, trait]);
-            }
-          });
-        }
-      }
-    );
-  }, [character, calcLevel]);
-
-  useEffect(() => {
-    reciveAllFiltered(
-      "subraces",
-      [{ fieldName: "name", value: character.race.subrace, sort: 0 }],
-      (results: any[]) => {
-        // setRace(results[0]);
-        if (results.length > 0) {
-          results[0].traits.forEach((trait: Trait) => {
-            if (trait.level <= calcLevel()) {
-              setRaceFeatures((c) => [...c, trait]);
-            }
-          });
-        }
-      }
-    );
-  }, [character, calcLevel]);
-
-  useEffect(() => {
-    character.items.forEach(
-      (item: {
-        origin: string;
-        attuned: boolean;
-        prof: boolean;
-        attribute: string;
-      }) => {
-        reciveByAttribute("items", "name", item.origin, (result) => {
-          if (result && isItem(result)) {
-            setItems((s) => [...s, { ...item, item: result }]);
-          }
-        });
-      }
-    );
-  }, [character]);
-
-  useEffect(() => {
-    character.items.forEach(
-      (item: {
-        origin: string;
-        attuned: boolean;
-        prof: boolean;
-        attribute: string;
-      }) => {
-        reciveByAttribute("gears", "name", item.origin, (result) => {
-          if (result && isGear(result)) {
-            setGears((s) => [...s, { ...item, gear: result }]);
-          }
-        });
-      }
-    );
-  }, [character]);
-
-  useEffect(() => {
-    character.monsters.forEach((monster) => {
-      reciveByAttribute("monsters", "name", monster, (result) => {
-        if (result && isMonster(result)) {
-          setMonsters((s) => [...s, result]);
-        }
-      });
-    });
-  }, [character]);
-
-  useEffect(() => {
-    if (!tabs.includes("Monster") && character.monsters.length > 0)
+    if (!tabs.includes("Monster") && buildChar.monsters.length > 0)
       setTabs((t) => [...t, "Monster"]);
-  }, [character, tabs]);
+  }, [buildChar.monsters, tabs]);
   useEffect(() => {
-    if (!tabs.includes("Items") && character.items.length > 0)
-      setTabs((t) => [...t, "Items"]);
-  }, [character, tabs]);
+    if (!tabs.includes("Items") && buildChar.items.length > 0) setTabs((t) => [...t, "Items"]);
+  }, [buildChar.items, tabs]);
   useEffect(() => {
-    if (!tabs.includes("Spells") && character.spells.length > 0)
-      setTabs((t) => [...t, "Spells"]);
-  }, [character, tabs]);
+    if (!tabs.includes("Spells") && buildChar.spells.length > 0) setTabs((t) => [...t, "Spells"]);
+  }, [buildChar.spells, tabs]);
 
-  const saveChar = (char: Char) => {
-    setChar(char);
-    update("chars", char);
+  const saveChar = (char: BuildChar) => {
+    setBuildChar(char);
+    update("chars", char.character);
   };
 
   return (
-    <CenterWrapper>
-      <CharHeader char={char} />
-      <TabBar children={tabs} onChange={(tab: string) => setTab(tab)} />
-      {activeTab === "General" && (
-        <>
-          <CharGeneral char={char} onChange={saveChar} classes={classes} />
-          <View>
-            <PropWrapper>
-              {!send && (
+    <>
+      {loading && <LoadingSpinner />}
+      {!loading && buildChar && (
+        <CenterWrapper>
+          <CharHeader char={buildChar.character} />
+          <TabBar children={tabs} onChange={(tab: string) => setTab(tab)} />
+          {activeTab === "General" && (
+            <>
+              <CharGeneral buildChar={buildChar} onChange={saveChar} />
+              <View>
+                <PropWrapper>
+                  {!send && (
+                    <TextButton
+                      text={`Send ${buildChar.character.name}`}
+                      icon={faPaperPlane}
+                      onClick={() => setSend(true)}
+                    />
+                  )}
+                  {!!send && <P2PSender data={buildChar.character} mode={"THIS"} />}
+                </PropWrapper>
                 <TextButton
-                  text={`Send ${char.name}`}
-                  icon={faPaperPlane}
-                  onClick={() => setSend(true)}
+                  text={`Export ${buildChar.character.name} to Pdf`}
+                  icon={faFilePdf}
+                  onClick={() => exportPdf(buildChar.character)}
                 />
-              )}
-              {!!send && <P2PSender data={char} mode={"THIS"} />}
-            </PropWrapper>
-            <TextButton 
-              text={`Export ${char.name} to Pdf`}
-              icon={faFilePdf}
-              onClick={() => exportPdf(char)}
-            />
-          </View>
-        </>
-      )}
-      {activeTab === "Combat" && (
-        <CharCombat
-          char={char}
-          items={items}
-          gears={gears}
-          classes={classes}
-          classesFeatures={classesFeatures}
-        />
-      )}
-      {activeTab === "Classes" && (
-        <View>
-          <PropWrapper>
-            {classes &&
-              classes.map((classe: Class, index: number) => {
-                return (
-                  <SmallText key={index}>
-                    <PropTitle>{classe.name} Proficiencies:</PropTitle>
-                    <FormatedText text={classe.proficiencies} />
-                  </SmallText>
-                );
-              })}
-          </PropWrapper>
-          <PropWrapper>
-            {classesFeatures &&
-              classesFeatures
-                .sort((f1, f2) => f1.level - f2.level)
-                .map((featureSet: FeatureSet) => {
-                  return featureSet.features.map(
-                    (feature: Feature, index: number) => {
-                      let selectionsData: {
-                        entityName: string;
-                        entityText: string;
-                        level: number;
-                      }[] = [];
-                      if (
-                        feature.selections !== undefined &&
-                        feature.selections.length > 0
-                      ) {
-                        char.activeSelections.forEach((activeSelect) => {
-                          if (activeSelect.featureName === feature.name) {
-                            selectionsData.push(activeSelect.activeOption);
-                          }
-                        });
-                      }
+              </View>
+            </>
+          )}
+          {activeTab === "Combat" && <CharCombat buildChar={buildChar} />}
+          {activeTab === "Classes" && (
+            <View>
+              <PropWrapper>
+                {buildChar.classes &&
+                  buildChar.classes.map((classe: Class, index: number) => {
+                    return (
+                      <SmallText key={index}>
+                        <PropTitle>{classe.name} Proficiencies:</PropTitle>
+                        <FormatedText text={classe.proficiencies} />
+                      </SmallText>
+                    );
+                  })}
+              </PropWrapper>
+              <PropWrapper>
+                {buildChar.classFeatures &&
+                  buildChar.classFeatures
+                    .sort((f1, f2) => f1.level - f2.level)
+                    .map((featureSet: FeatureSet) => {
+                      return featureSet.features.map((feature: Feature, index: number) => {
+                        let selectionsData: {
+                          entityName: string;
+                          entityText: string;
+                          level: number;
+                        }[] = [];
+                        if (feature.selections !== undefined && feature.selections.length > 0) {
+                          buildChar.character.activeSelections.forEach((activeSelect) => {
+                            if (activeSelect.featureName === feature.name) {
+                              selectionsData.push(activeSelect.activeOption);
+                            }
+                          });
+                        }
+                        return (
+                          <Text key={index}>
+                            <PropTitle>{feature.name}:</PropTitle>
+                            <FormatedText text={feature.text} />
+                            {selectionsData.map((activeSelectOption) => {
+                              return (
+                                <>
+                                  <br />
+                                  <PropTitle>Choosen {activeSelectOption.entityName}:</PropTitle>
+                                  <FormatedText text={activeSelectOption.entityText} />
+                                </>
+                              );
+                            })}
+                          </Text>
+                        );
+                      });
+                    })}
+              </PropWrapper>
+            </View>
+          )}
+          {activeTab === "Race" && (
+            <View>
+              <PropWrapper>
+                {buildChar.raceFeatures &&
+                  buildChar.raceFeatures
+                    .sort((f1, f2) => f1.level - f2.level)
+                    .map((trait: Trait, index: number) => {
                       return (
-                        <Text key={index}>
-                          <PropTitle>{feature.name}:</PropTitle>
-                          <FormatedText text={feature.text} />
-                          {selectionsData.map((activeSelectOption) => {
-                            return (
-                              <>
-                                <br />
-                                <PropTitle>
-                                  Choosen {activeSelectOption.entityName}:
-                                </PropTitle>
-                                <FormatedText
-                                  text={activeSelectOption.entityText}
-                                />
-                              </>
-                            );
-                          })}
-                        </Text>
+                        <TraitWrapper key={index}>
+                          <TraitName>{trait.name}</TraitName>
+                          <TraitLevel>{trait.level}</TraitLevel>
+                          <TraitText>
+                            <FormatedText text={trait.text} />
+                          </TraitText>
+                        </TraitWrapper>
                       );
-                    }
-                  );
-                })}
-          </PropWrapper>
-        </View>
-      )}
-      {activeTab === "Race" && (
-        <View>
-          <PropWrapper>
-            {raceFeatures &&
-              raceFeatures
-                .sort((f1, f2) => f1.level - f2.level)
-                .map((trait: Trait, index: number) => {
+                    })}
+              </PropWrapper>
+            </View>
+          )}
+          {activeTab === "Spells" && <CharSpell buildChar={buildChar} saveChar={saveChar} />}
+          {activeTab === "Items" && (
+            <View>
+              <PropWrapper>
+                {buildChar.items &&
+                  buildChar.items.map((item, index: number) => {
+                    return <ItemTile key={index} item={item.item} />;
+                  })}
+                {buildChar.gears &&
+                  buildChar.gears.map((gear, index: number) => {
+                    return <GearTile key={index} gear={gear.gear} />;
+                  })}
+              </PropWrapper>
+            </View>
+          )}
+          {activeTab === "Monster" && (
+            <View>
+              <PropWrapper>
+                {buildChar.monsters &&
+                  buildChar.monsters.map((monster, index: number) => {
+                    return <MonsterTile key={index} monster={monster} />;
+                  })}
+              </PropWrapper>
+            </View>
+          )}
+          {activeTab === "Notes" && (
+            <View>
+              <PropWrapper>
+                <Text>
+                  <PropTitle>Notes:</PropTitle>
+                  <FormatedText text={buildChar.character.spellNotes} />
+                </Text>
+              </PropWrapper>
+            </View>
+          )}
+          {activeTab === "Modifications" && (
+            <View>
+              <PropWrapper>
+                {buildChar.modifiers.map((mod: Modifier, index: number) => {
                   return (
-                    <TraitWrapper key={index}>
-                      <TraitName>{trait.name}</TraitName>
-                      <TraitLevel>{trait.level}</TraitLevel>
-                      <TraitText>
-                        <FormatedText text={trait.text} />
-                      </TraitText>
-                    </TraitWrapper>
+                    <Text>
+                      <PropTitle>
+                        {mod.origin}
+                        {" | "}
+                      </PropTitle>
+                      <FormatedText text={mod.makeString()} />
+                    </Text>
                   );
                 })}
-          </PropWrapper>
-        </View>
+              </PropWrapper>
+            </View>
+          )}
+        </CenterWrapper>
       )}
-      {activeTab === "Spells" && <CharSpell char={char} saveChar={saveChar} />}
-      {activeTab === "Items" && (
-        <View>
-          <PropWrapper>
-            {items &&
-              items.map((item, index: number) => {
-                return <ItemTile key={index} item={item.item} />;
-              })}
-            {gears &&
-              gears.map((gear, index: number) => {
-                return <GearTile key={index} gear={gear.gear} />;
-              })}
-          </PropWrapper>
-        </View>
-      )}
-      {activeTab === "Monster" && (
-        <View>
-          <PropWrapper>
-            {monsters &&
-              monsters.map((monster, index: number) => {
-                return <MonsterTile key={index} monster={monster} />;
-              })}
-          </PropWrapper>
-        </View>
-      )}
-      {activeTab === "Notes" && (
-        <View>
-          <PropWrapper>
-            <Text>
-              <PropTitle>Notes:</PropTitle>
-              <FormatedText text={char.spellNotes} />
-            </Text>
-          </PropWrapper>
-        </View>
-      )}
-    </CenterWrapper>
+    </>
   );
 };
 
