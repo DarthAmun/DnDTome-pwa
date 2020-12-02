@@ -4,6 +4,7 @@ import { importFiles, exportAll } from "../../Services/OptionService";
 import {
   import5eToolsItemsFiles,
   import5eToolsMonstersFiles,
+  import5eToolsRacesFiles,
   import5eToolsSpellsFiles,
 } from "../../Services/5eToolService";
 import {
@@ -174,6 +175,24 @@ const Options = () => {
     );
   };
 
+  const trigger5eToolsRacesImport = (fileList: FileList | null) => {
+    isLoading(true);
+    import5eToolsRacesFiles(
+      fileList,
+      (max: number) => {
+        isReload(true);
+        isLoading(false);
+
+        setMessage(max + " imported successfully!");
+        setAlert(true);
+
+        setTimeout(() => {
+          setAlert(false);
+        }, 5000);
+      }
+    );
+  };
+
   const trigger5eToolsItemsImport = (fileList: FileList | null) => {
     isLoading(true);
     import5eToolsItemsFiles(
@@ -258,7 +277,7 @@ const Options = () => {
           "Selections",
           "Chars",
           "Encounters",
-          "Other Import",
+          "Other Imports",
           "Recive",
         ]}
         onChange={(tab: string) => setTab(tab)}
@@ -309,7 +328,7 @@ const Options = () => {
           triggerDeleteAll={triggerDeleteAll}
         />
       )}
-      {activeTab === "Other Import" && (
+      {activeTab === "Other Imports" && (
         <OptionTab>
           <OptionSection>
             <SelectionTitle>Import 5eTools Spells</SelectionTitle>
@@ -339,6 +358,16 @@ const Options = () => {
               isMulti={true}
               icon={faFileImport}
               onChange={(file) => trigger5eToolsItemsImport(file)}
+            />
+          </OptionSection>
+          <OptionSection>
+            <SelectionTitle>Import 5eTools Races</SelectionTitle>
+            <FileField
+              label=""
+              accept={".json"}
+              isMulti={true}
+              icon={faFileImport}
+              onChange={(file) => trigger5eToolsRacesImport(file)}
             />
           </OptionSection>
         </OptionTab>

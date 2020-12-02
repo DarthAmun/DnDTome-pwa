@@ -1,8 +1,176 @@
 import Gear from "../Data/Gear";
 import Item from "../Data/Item";
 import Monster from "../Data/Monster";
+import Race from "../Data/Races/Race";
+import Subrace from "../Data/Races/Subrace";
+import Trait from "../Data/Races/Trait";
 import Spell from "../Data/Spell";
 import { saveNew } from "./DatabaseService";
+
+export const import5eToolsRacesFiles = (
+  fileList: FileList | null,
+  callback: (max: number) => void
+) => {
+  if (fileList !== null) {
+    const files = Array.from(fileList);
+
+    files.forEach((file, i) => {
+      let fileReader = new FileReader();
+      fileReader.onloadend = async function () {
+        const content = fileReader.result;
+        if (content !== null) {
+          let json = JSON.parse(content.toString());
+
+          let promList: Promise<any>[] = [];
+          json.race.forEach((obj: any) => {
+            if (obj._copy === undefined && obj.source !== "DMG") {
+              const name = obj.name;
+              const sources = obj.source;
+
+              let speed = "";
+              if (obj.speed !== undefined) {
+                if (typeof obj.speed == "number") {
+                  speed += "walk " + obj.speed + "ft.";
+                } else if (typeof obj.speed == "number") {
+                  speed = obj.speed;
+                } else {
+                  for (const [key, value] of Object.entries(obj.speed)) {
+                    if (typeof value === "number") {
+                      speed += key + " " + value + "ft, ";
+                    } else if (typeof value === "boolean") {
+                    } else {
+                      speed += key + " ";
+                      for (const value2 of Object.entries(value as Object)) {
+                        if (typeof value2[1] === "number") {
+                          speed += value2[1] + "ft, ";
+                        } else if (typeof value2[1] === "string") {
+                          speed += value2[1];
+                        }
+                      }
+                      speed += ", ";
+                    }
+                  }
+                }
+                speed = speed.trim();
+              }
+
+              let abilityScores = "";
+              if (obj.ability !== undefined)
+                obj.ability.forEach((scores: any) => {
+                  for (const [key, value] of Object.entries(scores as Object)) {
+                    if (typeof value == "number") {
+                      if (value >= 0) abilityScores += key + " +" + value + ", ";
+                      abilityScores += key + " " + value + ", ";
+                    }
+                  }
+                });
+              abilityScores = abilityScores.trim();
+
+              let age = "";
+              let alignment = "";
+              let size = "";
+              let lang = "";
+              let traits: Trait[] = [];
+              if (obj.entries !== undefined) {
+                obj.entries.forEach((entry: any) => {
+                  if (entry.name === "Age") {
+                    age += entry.entries[0];
+                  } else if (entry.name === "Alignment") {
+                    alignment += entry.entries[0];
+                  } else if (entry.name === "Size") {
+                    size += entry.entries[0];
+                  } else if (entry.name === "Languages") {
+                    lang += entry.entries[0];
+                  } else if (Array.isArray(entry.entries)) {
+                    if (typeof entry.entries[0] == "string") {
+                      let convertText = entry.entries[0]
+                        .replaceAll("},", "\n")
+                        .replaceAll("[", "")
+                        .replaceAll("]", "")
+                        .replaceAll("}", "")
+                        .replaceAll("{@", "")
+                        .replaceAll("{", "");
+                      convertText = convertText.trim();
+                      traits.push(new Trait(entry.name, convertText, 1));
+                    } else {
+                      traits.push(new Trait(entry.name, "", 1));
+                    }
+                  }
+                });
+              }
+
+              if (obj.subraces !== undefined) {
+                obj.subraces.forEach((subrace: any) => {
+                  const subname = subrace.name;
+                  const subtype = name;
+
+                  let subabilityScores = "";
+                  if (subrace.ability !== undefined)
+                    subrace.ability.forEach((scores: any) => {
+                      for (const [key, value] of Object.entries(scores as Object)) {
+                        if (typeof value == "number") {
+                          if (value >= 0) abilityScores += key + " +" + value + ", ";
+                          subabilityScores += key + " " + value + ", ";
+                        }
+                      }
+                    });
+                  subabilityScores = subabilityScores.trim();
+
+                  let subtraits: Trait[] = [];
+                  if (subrace.entries !== undefined) {
+                    obj.entries.forEach((entry: any) => {
+                      if (Array.isArray(entry.entries)) {
+                        let convertText = entry.entries[0]
+                          .replaceAll("},", "\n")
+                          .replaceAll("[", "")
+                          .replaceAll("]", "")
+                          .replaceAll("}", "")
+                          .replaceAll("{@", "")
+                          .replaceAll("{", "");
+                        convertText = convertText.trim();
+                        subtraits.push(new Trait(entry.name, convertText, 1));
+                      }
+                    });
+                  }
+
+                  let newSubrace = new Subrace(
+                    subname,
+                    0,
+                    subtype,
+                    file.name,
+                    subabilityScores,
+                    subtraits,
+                    sources
+                  );
+                  promList.push(saveNew("subraces", newSubrace, file.name));
+                });
+              }
+
+              let newRace = new Race(
+                name,
+                0,
+                file.name,
+                "",
+                abilityScores,
+                age,
+                alignment,
+                size,
+                speed,
+                lang,
+                traits,
+                sources
+              );
+              promList.push(saveNew("races", newRace, file.name));
+            }
+          });
+          await Promise.all(promList);
+          callback(json.race.length);
+        }
+      };
+      fileReader.readAsText(file);
+    });
+  }
+};
 
 export const import5eToolsSpellsFiles = (
   fileList: FileList | null,
@@ -21,15 +189,10 @@ export const import5eToolsSpellsFiles = (
           let promList: Promise<any>[] = [];
           json.spell.forEach((obj: any) => {
             let classes = "";
-            if (
-              obj.classes !== undefined &&
-              obj.classes.fromClassList !== undefined
-            ) {
-              obj.classes.fromClassList.forEach(
-                (classe: { name: string; source: string }) => {
-                  classes += classe.name + ", ";
-                }
-              );
+            if (obj.classes !== undefined && obj.classes.fromClassList !== undefined) {
+              obj.classes.fromClassList.forEach((classe: { name: string; source: string }) => {
+                classes += classe.name + ", ";
+              });
             }
 
             let school = "";
@@ -66,9 +229,7 @@ export const import5eToolsSpellsFiles = (
 
             let components = "";
             if (obj.components !== undefined) {
-              components =
-                (obj.components.v ? "V, " : "") +
-                (obj.components.s ? "S, " : "");
+              components = (obj.components.v ? "V, " : "") + (obj.components.s ? "S, " : "");
               if (obj.components.m !== undefined) {
                 if (obj.components.m.text !== undefined) {
                   components = "M (" + obj.components.m.text + ")";
@@ -86,9 +247,7 @@ export const import5eToolsSpellsFiles = (
                 obj.duration[0].type +
                 " " +
                 (obj.duration[0].duration !== undefined
-                  ? obj.duration[0].duration.type +
-                    " " +
-                    obj.duration[0].duration.amount
+                  ? obj.duration[0].duration.type + " " + obj.duration[0].duration.amount
                   : "");
             }
 
@@ -97,10 +256,7 @@ export const import5eToolsSpellsFiles = (
               if (typeof textPart === "string") {
                 text += textPart + "\n";
               } else {
-                if (
-                  textPart.name !== undefined &&
-                  textPart.entries !== undefined
-                ) {
+                if (textPart.name !== undefined && textPart.entries !== undefined) {
                   text += "\n" + textPart.name + ". ";
                   textPart.entries.forEach((entryTextPart: string) => {
                     text += entryTextPart + "\n";
@@ -109,10 +265,7 @@ export const import5eToolsSpellsFiles = (
                   textPart.items.forEach((listItem: string) => {
                     text += "• " + listItem + "\n";
                   });
-                } else if (
-                  textPart.type !== undefined &&
-                  textPart.type === "table"
-                ) {
+                } else if (textPart.type !== undefined && textPart.type === "table") {
                   text += "||table||\n";
                   if (textPart.colLabels !== undefined) {
                     text += "||";
@@ -261,9 +414,7 @@ export const import5eToolsMonstersFiles = (
                 } else if (typeof value === "boolean") {
                 } else {
                   speed += key + " ";
-                  for (const value2 of Object.entries(
-                    value as Object
-                  )) {
+                  for (const value2 of Object.entries(value as Object)) {
                     if (typeof value2[1] === "number") {
                       speed += value2[1] + "ft, ";
                     } else if (typeof value2[1] === "string") {
@@ -333,17 +484,15 @@ export const import5eToolsMonstersFiles = (
 
               let traits = "";
               obj.trait &&
-                obj.trait.forEach(
-                  (tra: { name: string; entries: string[] }) => {
-                    traits += tra.name + ". \n";
-                    if (tra.entries !== undefined) {
-                      tra.entries.forEach((entry: string) => {
-                        traits += entry + " \n";
-                      });
-                      traits += "\n";
-                    }
+                obj.trait.forEach((tra: { name: string; entries: string[] }) => {
+                  traits += tra.name + ". \n";
+                  if (tra.entries !== undefined) {
+                    tra.entries.forEach((entry: string) => {
+                      traits += entry + " \n";
+                    });
+                    traits += "\n";
                   }
-                );
+                });
               traits = traits
                 .replaceAll("}", "")
                 .replaceAll("{@damage ", "")
@@ -360,17 +509,15 @@ export const import5eToolsMonstersFiles = (
 
               let actions = "";
               obj.action &&
-                obj.action.forEach(
-                  (tra: { name: string; entries: string[] }) => {
-                    actions += tra.name + ". \n";
-                    if (tra.entries !== undefined) {
-                      tra.entries.forEach((entry: string) => {
-                        actions += entry + " \n";
-                      });
-                      actions += " \n";
-                    }
+                obj.action.forEach((tra: { name: string; entries: string[] }) => {
+                  actions += tra.name + ". \n";
+                  if (tra.entries !== undefined) {
+                    tra.entries.forEach((entry: string) => {
+                      actions += entry + " \n";
+                    });
+                    actions += " \n";
                   }
-                );
+                });
               actions = actions
                 .replaceAll("}", "")
                 .replaceAll("{@damage ", "")
@@ -387,17 +534,15 @@ export const import5eToolsMonstersFiles = (
 
               let lactions = "";
               obj.legendary &&
-                obj.legendary.forEach(
-                  (tra: { name: string; entries: string[] }) => {
-                    lactions += tra.name + ". \n";
-                    if (tra.entries !== undefined) {
-                      tra.entries.forEach((entry: string) => {
-                        lactions += entry + " \n";
-                      });
-                      lactions += " \n";
-                    }
+                obj.legendary.forEach((tra: { name: string; entries: string[] }) => {
+                  lactions += tra.name + ". \n";
+                  if (tra.entries !== undefined) {
+                    tra.entries.forEach((entry: string) => {
+                      lactions += entry + " \n";
+                    });
+                    lactions += " \n";
                   }
-                );
+                });
               lactions = lactions
                 .replaceAll("}", "")
                 .replaceAll("{@damage ", "")
