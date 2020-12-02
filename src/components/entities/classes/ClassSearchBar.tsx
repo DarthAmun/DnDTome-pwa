@@ -130,7 +130,7 @@ type SearchMode = {
 const Bar = styled.div<SearchMode>`
   position: absolute;
   top: 50px;
-  left: 90px;
+  left: 55px;
   z-index: 900;
 
   transition: transform 0.3s ease-in-out;
@@ -138,7 +138,7 @@ const Bar = styled.div<SearchMode>`
 
   height: auto;
   min-height: 30px;
-  min-width: calc(100% - 110px);
+  min-width: calc(100% - 75px);
   padding: 10px;
   background: ${({ theme }) => theme.main.backgroundColor};
   box-shadow: 0px 5px 5px 0px rgba(0, 0, 0, 0.75);

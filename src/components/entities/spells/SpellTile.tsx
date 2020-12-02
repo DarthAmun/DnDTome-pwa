@@ -159,7 +159,7 @@ const Tile = styled(Link)`
   color: ${({ theme }) => theme.tile.color};
   background-color: ${({ theme }) => theme.tile.backgroundColor};
   margin: 0.5em;
-  border-radius: 3px;
+  border-radius: 10px;
   box-shadow: ${({ theme }) => theme.tile.boxShadow};
   overflow: hidden;
   cursor: pointer;
@@ -176,7 +176,6 @@ const School = styled.div<SchoolType>`
   font-size: 12px;
   line-height: 30px;
   border-radius: 0px 0px 10px 0px;
-  box-shadow: inset -2px -2px 5px 0px rgba(0, 0, 0, 0.3);
   background-color: ${({ theme }) => theme.tile.backgroundColor};
   color: ${(props) => {
     if (props.school === "Necromancy") {
@@ -211,8 +210,8 @@ const Level = styled.div`
   float: right;
   text-align: center;
   border-top-right-radius: 3px;
-  box-shadow: inset 0px 0px 10px -2px rgba(0, 0, 0, 0.4);
   border-radius: 30px;
+  border-bottom: solid 1px ${({ theme }) => theme.main.highlight};
   margin: 5px;
 `;
 
@@ -223,10 +222,9 @@ const Name = styled.div`
   margin: 0 5px 5px 5px;
   font-size: 14px;
   width: calc(100% - 30px);
-  color: var(--card-title-color);
+  color: ${({ theme }) => theme.tile.headerColor};
   text-align: center;
   border-radius: 5px;
-  box-shadow: inset 0px 0px 5px 0px rgba(0, 0, 0, 0.3);
 `;
 
 const ImageName = styled.div`
@@ -236,10 +234,9 @@ const ImageName = styled.div`
   margin: 0 5px 5px 5px;
   font-size: 14px;
   width: calc(100% - 30px);
-  color: var(--card-title-color);
+  color: ${({ theme }) => theme.tile.headerColor};
   text-align: center;
   border-radius: 50px 5px 5px 50px;
-  box-shadow: inset 0px 0px 5px 0px rgba(0, 0, 0, 0.3);
 `;
 
 const PropWrapper = styled.div`
@@ -260,7 +257,6 @@ const Prop = styled.div`
   padding: 10px;
   font-size: 12px;
   border-radius: 5px;
-  box-shadow: inset 0px 0px 5px 0px rgba(0, 0, 0, 0.3);
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
@@ -292,8 +288,6 @@ const Flag = styled.div`
   font-size: 12px;
   line-height: 30px;
   border-radius: 0px 0px 10px 10px;
-  box-shadow: inset 0px 0px 5px 0px rgba(0, 0, 0, 0.3);
-  background-color: ${({ theme }) => theme.tile.backgroundColor};
 `;
 
 interface $ImageProps {

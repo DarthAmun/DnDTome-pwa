@@ -32,7 +32,7 @@ const App = styled.div`
 `;
 
 const Content = styled.div`
-  margin-left: 90px;
+  margin-left: 55px;
   width: 100%;
 
   @media (max-width: 576px) {

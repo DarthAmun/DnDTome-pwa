@@ -14,10 +14,16 @@ interface Theme {
     color: string;
     highlight: string;
   };
+  header: {
+    backgroundColor: string;
+    color: string;
+    highlight: string;
+  }
   tile: {
     backgroundColor: string;
     backgroundColorLink: string;
     color: string;
+    headerColor: string;
     boxShadow: string;
   };
   nav: {
@@ -54,10 +60,16 @@ export const lightTheme: Theme = {
     color: "",
     highlight: "#8000ff",
   },
+  header: {
+    color: "white",
+    backgroundColor: "#8000ff",
+    highlight: "#8000ff",
+  },
   tile: {
     backgroundColor: "white",
     backgroundColorLink: "lightslategray",
     color: "darkgrey",
+    headerColor: "black",
     boxShadow: "0px 0px 5px 0px rgba(0,0,0,0.75);",
   },
   nav: {
@@ -80,25 +92,31 @@ export const lightTheme: Theme = {
 
 export const darkTheme: Theme = {
   buttons: {
-    color: "#cfc8d8",
-    backgroundColor: "#522a82",
+    color: "#fff",
+    backgroundColor: "#F55C5C",
     disabled: "#E1D0E5",
     height: "20px",
   },
   input: {
     color: "lightgrey",
-    backgroundColor: "#475062",
+    backgroundColor: "#1A1F3B",
   },
   main: {
-    backgroundColor: "#1f2532",
+    backgroundColor: "#1F2340",
     color: "",
+    highlight: "#F55C5C",
+  },
+  header: {
+    color: "white",
+    backgroundColor: "#1F2340",
     highlight: "#8000ff",
   },
   tile: {
-    backgroundColor: "#333d51",
-    backgroundColorLink: "#8CA7DE",
+    backgroundColor: "#191D38",
+    backgroundColorLink: "#E45D68",
+    headerColor: "#CACBDB",
     color: "lightslategray",
-    boxShadow: "0px 0px 5px 0px rgba(0,0,0,0.75);",
+    boxShadow: "",
   },
   nav: {
     size: {

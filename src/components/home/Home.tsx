@@ -40,7 +40,6 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import AppWrapper from "../AppWrapper";
 import TextButton from "../form_elements/TextButton";
-import logo from "../../dndtome icon_v2.png";
 import { BiSelectMultiple } from "react-icons/bi";
 import RandomTable from "../../data/RandomTable";
 
@@ -209,9 +208,6 @@ const Home = () => {
   return (
     <AppWrapper>
       <General>
-        <HomeSectionLarge>
-          <img src={logo} alt="logo" />
-        </HomeSectionLarge>
         <HomeSection>
           <SelectionTitle>
             <FontAwesomeIcon icon={faMeteor} /> Spells
@@ -529,11 +525,6 @@ const HomeSection = styled.div`
   justify-content: space-between;
   align-items: center;
   align-content: space-between;
-`;
-const HomeSectionLarge = styled(HomeSection)`
-  min-width: calc(100% - 1em);
-  background-color: transparent;
-  box-shadow: none;
 `;
 
 const SelectionTitle = styled.div`

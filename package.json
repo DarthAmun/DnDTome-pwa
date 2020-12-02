@@ -1,6 +1,6 @@
 {
   "name": "dndtome",
-  "version": "0.4.9",
+  "version": "0.5.0",
   "private": true,
   "homepage": "https://darthamun.github.io/DnDTome-pwa/",
   "devDependencies": {
@@ -44,7 +44,7 @@
     "react-dom": "16.10.2",
     "react-file-reader": "^1.1.4",
     "react-files": "^2.4.8",
-    "react-icons": "^3.10.0",
+    "react-icons": "4.1.0",
     "react-infinite-scroll-component": "^5.0.5",
     "react-pdf": "^5.0.0",
     "react-scripts": "^3.4.1",

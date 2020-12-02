@@ -170,9 +170,9 @@ export const Menu = styled.div<MenuType>`
   justify-content: flex-start;
   align-items: center;
   background: ${({ theme }) => theme.main.backgroundColor};
-  height: calc(100vh - 3em - 50px);
+  height: calc(100vh - 2em - 50px);
   text-align: left;
-  padding: 1rem 2rem 2rem 2rem;
+  padding: 1rem;
 
   overflow: visible;
 
@@ -196,7 +196,7 @@ export const Menu = styled.div<MenuType>`
     font-size: 20px;
     text-align: center;
     padding: 1rem 0;
-    color: ${({ theme }) => theme.main.highlight};
+    color: ${({ theme }) => theme.tile.color};
     text-decoration: none;
     transition: color 0.3s linear;
 
@@ -218,12 +218,12 @@ export const Menu = styled.div<MenuType>`
   }
 
   a.menuItemActiv {
-    color: ${({ theme }) => theme.tile.color};
+    color: ${({ theme }) => theme.main.highlight};
   }
 `;
 
 const Seperator = styled.div`
-  border-bottom: 1px solid #a64dff;
+  border-bottom: 1px solid ${({ theme }) => theme.tile.color};
   flex: 1 1 auto;
   min-width: 100%;
   max-height: 0px;
