@@ -47,7 +47,7 @@ interface Theme {
 export const lightTheme: Theme = {
   buttons: {
     color: "white",
-    backgroundColor: "#8000ff",
+    backgroundColor: "#7033FF",
     disabled: "#E1D0E5",
     height: "20px",
   },
@@ -56,13 +56,13 @@ export const lightTheme: Theme = {
     backgroundColor: "white",
   },
   main: {
-    backgroundColor: "rgb(248, 248, 248)",
+    backgroundColor: "#F3F5F8",
     color: "",
     highlight: "#8000ff",
   },
   header: {
     color: "white",
-    backgroundColor: "#8000ff",
+    backgroundColor: "#7033FF",
     highlight: "#8000ff",
   },
   tile: {
@@ -70,7 +70,7 @@ export const lightTheme: Theme = {
     backgroundColorLink: "lightslategray",
     color: "darkgrey",
     headerColor: "black",
-    boxShadow: "0px 0px 5px 0px rgba(0,0,0,0.75);",
+    boxShadow: "",
   },
   nav: {
     size: {
