@@ -31,7 +31,7 @@ const Bar = styled.div`
   flex: 1 1 auto;
   padding: 3px;
   margin: 5px;
-  border-radius: 5px;
+  border-radius: 10px;
 
   display: flex;
   flex-wrap: wrap;
