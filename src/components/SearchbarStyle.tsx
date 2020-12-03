@@ -1,0 +1,92 @@
+import styled from "styled-components";
+
+type SearchMode = {
+  open?: boolean;
+};
+
+export const Bar = styled.div<SearchMode>`
+  position: absolute;
+  top: 40px;
+  left: 55px;
+  z-index: 900;
+
+  transition: transform 0.3s ease-in-out;
+  transform: ${({ open }) => (open ? "translateY(0)" : "translateY(-100%)")};
+
+  height: auto;
+  min-height: 30px;
+  min-width: calc(100% - 75px);
+  padding: 20px 10px 10px 10px;
+  background: ${({ theme }) => theme.main.backgroundColor};
+  box-shadow: 0px 5px 5px 0px rgba(0, 0, 0, 0.25);
+  flex: 1 1;
+
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  align-content: flex-start;
+
+  @media (max-width: 576px) {
+    min-width: calc(100% - 20px);
+    left: 0px;
+  }
+`;
+
+export const SearchBar = styled.div<SearchMode>`
+  position: absolute;
+  bottom: -35px;
+  left: calc(50% - 50px);
+
+  height: 40px;
+  width: 40px;
+  transform: rotate(45deg);
+  color: ${({ theme }) => theme.buttons.color};
+  box-shadow: 0px 5px 5px 0px rgba(0, 0, 0, 0.25);
+  background-color: ${({ theme }) => theme.buttons.backgroundColor};
+  text-align: center;
+  line-height: 40px;
+
+  @media (max-width: 576px) {
+    left: calc(50% - 20px);
+  }
+
+  svg {
+    transform: rotate(-45deg);
+  }
+`;
+
+export const CreateButton = styled.button`
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    top: auto;
+  
+    background-color: ${({ theme }) => theme.buttons.backgroundColor};
+    color: ${({ theme }) => theme.buttons.color};
+    box-shadow: 0px 5px 5px 0px rgba(0, 0, 0, 0.75);
+    border: none;
+    padding 10px;
+    box-sizing:content-box;
+    line-height: 20px;
+    cursor: pointer;
+  
+    width: 30px;
+    height: 30px;
+    border-radius: 40px;
+    text-decoration: none;
+  
+    &:hover {
+      box-shadow: 0px 5px 5px 0px rgba(245, 92, 92, 0.75);
+    }
+  `;
+
+export const ExportButton = styled(CreateButton)`
+  bottom: 70px;
+`;
+
+export const FieldGroup = styled.div`
+  flex: 2 1 auto;
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-around;
+`;

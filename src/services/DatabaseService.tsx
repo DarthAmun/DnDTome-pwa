@@ -44,19 +44,13 @@ export const save = (tableName: string, data: IEntity) => {
     });
 };
 
-export const saveNew = (
-  tableName: string,
-  entity: IEntity,
-  filename: string
-) => {
+export const saveNew = (tableName: string, entity: IEntity, filename: string) => {
   const db = new MyAppDatabase();
   return db
     .open()
     .then(async function () {
       delete entity["id"];
-      const prom = await db
-        .table(tableName)
-        .put({ ...entity, filename: filename });
+      const prom = await db.table(tableName).put({ ...entity, filename: filename });
       return prom;
     })
     .finally(function () {
@@ -120,10 +114,7 @@ export const remove = (tableName: string, id: number | undefined) => {
   }
 };
 
-export const reciveAll = (
-  tableName: string,
-  callback: (data: IndexableType[]) => void
-) => {
+export const reciveAll = (tableName: string, callback: (data: IndexableType[]) => void) => {
   const db = new MyAppDatabase();
   db.open()
     .then(function () {
@@ -138,10 +129,7 @@ export const reciveAll = (
     });
 };
 
-export const reciveCount = (
-  tableName: string,
-  callback: (value: number) => void
-) => {
+export const reciveCount = (tableName: string, callback: (value: number) => void) => {
   const db = new MyAppDatabase();
   db.open()
     .then(function () {
@@ -188,20 +176,12 @@ export const reciveByAttribute = (
     });
 };
 
-export const recivePromiseByAttribute = (
-  tableName: string,
-  name: string,
-  value: string
-) => {
+export const recivePromiseByAttribute = (tableName: string, name: string, value: string) => {
   const db = new MyAppDatabase();
   return db
     .open()
     .then(async function () {
-      const array = await db
-        .table(tableName)
-        .where(name)
-        .equalsIgnoreCase(value)
-        .toArray();
+      const array = await db.table(tableName).where(name).equalsIgnoreCase(value).toArray();
       return array[0];
     })
     .finally(function () {
@@ -219,11 +199,7 @@ export const recivePromiseByAttributeCount = (
     return db
       .open()
       .then(async function () {
-        return await db
-          .table(tableName)
-          .where(name)
-          .equalsIgnoreCase(value)
-          .count();
+        return await db.table(tableName).where(name).equalsIgnoreCase(value).count();
       })
       .finally(function () {
         db.close();
@@ -277,7 +253,7 @@ const applyFilters = (obj: any, filters: Filter[]) => {
             hasTag = true;
           }
         });
-        if(hasTag) {
+        if (hasTag) {
           test.push(true);
         } else {
           test.push(false);
@@ -285,9 +261,7 @@ const applyFilters = (obj: any, filters: Filter[]) => {
       } else {
         test.push(
           // @ts-ignore
-          obj[filter.fieldName]
-            .toLowerCase()
-            .includes(filter.value.toLowerCase())
+          obj[filter.fieldName].toLowerCase().includes(filter.value.toLowerCase())
         );
       }
     } else if (typeof filter.value === "number") {
@@ -302,9 +276,7 @@ const applyFilters = (obj: any, filters: Filter[]) => {
         if (typeof filterPart === "string") {
           if (
             // @ts-ignore
-            obj[filter.fieldName]
-              .toLowerCase()
-              .includes(filterPart.toLowerCase())
+            obj[filter.fieldName].toLowerCase().includes(filterPart.toLowerCase())
           )
             arrayTest = true;
         } else if (typeof filterPart === "number") {
@@ -385,10 +357,7 @@ export const reciveAttributeSelection = (
     });
 };
 
-export const reciveAttributeSelectionPromise = (
-  tableName: string,
-  attribute: string
-) => {
+export const reciveAttributeSelectionPromise = (tableName: string, attribute: string) => {
   const db = new MyAppDatabase();
   return db
     .open()
@@ -428,4 +397,24 @@ export const deleteAll = (tableName: string) => {
     .finally(function () {
       db.close();
     });
+};
+
+export const exportFilteredFromTable = (tableName: string, filters: Filter[], filename: string) => {
+  reciveAllFiltered(tableName, filters, (all: IndexableType[]) => {
+    let contentType = "application/json;charset=utf-8;";
+    if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+      var blob = new Blob([decodeURIComponent(encodeURI(JSON.stringify(all)))], {
+        type: contentType,
+      });
+      navigator.msSaveOrOpenBlob(blob, filename);
+    } else {
+      var a = document.createElement("a");
+      a.download = filename;
+      a.href = "data:" + contentType + "," + encodeURIComponent(JSON.stringify(all));
+      a.target = "_blank";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
+  });
 };

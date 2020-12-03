@@ -1,17 +1,27 @@
 import React, { useState, useEffect } from "react";
-import styled from "styled-components";
 import { useHistory } from "react-router";
 import Filter from "../../../data/Filter";
 import ReactDOM from "react-dom";
-import { reciveAttributeSelection, createNewWithId } from "../../../services/DatabaseService";
+import {
+  reciveAttributeSelection,
+  createNewWithId,
+  exportFilteredFromTable,
+} from "../../../services/DatabaseService";
 
-import { faSearch, faRedoAlt, faLink, faPlusCircle } from "@fortawesome/free-solid-svg-icons";
+import {
+  faSearch,
+  faRedoAlt,
+  faLink,
+  faPlusCircle,
+  faFileExport,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import MultipleSelectField from "../../form_elements/MultipleSelectField";
 import StringSearchField from "../../form_elements/StringSearchField";
 import IconButton from "../../form_elements/IconButton";
 import Monster from "../../../data/Monster";
 import NumberField from "../../form_elements/NumberField";
+import { Bar, SearchBar, CreateButton, ExportButton } from "../../SearchbarStyle";
 
 interface $Props {
   onSend: (filters: Filter[]) => void;
@@ -19,18 +29,15 @@ interface $Props {
 
 const MonsterSearchBar = ({ onSend }: $Props) => {
   const [open, setOpen] = useState(false);
+  const [filters, setFilters] = useState<Filter[]>([]);
   let history = useHistory();
 
   const [name, setName] = useState<string>("");
   const [cr, setCr] = useState<number>(-1);
   const [type, setType] = useState<string[]>([]);
-  const [typeList, setTypeList] = useState<{ value: string; label: string }[]>(
-    []
-  );
+  const [typeList, setTypeList] = useState<{ value: string; label: string }[]>([]);
   const [subtype, setSubType] = useState<string[]>([]);
-  const [subtypeList, setSubTypeList] = useState<
-    { value: string; label: string }[]
-  >([]);
+  const [subtypeList, setSubTypeList] = useState<{ value: string; label: string }[]>([]);
   const [alignment, setAlignment] = useState<string>("");
   const [speed, setSpeed] = useState<string>("");
   const [senses, setSenses] = useState<string>("");
@@ -137,7 +144,7 @@ const MonsterSearchBar = ({ onSend }: $Props) => {
       }
       return filter;
     });
-
+    setFilters(newFilters);
     setOpen(false);
     onSend(newFilters);
   };
@@ -179,264 +186,180 @@ const MonsterSearchBar = ({ onSend }: $Props) => {
     });
   };
 
-  return (
-    <Bar open={open}>
-      <StringSearchField
-        value={name}
-        sort={sort}
-        field={"name"}
-        label="Name"
-        onChange={(
-          name: string,
-          sort: { name: string; label: string; sort: number }
-        ) => {
-          setName(name);
-          setSort(sort);
-        }}
-      />
-      <NumberField value={cr} label="Cr" onChange={(cr: number) => setCr(cr)} />
-      <MultipleSelectField
-        options={typeList}
-        label="Type"
-        onChange={(types: string[]) => setType(types)}
-      />
-      <MultipleSelectField
-        options={subtypeList}
-        label="Subtype"
-        onChange={(subtypes: string[]) => setSubType(subtypes)}
-      />
-      <StringSearchField
-        value={alignment}
-        sort={sort}
-        field={"alignment"}
-        label="Alignment"
-        onChange={(
-          name: string,
-          sort: { name: string; label: string; sort: number }
-        ) => {
-          setAlignment(name);
-          setSort(sort);
-        }}
-      />
-      <StringSearchField
-        value={speed}
-        sort={sort}
-        field={"speed"}
-        label="Speed"
-        onChange={(
-          name: string,
-          sort: { name: string; label: string; sort: number }
-        ) => {
-          setSpeed(name);
-          setSort(sort);
-        }}
-      />
-      <StringSearchField
-        value={skills}
-        sort={sort}
-        field={"skills"}
-        label="Skills"
-        onChange={(
-          name: string,
-          sort: { name: string; label: string; sort: number }
-        ) => {
-          setSkills(name);
-          setSort(sort);
-        }}
-      />
-      <StringSearchField
-        value={senses}
-        sort={sort}
-        field={"senses"}
-        label="Senses"
-        onChange={(
-          name: string,
-          sort: { name: string; label: string; sort: number }
-        ) => {
-          setSenses(name);
-          setSort(sort);
-        }}
-      />
-      <StringSearchField
-        value={lang}
-        sort={sort}
-        field={"lang"}
-        label="Languages"
-        onChange={(
-          name: string,
-          sort: { name: string; label: string; sort: number }
-        ) => {
-          setLang(name);
-          setSort(sort);
-        }}
-      />
-      <StringSearchField
-        value={dmgVulnerabilitie}
-        sort={sort}
-        field={"dmgVulnerabilitie"}
-        label="Vulnerabilities"
-        onChange={(
-          name: string,
-          sort: { name: string; label: string; sort: number }
-        ) => {
-          setDmgVulnerabilitie(name);
-          setSort(sort);
-        }}
-      />
-      <StringSearchField
-        value={dmgResistance}
-        sort={sort}
-        field={"dmgResistance"}
-        label="Resistances"
-        onChange={(
-          name: string,
-          sort: { name: string; label: string; sort: number }
-        ) => {
-          setDmgResistance(name);
-          setSort(sort);
-        }}
-      />
-      <StringSearchField
-        value={dmgImmunities}
-        sort={sort}
-        field={"dmgImmunities"}
-        label="Immunities"
-        onChange={(
-          name: string,
-          sort: { name: string; label: string; sort: number }
-        ) => {
-          setDmgImmunities(name);
-          setSort(sort);
-        }}
-      />
-      <StringSearchField
-        value={conImmunities}
-        sort={sort}
-        field={"conImmunities"}
-        label="Con. Immun."
-        onChange={(
-          name: string,
-          sort: { name: string; label: string; sort: number }
-        ) => {
-          setConImmunities(name);
-          setSort(sort);
-        }}
-      />
-      <StringSearchField
-        value={ablt}
-        sort={sort}
-        field={"ablt"}
-        label="Abilities"
-        onChange={(
-          name: string,
-          sort: { name: string; label: string; sort: number }
-        ) => {
-          setAblt(name);
-          setSort(sort);
-        }}
-      />
-      <StringSearchField
-        value={sAblt}
-        sort={sort}
-        field={"sAblt"}
-        label="Spezial Abilities"
-        onChange={(
-          name: string,
-          sort: { name: string; label: string; sort: number }
-        ) => {
-          setSAblt(name);
-          setSort(sort);
-        }}
-      />
-      <StringSearchField
-        value={lAblt}
-        sort={sort}
-        field={"lAblt"}
-        label="Legendary Abilities"
-        onChange={(
-          name: string,
-          sort: { name: string; label: string; sort: number }
-        ) => {
-          setLAblt(name);
-          setSort(sort);
-        }}
-      />
-      <StringSearchField
-        value={sources}
-        sort={sort}
-        field={"sources"}
-        label="Sources"
-        icon={faLink}
-        onChange={(
-          name: string,
-          sort: { name: string; label: string; sort: number }
-        ) => {
-          setSources(name);
-          setSort(sort);
-        }}
-      />
-      <IconButton onClick={() => search()} icon={faSearch} />
-      <IconButton onClick={() => reset()} icon={faRedoAlt} />
+  const exportFiltered = () => {
+    exportFilteredFromTable("monsters", filters, "DnDTome_filtered_monsters.json");
+  };
 
-      <SearchBarButton onClick={() => setOpen(!open)}>
-        <FontAwesomeIcon icon={faSearch} /> Search
-      </SearchBarButton>
+  return (
+    <>
+      <Bar open={open}>
+        <StringSearchField
+          value={name}
+          sort={sort}
+          field={"name"}
+          label="Name"
+          onChange={(name: string, sort: { name: string; label: string; sort: number }) => {
+            setName(name);
+            setSort(sort);
+          }}
+        />
+        <NumberField value={cr} label="Cr" onChange={(cr: number) => setCr(cr)} />
+        <MultipleSelectField
+          options={typeList}
+          label="Type"
+          onChange={(types: string[]) => setType(types)}
+        />
+        <MultipleSelectField
+          options={subtypeList}
+          label="Subtype"
+          onChange={(subtypes: string[]) => setSubType(subtypes)}
+        />
+        <StringSearchField
+          value={alignment}
+          sort={sort}
+          field={"alignment"}
+          label="Alignment"
+          onChange={(name: string, sort: { name: string; label: string; sort: number }) => {
+            setAlignment(name);
+            setSort(sort);
+          }}
+        />
+        <StringSearchField
+          value={speed}
+          sort={sort}
+          field={"speed"}
+          label="Speed"
+          onChange={(name: string, sort: { name: string; label: string; sort: number }) => {
+            setSpeed(name);
+            setSort(sort);
+          }}
+        />
+        <StringSearchField
+          value={skills}
+          sort={sort}
+          field={"skills"}
+          label="Skills"
+          onChange={(name: string, sort: { name: string; label: string; sort: number }) => {
+            setSkills(name);
+            setSort(sort);
+          }}
+        />
+        <StringSearchField
+          value={senses}
+          sort={sort}
+          field={"senses"}
+          label="Senses"
+          onChange={(name: string, sort: { name: string; label: string; sort: number }) => {
+            setSenses(name);
+            setSort(sort);
+          }}
+        />
+        <StringSearchField
+          value={lang}
+          sort={sort}
+          field={"lang"}
+          label="Languages"
+          onChange={(name: string, sort: { name: string; label: string; sort: number }) => {
+            setLang(name);
+            setSort(sort);
+          }}
+        />
+        <StringSearchField
+          value={dmgVulnerabilitie}
+          sort={sort}
+          field={"dmgVulnerabilitie"}
+          label="Vulnerabilities"
+          onChange={(name: string, sort: { name: string; label: string; sort: number }) => {
+            setDmgVulnerabilitie(name);
+            setSort(sort);
+          }}
+        />
+        <StringSearchField
+          value={dmgResistance}
+          sort={sort}
+          field={"dmgResistance"}
+          label="Resistances"
+          onChange={(name: string, sort: { name: string; label: string; sort: number }) => {
+            setDmgResistance(name);
+            setSort(sort);
+          }}
+        />
+        <StringSearchField
+          value={dmgImmunities}
+          sort={sort}
+          field={"dmgImmunities"}
+          label="Immunities"
+          onChange={(name: string, sort: { name: string; label: string; sort: number }) => {
+            setDmgImmunities(name);
+            setSort(sort);
+          }}
+        />
+        <StringSearchField
+          value={conImmunities}
+          sort={sort}
+          field={"conImmunities"}
+          label="Con. Immun."
+          onChange={(name: string, sort: { name: string; label: string; sort: number }) => {
+            setConImmunities(name);
+            setSort(sort);
+          }}
+        />
+        <StringSearchField
+          value={ablt}
+          sort={sort}
+          field={"ablt"}
+          label="Abilities"
+          onChange={(name: string, sort: { name: string; label: string; sort: number }) => {
+            setAblt(name);
+            setSort(sort);
+          }}
+        />
+        <StringSearchField
+          value={sAblt}
+          sort={sort}
+          field={"sAblt"}
+          label="Spezial Abilities"
+          onChange={(name: string, sort: { name: string; label: string; sort: number }) => {
+            setSAblt(name);
+            setSort(sort);
+          }}
+        />
+        <StringSearchField
+          value={lAblt}
+          sort={sort}
+          field={"lAblt"}
+          label="Legendary Abilities"
+          onChange={(name: string, sort: { name: string; label: string; sort: number }) => {
+            setLAblt(name);
+            setSort(sort);
+          }}
+        />
+        <StringSearchField
+          value={sources}
+          sort={sort}
+          field={"sources"}
+          label="Sources"
+          icon={faLink}
+          onChange={(name: string, sort: { name: string; label: string; sort: number }) => {
+            setSources(name);
+            setSort(sort);
+          }}
+        />
+        <IconButton onClick={() => search()} icon={faSearch} />
+        <IconButton onClick={() => reset()} icon={faRedoAlt} />
+
+        <SearchBar onClick={() => setOpen(!open)}>
+          <FontAwesomeIcon icon={faSearch} />
+        </SearchBar>
+      </Bar>
       <CreateButton onClick={() => createNewMonster()}>
-        <FontAwesomeIcon icon={faPlusCircle} /> Add Monster
+        <FontAwesomeIcon icon={faPlusCircle} />
       </CreateButton>
-    </Bar>
+      <ExportButton onClick={() => exportFiltered()}>
+        <FontAwesomeIcon icon={faFileExport} />
+      </ExportButton>
+    </>
   );
 };
 
 export default MonsterSearchBar;
-
-type SearchMode = {
-  open?: boolean;
-};
-
-const Bar = styled.div<SearchMode>`
-  position: absolute;
-  top: 50px;
-  left: 55px;
-  z-index: 900;
-
-  transition: transform 0.3s ease-in-out;
-  transform: ${({ open }) => (open ? "translateY(0)" : "translateY(-100%)")};
-
-  height: auto;
-  min-height: 30px;
-  min-width: calc(100% - 75px);
-  padding: 10px;
-  background: ${({ theme }) => theme.main.backgroundColor};
-  box-shadow: 0px 5px 5px 0px rgba(0, 0, 0, 0.75);
-  flex: 1 1;
-
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-start;
-  align-content: flex-start;
-`;
-
-const SearchBarButton = styled.button`
-  position: absolute;
-  bottom: -50px;
-  left: calc(50% - 130px);
-
-  background-color: ${({ theme }) => theme.buttons.backgroundColor};
-  color: ${({ theme }) => theme.buttons.color};
-  box-shadow: 0px 5px 5px 0px rgba(0, 0, 0, 0.75);
-  border: none;
-  border-radius: 5px;
-  padding 10px;
-  box-sizing:content-box;
-  width: 80px;
-  height: 20px;
-  line-height: 20px;
-  cursor: pointer;
-`;
-
-const CreateButton = styled(SearchBarButton)`
-  left: 50%;
-  width: 110px;
-  text-decoration: none;
-`;
