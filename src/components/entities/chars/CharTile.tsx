@@ -90,7 +90,6 @@ const Name = styled.div`
   font-size: 14px;
   text-align: center;
   border-radius: 5px;
-  box-shadow: inset 0 0 5px 0 rgba(0, 0, 0, 0.3);
 `;
 
 const PropWrapper = styled.div`
@@ -106,6 +105,7 @@ const PropRowWrapper = styled(PropWrapper)`
   padding: 0 0 5px 0;
   flex: 1 1 auto;
   width: 100%;
+  border-bottom: 1px solid ${({ theme }) => theme.main.backgroundColor};
 `;
 
 const RowProp = styled.div`
@@ -116,7 +116,6 @@ const RowProp = styled.div`
   padding: 10px;
   font-size: 12px;
   border-radius: 5px;
-  box-shadow: inset 0px 0px 5px 0px rgba(0, 0, 0, 0.3);
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
@@ -144,10 +143,7 @@ interface $ImageProps {
 
 const Image = ({ pic }: $ImageProps) => {
   if (pic !== "") {
-    return (
-      <ImgContainer pic={pic}>
-      </ImgContainer>
-    );
+    return <ImgContainer pic={pic}></ImgContainer>;
   } else {
     return <Empty />;
   }
@@ -169,7 +165,7 @@ const ImgContainer = styled.div<{ pic: string }>`
     top: -50%;
     left: -50%;
     z-index: -1;
-    background: url(${props => props.pic}) 0 0 no-repeat;
+    background: url(${(props) => props.pic}) 0 0 no-repeat;
     background-size: cover;
     transform: rotate(-45deg);
   }

@@ -99,7 +99,6 @@ const Rarity = styled.div<RarityType>`
   font-size: 12px;
   line-height: 30px;
   border-radius: 0px 0px 10px 0px;
-  box-shadow: inset -2px -2px 5px 0px rgba(0, 0, 0, 0.3);
   background-color: ${({ theme }) => theme.tile.backgroundColor};
   color: ${(props) => {
     const rarity = props.rarity?.toLowerCase().trim();
@@ -126,10 +125,8 @@ const Name = styled.div`
   margin: 5px;
   font-size: 14px;
   width: calc(100% - 30px);
-  color: var(--card-title-color);
+  color: ${({ theme }) => theme.tile.headerColor};
   text-align: center;
-  border-radius: 5px;
-  box-shadow: inset 0px 0px 5px 0px rgba(0, 0, 0, 0.3);
 `;
 
 const ImageName = styled.div`
@@ -139,10 +136,8 @@ const ImageName = styled.div`
   margin: 5px;
   font-size: 14px;
   width: calc(100% - 30px);
-  color: var(--card-title-color);
+  color: ${({ theme }) => theme.tile.headerColor};
   text-align: center;
-  border-radius: 50px 5px 5px 50px;
-  box-shadow: inset 0px 0px 5px 0px rgba(0, 0, 0, 0.3);
 `;
 
 const PropWrapper = styled.div`
@@ -163,7 +158,6 @@ const Prop = styled.div`
   padding: 10px;
   font-size: 12px;
   border-radius: 5px;
-  box-shadow: inset 0px 0px 5px 0px rgba(0, 0, 0, 0.3);
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
@@ -187,8 +181,6 @@ const Flag = styled.div`
   font-size: 12px;
   line-height: 30px;
   border-radius: 0px 0px 10px 10px;
-  box-shadow: inset 0px 0px 5px 0px rgba(0, 0, 0, 0.3);
-  background-color: ${({ theme }) => theme.tile.backgroundColor};
 `;
 
 const Icon = styled(FontAwesomeIcon)`

@@ -81,10 +81,9 @@ const Name = styled.div`
   margin: 5px;
   font-size: 14px;
   width: calc(100% - 30px);
-  color: var(--card-title-color);
+  color: ${({ theme }) => theme.tile.headerColor};
   text-align: center;
   border-radius: 5px;
-  box-shadow: inset 0px 0px 5px 0px rgba(0, 0, 0, 0.3);
 `;
 
 const ImageName = styled.div`
@@ -94,10 +93,9 @@ const ImageName = styled.div`
   margin: 5px;
   font-size: 14px;
   width: calc(100% - 30px);
-  color: var(--card-title-color);
+  color: ${({ theme }) => theme.tile.headerColor};
   text-align: center;
   border-radius: 50px 5px 5px 50px;
-  box-shadow: inset 0px 0px 5px 0px rgba(0, 0, 0, 0.3);
 `;
 
 const PropWrapper = styled.div`
@@ -118,7 +116,6 @@ const Prop = styled.div`
   padding: 10px;
   font-size: 12px;
   border-radius: 5px;
-  box-shadow: inset 0px 0px 5px 0px rgba(0, 0, 0, 0.3);
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;

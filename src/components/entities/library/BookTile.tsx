@@ -77,9 +77,9 @@ const Name = styled.div`
   padding: 10px;
   margin: 5px 5px 5px 0;
   font-size: 14px;
+  color: ${({ theme }) => theme.tile.headerColor};
   text-align: center;
   border-radius: 5px;
-  box-shadow: inset 0 0 5px 0 rgba(0, 0, 0, 0.3);
 `;
 
 const PropWrapper = styled.div`
@@ -105,7 +105,6 @@ const RowProp = styled.div`
   padding: 10px;
   font-size: 12px;
   border-radius: 5px;
-  box-shadow: inset 0px 0px 5px 0px rgba(0, 0, 0, 0.3);
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
