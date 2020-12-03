@@ -140,7 +140,7 @@ const Tooltip = styled.span`
   background-color: ${({ theme }) => theme.main.highlight};
   color: #fff;
   text-align: center;
-  border-radius: 6px;
+  border-radius: 10px;
   padding: 5px 0;
   position: absolute;
   z-index: 1;

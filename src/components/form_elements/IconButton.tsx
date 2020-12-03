@@ -43,7 +43,7 @@ const SimpleButton = styled.div`
   float: right;
   padding: 10px;
   margin: 5px;
-  border-radius: 5px;
+  border-radius: 10px;
   box-shadow: inset -2px -2px 5px 0px rgba(0, 0, 0, 0.3);
 
   transition: color 0.2s;
