@@ -42,7 +42,7 @@ const SimpleButton = styled.button`
   transition: color 0.2s;
 
   &:hover {
-    color: white;
+    color: ${({ theme }) => theme.buttons.hoverColor};
   }
 
   &:disabled {

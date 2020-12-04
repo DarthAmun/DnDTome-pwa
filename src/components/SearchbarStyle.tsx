@@ -76,7 +76,7 @@ export const CreateButton = styled.button`
     text-decoration: none;
   
     &:hover {
-      box-shadow: 0px 5px 5px 0px rgba(245, 92, 92, 0.75);
+      color: ${({ theme }) => theme.buttons.hoverColor};
     }
   `;
 

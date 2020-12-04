@@ -3,6 +3,7 @@ interface Theme {
     color: string;
     backgroundColor: string;
     disabled: string;
+    hoverColor: string;
     height: string;
   };
   input: {
@@ -18,7 +19,7 @@ interface Theme {
     backgroundColor: string;
     color: string;
     highlight: string;
-  }
+  };
   tile: {
     backgroundColor: string;
     backgroundColorLink: string;
@@ -49,6 +50,7 @@ export const lightTheme: Theme = {
     color: "white",
     backgroundColor: "#7033FF",
     disabled: "#E1D0E5",
+    hoverColor: "darkgrey",
     height: "20px",
   },
   input: {
@@ -95,6 +97,7 @@ export const darkTheme: Theme = {
     color: "#fff",
     backgroundColor: "#F55C5C",
     disabled: "#E1D0E5",
+    hoverColor: "#1F2340",
     height: "20px",
   },
   input: {
