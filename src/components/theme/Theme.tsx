@@ -97,7 +97,7 @@ export const darkTheme: Theme = {
     color: "#fff",
     backgroundColor: "#F55C5C",
     disabled: "#E1D0E5",
-    hoverColor: "#1F2340",
+    hoverColor: "#191D38",
     height: "20px",
   },
   input: {
@@ -105,17 +105,17 @@ export const darkTheme: Theme = {
     backgroundColor: "#1A1F3B",
   },
   main: {
-    backgroundColor: "#1F2340",
+    backgroundColor: "#191D38",
     color: "",
     highlight: "#F55C5C",
   },
   header: {
     color: "white",
-    backgroundColor: "#1F2340",
+    backgroundColor: "#191D38",
     highlight: "#8000ff",
   },
   tile: {
-    backgroundColor: "#191D38",
+    backgroundColor: "#1F2340",
     backgroundColorLink: "#E45D68",
     headerColor: "#CACBDB",
     color: "lightslategray",
