@@ -1,7 +1,7 @@
 import React, { ReactNode } from "react";
 import styled from "styled-components";
-import Header from "./Navigation/Header";
-import Navigation from "./Navigation/Navigation";
+import Header from "./navigation/Header";
+import Navigation from "./navigation/Navigation";
 
 interface $Props {
   children: ReactNode;
@@ -32,7 +32,7 @@ const App = styled.div`
 `;
 
 const Content = styled.div`
-  margin-left: 90px;
+  margin-left: 55px;
   width: 100%;
 
   @media (max-width: 576px) {
