@@ -10,7 +10,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import IconButton from "../../form_elements/IconButton";
 import NumberField from "../../form_elements/NumberField";
 import StringSearchField from "../../form_elements/StringSearchField";
-import { Bar, SearchBar, CreateButton } from "../../SearchbarStyle";
+import { Bar, SearchBar, CreateButton, LeftTooltip } from "../../SearchbarStyle";
 
 interface $Props {
   onSend: (filters: Filter[]) => void;
@@ -114,6 +114,7 @@ const LibrarySearchBar = ({ onSend }: $Props) => {
       </Bar>
       <CreateButton onClick={() => createNewBook()}>
         <FontAwesomeIcon icon={faPlusCircle} />
+        <LeftTooltip>Add new</LeftTooltip>
       </CreateButton>
     </>
   );

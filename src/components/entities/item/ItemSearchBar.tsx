@@ -22,7 +22,7 @@ import IconButton from "../../form_elements/IconButton";
 import CheckField from "../../form_elements/CheckField";
 import Item from "../../../data/Item";
 import StringSearchField from "../../form_elements/StringSearchField";
-import { Bar, SearchBar, CreateButton, ExportButton } from "../../SearchbarStyle";
+import { Bar, SearchBar, CreateButton, ExportButton, LeftTooltip } from "../../SearchbarStyle";
 
 interface $Props {
   onSend: (filters: Filter[]) => void;
@@ -215,9 +215,11 @@ const ItemSearchBar = ({ onSend }: $Props) => {
       </Bar>
       <CreateButton onClick={() => createNewItem()}>
         <FontAwesomeIcon icon={faPlusCircle} />
+        <LeftTooltip>Add new</LeftTooltip>
       </CreateButton>
       <ExportButton onClick={() => exportFiltered()}>
         <FontAwesomeIcon icon={faFileExport} />
+        <LeftTooltip>Export filtered</LeftTooltip>
       </ExportButton>
     </>
   );

@@ -9,7 +9,7 @@ import IconButton from "../../form_elements/IconButton";
 import Race from "../../../data/races/Race";
 import { createNewWithId, exportFilteredFromTable } from "../../../services/DatabaseService";
 import StringSearchField from "../../form_elements/StringSearchField";
-import { Bar, SearchBar, CreateButton, ExportButton } from "../../SearchbarStyle";
+import { Bar, SearchBar, CreateButton, ExportButton, LeftTooltip } from "../../SearchbarStyle";
 
 interface $Props {
   onSend: (filters: Filter[]) => void;
@@ -125,9 +125,11 @@ const RaceSearchBar = ({ onSend }: $Props) => {
       </Bar>
       <CreateButton onClick={() => createNewRace()}>
         <FontAwesomeIcon icon={faPlusCircle} />
+        <LeftTooltip>Add new</LeftTooltip>
       </CreateButton>
       <ExportButton onClick={() => exportFiltered()}>
         <FontAwesomeIcon icon={faFileExport} />
+        <LeftTooltip>Export filtered</LeftTooltip>
       </ExportButton>
     </>
   );

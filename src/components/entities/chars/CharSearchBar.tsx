@@ -14,7 +14,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import IconButton from "../../form_elements/IconButton";
 import StringSearchField from "../../form_elements/StringSearchField";
 import { exportFilteredFromTable } from "../../../services/DatabaseService";
-import { Bar, SearchBar, CreateButton, ExportButton } from "../../SearchbarStyle";
+import { Bar, SearchBar, CreateButton, ExportButton, LeftTooltip } from "../../SearchbarStyle";
 
 interface $Props {
   onSend: (filters: Filter[]) => void;
@@ -113,9 +113,11 @@ const CharSearchBar = ({ onSend }: $Props) => {
       </Bar>
       <CreateButton onClick={() => createNewChar()}>
         <FontAwesomeIcon icon={faPlusCircle} />
+        <LeftTooltip>Add new</LeftTooltip>
       </CreateButton>
       <ExportButton onClick={() => exportFiltered()}>
         <FontAwesomeIcon icon={faFileExport} />
+        <LeftTooltip>Export filtered</LeftTooltip>
       </ExportButton>
     </>
   );

@@ -4,6 +4,51 @@ type SearchMode = {
   open?: boolean;
 };
 
+const Tooltip = styled.span`
+  visibility: hidden;
+  width: 120px;
+  font-size: 16px;
+  background-color: ${({ theme }) => theme.main.highlight};
+  color: #fff;
+  text-align: center;
+  border-radius: 10px;
+  padding: 5px 0;
+  position: absolute;
+  z-index: 1;
+  opacity: 0.6;
+  transition: 0.3s;
+`;
+
+export const LeftTooltip = styled(Tooltip)`
+  right: 150%;
+
+  &::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 100%;
+    margin-top: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent transparent transparent ${({ theme }) => theme.main.highlight};
+  }
+`;
+
+export const RightTooltip = styled(Tooltip)`
+  left: 150%;
+
+  &::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    right: 100%;
+    margin-top: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent ${({ theme }) => theme.main.highlight} transparent transparent;
+  }
+`;
+
 export const Bar = styled.div<SearchMode>`
   position: absolute;
   top: 40px;
@@ -77,6 +122,10 @@ export const CreateButton = styled.button`
   
     &:hover {
       color: ${({ theme }) => theme.buttons.hoverColor};
+      ${LeftTooltip} {
+        opacity: 1;
+        visibility: visible;
+      }
     }
   `;
 

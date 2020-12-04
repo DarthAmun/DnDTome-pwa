@@ -21,6 +21,7 @@ import {
   GiBookmarklet,
 } from "react-icons/gi";
 import { BiSelectMultiple } from "react-icons/bi";
+import { RightTooltip } from "../SearchbarStyle";
 
 interface $Props {
   open: boolean;
@@ -38,7 +39,7 @@ const NavMenu = ({ open }: $Props) => {
         }
       >
         <FontAwesomeIcon icon={faHome} />
-        <Tooltip>Home</Tooltip>
+        <RightTooltip>Home</RightTooltip>
       </Link>
       <Seperator />
       <Link
@@ -46,49 +47,49 @@ const NavMenu = ({ open }: $Props) => {
         className={location.pathname === "/spell-overview" ? "menuItemActiv" : ""}
       >
         <FontAwesomeIcon icon={faMeteor} />
-        <Tooltip>Spells</Tooltip>
+        <RightTooltip>Spells</RightTooltip>
       </Link>
       <Link
         to="/item-overview"
         className={location.pathname === "/item-overview" ? "menuItemActiv" : ""}
       >
         <GiCrystalWand />
-        <Tooltip>Magic Items</Tooltip>
+        <RightTooltip>Magic Items</RightTooltip>
       </Link>
       <Link
         to="/gear-overview"
         className={location.pathname === "/gear-overview" ? "menuItemActiv" : ""}
       >
         <GiBackpack />
-        <Tooltip>Gear</Tooltip>
+        <RightTooltip>Gear</RightTooltip>
       </Link>
       <Link
         to="/race-overview"
         className={location.pathname === "/race-overview" ? "menuItemActiv" : ""}
       >
         <GiWomanElfFace />
-        <Tooltip>Races</Tooltip>
+        <RightTooltip>Races</RightTooltip>
       </Link>
       <Link
         to="/class-overview"
         className={location.pathname === "/class-overview" ? "menuItemActiv" : ""}
       >
         <GiPlagueDoctorProfile />
-        <Tooltip>Classes</Tooltip>
+        <RightTooltip>Classes</RightTooltip>
       </Link>
       <Link
         to="/selection-overview"
         className={location.pathname === "/selection-overview" ? "menuItemActiv" : ""}
       >
         <BiSelectMultiple />
-        <Tooltip>Selections</Tooltip>
+        <RightTooltip>Selections</RightTooltip>
       </Link>
       <Link
         to="/char-overview"
         className={location.pathname === "/char-overview" ? "menuItemActiv" : ""}
       >
         <FontAwesomeIcon icon={faIdCard} />
-        <Tooltip>Chars</Tooltip>
+        <RightTooltip>Chars</RightTooltip>
       </Link>
       <Seperator />
       <Link
@@ -96,14 +97,14 @@ const NavMenu = ({ open }: $Props) => {
         className={location.pathname === "/monster-overview" ? "menuItemActiv" : ""}
       >
         <FontAwesomeIcon icon={faDragon} />
-        <Tooltip>Monsters</Tooltip>
+        <RightTooltip>Monsters</RightTooltip>
       </Link>
       <Link
         to="/encounter-overview"
         className={location.pathname === "/encounter-overview" ? "menuItemActiv" : ""}
       >
         <GiSwordClash />
-        <Tooltip>Encounters</Tooltip>
+        <RightTooltip>Encounters</RightTooltip>
       </Link>
       <Seperator />
       <Link
@@ -111,54 +112,27 @@ const NavMenu = ({ open }: $Props) => {
         className={location.pathname === "/randomTable-overview" ? "menuItemActiv" : ""}
       >
         <FontAwesomeIcon icon={faTable} />
-        <Tooltip>Random Tables</Tooltip>
+        <RightTooltip>Random Tables</RightTooltip>
       </Link>
       <Seperator />
       <Link to="/library" className={location.pathname === "/library" ? "menuItemActiv" : ""}>
         <GiBookmarklet />
-        <Tooltip>Library</Tooltip>
+        <RightTooltip>Library</RightTooltip>
       </Link>
       <Seperator />
       <Link to="/statistics" className={location.pathname === "/statistics" ? "menuItemActiv" : ""}>
         <FontAwesomeIcon icon={faChartPie} />
-        <Tooltip>Statistics</Tooltip>
+        <RightTooltip>Statistics</RightTooltip>
       </Link>
       <Link to="/options" className={location.pathname === "/options" ? "menuItemActiv" : ""}>
         <FontAwesomeIcon icon={faCog} />
-        <Tooltip>Options</Tooltip>
+        <RightTooltip>Options</RightTooltip>
       </Link>
     </Menu>
   );
 };
 
 export default NavMenu;
-
-const Tooltip = styled.span`
-  visibility: hidden;
-  width: 120px;
-  font-size: 16px;
-  background-color: ${({ theme }) => theme.main.highlight};
-  color: #fff;
-  text-align: center;
-  border-radius: 10px;
-  padding: 5px 0;
-  position: absolute;
-  z-index: 1;
-  left: 150%;
-  opacity: 0.6;
-  transition: 0.3s;
-
-  &::after {
-    content: "";
-    position: absolute;
-    top: 50%;
-    right: 100%;
-    margin-top: -5px;
-    border-width: 5px;
-    border-style: solid;
-    border-color: transparent ${({ theme }) => theme.main.highlight} transparent transparent;
-  }
-`;
 
 type MenuType = {
   open?: boolean;
@@ -211,7 +185,7 @@ export const Menu = styled.div<MenuType>`
 
   a:hover {
     color: ${({ theme }) => theme.tile.color};
-    ${Tooltip} {
+    ${RightTooltip} {
       opacity: 1;
       visibility: visible;
     }

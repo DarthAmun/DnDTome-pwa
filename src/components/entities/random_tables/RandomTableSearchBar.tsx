@@ -9,7 +9,7 @@ import { faSearch, faRedoAlt, faPlusCircle, faFileExport } from "@fortawesome/fr
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import IconButton from "../../form_elements/IconButton";
 import StringSearchField from "../../form_elements/StringSearchField";
-import { Bar, SearchBar, CreateButton, ExportButton } from "../../SearchbarStyle";
+import { Bar, SearchBar, CreateButton, ExportButton, LeftTooltip } from "../../SearchbarStyle";
 
 interface $Props {
   onSend: (filters: Filter[]) => void;
@@ -98,9 +98,11 @@ const RandomTableSearchBar = ({ onSend }: $Props) => {
       </Bar>
       <CreateButton onClick={() => createNewRandomTable()}>
         <FontAwesomeIcon icon={faPlusCircle} />
+        <LeftTooltip>Add new</LeftTooltip>
       </CreateButton>
       <ExportButton onClick={() => exportFiltered()}>
         <FontAwesomeIcon icon={faFileExport} />
+        <LeftTooltip>Export filtered</LeftTooltip>
       </ExportButton>
     </>
   );

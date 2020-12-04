@@ -16,7 +16,7 @@ import RandomTableEditView from "./RandomTableEditView";
 import BackButton from "../../../form_elements/BackButton";
 import IconButton from "../../../form_elements/IconButton";
 import Dialog from "../../../general_elements/Dialog";
-import { EditToggle, ToggleLeft, ToggleRight } from "../../../general_elements/Toggle";
+import { EditToggle, ToggleLeft, ToggleRight } from "../../../general_elements/ToggleStyle";
 
 interface $Props {
   randomTable: RandomTable;

@@ -24,7 +24,7 @@ import MultipleSelectField from "../../form_elements/MultipleSelectField";
 import IconButton from "../../form_elements/IconButton";
 import Gear from "../../../data/Gear";
 import StringSearchField from "../../form_elements/StringSearchField";
-import { Bar, SearchBar, CreateButton, ExportButton } from "../../SearchbarStyle";
+import { Bar, SearchBar, CreateButton, ExportButton, LeftTooltip } from "../../SearchbarStyle";
 
 interface $Props {
   onSend: (filters: Filter[]) => void;
@@ -228,9 +228,11 @@ const GearSearchBar = ({ onSend }: $Props) => {
       </Bar>
       <CreateButton onClick={() => createNewGear()}>
         <FontAwesomeIcon icon={faPlusCircle} />
+        <LeftTooltip>Add new</LeftTooltip>
       </CreateButton>
       <ExportButton onClick={() => exportFiltered()}>
         <FontAwesomeIcon icon={faFileExport} />
+        <LeftTooltip>Export filtered</LeftTooltip>
       </ExportButton>
     </>
   );

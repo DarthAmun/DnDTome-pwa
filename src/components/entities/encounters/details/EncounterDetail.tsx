@@ -16,7 +16,7 @@ import BackButton from "../../../form_elements/BackButton";
 import IconButton from "../../../form_elements/IconButton";
 import EncounterEditView from "./EncounterEditView";
 import EncounterView from "./EncounterView";
-import { EditToggle, ToggleLeft, ToggleRight } from "../../../general_elements/Toggle";
+import { EditToggle, ToggleLeft, ToggleRight } from "../../../general_elements/ToggleStyle";
 
 interface $Props {
   encounter: Encounter;

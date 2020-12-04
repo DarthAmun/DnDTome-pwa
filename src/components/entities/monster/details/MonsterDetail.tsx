@@ -16,7 +16,7 @@ import IconButton from "../../../form_elements/IconButton";
 import { remove, updateWithCallback } from "../../../../services/DatabaseService";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Dialog from "../../../general_elements/Dialog";
-import { EditToggle, ToggleLeft, ToggleRight } from "../../../general_elements/Toggle";
+import { EditToggle, ToggleLeft, ToggleRight } from "../../../general_elements/ToggleStyle";
 
 interface $Props {
   monster: Monster;

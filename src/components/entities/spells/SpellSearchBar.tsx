@@ -27,7 +27,7 @@ import StringSearchField from "../../form_elements/StringSearchField";
 import CheckField from "../../form_elements/CheckField";
 import IconButton from "../../form_elements/IconButton";
 import Spell from "../../../data/Spell";
-import { Bar, FieldGroup, SearchBar, CreateButton, ExportButton } from "../../SearchbarStyle";
+import { Bar, FieldGroup, SearchBar, CreateButton, ExportButton, LeftTooltip } from "../../SearchbarStyle";
 
 interface $Props {
   onSend: (filters: Filter[]) => void;
@@ -288,13 +288,14 @@ const SpellSearchBar = ({ onSend }: $Props) => {
       </Bar>
       <CreateButton onClick={() => createNewSpell()}>
         <FontAwesomeIcon icon={faPlusCircle} />
+        <LeftTooltip>Add new</LeftTooltip>
       </CreateButton>
       <ExportButton onClick={() => exportFiltered()}>
         <FontAwesomeIcon icon={faFileExport} />
+        <LeftTooltip>Export filtered</LeftTooltip>
       </ExportButton>
     </>
   );
 };
 
 export default SpellSearchBar;
-
