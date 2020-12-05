@@ -217,15 +217,23 @@ export const import5eToolsSpellsFiles = (
 
             let range = "";
             if (obj.range !== undefined) {
-              range =
-                obj.range.type +
-                " " +
-                (obj.distance
-                  ? obj.range.distance.typ +
-                    " " +
-                    (obj.range.distance.amount ? obj.range.distance.amount : "")
-                  : "");
+              if (obj.range.type === "point") {
+                range =
+                  (obj.range.distance.amount ? obj.range.distance.amount : "") +
+                  " " +
+                  obj.range.distance.type;
+              } else if (obj.range.type === "special") {
+                range = obj.range.type;
+              } else {
+                range =
+                  (obj.range.distance.amount ? obj.range.distance.amount : "") +
+                  " " +
+                  obj.range.distance.type +
+                  " " +
+                  obj.range.type;
+              }
             }
+            range = range.trim();
 
             let components = "";
             if (obj.components !== undefined) {

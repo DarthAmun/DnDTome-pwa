@@ -462,7 +462,7 @@ const CharEditView = ({ character, onEdit }: $Props) => {
             />
             <NumberField
               value={buildChar.character.wis}
-              label="Wisdome"
+              label="Wisdom"
               onChange={(wis) => onEdit({ ...buildChar.character, wis: wis })}
             />
             <NumberField

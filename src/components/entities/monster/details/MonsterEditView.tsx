@@ -86,7 +86,7 @@ const MonsterEditView = ({ monster, onEdit }: $Props) => {
         <FieldGroup>
           <NumberField
             value={monster.wis}
-            label="Wisdome"
+            label="Wisdom"
             onChange={(wis) => onEdit({ ...monster, wis: wis })}
           />
           <NumberField

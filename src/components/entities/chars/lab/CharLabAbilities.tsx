@@ -191,7 +191,7 @@ const CharLabAbilities = ({ char, onChange, completed }: $Props) => {
           />
           <NumberField
             value={char.wis}
-            label="Wisdome"
+            label="Wisdom"
             onChange={(wis) => onChange({ ...char, wis: wis })}
           />
           <NumberField
