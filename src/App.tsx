@@ -1,6 +1,8 @@
 import React from "react";
 import { MemoryRouter, Switch, Route } from "react-router";
-
+import CampaignOverview from "./components/entities/campaigns/CampaignOverview";
+import IdToCampaign from "./components/entities/campaigns/details/link_wrapper/IdToCampaign";
+import NameToCampaign from "./components/entities/campaigns/details/link_wrapper/NameToCampaign";
 import CharOverview from "./components/entities/chars/CharOverview";
 import IdToChar from "./components/entities/chars/details/link_wrapper/IdToChar";
 import NameToChar from "./components/entities/chars/details/link_wrapper/NameToChar";
@@ -50,7 +52,7 @@ const App = () => {
     <MyThemeProvider>
       <MemoryRouter>
         <Switch>
-          <Route exact path="/" component={Home}></Route>
+          <Route exact path="/" component={CampaignOverview}></Route>
           <Route exact path="/home" component={Home}></Route>
           <Route path="/spell-detail/name/:name" component={NameToSpell}></Route>
           <Route path="/spell-detail/id/:id" component={IdToSpell}></Route>
@@ -89,6 +91,9 @@ const App = () => {
           <Route path="/randomTable-detail/name/:name" component={NameToRandomTable}></Route>
           <Route path="/randomTable-detail/id/:id" component={IdToRandomTable}></Route>
           <Route path="/randomTable-overview" component={RandomTableOverview}></Route>
+          <Route path="/campaign-detail/name/:name" component={NameToCampaign}></Route>
+          <Route path="/campaign-detail/id/:id" component={IdToCampaign}></Route>
+          <Route path="/campaign-overview" component={CampaignOverview}></Route>
           <Route path="/statistics" component={Statistics}></Route>
           <Route path="/options" component={Options}></Route>
           <Route path="/library" component={Library}></Route>

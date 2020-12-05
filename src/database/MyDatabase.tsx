@@ -1,5 +1,6 @@
 import Dexie from "dexie";
 import Book from "../data/Book";
+import Campaign from "../data/campaign/Campaign";
 import Char from "../data/chars/Char";
 import Class from "../data/classes/Class";
 import Subclass from "../data/classes/Subclass";
@@ -27,6 +28,7 @@ export class MyAppDatabase extends Dexie {
   books: Dexie.Table<Book, number>; // number = type of the primkey
   selections: Dexie.Table<Selection, number>; // number = type of the primkey
   randomTables: Dexie.Table<RandomTable, number>; // number = type of the primkey
+  campaigns: Dexie.Table<Campaign, number>; // number = type of the primkey
 
   constructor() {
     super("DnDTomeDB");
@@ -217,6 +219,28 @@ export class MyAppDatabase extends Dexie {
       selections: "++id, name, selectionOptions, filename",
       randomTables: "++id, name, rows, header, filename",
     });
+    this.version(14).stores({
+      spells:
+        "++id, name, classes, sources, level, school, time, range, components, duration, ritual, text, pic, filename",
+      items:
+        "++id, name, sources, pic, description, type, rarity, attunment, magicBonus, base, filename",
+      gears:
+        "++id, name, sources, pic, description, type, cost, damage, weight, properties, filename",
+      monsters:
+        "++id, name, type, subtype, cr, ac, hp, str, dex, con, int, wis, cha, senses, lang, speed, source, skills, savingThrows, dmgImmunities, dmgResistance, dmgVulnerabilitie, conImmunities, sAblt, ablt, lAblt, pic, size, alignment",
+      races:
+        "++id, name, abilityScores, age, alignment, size, speed, lang, traits, sources, pic, filename",
+      subraces: "++id, name, type, abilityScores, traits, sources, filename",
+      classes: "++id, name, featureSets, hitDice, proficiencies, equipment, sources, pic, filename",
+      subclasses: "++id, name, type, features, sources, filename",
+      chars:
+        "++id, name, player, pic, classes, race, background, spells, spellSlots, activeSelections, items, monsters, ac, hp, currentHp, init, speed, str, dex, con, int, wis, cha, saves, actions, bonusActions, reactions, profsLangs, senses, money, skills, spellNotes, alignment, inspiration, castingHit, castingDC",
+      encounters: "++id, name, monsters, players",
+      books: "++id, name, cover, data, pages, tags",
+      selections: "++id, name, selectionOptions, filename",
+      randomTables: "++id, name, rows, header, filename",
+      campaigns: "++id, name, pic, description, world, quests, events, notes, sources, filename",
+    });
 
     this.spells = this.table("spells");
     this.items = this.table("items");
@@ -231,5 +255,6 @@ export class MyAppDatabase extends Dexie {
     this.books = this.table("books");
     this.selections = this.table("selections");
     this.randomTables = this.table("randomTables");
+    this.campaigns = this.table("campaigns");
   }
 }
