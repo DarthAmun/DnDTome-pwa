@@ -50,7 +50,7 @@ export const RightTooltip = styled(Tooltip)`
 `;
 
 export const Bar = styled.div<SearchMode>`
-  position: absolute;
+  position: fixed;
   top: 40px;
   left: 55px;
   z-index: 900;

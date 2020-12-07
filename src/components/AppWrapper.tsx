@@ -1,4 +1,5 @@
-import React, { ReactNode } from "react";
+import React, { ReactNode, useState } from "react";
+import { useSwipeable } from "react-swipeable";
 import styled from "styled-components";
 import Header from "./navigation/Header";
 import Navigation from "./navigation/Navigation";
@@ -8,10 +9,27 @@ interface $Props {
 }
 
 const AppWrapper = ({ children }: $Props) => {
+  const [isMenuOpen, setMenuOpen] = useState<number>(0);
+  const moveNav = (mode: string) => {
+    if (mode === "open") {
+      setMenuOpen(1);
+    } else {
+      setMenuOpen(2);
+    }
+    setTimeout(() => {
+      setMenuOpen(0);
+    }, 50);
+  };
+
+  const handlers = useSwipeable({
+    onSwipedRight: () => moveNav("open"),
+    onSwipedLeft: () => moveNav("close"),
+  });
+
   return (
-    <App>
+    <App {...handlers}>
       <Header />
-      <Navigation />
+      <Navigation navMode={isMenuOpen} />
       <Content>{children}</Content>
     </App>
   );

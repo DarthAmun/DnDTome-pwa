@@ -1,16 +1,25 @@
-import React, { useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import NavButton from "./NavButton";
 import NavMenu from "./NavMenu";
-import { useOnClickOutside } from "../../hooks/MenuCloseHook";
 
-const Navigation = () => {
+interface $Props {
+  navMode: number;
+}
+
+const Navigation = ({ navMode }: $Props) => {
   const [open, setOpen] = useState(false);
-  const node = useRef<HTMLDivElement>(null);
-  useOnClickOutside(node, () => setOpen(false));
+
+  useEffect(() => {
+    if (navMode === 1) {
+      setOpen(true);
+    } else if (navMode === 2) {
+      setOpen(false);
+    }
+  }, [navMode]);
 
   return (
-    <Nav ref={node}>
+    <Nav>
       <NavButton open={open} setOpen={setOpen} />
       <NavMenu open={open} />
     </Nav>
