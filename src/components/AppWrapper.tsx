@@ -50,7 +50,7 @@ const App = styled.div`
 `;
 
 const Content = styled.div`
-  margin-left: 55px;
+  margin-left: 105px;
   width: 100%;
 
   @media (max-width: 576px) {

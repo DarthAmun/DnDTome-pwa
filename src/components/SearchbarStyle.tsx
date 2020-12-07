@@ -52,7 +52,7 @@ export const RightTooltip = styled(Tooltip)`
 export const Bar = styled.div<SearchMode>`
   position: fixed;
   top: 40px;
-  left: 55px;
+  left: 100px;
   z-index: 900;
 
   transition: transform 0.3s ease-in-out;
@@ -60,8 +60,8 @@ export const Bar = styled.div<SearchMode>`
 
   height: auto;
   min-height: 30px;
-  min-width: calc(100% - 75px);
-  padding: 20px 10px 10px 10px;
+  min-width: calc(100% - 120px);
+  padding: 10px 10px 10px 10px;
   background: ${({ theme }) => theme.main.backgroundColor};
   box-shadow: 0px 5px 5px 0px rgba(0, 0, 0, 0.25);
   flex: 1 1;

@@ -1,13 +1,13 @@
 import React from "react";
-import { GiRuleBook } from "react-icons/gi";
 import styled from "styled-components";
 import packageJson from "../../../package.json";
+import LogoImg from "../../logo192.png";
 
 const Header = () => {
   return (
     <Bar>
       <NameWrapper>
-        <GiRuleBook />
+        <Logo src={LogoImg} />
         <Name>DnDTome</Name>
       </NameWrapper>
       <HomeCredits>v{packageJson.version}</HomeCredits>
@@ -63,4 +63,9 @@ const HomeCredits = styled.div`
   text-shadow: none;
   line-height: 30px;
   text-align: center;
+`;
+
+const Logo = styled.img`
+  height: 30px;
+  float: left;
 `;
