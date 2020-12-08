@@ -61,10 +61,11 @@ export const Bar = styled.div<SearchMode>`
   height: auto;
   min-height: 30px;
   min-width: calc(100% - 120px);
+  max-height: calc(100vh - 60px);
   padding: 10px 10px 10px 10px;
   background: ${({ theme }) => theme.main.backgroundColor};
   box-shadow: 0px 5px 5px 0px rgba(0, 0, 0, 0.25);
-  flex: 1 1;
+  overflow-y: scroll;
 
   display: flex;
   flex-wrap: wrap;
@@ -80,7 +81,7 @@ export const Bar = styled.div<SearchMode>`
 export const SearchBar = styled.div<SearchMode>`
   position: absolute;
   bottom: -35px;
-  left: calc(50% - 50px);
+  left: calc(50% - 17px);
 
   height: 40px;
   width: 40px;

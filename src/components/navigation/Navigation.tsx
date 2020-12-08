@@ -1,23 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import styled from "styled-components";
 import NavButton from "./NavButton";
 import NavMenu from "./NavMenu";
 
 interface $Props {
-  navMode: number;
+  open: boolean;
+  setOpen: (value: boolean) => void;
 }
 
-const Navigation = ({ navMode }: $Props) => {
-  const [open, setOpen] = useState(false);
-
-  useEffect(() => {
-    if (navMode === 1) {
-      setOpen(true);
-    } else if (navMode === 2) {
-      setOpen(false);
-    }
-  }, [navMode]);
-
+const Navigation = ({ open, setOpen }: $Props) => {
   return (
     <Nav>
       <NavButton open={open} setOpen={setOpen} />

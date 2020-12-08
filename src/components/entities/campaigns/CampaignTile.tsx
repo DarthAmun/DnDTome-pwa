@@ -25,22 +25,16 @@ const CampaignTile = ({ campaign }: $Props) => {
   return (
     <Tile to={"/campaign-detail/id/" + campaign.id}>
       <Suspense fallback={<LoadingSpinner />}>
-        {getPicture() !== "" ? (
-          <ImageName>
-            <Image pic={getPicture()}></Image>
-            <b>{campaign.name}</b>
-          </ImageName>
-        ) : (
+        {getPicture() !== "" ? <Image pic={getPicture()}></Image> : ""}
+
+        <PropWrapper>
           <Name>
             <b>{campaign.name}</b>
           </Name>
-        )}
-
-        <PropWrapper>
-          <WideProp>
+          <Text>
             <PropTitle>Description</PropTitle>
             {campaign.description}
-          </WideProp>
+          </Text>
           <WideProp>
             <Icon icon={faLink} />
             {campaign.sources}
@@ -62,6 +56,13 @@ const Tile = styled(Link)`
   box-shadow: ${({ theme }) => theme.tile.boxShadow};
   overflow: hidden;
   cursor: pointer;
+  text-decoration: none;
+
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
 `;
 
 const Name = styled.div`
@@ -74,18 +75,6 @@ const Name = styled.div`
   color: ${({ theme }) => theme.tile.headerColor};
   text-align: center;
   border-radius: 5px;
-`;
-
-const ImageName = styled.div`
-  height: 30px;
-  float: left;
-  padding: 10px;
-  margin: 0 5px 5px 5px;
-  font-size: 14px;
-  width: calc(100% - 30px);
-  color: ${({ theme }) => theme.tile.headerColor};
-  text-align: center;
-  border-radius: 50px 5px 5px 50px;
 `;
 
 const PropWrapper = styled.div`
@@ -128,6 +117,17 @@ const WideProp = styled(Prop)`
   width: calc(100% - 20px);
 `;
 
+const Text = styled.div`
+  height: auto;
+  width: calc(100% - 30px);
+  margin: 10px 5px 5px 5px;
+  float: left;
+  line-height: 18px;
+  padding: 10px;
+  border-radius: 5px;
+  background-color: ${({ theme }) => theme.tile.backgroundColor};
+`;
+
 const Icon = styled(FontAwesomeIcon)`
   margin-right: 5px;
   width: 20px;
@@ -141,29 +141,32 @@ interface $ImageProps {
 }
 
 const Image = ({ pic }: $ImageProps) => {
-  const style = {
-    backgroundImage: `url(${pic})`,
-    backgroundPosition: "center",
-    backgroundSize: "cover",
-    backgroundRepeat: "no-repeat",
-  };
-
   if (pic !== "") {
-    return <ImageElm style={style}></ImageElm>;
+    return <ImgContainer pic={pic}></ImgContainer>;
   } else {
     return <Empty />;
   }
 };
 
-const ImageElm = styled.div`
-  margin: -10px 5px -10px -10px;
-  height: 47px;
-  width: 47px;
-  float: left;
-  border-radius: 100px;
-  border: 3px solid ${({ theme }) => theme.main.highlight};
-  box-shadow: 0px 0px 10px 0px rgba(172, 172, 172, 0.2);
-  background-color: white;
+const ImgContainer = styled.div<{ pic: string }>`
+  margin: 30px;
+  width: 100px;
+  height: 100px;
+  border: 2px double ${({ theme }) => theme.main.highlight};
+  transform: rotate(45deg);
   overflow: hidden;
+
+  &::before {
+    content: "";
+    position: absolute;
+    width: 200%;
+    height: 200%;
+    top: -50%;
+    left: -50%;
+    z-index: -1;
+    background: url(${(props) => props.pic}) 0 0 no-repeat;
+    background-size: cover;
+    transform: rotate(-45deg);
+  }
 `;
 const Empty = styled.div``;

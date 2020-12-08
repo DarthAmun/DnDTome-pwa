@@ -79,7 +79,7 @@ const MonsterOverview = () => {
 export default MonsterOverview;
 
 const MonsterContainer = styled(InfiniteScroll)`
-  margin-top: 50px;
+  margin-top: 20px;
   width: 100%;
   flex-basis: 100%;
   display: flex;

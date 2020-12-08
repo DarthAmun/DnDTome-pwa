@@ -9,16 +9,14 @@ interface $Props {
 }
 
 const AppWrapper = ({ children }: $Props) => {
-  const [isMenuOpen, setMenuOpen] = useState<number>(0);
+  const [open, setOpen] = useState(false);
+
   const moveNav = (mode: string) => {
     if (mode === "open") {
-      setMenuOpen(1);
+      setOpen(true);
     } else {
-      setMenuOpen(2);
+      setOpen(false);
     }
-    setTimeout(() => {
-      setMenuOpen(0);
-    }, 50);
   };
 
   const handlers = useSwipeable({
@@ -29,13 +27,17 @@ const AppWrapper = ({ children }: $Props) => {
   return (
     <App {...handlers}>
       <Header />
-      <Navigation navMode={isMenuOpen} />
-      <Content>{children}</Content>
+      <Navigation open={open} setOpen={setOpen} />
+      <Content open={open}>{children}</Content>
     </App>
   );
 };
 
 export default AppWrapper;
+
+type MenuType = {
+  open?: boolean;
+};
 
 const App = styled.div`
   padding-top: 4rem;
@@ -47,9 +49,10 @@ const App = styled.div`
   flex-wrap: no-wrap;
   align-items: flex-start;
   align-content: flex-start;
+  overflow-x: hidden;
 `;
 
-const Content = styled.div`
+const Content = styled.div<MenuType>`
   margin-left: 105px;
   width: 100%;
 
