@@ -6,6 +6,7 @@ export default class Campaign implements IEntity {
   name: string;
   pic: string;
   description: string;
+  players: string[];
   //world: World;
   //quests: Quest[];
   //events: Event[];
@@ -18,6 +19,7 @@ export default class Campaign implements IEntity {
     name?: string,
     pic?: string,
     description?: string,
+    players?: string[],
     sources?: string,
     filename?: string
   ) {
@@ -25,6 +27,7 @@ export default class Campaign implements IEntity {
     this.name = name || "";
     this.pic = pic || "";
     this.description = description || "";
+    this.players = players || [];
     this.sources = sources || "";
     this.filename = filename || "";
   }
@@ -34,9 +37,10 @@ export function isCampaign(arg: any): arg is Campaign {
   const nameCheck = arg.name !== undefined && typeof arg.name == "string";
   const picCheck = arg.pic !== undefined && typeof arg.pic == "string";
   const descriptionCheck = arg.description !== undefined && typeof arg.description == "string";
+  const playersCheck = arg.players !== undefined && Array.isArray(arg.players);
   const sourcesCheck = arg.sources !== undefined && typeof arg.sources == "string";
 
-  return arg && nameCheck && picCheck && descriptionCheck && sourcesCheck;
+  return arg && nameCheck && picCheck && descriptionCheck && playersCheck && sourcesCheck;
 }
 
 export function findCampaignFormattError(

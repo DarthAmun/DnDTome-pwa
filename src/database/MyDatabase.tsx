@@ -239,7 +239,7 @@ export class MyAppDatabase extends Dexie {
       books: "++id, name, cover, data, pages, tags",
       selections: "++id, name, selectionOptions, filename",
       randomTables: "++id, name, rows, header, filename",
-      campaigns: "++id, name, pic, description, world, quests, events, notes, sources, filename",
+      campaigns: "++id, name, pic, description, world, quests, events, notes, players, sources, filename",
     });
 
     this.spells = this.table("spells");

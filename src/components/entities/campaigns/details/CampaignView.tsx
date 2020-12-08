@@ -1,10 +1,14 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import Campaign from "../../../../data/campaign/Campaign";
 import { faLink } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import TabBar from "../../../general_elements/TabBar";
 import { LoadingSpinner } from "../../../Loading";
+import CharTile from "../../chars/CharTile";
+import BuildCampaign from "../../../../data/campaign/BuildCampaign";
+import { buildCampaign } from "../../../../services/CampaignService";
+import Char from "../../../../data/chars/Char";
 
 interface $Props {
   campaign: Campaign;
@@ -13,8 +17,16 @@ interface $Props {
 
 const CampaignView = ({ campaign, onEdit }: $Props) => {
   const [loading, setLoading] = useState<boolean>(false);
-  const [tabs, setTabs] = useState<string[]>(["General", "Notes"]);
+  const [loadedCampaign, setLoadedCampaign] = useState<BuildCampaign>(new BuildCampaign());
+  const [tabs, setTabs] = useState<string[]>(["General", "Players", "Notes"]);
   const [activeTab, setTab] = useState<string>("General");
+
+  useEffect(() => {
+    buildCampaign(campaign).then((buildCampaign) => {
+      setLoadedCampaign(buildCampaign);
+      setLoading(false);
+    });
+  }, [campaign, setLoadedCampaign]);
 
   const getPicture = useCallback(() => {
     if (campaign !== undefined) {
@@ -29,17 +41,17 @@ const CampaignView = ({ campaign, onEdit }: $Props) => {
   return (
     <>
       {loading && <LoadingSpinner />}
-      {!loading && (
+      {!loading && loadedCampaign && (
         <CenterWrapper>
           <View>
             {getPicture() !== "" ? (
               <ImageName>
                 <Image pic={getPicture()}></Image>
-                <b>{campaign.name}</b>
+                <b>{loadedCampaign.campaign.name}</b>
               </ImageName>
             ) : (
               <Name>
-                <b>{campaign.name}</b>
+                <b>{loadedCampaign.campaign.name}</b>
               </Name>
             )}
           </View>
@@ -49,14 +61,21 @@ const CampaignView = ({ campaign, onEdit }: $Props) => {
               <PropWrapper>
                 <Prop>
                   <Icon icon={faLink} />
-                  {campaign.sources}
+                  {loadedCampaign.campaign.sources}
                 </Prop>
               </PropWrapper>
               <Text>
                 <PropTitle>Description</PropTitle>
-                {campaign.description}
+                {loadedCampaign.campaign.description}
               </Text>
             </View>
+          )}
+          {activeTab === "Players" && (
+            <PropWrapper>
+              {loadedCampaign.characters.map((player: Char, index: number) => {
+                return <CharTile char={player} key={index} />;
+              })}
+            </PropWrapper>
           )}
           {activeTab === "Notes" && <span>Notes</span>}
         </CenterWrapper>
