@@ -17,10 +17,8 @@ interface $Props {
   label: string;
   icon?: IconDefinition;
   transform?: string | Transform;
-  onChange: (
-    value: string,
-    sort: { name: string; label: string; sort: number }
-  ) => void;
+  mobile?: boolean;
+  onChange: (value: string, sort: { name: string; label: string; sort: number }) => void;
 }
 
 const StringSearchField = ({
@@ -30,6 +28,7 @@ const StringSearchField = ({
   label,
   icon,
   transform,
+  mobile,
   onChange,
 }: $Props) => {
   const changeSort = () => {
@@ -49,25 +48,16 @@ const StringSearchField = ({
   };
 
   return (
-    <Field>
+    <Field mobile={mobile === undefined ? true : mobile}>
       <LabelText onClick={() => changeSort()}>
         {icon ? <Icon icon={icon} transform={transform} /> : ""} {label}
       </LabelText>
-      <Input
-        type="text"
-        value={value}
-        onChange={(e) => onChange(e.target.value, sort)}
-      ></Input>
+      <Input type="text" value={value} onChange={(e) => onChange(e.target.value, sort)}></Input>
       {sort.sort !== 0 && sort.label === label && (
         <Sort>
-          {sort.sort === 1 && (
-            <IconButton onClick={() => changeSort()} icon={faChevronCircleUp} />
-          )}
+          {sort.sort === 1 && <IconButton onClick={() => changeSort()} icon={faChevronCircleUp} />}
           {sort.sort === 2 && (
-            <IconButton
-              onClick={() => changeSort()}
-              icon={faChevronCircleDown}
-            />
+            <IconButton onClick={() => changeSort()} icon={faChevronCircleDown} />
           )}
         </Sort>
       )}
@@ -77,7 +67,11 @@ const StringSearchField = ({
 
 export default StringSearchField;
 
-const Field = styled.label`
+type MobileType = {
+  mobile?: boolean;
+};
+
+const Field = styled.label<MobileType>`
   color: ${({ theme }) => theme.tile.color};
   background-color: ${({ theme }) => theme.tile.backgroundColor};
   font-size: 16px;
@@ -92,6 +86,7 @@ const Field = styled.label`
   display: flex;
   justify-content: center;
   align-items: center;
+  ${({ mobile }) => (!mobile ? "@media (max-width: 576px) {display: none;}" : "")}
 `;
 
 const Icon = styled(FontAwesomeIcon)`

@@ -281,6 +281,7 @@ const Options = () => {
           "Recive",
         ]}
         onChange={(tab: string) => setTab(tab)}
+        activeTab={activeTab}
       />
       {activeTab === "General" && <GeneralOptions />}
       {activeTab === "Spells" && (

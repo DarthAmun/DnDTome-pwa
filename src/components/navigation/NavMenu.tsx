@@ -11,7 +11,7 @@ import {
   faChartPie,
   faHome,
   faTable,
-  faStickyNote,
+  faMapMarkedAlt,
 } from "@fortawesome/free-solid-svg-icons";
 import {
   GiBackpack,
@@ -23,6 +23,7 @@ import {
   GiBookshelf,
   GiSolarSystem,
   GiScrollUnfurled,
+  GiDjinn,
 } from "react-icons/gi";
 import { BiSelectMultiple } from "react-icons/bi";
 import { RightTooltip } from "../SearchbarStyle";
@@ -62,13 +63,6 @@ const NavMenu = ({ open }: $Props) => {
             to="/campaign-overview"
             className={location.pathname === "/campaign-overview" ? "menuItemActiv" : ""}
           >
-            <GiSolarSystem />
-            <RightTooltip>Worlds</RightTooltip>
-          </Link>
-          <Link
-            to="/campaign-overview"
-            className={location.pathname === "/campaign-overview" ? "menuItemActiv" : ""}
-          >
             <GiScrollUnfurled />
             <RightTooltip>Quests</RightTooltip>
           </Link>
@@ -79,12 +73,27 @@ const NavMenu = ({ open }: $Props) => {
             <MdEvent />
             <RightTooltip>Events</RightTooltip>
           </Link>
+          <Seperator />
           <Link
             to="/campaign-overview"
             className={location.pathname === "/campaign-overview" ? "menuItemActiv" : ""}
           >
-            <FontAwesomeIcon icon={faStickyNote} />
-            <RightTooltip>Notes</RightTooltip>
+            <GiSolarSystem />
+            <RightTooltip>Worlds</RightTooltip>
+          </Link>
+          <Link
+            to="/campaign-overview"
+            className={location.pathname === "/campaign-overview" ? "menuItemActiv" : ""}
+          >
+            <FontAwesomeIcon icon={faMapMarkedAlt} />
+            <RightTooltip>Locations</RightTooltip>
+          </Link>
+          <Link
+            to="/campaign-overview"
+            className={location.pathname === "/campaign-overview" ? "menuItemActiv" : ""}
+          >
+            <GiDjinn />
+            <RightTooltip>Npc's</RightTooltip>
           </Link>
           <Seperator />
           <Link

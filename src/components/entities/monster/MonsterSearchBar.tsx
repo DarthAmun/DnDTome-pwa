@@ -265,6 +265,7 @@ const MonsterSearchBar = ({ onSend }: $Props) => {
           }}
         />
         <StringSearchField
+          mobile={false}
           value={dmgVulnerabilitie}
           sort={sort}
           field={"dmgVulnerabilitie"}
@@ -275,6 +276,7 @@ const MonsterSearchBar = ({ onSend }: $Props) => {
           }}
         />
         <StringSearchField
+          mobile={false}
           value={dmgResistance}
           sort={sort}
           field={"dmgResistance"}
@@ -285,6 +287,7 @@ const MonsterSearchBar = ({ onSend }: $Props) => {
           }}
         />
         <StringSearchField
+          mobile={false}
           value={dmgImmunities}
           sort={sort}
           field={"dmgImmunities"}
@@ -295,6 +298,7 @@ const MonsterSearchBar = ({ onSend }: $Props) => {
           }}
         />
         <StringSearchField
+          mobile={false}
           value={conImmunities}
           sort={sort}
           field={"conImmunities"}
@@ -305,6 +309,7 @@ const MonsterSearchBar = ({ onSend }: $Props) => {
           }}
         />
         <StringSearchField
+          mobile={false}
           value={ablt}
           sort={sort}
           field={"ablt"}
@@ -315,6 +320,7 @@ const MonsterSearchBar = ({ onSend }: $Props) => {
           }}
         />
         <StringSearchField
+          mobile={false}
           value={sAblt}
           sort={sort}
           field={"sAblt"}
@@ -325,6 +331,7 @@ const MonsterSearchBar = ({ onSend }: $Props) => {
           }}
         />
         <StringSearchField
+          mobile={false}
           value={lAblt}
           sort={sort}
           field={"lAblt"}

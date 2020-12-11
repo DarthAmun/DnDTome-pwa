@@ -28,16 +28,12 @@ const AppWrapper = ({ children }: $Props) => {
     <App {...handlers}>
       <Header />
       <Navigation open={open} setOpen={setOpen} />
-      <Content open={open}>{children}</Content>
+      <Content>{children}</Content>
     </App>
   );
 };
 
 export default AppWrapper;
-
-type MenuType = {
-  open?: boolean;
-};
 
 const App = styled.div`
   padding-top: 4rem;
@@ -52,7 +48,7 @@ const App = styled.div`
   overflow-x: hidden;
 `;
 
-const Content = styled.div<MenuType>`
+const Content = styled.div`
   margin-left: 105px;
   width: 100%;
 

@@ -189,6 +189,7 @@ const CharLab = () => {
           "Finished",
         ]}
         onChange={(tab: string) => setTab(tab)}
+        activeTab={activeTab}
       />
       <CenterWrapper>
         <View>

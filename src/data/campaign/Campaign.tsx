@@ -1,4 +1,5 @@
 import IEntity from "../IEntity";
+import Note from "./Note";
 
 // campaigns: "++id, name, pic, description, world, quests, events, notes, sources, filename",
 export default class Campaign implements IEntity {
@@ -10,7 +11,7 @@ export default class Campaign implements IEntity {
   //world: World;
   //quests: Quest[];
   //events: Event[];
-  //notes: Notes[];
+  notes: Note[];
   sources: string;
   filename?: string;
 
@@ -20,6 +21,7 @@ export default class Campaign implements IEntity {
     pic?: string,
     description?: string,
     players?: string[],
+    notes?: Note[],
     sources?: string,
     filename?: string
   ) {
@@ -28,6 +30,7 @@ export default class Campaign implements IEntity {
     this.pic = pic || "";
     this.description = description || "";
     this.players = players || [];
+    this.notes = notes || [];
     this.sources = sources || "";
     this.filename = filename || "";
   }

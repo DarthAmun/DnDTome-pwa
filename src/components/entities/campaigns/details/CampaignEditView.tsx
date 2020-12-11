@@ -1,14 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import Campaign from "../../../../data/campaign/Campaign";
-import StringField from "../../../form_elements/StringField";
-import TextField from "../../../form_elements/TextField";
+import Note from "../../../../data/campaign/Note";
+
 import { faImage } from "@fortawesome/free-regular-svg-icons";
 import { faBookOpen, faLink, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
-import BuildCampaign from "../../../../data/campaign/BuildCampaign";
-import { buildCampaign } from "../../../../services/CampaignService";
-import { LoadingSpinner } from "../../../Loading";
 import TabBar from "../../../general_elements/TabBar";
+import StringField from "../../../form_elements/StringField";
+import TextField from "../../../form_elements/TextField";
 import AutoStringField from "../../../form_elements/AutoStringField";
 import IconButton from "../../../form_elements/IconButton";
 import TextButton from "../../../form_elements/TextButton";
@@ -19,110 +18,152 @@ interface $Props {
 }
 
 const CampaignEditView = ({ campaign, onEdit }: $Props) => {
-  const [loading, setLoading] = useState<boolean>(false);
-  const [loadedCampaign, setLoadedCampaign] = useState<BuildCampaign>(new BuildCampaign());
   const [activeTab, setTab] = useState<string>("General");
 
-  useEffect(() => {
-    buildCampaign(campaign).then((buildCampaign) => {
-      setLoadedCampaign(buildCampaign);
-      console.log(buildCampaign);
-      setLoading(false);
-    });
-  }, [campaign, setLoadedCampaign]);
-
   const removePlayer = (oldPlayer: string) => {
-    if (loadedCampaign !== undefined) {
-      let newPlayerlList = loadedCampaign.campaign.players
+    if (campaign !== undefined) {
+      let newPlayerlList = campaign.players
         .filter((player: string) => player !== oldPlayer)
         .map((player: string) => {
           return player;
         });
-      onEdit({ ...loadedCampaign.campaign, players: newPlayerlList });
+      onEdit({ ...campaign, players: newPlayerlList });
     }
   };
   const addNewPlayer = () => {
-    if (loadedCampaign !== undefined) {
-      let newPlayerlList = loadedCampaign.campaign.players.map((player: string) => {
+    if (campaign !== undefined) {
+      let newPlayerlList = campaign.players.map((player: string) => {
         return player;
       });
       newPlayerlList.push("");
-      onEdit({ ...loadedCampaign.campaign, players: newPlayerlList });
+      onEdit({ ...campaign, players: newPlayerlList });
     }
   };
   const onChangePlayer = (newPlayer: string, oldPlayer: string) => {
-    if (loadedCampaign !== undefined) {
-      let newPlayerlList = loadedCampaign.campaign.players.map((player: string) => {
+    if (campaign !== undefined) {
+      let newPlayerlList = campaign.players.map((player: string) => {
         if (player === oldPlayer) {
           return newPlayer;
         } else {
           return player;
         }
       });
-      onEdit({ ...loadedCampaign.campaign, players: newPlayerlList });
+      onEdit({ ...campaign, players: newPlayerlList });
+    }
+  };
+
+  const removeNote = (oldNote: Note) => {
+    if (campaign !== undefined) {
+      let newNotelList = campaign.notes
+        .filter((note: Note) => note !== oldNote)
+        .map((note: Note) => {
+          return note;
+        });
+      onEdit({ ...campaign, notes: newNotelList });
+    }
+  };
+  const addNewNote = () => {
+    if (campaign !== undefined) {
+      let newNotelList = campaign.notes.map((note: Note) => {
+        return note;
+      });
+      newNotelList.push(new Note());
+      onEdit({ ...campaign, notes: newNotelList });
+    }
+  };
+  const onChangeNote = (field: string, newValue: string, oldNote: Note) => {
+    if (campaign !== undefined) {
+      let newNotelList = campaign.notes.map((note: Note) => {
+        if (note === oldNote) {
+          return { ...note, [field]: newValue };
+        } else {
+          return note;
+        }
+      });
+      onEdit({ ...campaign, notes: newNotelList });
     }
   };
 
   return (
-    <>
-      {loading && <LoadingSpinner />}
-      {!loading && loadedCampaign && (
-        <CenterWrapper>
-          <TabBar
-            children={["General", "Players", "Notes"]}
-            onChange={(tab: string) => setTab(tab)}
+    <CenterWrapper>
+      <TabBar
+        children={["General", "Players", "Notes"]}
+        onChange={(tab: string) => setTab(tab)}
+        activeTab={activeTab}
+      />
+      {activeTab === "General" && (
+        <View>
+          <StringField
+            value={campaign.name}
+            label="Campaign Name"
+            onChange={(name) => onEdit({ ...campaign, name: name })}
           />
-          {activeTab === "General" && (
-            <View>
-              <StringField
-                value={campaign.name}
-                label="Campaign Name"
-                onChange={(name) => onEdit({ ...loadedCampaign.campaign, name: name })}
-              />
-              <StringField
-                value={campaign.pic}
-                label="Picture"
-                icon={faImage}
-                onChange={(pic) => onEdit({ ...loadedCampaign.campaign, pic: pic })}
-              />
-              <StringField
-                value={campaign.sources}
-                label="Sources"
-                icon={faLink}
-                onChange={(sources) => onEdit({ ...loadedCampaign.campaign, sources: sources })}
-              />
-              <TextField
-                value={campaign.description}
-                label="Description"
-                icon={faBookOpen}
-                onChange={(description) =>
-                  onEdit({ ...loadedCampaign.campaign, description: description })
-                }
-              />
-            </View>
-          )}
-          {activeTab === "Players" && (
-            <>
-              {loadedCampaign.campaign.players.map((player: string, index: number) => {
-                return (
-                  <Container key={index}>
-                    <AutoStringField
-                      optionTable={"chars"}
-                      value={player}
-                      label="Player"
-                      onChange={(newPlayer) => onChangePlayer(newPlayer, player)}
-                    />
-                    <IconButton icon={faTrash} onClick={() => removePlayer(player)} />
-                  </Container>
-                );
-              })}
-              <TextButton text={"Add new Player"} icon={faPlus} onClick={() => addNewPlayer()} />
-            </>
-          )}
-          {activeTab === "Notes" && <span>Notes</span>}
-        </CenterWrapper>
+          <StringField
+            value={campaign.pic}
+            label="Picture"
+            icon={faImage}
+            onChange={(pic) => onEdit({ ...campaign, pic: pic })}
+          />
+          <StringField
+            value={campaign.sources}
+            label="Sources"
+            icon={faLink}
+            onChange={(sources) => onEdit({ ...campaign, sources: sources })}
+          />
+          <TextField
+            value={campaign.description}
+            label="Description"
+            icon={faBookOpen}
+            onChange={(description) => onEdit({ ...campaign, description: description })}
+          />
+        </View>
       )}
-    </>
+      {activeTab === "Players" && (
+        <>
+          {campaign.players.map((player: string, index: number) => {
+            return (
+              <Container key={index}>
+                <AutoStringField
+                  optionTable={"chars"}
+                  value={player}
+                  label="Player"
+                  onChange={(newPlayer) => onChangePlayer(newPlayer, player)}
+                />
+                <IconButton icon={faTrash} onClick={() => removePlayer(player)} />
+              </Container>
+            );
+          })}
+          <TextButton text={"Add new Player"} icon={faPlus} onClick={() => addNewPlayer()} />
+        </>
+      )}
+      {activeTab === "Notes" && (
+        <>
+          {campaign.notes.map((note: Note, index: number) => {
+            return (
+              <Container key={index}>
+                <StringField
+                  value={note.title}
+                  label="Title"
+                  onChange={(newNote) => onChangeNote("title", newNote, note)}
+                />
+                <IconButton icon={faTrash} onClick={() => removeNote(note)} />
+                <TextField
+                  value={note.content}
+                  label="Feature Text"
+                  onChange={(newContent) => onChangeNote("content", newContent, note)}
+                />
+                <StringField
+                  value={note.tags}
+                  label="Tags"
+                  onChange={(newTags) => onChangeNote("tags", newTags, note)}
+                />
+              </Container>
+            );
+          })}
+          <TextButton text={"Add new Note"} icon={faPlus} onClick={() => addNewNote()} />
+        </>
+      )}
+    </CenterWrapper>
   );
 };
 
@@ -153,5 +194,5 @@ const Container = styled.div`
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
-  flex: 1 1 600px;
+  flex: 1 1 100%;
 `;

@@ -1,4 +1,26 @@
+import {
+  faDragon,
+  faIdCard,
+  faMapMarkedAlt,
+  faMeteor,
+  faTable,
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState, useCallback } from "react";
+import { BiSelectMultiple } from "react-icons/bi";
+import {
+  GiCrystalWand,
+  GiBackpack,
+  GiWomanElfFace,
+  GiPlagueDoctorProfile,
+  GiSwordClash,
+  GiBookmarklet,
+  GiScrollUnfurled,
+  GiSolarSystem,
+  GiBookshelf,
+  GiDjinn,
+} from "react-icons/gi";
+import { MdEvent } from "react-icons/md";
 import { useHistory } from "react-router";
 import styled from "styled-components";
 
@@ -27,7 +49,9 @@ const FormatedText = ({ text }: $Props) => {
               const link: string = "/" + linkParts[0] + "-detail/name/" + linkParts[1];
               formattedParts.push(
                 <TextPart key={index}>
-                  <Link onClick={() => history.push(link)}>{linkParts[1]}</Link>
+                  <Link onClick={() => history.push(link)}>
+                    {formatIcon(linkParts[0])} {linkParts[1]}
+                  </Link>
                   <TextPart>{codePart[1]}</TextPart>
                 </TextPart>
               );
@@ -92,6 +116,47 @@ const FormatedText = ({ text }: $Props) => {
     },
     [text, formatLink]
   );
+
+  const formatIcon = (type: string) => {
+    switch (type) {
+      case "spell":
+        return <FontAwesomeIcon icon={faMeteor} />;
+      case "item":
+        return <GiCrystalWand />;
+      case "gear":
+        return <GiBackpack />;
+      case "race":
+        return <GiWomanElfFace />;
+      case "class":
+        return <GiPlagueDoctorProfile />;
+      case "selection":
+        return <BiSelectMultiple />;
+      case "char":
+        return <FontAwesomeIcon icon={faIdCard} />;
+      case "monster":
+        return <FontAwesomeIcon icon={faDragon} />;
+      case "encounter":
+        return <GiSwordClash />;
+      case "campaign":
+        return <GiBookmarklet />;
+      case "quest":
+        return <GiScrollUnfurled />;
+      case "event":
+        return <MdEvent />;
+      case "world":
+        return <GiSolarSystem />;
+      case "location":
+        return <FontAwesomeIcon icon={faMapMarkedAlt} />;
+      case "npc":
+        return <GiDjinn />;
+      case "randomTable":
+        return <FontAwesomeIcon icon={faTable} />;
+      case "book":
+        return <GiBookshelf />;
+      default:
+        return "";
+    }
+  };
 
   const formatText = useCallback(
     (textPart: string) => {

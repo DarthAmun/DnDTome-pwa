@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import Campaign from "../../../../data/campaign/Campaign";
-import { faLink } from "@fortawesome/free-solid-svg-icons";
+import { faLink, faTags } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import TabBar from "../../../general_elements/TabBar";
 import { LoadingSpinner } from "../../../Loading";
@@ -9,6 +9,8 @@ import CharTile from "../../chars/CharTile";
 import BuildCampaign from "../../../../data/campaign/BuildCampaign";
 import { buildCampaign } from "../../../../services/CampaignService";
 import Char from "../../../../data/chars/Char";
+import Note from "../../../../data/campaign/Note";
+import FormatedText from "../../../general_elements/FormatedText";
 
 interface $Props {
   campaign: Campaign;
@@ -55,19 +57,19 @@ const CampaignView = ({ campaign, onEdit }: $Props) => {
               </Name>
             )}
           </View>
-          <TabBar children={tabs} onChange={(tab: string) => setTab(tab)} />
+          <TabBar children={tabs} onChange={(tab: string) => setTab(tab)} activeTab={activeTab}/>
           {activeTab === "General" && (
             <View>
+              <Text>
+                <PropTitle>Description</PropTitle>
+                {loadedCampaign.campaign.description}
+              </Text>
               <PropWrapper>
                 <Prop>
                   <Icon icon={faLink} />
                   {loadedCampaign.campaign.sources}
                 </Prop>
               </PropWrapper>
-              <Text>
-                <PropTitle>Description</PropTitle>
-                {loadedCampaign.campaign.description}
-              </Text>
             </View>
           )}
           {activeTab === "Players" && (
@@ -77,7 +79,24 @@ const CampaignView = ({ campaign, onEdit }: $Props) => {
               })}
             </PropWrapper>
           )}
-          {activeTab === "Notes" && <span>Notes</span>}
+          {activeTab === "Notes" && (
+            <View>
+              {loadedCampaign.campaign.notes.map((note: Note, index: number) => {
+                return (
+                  <PropWrapper key={index}>
+                    <Prop>
+                      <PropTitle>{note.title}</PropTitle>
+                      <FormatedText text={note.content} />
+                    </Prop>
+                    <Prop>
+                      <Icon icon={faTags} />
+                      {note.tags}
+                    </Prop>
+                  </PropWrapper>
+                );
+              })}
+            </View>
+          )}
         </CenterWrapper>
       )}
     </>
@@ -144,6 +163,7 @@ const PropTitle = styled.span`
 
 const Prop = styled.div`
   flex: 1 1 auto;
+  color: ${({ theme }) => theme.tile.color};
   max-width: 100%;
   height: auto;
   margin: 2px;
