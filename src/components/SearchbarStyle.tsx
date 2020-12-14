@@ -51,9 +51,7 @@ export const RightTooltip = styled(Tooltip)`
 
 export const Bar = styled.div<SearchMode>`
   position: fixed;
-  top: 40px;
-  left: 100px;
-  z-index: 900;
+  z-index: 50;
 
   transition: transform 0.3s ease-in-out;
   transform: ${({ open }) => (open ? "translateY(0)" : "translateY(-100%)")};
@@ -69,7 +67,13 @@ export const Bar = styled.div<SearchMode>`
   flex-wrap: wrap;
   align-items: flex-start;
   align-content: flex-start;
+`;
 
+export const FixedBar = styled(Bar)<SearchMode>`
+  top: 40px;
+  left: 100px;
+  z-index: 900;
+  
   @media (max-width: 576px) {
     min-width: calc(100% - 20px);
     left: 0px;

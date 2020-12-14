@@ -27,7 +27,7 @@ import StringSearchField from "../../form_elements/StringSearchField";
 import CheckField from "../../form_elements/CheckField";
 import IconButton from "../../form_elements/IconButton";
 import Spell from "../../../data/Spell";
-import { Bar, FieldGroup, SearchBar, CreateButton, ExportButton, LeftTooltip } from "../../SearchbarStyle";
+import { FixedBar, FieldGroup, SearchBar, CreateButton, ExportButton, LeftTooltip } from "../../SearchbarStyle";
 
 interface $Props {
   onSend: (filters: Filter[]) => void;
@@ -168,7 +168,7 @@ const SpellSearchBar = ({ onSend }: $Props) => {
 
   return (
     <>
-      <Bar open={open}>
+      <FixedBar open={open}>
         <StringSearchField
           value={name}
           sort={sort}
@@ -285,7 +285,7 @@ const SpellSearchBar = ({ onSend }: $Props) => {
         <SearchBar onClick={() => setOpen(!open)}>
           <FontAwesomeIcon icon={faSearch} rotation={90} />
         </SearchBar>
-      </Bar>
+      </FixedBar>
       <CreateButton onClick={() => createNewSpell()}>
         <FontAwesomeIcon icon={faPlusCircle} />
         <LeftTooltip>Add new</LeftTooltip>

@@ -11,6 +11,9 @@ import { buildCampaign } from "../../../../services/CampaignService";
 import Char from "../../../../data/chars/Char";
 import Note from "../../../../data/campaign/Note";
 import FormatedText from "../../../general_elements/FormatedText";
+import NoteSearchBar from "../NoteSearchBar";
+import Filter from "../../../../data/Filter";
+import { applyFilters } from "../../../../services/DatabaseService";
 
 interface $Props {
   campaign: Campaign;
@@ -20,8 +23,8 @@ interface $Props {
 const CampaignView = ({ campaign, onEdit }: $Props) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [loadedCampaign, setLoadedCampaign] = useState<BuildCampaign>(new BuildCampaign());
-  const [tabs, setTabs] = useState<string[]>(["General", "Players", "Notes"]);
   const [activeTab, setTab] = useState<string>("General");
+  const [filters, setFilters] = useState<Filter[]>([]);
 
   useEffect(() => {
     buildCampaign(campaign).then((buildCampaign) => {
@@ -45,19 +48,25 @@ const CampaignView = ({ campaign, onEdit }: $Props) => {
       {loading && <LoadingSpinner />}
       {!loading && loadedCampaign && (
         <CenterWrapper>
-          <View>
-            {getPicture() !== "" ? (
-              <ImageName>
-                <Image pic={getPicture()}></Image>
-                <b>{loadedCampaign.campaign.name}</b>
-              </ImageName>
-            ) : (
-              <Name>
-                <b>{loadedCampaign.campaign.name}</b>
-              </Name>
-            )}
-          </View>
-          <TabBar children={tabs} onChange={(tab: string) => setTab(tab)} activeTab={activeTab}/>
+          <Header>
+            <View>
+              {getPicture() !== "" ? (
+                <ImageName>
+                  <Image pic={getPicture()}></Image>
+                  <b>{loadedCampaign.campaign.name}</b>
+                </ImageName>
+              ) : (
+                <Name>
+                  <b>{loadedCampaign.campaign.name}</b>
+                </Name>
+              )}
+            </View>
+          </Header>
+          <TabBar
+            children={["General", "Players", "Notes"]}
+            onChange={(tab: string) => setTab(tab)}
+            activeTab={activeTab}
+          />
           {activeTab === "General" && (
             <View>
               <Text>
@@ -80,22 +89,27 @@ const CampaignView = ({ campaign, onEdit }: $Props) => {
             </PropWrapper>
           )}
           {activeTab === "Notes" && (
-            <View>
-              {loadedCampaign.campaign.notes.map((note: Note, index: number) => {
-                return (
-                  <PropWrapper key={index}>
-                    <Prop>
-                      <PropTitle>{note.title}</PropTitle>
-                      <FormatedText text={note.content} />
-                    </Prop>
-                    <Prop>
-                      <Icon icon={faTags} />
-                      {note.tags}
-                    </Prop>
-                  </PropWrapper>
-                );
-              })}
-            </View>
+            <>
+              <NoteSearchBar onSend={setFilters} />
+              <SearchableView>
+                {loadedCampaign.campaign.notes
+                  .filter((note: Note) => applyFilters(note, filters))
+                  .map((note: Note, index: number) => {
+                    return (
+                      <PropWrapper key={index}>
+                        <Prop>
+                          <PropTitle>{note.title}</PropTitle>
+                          <FormatedText text={note.content} />
+                        </Prop>
+                        <Prop>
+                          <Icon icon={faTags} />
+                          {note.tags}
+                        </Prop>
+                      </PropWrapper>
+                    );
+                  })}
+              </SearchableView>
+            </>
           )}
         </CenterWrapper>
       )}
@@ -118,6 +132,19 @@ const View = styled.div`
   padding: 5px;
   margin-left: auto;
   margin-right: auto;
+`;
+
+const SearchableView = styled(View)`
+  margin-top: 50px;
+`;
+
+const Header = styled.div`
+  position: relative;
+  z-index: 200;
+  width: 100%;
+  height: 70px;
+  margin-bottom: -5px;
+  background-color: ${({ theme }) => theme.main.backgroundColor};
 `;
 
 const ImageName = styled.div`

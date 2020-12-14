@@ -70,8 +70,8 @@ const NavMenu = ({ open }: $Props) => {
             to="/campaign-overview"
             className={location.pathname === "/campaign-overview" ? "menuItemActiv" : ""}
           >
-            <MdEvent />
-            <RightTooltip>Events</RightTooltip>
+            <GiDjinn />
+            <RightTooltip>Npc's</RightTooltip>
           </Link>
           <Seperator />
           <Link
@@ -92,8 +92,8 @@ const NavMenu = ({ open }: $Props) => {
             to="/campaign-overview"
             className={location.pathname === "/campaign-overview" ? "menuItemActiv" : ""}
           >
-            <GiDjinn />
-            <RightTooltip>Npc's</RightTooltip>
+            <MdEvent />
+            <RightTooltip>Events</RightTooltip>
           </Link>
           <Seperator />
           <Link

@@ -22,7 +22,7 @@ import IconButton from "../../form_elements/IconButton";
 import CheckField from "../../form_elements/CheckField";
 import Item from "../../../data/Item";
 import StringSearchField from "../../form_elements/StringSearchField";
-import { Bar, SearchBar, CreateButton, ExportButton, LeftTooltip } from "../../SearchbarStyle";
+import { FixedBar, SearchBar, CreateButton, ExportButton, LeftTooltip } from "../../SearchbarStyle";
 
 interface $Props {
   onSend: (filters: Filter[]) => void;
@@ -153,7 +153,7 @@ const ItemSearchBar = ({ onSend }: $Props) => {
 
   return (
     <>
-      <Bar open={open}>
+      <FixedBar open={open}>
         <StringSearchField
           value={name}
           sort={sort}
@@ -212,7 +212,7 @@ const ItemSearchBar = ({ onSend }: $Props) => {
         <SearchBar onClick={() => setOpen(!open)}>
           <FontAwesomeIcon icon={faSearch} />
         </SearchBar>
-      </Bar>
+      </FixedBar>
       <CreateButton onClick={() => createNewItem()}>
         <FontAwesomeIcon icon={faPlusCircle} />
         <LeftTooltip>Add new</LeftTooltip>

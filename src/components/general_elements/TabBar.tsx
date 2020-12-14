@@ -33,6 +33,8 @@ const Bar = styled.div`
   padding: 3px;
   margin: 5px;
   border-radius: 10px;
+  position: relative;
+  z-index: 100;
 
   display: flex;
   flex-wrap: wrap;

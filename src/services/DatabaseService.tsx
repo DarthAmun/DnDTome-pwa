@@ -241,7 +241,7 @@ export const reciveAllPromise = (tableName: string) => {
     });
 };
 
-const applyFilters = (obj: any, filters: Filter[]) => {
+export const applyFilters = (obj: any, filters: Filter[]) => {
   let test: boolean[] = [];
   filters.forEach((filter) => {
     if (typeof filter.value === "string") {

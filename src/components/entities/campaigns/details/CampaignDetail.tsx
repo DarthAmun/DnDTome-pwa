@@ -92,12 +92,14 @@ export default CampaignDetail;
 
 const TopBar = styled.div`
   color: ${({ theme }) => theme.tile.color};
+  background-color: ${({ theme }) => theme.main.backgroundColor};
   font-size: 16px;
   overflow: hidden;
-  flex: 1 1;
   min-width: calc(100% - 20px);
   height: 45px;
   padding: 10px;
+  position: relative;
+  z-index: 100;
 `;
 
 const Message = styled.div`
