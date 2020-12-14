@@ -1,6 +1,8 @@
 import Dexie from "dexie";
 import Book from "../data/Book";
 import Campaign from "../data/campaign/Campaign";
+import Npc from "../data/campaign/Npc";
+import Quest from "../data/campaign/Quest";
 import Char from "../data/chars/Char";
 import Class from "../data/classes/Class";
 import Subclass from "../data/classes/Subclass";
@@ -13,6 +15,9 @@ import Subrace from "../data/races/Subrace";
 import RandomTable from "../data/RandomTable";
 import Selection from "../data/Selection";
 import Spell from "../data/Spell";
+import World from "../data/world/World";
+import Location from "../data/world/Location";
+import Event from "../data/world/Event";
 
 export class MyAppDatabase extends Dexie {
   spells: Dexie.Table<Spell, number>; // number = type of the primkey
@@ -29,6 +34,11 @@ export class MyAppDatabase extends Dexie {
   selections: Dexie.Table<Selection, number>; // number = type of the primkey
   randomTables: Dexie.Table<RandomTable, number>; // number = type of the primkey
   campaigns: Dexie.Table<Campaign, number>; // number = type of the primkey
+  quests: Dexie.Table<Quest, number>; // number = type of the primkey
+  npcs: Dexie.Table<Npc, number>; // number = type of the primkey
+  worlds: Dexie.Table<World, number>; // number = type of the primkey
+  locations: Dexie.Table<Location, number>; // number = type of the primkey
+  events: Dexie.Table<Event, number>; // number = type of the primkey
 
   constructor() {
     super("DnDTomeDB");
@@ -239,7 +249,14 @@ export class MyAppDatabase extends Dexie {
       books: "++id, name, cover, data, pages, tags",
       selections: "++id, name, selectionOptions, filename",
       randomTables: "++id, name, rows, header, filename",
-      campaigns: "++id, name, pic, description, world, quests, events, notes, players, sources, filename",
+      campaigns:
+        "++id, name, pic, description, world, quests, npcs, notes, players, sources, filename",
+      quests:
+        "++id, name, pic, locations, origin, description, rewards, followQuest, sources, filename",
+      npcs: "++id, name, pic, char, traits, description, sources, filename",
+      worlds: "++id, name, map, description, locations, events, notes, sources, filename",
+      locations: "++id, name, map, description, events, notes, sources, filename",
+      events: "++id, name, description, locations, npcs, notes, sources, filename",
     });
 
     this.spells = this.table("spells");
@@ -256,5 +273,10 @@ export class MyAppDatabase extends Dexie {
     this.selections = this.table("selections");
     this.randomTables = this.table("randomTables");
     this.campaigns = this.table("campaigns");
+    this.quests = this.table("quests");
+    this.npcs = this.table("npcs");
+    this.worlds = this.table("worlds");
+    this.locations = this.table("locations");
+    this.events = this.table("events");
   }
 }

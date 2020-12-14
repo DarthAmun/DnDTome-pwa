@@ -229,6 +229,8 @@ const Seperator = styled.div`
   flex: 1 1 auto;
   min-width: 100%;
   max-height: 0px;
+  margin-top: -1px;
+  margin-bottom: -1px;
 `;
 
 const TopSide = styled.div`

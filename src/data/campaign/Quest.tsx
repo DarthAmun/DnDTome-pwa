@@ -1,17 +1,15 @@
 import IEntity from "../IEntity";
-import Note from "./Note";
 
-// campaigns: "++id, name, pic, description, world, quests, events, notes, sources, filename",
-export default class Campaign implements IEntity {
+//quests:"++id, name, pic, locations, origin, description, rewards, followQuest, sources, filename",
+export default class Quest implements IEntity {
   id?: number;
   name: string;
   pic: string;
   description: string;
-  players: string[];
-  //world: World;
-  quests: string[];
-  npcs: string[];
-  notes: Note[];
+  locations: Location[];
+  origin: { name: string; type: string };
+  rewards: { name: string; type: string }[];
+  followQuest: Quest | undefined;
   sources: string;
   filename?: string;
 
@@ -20,10 +18,10 @@ export default class Campaign implements IEntity {
     name?: string,
     pic?: string,
     description?: string,
-    players?: string[],
-    quests?: string[],
-    npcs?: string[],
-    notes?: Note[],
+    locations?: Location[],
+    origin?: { name: string; type: string },
+    rewards?: { name: string; type: string }[],
+    followQuest?: Quest,
     sources?: string,
     filename?: string
   ) {
@@ -31,23 +29,23 @@ export default class Campaign implements IEntity {
     this.name = name || "";
     this.pic = pic || "";
     this.description = description || "";
-    this.players = players || [];
-    this.quests = quests || [];
-    this.npcs = npcs || [];
-    this.notes = notes || [];
+    this.locations = locations || [];
+    this.origin = origin || { name: "", type: "" };
+    this.rewards = rewards || [];
+    this.followQuest = followQuest;
     this.sources = sources || "";
     this.filename = filename || "";
   }
 }
 
-export function isCampaign(arg: any): arg is Campaign {
+export function isQuest(arg: any): arg is Quest {
   const nameCheck = arg.name !== undefined && typeof arg.name == "string";
   const picCheck = arg.pic !== undefined && typeof arg.pic == "string";
   const descriptionCheck = arg.description !== undefined && typeof arg.description == "string";
-  const playersCheck = arg.players !== undefined && Array.isArray(arg.players);
-  const questsCheck = arg.quests !== undefined && Array.isArray(arg.quests);
-  const npcsCheck = arg.npcs !== undefined && Array.isArray(arg.npcs);
-  const notesCheck = arg.notes !== undefined && Array.isArray(arg.notes);
+  const locationsCheck = arg.locations !== undefined && Array.isArray(arg.locations);
+  const rewardsCheck = arg.rewards !== undefined && Array.isArray(arg.rewards);
+  const originCheck =
+    arg.origin !== undefined && arg.origin.name !== undefined && arg.origin.type !== undefined;
   const sourcesCheck = arg.sources !== undefined && typeof arg.sources == "string";
 
   return (
@@ -55,15 +53,14 @@ export function isCampaign(arg: any): arg is Campaign {
     nameCheck &&
     picCheck &&
     descriptionCheck &&
-    playersCheck &&
-    questsCheck &&
-    npcsCheck &&
-    notesCheck &&
+    locationsCheck &&
+    rewardsCheck &&
+    originCheck &&
     sourcesCheck
   );
 }
 
-export function findCampaignFormattError(
+export function findQuestFormattError(
   arg: any
 ): {
   nameCheck: boolean;

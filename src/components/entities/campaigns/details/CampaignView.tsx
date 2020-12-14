@@ -14,6 +14,8 @@ import FormatedText from "../../../general_elements/FormatedText";
 import NoteSearchBar from "../NoteSearchBar";
 import Filter from "../../../../data/Filter";
 import { applyFilters } from "../../../../services/DatabaseService";
+import Npc from "../../../../data/campaign/Npc";
+import Quest from "../../../../data/campaign/Quest";
 
 interface $Props {
   campaign: Campaign;
@@ -63,7 +65,7 @@ const CampaignView = ({ campaign, onEdit }: $Props) => {
             </View>
           </Header>
           <TabBar
-            children={["General", "Players", "Notes"]}
+            children={["General", "Players", "Npcs", "Notes", "Quests"]}
             onChange={(tab: string) => setTab(tab)}
             activeTab={activeTab}
           />
@@ -85,6 +87,13 @@ const CampaignView = ({ campaign, onEdit }: $Props) => {
             <PropWrapper>
               {loadedCampaign.characters.map((player: Char, index: number) => {
                 return <CharTile char={player} key={index} />;
+              })}
+            </PropWrapper>
+          )}
+          {activeTab === "Npcs" && (
+            <PropWrapper>
+              {loadedCampaign.npcs.map((npc: Npc, index: number) => {
+                return <NpcTile npc={npc} key={index} />;
               })}
             </PropWrapper>
           )}
@@ -110,6 +119,13 @@ const CampaignView = ({ campaign, onEdit }: $Props) => {
                   })}
               </SearchableView>
             </>
+          )}
+          {activeTab === "Quests" && (
+            <PropWrapper>
+              {loadedCampaign.quests.map((quest: Quest, index: number) => {
+                return <QuestTile quest={quest} key={index} />;
+              })}
+            </PropWrapper>
           )}
         </CenterWrapper>
       )}
