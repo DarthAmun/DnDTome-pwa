@@ -25,6 +25,12 @@ import Library from "./components/entities/library/Library";
 import IdToMonster from "./components/entities/monster/details/link_wrapper/IdToMonster";
 import NameToMonster from "./components/entities/monster/details/link_wrapper/NameToMonster";
 import MonsterOverview from "./components/entities/monster/MonsterOverview";
+import IdToNpc from "./components/entities/npc/details/link_wrapper/IdToNpc";
+import NameToNpc from "./components/entities/npc/details/link_wrapper/NameToNpc";
+import NpcOverview from "./components/entities/npc/NpcOverview";
+import IdToQuest from "./components/entities/quest/details/link_wrapper/IdToQuest";
+import NameToQuest from "./components/entities/quest/details/link_wrapper/NameToQuest";
+import QuestOverview from "./components/entities/quest/QuestOverview";
 import IdToRace from "./components/entities/races/details/link_wrapper/IdToRace";
 import NameToRace from "./components/entities/races/details/link_wrapper/NameToRace";
 import RaceOverview from "./components/entities/races/RaceOverview";
@@ -94,6 +100,12 @@ const App = () => {
           <Route path="/campaign-detail/name/:name" component={NameToCampaign}></Route>
           <Route path="/campaign-detail/id/:id" component={IdToCampaign}></Route>
           <Route path="/campaign-overview" component={CampaignOverview}></Route>
+          <Route path="/quest-detail/name/:name" component={NameToQuest}></Route>
+          <Route path="/quest-detail/id/:id" component={IdToQuest}></Route>
+          <Route path="/quest-overview" component={QuestOverview}></Route>
+          <Route path="/npc-detail/name/:name" component={NameToNpc}></Route>
+          <Route path="/npc-detail/id/:id" component={IdToNpc}></Route>
+          <Route path="/npc-overview" component={NpcOverview}></Route>
           <Route path="/statistics" component={Statistics}></Route>
           <Route path="/options" component={Options}></Route>
           <Route path="/library" component={Library}></Route>

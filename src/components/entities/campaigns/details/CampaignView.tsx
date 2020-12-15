@@ -16,6 +16,8 @@ import Filter from "../../../../data/Filter";
 import { applyFilters } from "../../../../services/DatabaseService";
 import Npc from "../../../../data/campaign/Npc";
 import Quest from "../../../../data/campaign/Quest";
+import NpcTile from "../../npc/NpcTile";
+import QuestTile from "../../quest/QuestTile";
 
 interface $Props {
   campaign: Campaign;

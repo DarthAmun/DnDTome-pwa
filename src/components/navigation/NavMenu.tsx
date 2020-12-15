@@ -60,15 +60,15 @@ const NavMenu = ({ open }: $Props) => {
             <RightTooltip>Campaigns</RightTooltip>
           </Link>
           <Link
-            to="/campaign-overview"
-            className={location.pathname === "/campaign-overview" ? "menuItemActiv" : ""}
+            to="/quest-overview"
+            className={location.pathname === "/quest-overview" ? "menuItemActiv" : ""}
           >
             <GiScrollUnfurled />
             <RightTooltip>Quests</RightTooltip>
           </Link>
           <Link
-            to="/campaign-overview"
-            className={location.pathname === "/campaign-overview" ? "menuItemActiv" : ""}
+            to="/npc-overview"
+            className={location.pathname === "/npc-overview" ? "menuItemActiv" : ""}
           >
             <GiDjinn />
             <RightTooltip>Npc's</RightTooltip>

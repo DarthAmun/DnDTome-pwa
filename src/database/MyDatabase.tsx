@@ -251,6 +251,29 @@ export class MyAppDatabase extends Dexie {
       randomTables: "++id, name, rows, header, filename",
       campaigns:
         "++id, name, pic, description, world, quests, npcs, notes, players, sources, filename",
+    });
+    this.version(15).stores({
+      spells:
+        "++id, name, classes, sources, level, school, time, range, components, duration, ritual, text, pic, filename",
+      items:
+        "++id, name, sources, pic, description, type, rarity, attunment, magicBonus, base, filename",
+      gears:
+        "++id, name, sources, pic, description, type, cost, damage, weight, properties, filename",
+      monsters:
+        "++id, name, type, subtype, cr, ac, hp, str, dex, con, int, wis, cha, senses, lang, speed, source, skills, savingThrows, dmgImmunities, dmgResistance, dmgVulnerabilitie, conImmunities, sAblt, ablt, lAblt, pic, size, alignment",
+      races:
+        "++id, name, abilityScores, age, alignment, size, speed, lang, traits, sources, pic, filename",
+      subraces: "++id, name, type, abilityScores, traits, sources, filename",
+      classes: "++id, name, featureSets, hitDice, proficiencies, equipment, sources, pic, filename",
+      subclasses: "++id, name, type, features, sources, filename",
+      chars:
+        "++id, name, player, pic, classes, race, background, spells, spellSlots, activeSelections, items, monsters, ac, hp, currentHp, init, speed, str, dex, con, int, wis, cha, saves, actions, bonusActions, reactions, profsLangs, senses, money, skills, spellNotes, alignment, inspiration, castingHit, castingDC",
+      encounters: "++id, name, monsters, players",
+      books: "++id, name, cover, data, pages, tags",
+      selections: "++id, name, selectionOptions, filename",
+      randomTables: "++id, name, rows, header, filename",
+      campaigns:
+        "++id, name, pic, description, world, quests, npcs, notes, players, sources, filename",
       quests:
         "++id, name, pic, locations, origin, description, rewards, followQuest, sources, filename",
       npcs: "++id, name, pic, char, traits, description, sources, filename",
