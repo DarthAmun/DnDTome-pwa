@@ -5,14 +5,7 @@ import Npc from "../../../../data/campaign/Npc";
 import StringField from "../../../form_elements/StringField";
 import TextField from "../../../form_elements/TextField";
 
-import {
-  faLink,
-  faCoins,
-  faWeightHanging,
-  faCrosshairs,
-  faBookOpen,
-  faImage,
-} from "@fortawesome/free-solid-svg-icons";
+import { faLink, faBookOpen, faImage } from "@fortawesome/free-solid-svg-icons";
 
 interface $Props {
   npc: Npc;

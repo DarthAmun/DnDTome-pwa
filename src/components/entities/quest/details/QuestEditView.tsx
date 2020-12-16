@@ -5,14 +5,7 @@ import Quest from "../../../../data/campaign/Quest";
 import StringField from "../../../form_elements/StringField";
 import TextField from "../../../form_elements/TextField";
 
-import {
-  faLink,
-  faCoins,
-  faWeightHanging,
-  faCrosshairs,
-  faBookOpen,
-  faImage,
-} from "@fortawesome/free-solid-svg-icons";
+import { faLink, faBookOpen, faImage } from "@fortawesome/free-solid-svg-icons";
 
 interface $Props {
   quest: Quest;
@@ -45,9 +38,7 @@ const QuestEditView = ({ quest, onEdit }: $Props) => {
           value={quest.description}
           label="Text"
           icon={faBookOpen}
-          onChange={(description) =>
-            onEdit({ ...quest, description: description })
-          }
+          onChange={(description) => onEdit({ ...quest, description: description })}
         />
       </View>
     </CenterWrapper>

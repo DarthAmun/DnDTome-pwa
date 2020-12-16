@@ -1,17 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { importFiles, exportAll } from "../../services/OptionService";
-import {
-  import5eToolsItemsFiles,
-  import5eToolsMonstersFiles,
-  import5eToolsRacesFiles,
-  import5eToolsSpellsFiles,
-} from "../../services/5eToolService";
-import {
-  deleteAll,
-  reciveCount,
-  reciveAllPromise,
-} from "../../services/DatabaseService";
+import { deleteAll, reciveCount, reciveAllPromise } from "../../services/DatabaseService";
 import IEntity from "../../data/IEntity";
 import P2PReciver from "../p2p/P2PReciver";
 import { isChar } from "../../data/chars/Char";
@@ -49,6 +39,7 @@ import ClassesOptions from "./ClassesOptions";
 import CharsOptions from "./CharsOptions";
 import EncountersOptions from "./EncountersOptions";
 import SelectionsOptions from "./SelectionsOptions";
+import OtherImportOptions from "./OtherImportOptions";
 
 const Options = () => {
   const [activeTab, setTab] = useState<string>("General");
@@ -118,97 +109,22 @@ const Options = () => {
 
   const triggerImportFiles = (fileList: FileList | null) => {
     isLoading(true);
-    importFiles(
-      fileList,
-      (failed: number, failedObj: string[], max: number) => {
-        setFailedObjs(failedObj);
-        isReload(true);
-        isLoading(false);
+    importFiles(fileList, (failed: number, failedObj: string[], max: number) => {
+      setFailedObjs(failedObj);
+      isReload(true);
+      isLoading(false);
 
-        if (failed > 0) {
-          setMessage(failed + " of " + max + " failed!");
-        } else {
-          setMessage(max + " imported successfully!");
-        }
-        setAlert(true);
-
-        setTimeout(() => {
-          setAlert(false);
-        }, 5000);
-      }
-    );
-  };
-
-  const trigger5eToolsSpellImport = (fileList: FileList | null) => {
-    isLoading(true);
-    import5eToolsSpellsFiles(
-      fileList,
-      (max: number) => {
-        isReload(true);
-        isLoading(false);
-
+      if (failed > 0) {
+        setMessage(failed + " of " + max + " failed!");
+      } else {
         setMessage(max + " imported successfully!");
-        setAlert(true);
-
-        setTimeout(() => {
-          setAlert(false);
-        }, 5000);
       }
-    );
-  };
+      setAlert(true);
 
-  const trigger5eToolsMonsterImport = (fileList: FileList | null) => {
-    isLoading(true);
-    import5eToolsMonstersFiles(
-      fileList,
-      (max: number) => {
-        isReload(true);
-        isLoading(false);
-
-        setMessage(max + " imported successfully!");
-        setAlert(true);
-
-        setTimeout(() => {
-          setAlert(false);
-        }, 5000);
-      }
-    );
-  };
-
-  const trigger5eToolsRacesImport = (fileList: FileList | null) => {
-    isLoading(true);
-    import5eToolsRacesFiles(
-      fileList,
-      (max: number) => {
-        isReload(true);
-        isLoading(false);
-
-        setMessage(max + " imported successfully!");
-        setAlert(true);
-
-        setTimeout(() => {
-          setAlert(false);
-        }, 5000);
-      }
-    );
-  };
-
-  const trigger5eToolsItemsImport = (fileList: FileList | null) => {
-    isLoading(true);
-    import5eToolsItemsFiles(
-      fileList,
-      (max: number) => {
-        isReload(true);
-        isLoading(false);
-
-        setMessage(max + " imported successfully!");
-        setAlert(true);
-
-        setTimeout(() => {
-          setAlert(false);
-        }, 5000);
-      }
-    );
+      setTimeout(() => {
+        setAlert(false);
+      }, 5000);
+    });
   };
 
   const triggerDeleteAll = (tableName: string) => {
@@ -259,10 +175,7 @@ const Options = () => {
         <SelectionTitle>Export</SelectionTitle>
         <SectionRow>
           <SectionText>Export as one file?</SectionText>
-          <IconButton
-            icon={faFileExport}
-            onClick={() => exportAll("DnDTome_all.json")}
-          />
+          <IconButton icon={faFileExport} onClick={() => exportAll("DnDTome_all.json")} />
         </SectionRow>
       </OptionSection>
       <TabBar
@@ -285,10 +198,7 @@ const Options = () => {
       />
       {activeTab === "General" && <GeneralOptions />}
       {activeTab === "Spells" && (
-        <SpellsOptions
-          amount={spellAmount}
-          triggerDeleteAll={triggerDeleteAll}
-        />
+        <SpellsOptions amount={spellAmount} triggerDeleteAll={triggerDeleteAll} />
       )}
       {activeTab === "Gears" && (
         <GearsOptions amount={gearAmount} triggerDeleteAll={triggerDeleteAll} />
@@ -297,16 +207,10 @@ const Options = () => {
         <ItemsOptions amount={itemAmount} triggerDeleteAll={triggerDeleteAll} />
       )}
       {activeTab === "Monsters" && (
-        <MonstersOptions
-          amount={monsterAmount}
-          triggerDeleteAll={triggerDeleteAll}
-        />
+        <MonstersOptions amount={monsterAmount} triggerDeleteAll={triggerDeleteAll} />
       )}
       {activeTab === "Races" && (
-        <RacesOptions
-          amounts={[raceAmount, subraceAmount]}
-          triggerDeleteAll={triggerDeleteAll}
-        />
+        <RacesOptions amounts={[raceAmount, subraceAmount]} triggerDeleteAll={triggerDeleteAll} />
       )}
       {activeTab === "Classes" && (
         <ClassesOptions
@@ -315,63 +219,21 @@ const Options = () => {
         />
       )}
       {activeTab === "Selections" && (
-        <SelectionsOptions
-          amount={selectionAmount}
-          triggerDeleteAll={triggerDeleteAll}
-        />
+        <SelectionsOptions amount={selectionAmount} triggerDeleteAll={triggerDeleteAll} />
       )}
       {activeTab === "Chars" && (
         <CharsOptions amount={charAmount} triggerDeleteAll={triggerDeleteAll} />
       )}
       {activeTab === "Encounters" && (
-        <EncountersOptions
-          amount={encounterAmount}
-          triggerDeleteAll={triggerDeleteAll}
-        />
+        <EncountersOptions amount={encounterAmount} triggerDeleteAll={triggerDeleteAll} />
       )}
       {activeTab === "Other Imports" && (
-        <OptionTab>
-          <OptionSection>
-            <SelectionTitle>Import 5eTools Spells</SelectionTitle>
-            <FileField
-              label=""
-              accept={".json"}
-              isMulti={true}
-              icon={faFileImport}
-              onChange={(file) => trigger5eToolsSpellImport(file)}
-            />
-          </OptionSection>
-          <OptionSection>
-            <SelectionTitle>Import 5eTools Monsters</SelectionTitle>
-            <FileField
-              label=""
-              accept={".json"}
-              isMulti={true}
-              icon={faFileImport}
-              onChange={(file) => trigger5eToolsMonsterImport(file)}
-            />
-          </OptionSection>
-          <OptionSection>
-            <SelectionTitle>Import 5eTools Items/Gear</SelectionTitle>
-            <FileField
-              label=""
-              accept={".json"}
-              isMulti={true}
-              icon={faFileImport}
-              onChange={(file) => trigger5eToolsItemsImport(file)}
-            />
-          </OptionSection>
-          <OptionSection>
-            <SelectionTitle>Import 5eTools Races</SelectionTitle>
-            <FileField
-              label=""
-              accept={".json"}
-              isMulti={true}
-              icon={faFileImport}
-              onChange={(file) => trigger5eToolsRacesImport(file)}
-            />
-          </OptionSection>
-        </OptionTab>
+        <OtherImportOptions
+          isLoading={isLoading}
+          isReload={isReload}
+          setMessage={setMessage}
+          setAlert={setAlert}
+        />
       )}
       {activeTab === "Recive" && (
         <OptionTab>
