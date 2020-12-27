@@ -1,3 +1,4 @@
+import { FlowElement } from "react-flow-renderer";
 import IEntity from "../IEntity";
 import Note from "./Note";
 
@@ -12,6 +13,7 @@ export default class Campaign implements IEntity {
   quests: string[];
   npcs: string[];
   notes: Note[];
+  map: FlowElement[];
   sources: string;
   filename?: string;
 
@@ -24,6 +26,7 @@ export default class Campaign implements IEntity {
     quests?: string[],
     npcs?: string[],
     notes?: Note[],
+    map?: FlowElement[],
     sources?: string,
     filename?: string
   ) {
@@ -35,6 +38,7 @@ export default class Campaign implements IEntity {
     this.quests = quests || [];
     this.npcs = npcs || [];
     this.notes = notes || [];
+    this.map = map || [];
     this.sources = sources || "";
     this.filename = filename || "";
   }

@@ -1,23 +1,26 @@
 import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
+
 import Campaign from "../../../../data/campaign/Campaign";
-import { faLink, faTags } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import TabBar from "../../../general_elements/TabBar";
-import { LoadingSpinner } from "../../../Loading";
-import CharTile from "../../chars/CharTile";
-import BuildCampaign from "../../../../data/campaign/BuildCampaign";
-import { buildCampaign } from "../../../../services/CampaignService";
-import Char from "../../../../data/chars/Char";
-import Note from "../../../../data/campaign/Note";
-import FormatedText from "../../../general_elements/FormatedText";
-import NoteSearchBar from "../NoteSearchBar";
-import Filter from "../../../../data/Filter";
-import { applyFilters } from "../../../../services/DatabaseService";
 import Npc from "../../../../data/campaign/Npc";
 import Quest from "../../../../data/campaign/Quest";
+import Char from "../../../../data/chars/Char";
+import Note from "../../../../data/campaign/Note";
+import Filter from "../../../../data/Filter";
+import BuildCampaign from "../../../../data/campaign/BuildCampaign";
+import { buildCampaign } from "../../../../services/CampaignService";
+import { applyFilters } from "../../../../services/DatabaseService";
+
+import FormatedText from "../../../general_elements/FormatedText";
+import NoteSearchBar from "../NoteSearchBar";
+import TabBar from "../../../general_elements/TabBar";
 import NpcTile from "../../npc/NpcTile";
 import QuestTile from "../../quest/QuestTile";
+import CharTile from "../../chars/CharTile";
+import { faLink, faTags } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { LoadingSpinner } from "../../../Loading";
+import FlowChart from "../../../general_elements/flow/FlowChart";
 
 interface $Props {
   campaign: Campaign;
@@ -67,7 +70,7 @@ const CampaignView = ({ campaign, onEdit }: $Props) => {
             </View>
           </Header>
           <TabBar
-            children={["General", "Players", "Npcs", "Notes", "Quests"]}
+            children={["General", "Players", "Npcs", "Notes", "Quests", "Map"]}
             onChange={(tab: string) => setTab(tab)}
             activeTab={activeTab}
           />
@@ -127,6 +130,11 @@ const CampaignView = ({ campaign, onEdit }: $Props) => {
               {loadedCampaign.quests.map((quest: Quest, index: number) => {
                 return <QuestTile quest={quest} key={index} />;
               })}
+            </PropWrapper>
+          )}
+          {activeTab === "Map" && (
+            <PropWrapper>
+              <FlowChart isEditable={false} initElements={loadedCampaign.campaign.map} />
             </PropWrapper>
           )}
         </CenterWrapper>

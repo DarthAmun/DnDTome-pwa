@@ -42,6 +42,7 @@ const CampaignDetail = ({ campaign }: $Props) => {
   }, [campaignObj, campaign]);
 
   const updateCampaign = (tableName: string, campaignObj: Campaign) => {
+    console.log(campaignObj);
     updateWithCallback(tableName, campaignObj, (result) => {
       if (result > 0) {
         setUnsavedChanges(false);

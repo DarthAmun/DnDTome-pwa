@@ -2,7 +2,6 @@ import React, { useCallback, useState } from "react";
 import Quest from "../../../../data/campaign/Quest";
 import styled from "styled-components";
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import FormatedText from "../../../general_elements/FormatedText";
 import TextButton from "../../../form_elements/TextButton";
@@ -110,17 +109,6 @@ const PropWrapper = styled.div`
   justify-content: space-around;
 `;
 
-const Prop = styled.div`
-  flex: 1 1 auto;
-  max-width: 100%;
-  height: auto;
-  margin: 2px;
-  float: left;
-  padding: 10px;
-  border-radius: 5px;
-  background-color: ${({ theme }) => theme.tile.backgroundColor};
-`;
-
 const Text = styled.div`
   height: auto;
   width: calc(100% - 30px);
@@ -130,15 +118,6 @@ const Text = styled.div`
   padding: 10px;
   border-radius: 5px;
   background-color: ${({ theme }) => theme.tile.backgroundColor};
-`;
-
-const Icon = styled(FontAwesomeIcon)`
-  margin-right: 5px;
-  width: 20px;
-  height: auto;
-  border-radius: 150px;
-  transition: color 0.2s;
-  color: ${({ theme }) => theme.main.highlight};
 `;
 
 interface $ImageProps {

@@ -190,18 +190,3 @@ const SelectionTitle = styled.div`
   color: ${({ theme }) => theme.input.color};
   background-color: ${({ theme }) => theme.input.backgroundColor};
 `;
-
-const SectionRow = styled.div`
-  flex: 1 1 auto;
-  margin: 5px;
-  min-width: calc(100% - 10px);
-
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  align-content: flex-start;
-`;
-
-const SectionText = styled.div`
-  flex: 1 1 auto;
-`;

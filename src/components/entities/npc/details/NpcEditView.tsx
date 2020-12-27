@@ -21,7 +21,6 @@ const NpcEditView = ({ npc, onEdit }: $Props) => {
           label="Name"
           onChange={(name) => onEdit({ ...npc, name: name })}
         />
-
         <StringField
           value={npc.pic}
           label="Picture"
@@ -39,6 +38,12 @@ const NpcEditView = ({ npc, onEdit }: $Props) => {
           label="Text"
           icon={faBookOpen}
           onChange={(description) => onEdit({ ...npc, description: description })}
+        />
+        <TextField
+          value={npc.traits}
+          label="Traits"
+          icon={faBookOpen}
+          onChange={(traits) => onEdit({ ...npc, traits: traits })}
         />
       </View>
     </CenterWrapper>

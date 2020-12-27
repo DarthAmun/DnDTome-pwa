@@ -11,6 +11,7 @@ import TextField from "../../../form_elements/TextField";
 import AutoStringField from "../../../form_elements/AutoStringField";
 import IconButton from "../../../form_elements/IconButton";
 import TextButton from "../../../form_elements/TextButton";
+import FlowChart from "../../../general_elements/flow/FlowChart";
 
 interface $Props {
   campaign: Campaign;
@@ -19,6 +20,38 @@ interface $Props {
 
 const CampaignEditView = ({ campaign, onEdit }: $Props) => {
   const [activeTab, setTab] = useState<string>("General");
+
+  const removeNpc = (oldNpc: string) => {
+    if (campaign !== undefined) {
+      let newNpclList = campaign.npcs
+        .filter((npc: string) => npc !== oldNpc)
+        .map((npc: string) => {
+          return npc;
+        });
+      onEdit({ ...campaign, npcs: newNpclList });
+    }
+  };
+  const addNewNpc = () => {
+    if (campaign !== undefined) {
+      let newNpclList = campaign.npcs.map((npc: string) => {
+        return npc;
+      });
+      newNpclList.push("");
+      onEdit({ ...campaign, npcs: newNpclList });
+    }
+  };
+  const onChangeNpc = (newNpc: string, oldNpc: string) => {
+    if (campaign !== undefined) {
+      let newNpclList = campaign.npcs.map((npc: string) => {
+        if (npc === oldNpc) {
+          return newNpc;
+        } else {
+          return npc;
+        }
+      });
+      onEdit({ ...campaign, npcs: newNpclList });
+    }
+  };
 
   const removePlayer = (oldPlayer: string) => {
     if (campaign !== undefined) {
@@ -87,7 +120,7 @@ const CampaignEditView = ({ campaign, onEdit }: $Props) => {
   return (
     <CenterWrapper>
       <TabBar
-        children={["General", "Players", "Notes"]}
+        children={["General", "Players", "Npcs", "Notes", "Map"]}
         onChange={(tab: string) => setTab(tab)}
         activeTab={activeTab}
       />
@@ -136,6 +169,24 @@ const CampaignEditView = ({ campaign, onEdit }: $Props) => {
           <TextButton text={"Add new Player"} icon={faPlus} onClick={() => addNewPlayer()} />
         </>
       )}
+      {activeTab === "Npcs" && (
+        <>
+          {campaign.npcs.map((npc: string, index: number) => {
+            return (
+              <Container key={index}>
+                <AutoStringField
+                  optionTable={"npcs"}
+                  value={npc}
+                  label="Player"
+                  onChange={(newPlayer) => onChangeNpc(newPlayer, npc)}
+                />
+                <IconButton icon={faTrash} onClick={() => removeNpc(npc)} />
+              </Container>
+            );
+          })}
+          <TextButton text={"Add new Npc"} icon={faPlus} onClick={() => addNewNpc()} />
+        </>
+      )}
       {activeTab === "Notes" && (
         <>
           {campaign.notes.map((note: Note, index: number) => {
@@ -162,6 +213,15 @@ const CampaignEditView = ({ campaign, onEdit }: $Props) => {
           })}
           <TextButton text={"Add new Note"} icon={faPlus} onClick={() => addNewNote()} />
         </>
+      )}
+      {activeTab === "Map" && (
+        <Container>
+          <FlowChart
+            isEditable={true}
+            initElements={campaign.map}
+            onEdit={(graph) => onEdit({ ...campaign, map: graph })}
+          />
+        </Container>
       )}
     </CenterWrapper>
   );

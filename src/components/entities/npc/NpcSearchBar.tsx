@@ -1,12 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useHistory } from "react-router";
 import Filter from "../../../data/Filter";
 import ReactDOM from "react-dom";
-import {
-  reciveAttributeSelection,
-  createNewWithId,
-  exportFilteredFromTable,
-} from "../../../services/DatabaseService";
+import { createNewWithId, exportFilteredFromTable } from "../../../services/DatabaseService";
 
 import {
   faLink,
