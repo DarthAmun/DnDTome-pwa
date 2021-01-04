@@ -5,6 +5,7 @@
   "homepage": "https://darthamun.github.io/DnDTome-pwa/",
   "devDependencies": {
     "@types/react": "^16.9.49",
+    "@types/react-leaflet": "^2.5.2",
     "@types/react-router": "^5.1.8",
     "babel-core": "6.26.3",
     "babel-plugin-transform-class-properties": "6.24.1",
@@ -16,7 +17,10 @@
     "file-loader": "^5.0.2",
     "gh-pages": "^2.2.0",
     "html-webpack-plugin": "2.28.0",
+    "image-size": "^0.9.3",
+    "leaflet": "^1.7.1",
     "react-flow-renderer": "8.3.1",
+    "react-leaflet": "^3.0.5",
     "react-router-dom": "^5.1.2",
     "style-loader": "0.19.1"
   },

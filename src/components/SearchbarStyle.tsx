@@ -1,9 +1,5 @@
 import styled from "styled-components";
 
-type SearchMode = {
-  open?: boolean;
-};
-
 const Tooltip = styled.span`
   visibility: hidden;
   width: 120px;
@@ -48,6 +44,10 @@ export const RightTooltip = styled(Tooltip)`
     border-color: transparent ${({ theme }) => theme.main.highlight} transparent transparent;
   }
 `;
+
+type SearchMode = {
+  open?: boolean;
+};
 
 export const Bar = styled.div<SearchMode>`
   position: fixed;

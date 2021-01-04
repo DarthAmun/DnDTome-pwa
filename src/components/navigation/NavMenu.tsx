@@ -82,8 +82,8 @@ const NavMenu = ({ open }: $Props) => {
             <RightTooltip>Worlds</RightTooltip>
           </Link>
           <Link
-            to="/campaign-overview"
-            className={location.pathname === "/campaign-overview" ? "menuItemActiv" : ""}
+            to="/location-overview"
+            className={location.pathname === "/location-overview" ? "menuItemActiv" : ""}
           >
             <FontAwesomeIcon icon={faMapMarkedAlt} />
             <RightTooltip>Locations</RightTooltip>

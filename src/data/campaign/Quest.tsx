@@ -6,7 +6,6 @@ export default class Quest implements IEntity {
   name: string;
   pic: string;
   description: string;
-  locations: Location[];
   origin: { name: string; type: string };
   rewards: { name: string; type: string }[];
   followQuest: Quest | undefined;
@@ -18,7 +17,6 @@ export default class Quest implements IEntity {
     name?: string,
     pic?: string,
     description?: string,
-    locations?: Location[],
     origin?: { name: string; type: string },
     rewards?: { name: string; type: string }[],
     followQuest?: Quest,
@@ -29,7 +27,6 @@ export default class Quest implements IEntity {
     this.name = name || "";
     this.pic = pic || "";
     this.description = description || "";
-    this.locations = locations || [];
     this.origin = origin || { name: "", type: "" };
     this.rewards = rewards || [];
     this.followQuest = followQuest;

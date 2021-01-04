@@ -22,6 +22,9 @@ import ItemOverview from "./components/entities/item/ItemOverview";
 import IdToBook from "./components/entities/library/details/link_wrapper/IdToBook";
 import NameToBook from "./components/entities/library/details/link_wrapper/NameToBook";
 import Library from "./components/entities/library/Library";
+import IdToLocation from "./components/entities/location/details/link_wrapper/IdToLocation";
+import NameToLocation from "./components/entities/location/details/link_wrapper/NameToLocation";
+import LocationOverview from "./components/entities/location/LocationOverview";
 import IdToMonster from "./components/entities/monster/details/link_wrapper/IdToMonster";
 import NameToMonster from "./components/entities/monster/details/link_wrapper/NameToMonster";
 import MonsterOverview from "./components/entities/monster/MonsterOverview";
@@ -106,6 +109,9 @@ const App = () => {
           <Route path="/npc-detail/name/:name" component={NameToNpc}></Route>
           <Route path="/npc-detail/id/:id" component={IdToNpc}></Route>
           <Route path="/npc-overview" component={NpcOverview}></Route>
+          <Route path="/location-detail/name/:name" component={NameToLocation}></Route>
+          <Route path="/location-detail/id/:id" component={IdToLocation}></Route>
+          <Route path="/location-overview" component={LocationOverview}></Route>
           <Route path="/statistics" component={Statistics}></Route>
           <Route path="/options" component={Options}></Route>
           <Route path="/library" component={Library}></Route>

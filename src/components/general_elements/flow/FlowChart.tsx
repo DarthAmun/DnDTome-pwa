@@ -155,7 +155,7 @@ const FlowContainer = styled.div`
   font-size: 16px;
   padding: 5px;
   width: 100%;
-  height: 1px;
+  height: calc(100vh - 260px);
   min-height: 50vh;
   border-radius: 5px;
   position: relative;
