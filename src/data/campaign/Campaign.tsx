@@ -9,11 +9,11 @@ export default class Campaign implements IEntity {
   pic: string;
   description: string;
   players: string[];
-  //world: World;
-  quests: string[];
+  logs: Note[];
+  map: string;
   npcs: string[];
   notes: Note[];
-  map: FlowElement[];
+  flow: FlowElement[];
   sources: string;
   filename?: string;
 
@@ -23,10 +23,11 @@ export default class Campaign implements IEntity {
     pic?: string,
     description?: string,
     players?: string[],
-    quests?: string[],
+    logs?: Note[],
+    map?: string,
     npcs?: string[],
     notes?: Note[],
-    map?: FlowElement[],
+    flow?: FlowElement[],
     sources?: string,
     filename?: string
   ) {
@@ -35,10 +36,11 @@ export default class Campaign implements IEntity {
     this.pic = pic || "";
     this.description = description || "";
     this.players = players || [];
-    this.quests = quests || [];
+    this.logs = logs || [];
+    this.map = map || "";
     this.npcs = npcs || [];
     this.notes = notes || [];
-    this.map = map || [];
+    this.flow = flow || [];
     this.sources = sources || "";
     this.filename = filename || "";
   }
@@ -47,9 +49,10 @@ export default class Campaign implements IEntity {
 export function isCampaign(arg: any): arg is Campaign {
   const nameCheck = arg.name !== undefined && typeof arg.name == "string";
   const picCheck = arg.pic !== undefined && typeof arg.pic == "string";
+  const mapCheck = arg.map !== undefined && typeof arg.map == "string";
   const descriptionCheck = arg.description !== undefined && typeof arg.description == "string";
   const playersCheck = arg.players !== undefined && Array.isArray(arg.players);
-  const questsCheck = arg.quests !== undefined && Array.isArray(arg.quests);
+  const logCheck = arg.log !== undefined && Array.isArray(arg.log);
   const npcsCheck = arg.npcs !== undefined && Array.isArray(arg.npcs);
   const notesCheck = arg.notes !== undefined && Array.isArray(arg.notes);
   const sourcesCheck = arg.sources !== undefined && typeof arg.sources == "string";
@@ -60,9 +63,10 @@ export function isCampaign(arg: any): arg is Campaign {
     picCheck &&
     descriptionCheck &&
     playersCheck &&
-    questsCheck &&
+    logCheck &&
     npcsCheck &&
     notesCheck &&
+    mapCheck &&
     sourcesCheck
   );
 }

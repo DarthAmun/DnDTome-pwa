@@ -117,10 +117,42 @@ const CampaignEditView = ({ campaign, onEdit }: $Props) => {
     }
   };
 
+  const removeLog = (oldLog: Note) => {
+    if (campaign !== undefined) {
+      let newLoglList = campaign.logs
+        .filter((log: Note) => log !== oldLog)
+        .map((log: Note) => {
+          return log;
+        });
+      onEdit({ ...campaign, logs: newLoglList });
+    }
+  };
+  const addNewLog = () => {
+    if (campaign !== undefined) {
+      let newLoglList = campaign.logs.map((log: Note) => {
+        return log;
+      });
+      newLoglList.push(new Note(new Date().toString(), "", ""));
+      onEdit({ ...campaign, logs: newLoglList });
+    }
+  };
+  const onChangeLog = (field: string, newValue: string, oldLog: Note) => {
+    if (campaign !== undefined) {
+      let newLoglList = campaign.logs.map((logs: Note) => {
+        if (logs === oldLog) {
+          return { ...logs, [field]: newValue };
+        } else {
+          return logs;
+        }
+      });
+      onEdit({ ...campaign, logs: newLoglList });
+    }
+  };
+
   return (
     <CenterWrapper>
       <TabBar
-        children={["General", "Players", "Npcs", "Notes", "Map"]}
+        children={["General", "Players", "Npcs", "Notes", "Log", "Graph", "Map"]}
         onChange={(tab: string) => setTab(tab)}
         activeTab={activeTab}
       />
@@ -214,12 +246,45 @@ const CampaignEditView = ({ campaign, onEdit }: $Props) => {
           <TextButton text={"Add new Note"} icon={faPlus} onClick={() => addNewNote()} />
         </>
       )}
-      {activeTab === "Map" && (
+      {activeTab === "Log" && (
+        <>
+          {campaign.logs.map((log: Note, index: number) => {
+            return (
+              <Container key={index}>
+                <TextField
+                  height={"30px"}
+                  value={log.content}
+                  label="Log Entry"
+                  onChange={(newContent) => onChangeLog("content", newContent, log)}
+                />
+                <StringField
+                  value={log.tags}
+                  label="Tags"
+                  onChange={(newTags) => onChangeLog("tags", newTags, log)}
+                />
+                <IconButton icon={faTrash} onClick={() => removeLog(log)} />
+              </Container>
+            );
+          })}
+          <TextButton text={"Add new Note"} icon={faPlus} onClick={() => addNewLog()} />
+        </>
+      )}
+      {activeTab === "Graph" && (
         <Container>
           <FlowChart
             isEditable={true}
-            initElements={campaign.map}
-            onEdit={(graph) => onEdit({ ...campaign, map: graph })}
+            initElements={campaign.flow}
+            onEdit={(graph) => onEdit({ ...campaign, flow: graph })}
+          />
+        </Container>
+      )}
+      {activeTab === "Map" && (
+        <Container>
+          <AutoStringField
+            optionTable={"locations"}
+            value={campaign.map}
+            label="Map"
+            onChange={(newMap) => onEdit({ ...campaign, map: newMap })}
           />
         </Container>
       )}

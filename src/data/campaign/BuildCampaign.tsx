@@ -1,18 +1,18 @@
 import Char from "../chars/Char";
+import Location from "../world/Location";
 import Campaign from "./Campaign";
 import Npc from "./Npc";
-import Quest from "./Quest";
 
 export default class BuildCampaign {
   campaign: Campaign;
   characters: Char[];
   npcs: Npc[];
-  quests: Quest[];
+  map: Location;
 
-  constructor(champaign?: Campaign, characters?: Char[], npcs?: Npc[], quests?: Quest[]) {
+  constructor(champaign?: Campaign, characters?: Char[], npcs?: Npc[], map?: Location) {
     this.campaign = champaign || new Campaign();
     this.characters = characters || [];
     this.npcs = npcs || [];
-    this.quests = quests || [];
+    this.map = map || new Location();
   }
 }

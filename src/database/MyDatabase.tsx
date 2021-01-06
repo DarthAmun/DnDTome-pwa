@@ -331,7 +331,7 @@ export class MyAppDatabase extends Dexie {
       selections: "++id, name, selectionOptions, filename",
       randomTables: "++id, name, rows, header, filename",
       campaigns:
-        "++id, name, pic, description, world, quests, npcs, notes, players, map, sources, filename",
+        "++id, name, pic, description, world, npcs, notes, logs, players, flow, map, sources, filename",
       quests:
         "++id, name, pic, origin, description, rewards, followQuest, sources, filename",
       npcs: "++id, name, pic, char, traits, description, sources, filename",

@@ -3,7 +3,6 @@ import styled from "styled-components";
 
 import Campaign from "../../../../data/campaign/Campaign";
 import Npc from "../../../../data/campaign/Npc";
-import Quest from "../../../../data/campaign/Quest";
 import Char from "../../../../data/chars/Char";
 import Note from "../../../../data/campaign/Note";
 import Filter from "../../../../data/Filter";
@@ -14,8 +13,8 @@ import { applyFilters } from "../../../../services/DatabaseService";
 import FormatedText from "../../../general_elements/FormatedText";
 import NoteSearchBar from "../NoteSearchBar";
 import TabBar from "../../../general_elements/TabBar";
+import Map from "../../../general_elements/Map";
 import NpcTile from "../../npc/NpcTile";
-import QuestTile from "../../quest/QuestTile";
 import CharTile from "../../chars/CharTile";
 import { faLink, faTags } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -50,6 +49,10 @@ const CampaignView = ({ campaign, onEdit }: $Props) => {
     return "";
   }, [campaign]);
 
+  const formatDate = (date: string): string => {
+    return new Date(date).toLocaleString();
+  };
+
   return (
     <>
       {loading && <LoadingSpinner />}
@@ -70,7 +73,7 @@ const CampaignView = ({ campaign, onEdit }: $Props) => {
             </View>
           </Header>
           <TabBar
-            children={["General", "Players", "Npcs", "Notes", "Quests", "Map"]}
+            children={["General", "Players", "Npcs", "Notes", "Log", "Graph", "Map"]}
             onChange={(tab: string) => setTab(tab)}
             activeTab={activeTab}
           />
@@ -104,7 +107,7 @@ const CampaignView = ({ campaign, onEdit }: $Props) => {
           )}
           {activeTab === "Notes" && (
             <>
-              <NoteSearchBar onSend={setFilters} />
+              <NoteSearchBar hasTitle={true} onSend={setFilters} />
               <SearchableView>
                 {loadedCampaign.campaign.notes
                   .filter((note: Note) => applyFilters(note, filters))
@@ -125,18 +128,36 @@ const CampaignView = ({ campaign, onEdit }: $Props) => {
               </SearchableView>
             </>
           )}
-          {activeTab === "Quests" && (
+          {activeTab === "Log" && (
+            <>
+              <NoteSearchBar hasTitle={false} onSend={setFilters} />
+              <SearchableView>
+                {loadedCampaign.campaign.logs
+                  .filter((log: Note) => applyFilters(log, filters))
+                  .sort((a: Note, b: Note) => +new Date(b.title) - +new Date(a.title))
+                  .map((log: Note, index: number) => {
+                    return (
+                      <PropWrapper key={index}>
+                        <Prop>
+                          <PropTitle>{formatDate(log.title)}:</PropTitle>
+                          <FormatedText text={log.content} />
+                        </Prop>
+                        <Prop>
+                          <Icon icon={faTags} />
+                          {log.tags}
+                        </Prop>
+                      </PropWrapper>
+                    );
+                  })}
+              </SearchableView>
+            </>
+          )}
+          {activeTab === "Graph" && (
             <PropWrapper>
-              {loadedCampaign.quests.map((quest: Quest, index: number) => {
-                return <QuestTile quest={quest} key={index} />;
-              })}
+              <FlowChart isEditable={false} initElements={loadedCampaign.campaign.flow} />
             </PropWrapper>
           )}
-          {activeTab === "Map" && (
-            <PropWrapper>
-              <FlowChart isEditable={false} initElements={loadedCampaign.campaign.map} />
-            </PropWrapper>
-          )}
+          {activeTab === "Map" && <Map location={loadedCampaign.map} />}
         </CenterWrapper>
       )}
     </>

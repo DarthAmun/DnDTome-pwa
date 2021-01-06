@@ -9,10 +9,11 @@ import StringField from "../../form_elements/StringField";
 import { Bar, SearchBar } from "../../SearchbarStyle";
 
 interface $Props {
+  hasTitle: boolean;
   onSend: (filters: Filter[]) => void;
 }
 
-const NoteSearchBar = ({ onSend }: $Props) => {
+const NoteSearchBar = ({ hasTitle, onSend }: $Props) => {
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState<string>("");
   const [content, setContent] = useState<string>("");
@@ -46,7 +47,7 @@ const NoteSearchBar = ({ onSend }: $Props) => {
   return (
     <>
       <Bar open={open}>
-        <StringField value={title} label="Title" onChange={(title: string) => setTitle(title)} />
+        {hasTitle && <StringField value={title} label="Title" onChange={(title: string) => setTitle(title)} />}
         <StringField
           value={content}
           label="Content"
