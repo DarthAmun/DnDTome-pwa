@@ -4,7 +4,7 @@ import styled from "styled-components";
 
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import TextButton from "../../../form_elements/TextButton";
-import Map from "../../../general_elements/Map";
+import Map from "../../../general_elements/map/Map";
 import P2PSender from "../../../p2p/P2PSender";
 
 import "leaflet/dist/leaflet.css";
@@ -41,7 +41,7 @@ const LocationView = ({ location }: $Props) => {
         )}
       </View>
 
-      <Map location={location} />
+      <Map editable={false} location={location} />
       <View>
         <PropWrapper>
           {!send && (

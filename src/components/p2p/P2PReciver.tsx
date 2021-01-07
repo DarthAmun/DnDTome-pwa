@@ -26,7 +26,8 @@ const P2PReciver = ({ changeData, reload }: $Props) => {
   const [peer] = useState<Peer>(
     new Peer(undefined, {
       host: "peerjs.thedndtome.com",
-      secure: true,
+      port: 9000,
+      secure: false,
     })
   );
 

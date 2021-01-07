@@ -24,7 +24,8 @@ const P2PSender = ({ data, mode }: $Props) => {
       const brokerId = generateBrokerId();
       const newPeer = new Peer(brokerId, {
         host: "peerjs.thedndtome.com",
-        secure: true,
+        port: 9000,
+        secure: false,
       });
       console.log(newPeer);
       newPeer.on("connection", function (conn) {
@@ -75,11 +76,7 @@ const P2PSender = ({ data, mode }: $Props) => {
     <>
       {peer !== undefined && peer.id !== null && (
         <>
-          <StringField
-            value={peer.id}
-            label={`Your ${name} ID:`}
-            onChange={() => {}}
-          />
+          <StringField value={peer.id} label={`Your ${name} ID:`} onChange={() => {}} />
         </>
       )}
       {error && <Icon icon={faExclamationCircle} />}

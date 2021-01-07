@@ -191,6 +191,7 @@ const Link = styled.span`
   font-size: 14px;
   padding: 0px 5px 0px 5px;
   cursor: pointer;
+  white-space: pre;
 `;
 
 const TextPart = styled.span`

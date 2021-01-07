@@ -13,7 +13,7 @@ import { applyFilters } from "../../../../services/DatabaseService";
 import FormatedText from "../../../general_elements/FormatedText";
 import NoteSearchBar from "../NoteSearchBar";
 import TabBar from "../../../general_elements/TabBar";
-import Map from "../../../general_elements/Map";
+import Map from "../../../general_elements/map/Map";
 import NpcTile from "../../npc/NpcTile";
 import CharTile from "../../chars/CharTile";
 import { faLink, faTags } from "@fortawesome/free-solid-svg-icons";
@@ -81,7 +81,7 @@ const CampaignView = ({ campaign, onEdit }: $Props) => {
             <View>
               <Text>
                 <PropTitle>Description</PropTitle>
-                {loadedCampaign.campaign.description}
+                <FormatedText text={loadedCampaign.campaign.description} />
               </Text>
               <PropWrapper>
                 <Prop>
@@ -157,7 +157,7 @@ const CampaignView = ({ campaign, onEdit }: $Props) => {
               <FlowChart isEditable={false} initElements={loadedCampaign.campaign.flow} />
             </PropWrapper>
           )}
-          {activeTab === "Map" && <Map location={loadedCampaign.map} />}
+          {activeTab === "Map" && <Map editable={false} location={loadedCampaign.map} />}
         </CenterWrapper>
       )}
     </>

@@ -3,6 +3,7 @@ import styled from "styled-components";
 import Location from "../../../../data/world/Location";
 
 import StringField from "../../../form_elements/StringField";
+import Map from "../../../general_elements/map/Map";
 
 import { faLink, faImage } from "@fortawesome/free-solid-svg-icons";
 import NumberField from "../../../form_elements/NumberField";
@@ -14,10 +15,7 @@ interface $Props {
 
 const LocationEditView = ({ location, onEdit }: $Props) => {
   useEffect(() => {
-    if (
-      location.map !== undefined &&
-      location.map !== ""
-    ) {
+    if (location.map !== undefined && location.map !== "") {
       let url = require("url");
       let http = require("http");
       let sizeOf = require("image-size");
@@ -75,6 +73,7 @@ const LocationEditView = ({ location, onEdit }: $Props) => {
           onChange={(sources) => onEdit({ ...location, sources: sources })}
         />
       </View>
+      <Map editable={true} location={location} onEdit={onEdit} />
     </CenterWrapper>
   );
 };
