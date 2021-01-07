@@ -4,6 +4,7 @@ import { ImageOverlay, MapContainer, Marker, TileLayer, Popup, useMapEvents } fr
 import styled from "styled-components";
 import Location from "../../../data/world/Location";
 import FormatedText from "../FormatedText";
+import MarkerEditDialog from "./MarkerEditDialog";
 
 interface $Props {
   location: Location;
@@ -12,6 +13,9 @@ interface $Props {
 }
 
 const Map = ({ location, editable, onEdit }: $Props) => {
+  const [showEditDialog, setEditDialaog] = useState<boolean>(false);
+  const [activeElement, setActive] = useState<number>();
+
   const mapWrap = useRef<HTMLDivElement>(null);
   const [map, setMap] = useState<any>(null);
   const [mapHeight, setHeight] = useState<string>();
@@ -27,7 +31,6 @@ const Map = ({ location, editable, onEdit }: $Props) => {
       [number[0][0] * 0.5, number[0][1] * 0.5],
       [number[1][0] * 0.5, number[1][1] * 0.5],
     ];
-    console.log("Fit those bounds: ", number, "to", newBounds);
     return newBounds;
   };
 
@@ -45,15 +48,9 @@ const Map = ({ location, editable, onEdit }: $Props) => {
         [-(heightratio / 2), -(widthratio / 2)],
         [heightratio / 2, widthratio / 2],
       ];
-
-      console.log(
-        `${widthratio}:${heightratio}`,
-        bounds,
-        widthratio > heightratio ? heightratio : widthratio
-      );
       setBounds(bounds);
     }
-  }, [location, gcd]);
+  }, [location.map, location.dimension, gcd]);
 
   useEffect(() => {
     if (map !== null && bounds) {
@@ -68,8 +65,40 @@ const Map = ({ location, editable, onEdit }: $Props) => {
     }
   }, []);
 
+  const onSave = (element: { position: LatLng; text: string }) => {
+    if (editable && onEdit !== undefined && activeElement !== undefined) {
+      let markerList = [...location.markers];
+      markerList[activeElement] = element;
+      onEdit({
+        ...location,
+        markers: markerList,
+      });
+    }
+  };
+
+  const onDelete = () => {
+    if (editable && onEdit !== undefined && activeElement !== undefined) {
+      let markerList = [...location.markers];
+      markerList.splice(activeElement, 1);
+      setEditDialaog(false);
+      setActive(undefined);
+      onEdit({
+        ...location,
+        markers: markerList,
+      });
+    }
+  };
+
   return (
     <MapWrapper ref={mapWrap}>
+      {showEditDialog && activeElement !== undefined && (
+        <MarkerEditDialog
+          activeElement={location.markers[activeElement]}
+          onSave={onSave}
+          onDelete={onDelete}
+          onClose={() => setEditDialaog(false)}
+        ></MarkerEditDialog>
+      )}
       {location.map && mapHeight && bounds && (
         <MapContainer
           style={{ height: mapHeight, width: "100%" }}
@@ -85,6 +114,8 @@ const Map = ({ location, editable, onEdit }: $Props) => {
             location={location}
             editable={editable}
             onEdit={onEdit}
+            setActive={setActive}
+            setEditDialaog={setEditDialaog}
           />
         </MapContainer>
       )}
@@ -99,21 +130,36 @@ interface $MarkersProps {
   editable: boolean;
   markerPositions: { position: LatLng; text: string }[];
   onEdit?: (value: Location) => void;
+  setActive: (value: number) => void;
+  setEditDialaog: (value: boolean) => void;
 }
 
-const Markers = ({ location, editable, markerPositions, onEdit }: $MarkersProps) => {
+const Markers = ({
+  location,
+  editable,
+  markerPositions,
+  onEdit,
+  setActive,
+  setEditDialaog,
+}: $MarkersProps) => {
   useMapEvents({
     click(e) {
-      console.log("map click", editable, onEdit);
       if (editable && onEdit !== undefined) {
-        console.log("add marker");
         onEdit({
           ...location,
-          markers: [...location.markers, { position: e.latlng, text: "[[spell.Absolute Zero]]" }],
+          markers: [...location.markers, { position: e.latlng, text: "New" }],
         });
       }
     },
   });
+
+  const editMarker = (index: number) => {
+    if (editable && onEdit !== undefined) {
+      console.log(index);
+      setActive(index);
+      setEditDialaog(true);
+    }
+  };
 
   let icon = new Icon({
     iconRetinaUrl: require("leaflet/dist/images/marker-icon-2x.png"),
@@ -129,7 +175,7 @@ const Markers = ({ location, editable, markerPositions, onEdit }: $MarkersProps)
         markerPositions.map((marker: { position: LatLng; text: string }, index: number) => {
           return (
             <Marker key={index} position={marker.position} icon={icon}>
-              <Popup autoPan={true} minWidth={120}>
+              <Popup autoPan={true} minWidth={120} onOpen={() => editMarker(index)}>
                 <FormatedText text={marker.text} />
               </Popup>
             </Marker>
@@ -145,6 +191,7 @@ const MapWrapper = styled.div`
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
+  position: relative;
 
   height: calc(100vh - 265px);
   width: calc(100% - 6px);

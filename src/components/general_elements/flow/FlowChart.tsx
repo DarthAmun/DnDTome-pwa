@@ -16,7 +16,7 @@ import styled from "styled-components";
 
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import CustomeNode from "./CustomeNode";
-import EditDialog from "./EditDialog";
+import EditDialog from "./NodeEditDialog";
 import IconButton from "../../form_elements/IconButton";
 
 interface $Props {
