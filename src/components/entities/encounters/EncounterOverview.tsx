@@ -77,7 +77,7 @@ const EncounterOverview = () => {
 export default EncounterOverview;
 
 const EncounterContainer = styled(InfiniteScroll)`
-  margin-top: 50px;
+  margin-top: 20px;
   width: 100%;
   display: flex;
   flex-wrap: wrap;

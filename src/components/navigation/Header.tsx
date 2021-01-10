@@ -1,13 +1,13 @@
 import React from "react";
-import { GiRuleBook } from "react-icons/gi";
 import styled from "styled-components";
 import packageJson from "../../../package.json";
+import LogoImg from "../../logo192.png";
 
 const Header = () => {
   return (
     <Bar>
       <NameWrapper>
-        <GiRuleBook />
+        <Logo src={LogoImg} />
         <Name>DnDTome</Name>
       </NameWrapper>
       <HomeCredits>v{packageJson.version}</HomeCredits>
@@ -18,10 +18,10 @@ const Header = () => {
 export default Header;
 
 const Bar = styled.div`
-  width: calc(100% - 60px);
+  width: calc(100% - 20px);
   height: 30px;
   line-height: 30px;
-  padding: 10px 10px 10px 50px;
+  padding: 10px 10px 10px 10px;
   background-color: ${({ theme }) => theme.header.backgroundColor};
   color: ${({ theme }) => theme.header.color};
   box-shadow: 0px 5px 5px 0px rgba(0, 0, 0, 0.25);
@@ -32,6 +32,11 @@ const Bar = styled.div`
   top: 0px;
   left: 0px;
   right: 0px;
+
+  @media (max-width: 576px) {
+    width: calc(100% - 60px);
+    padding: 10px 10px 10px 50px;
+  }
 `;
 
 const NameWrapper = styled.div`
@@ -63,4 +68,9 @@ const HomeCredits = styled.div`
   text-shadow: none;
   line-height: 30px;
   text-align: center;
+`;
+
+const Logo = styled.img`
+  height: 30px;
+  float: left;
 `;

@@ -9,7 +9,7 @@ import { faSearch, faRedoAlt, faPlusCircle, faFileExport } from "@fortawesome/fr
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import IconButton from "../../form_elements/IconButton";
 import StringField from "../../form_elements/StringField";
-import { Bar, SearchBar, CreateButton, ExportButton, LeftTooltip } from "../../SearchbarStyle";
+import { FixedBar, SearchBar, CreateButton, ExportButton, LeftTooltip } from "../../SearchbarStyle";
 
 interface $Props {
   onSend: (filters: Filter[]) => void;
@@ -54,7 +54,7 @@ const EncounterSearchBar = ({ onSend }: $Props) => {
 
   return (
     <>
-      <Bar open={open}>
+      <FixedBar open={open}>
         <StringField value={name} label="Name" onChange={(name: string) => setName(name)} />
         <IconButton onClick={() => search()} icon={faSearch} />
         <IconButton onClick={() => reset()} icon={faRedoAlt} />
@@ -62,7 +62,7 @@ const EncounterSearchBar = ({ onSend }: $Props) => {
         <SearchBar onClick={() => setOpen(!open)}>
           <FontAwesomeIcon icon={faSearch} />
         </SearchBar>
-      </Bar>
+      </FixedBar>
       <CreateButton onClick={() => createNewEncounter()}>
         <FontAwesomeIcon icon={faPlusCircle} />
         <LeftTooltip>Add new</LeftTooltip>

@@ -75,11 +75,7 @@ const P2PSender = ({ data, mode }: $Props) => {
     <>
       {peer !== undefined && peer.id !== null && (
         <>
-          <StringField
-            value={peer.id}
-            label={`Your ${name} ID:`}
-            onChange={() => {}}
-          />
+          <StringField value={peer.id} label={`Your ${name} ID:`} onChange={() => {}} />
         </>
       )}
       {error && <Icon icon={faExclamationCircle} />}

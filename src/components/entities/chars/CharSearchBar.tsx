@@ -14,7 +14,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import IconButton from "../../form_elements/IconButton";
 import StringSearchField from "../../form_elements/StringSearchField";
 import { exportFilteredFromTable } from "../../../services/DatabaseService";
-import { Bar, SearchBar, CreateButton, ExportButton, LeftTooltip } from "../../SearchbarStyle";
+import { FixedBar, SearchBar, CreateButton, ExportButton, LeftTooltip } from "../../SearchbarStyle";
 
 interface $Props {
   onSend: (filters: Filter[]) => void;
@@ -82,7 +82,7 @@ const CharSearchBar = ({ onSend }: $Props) => {
 
   return (
     <>
-      <Bar open={open}>
+      <FixedBar open={open}>
         <StringSearchField
           value={name}
           sort={sort}
@@ -110,7 +110,7 @@ const CharSearchBar = ({ onSend }: $Props) => {
         <SearchBar onClick={() => setOpen(!open)}>
           <FontAwesomeIcon icon={faSearch} />
         </SearchBar>
-      </Bar>
+      </FixedBar>
       <CreateButton onClick={() => createNewChar()}>
         <FontAwesomeIcon icon={faPlusCircle} />
         <LeftTooltip>Add new</LeftTooltip>

@@ -1,3 +1,8 @@
+import Boni from "../data/classes/Boni";
+import Class from "../data/classes/Class";
+import Feature from "../data/classes/Feature";
+import FeatureSet from "../data/classes/FeatureSet";
+import Subclass from "../data/classes/Subclass";
 import Gear from "../data/Gear";
 import Item from "../data/Item";
 import Monster from "../data/Monster";
@@ -6,6 +11,261 @@ import Subrace from "../data/races/Subrace";
 import Trait from "../data/races/Trait";
 import Spell from "../data/Spell";
 import { saveNew } from "./DatabaseService";
+
+export const import5eToolsClassesFiles = (
+  fileList: FileList | null,
+  callback: (max: number) => void
+) => {
+  if (fileList !== null) {
+    const files = Array.from(fileList);
+
+    files.forEach((file, i) => {
+      let fileReader = new FileReader();
+      fileReader.onloadend = async function () {
+        const content = fileReader.result;
+        if (content !== null) {
+          let json = JSON.parse(content.toString());
+
+          let promList: Promise<any>[] = [];
+          json.class.forEach((obj: any) => {
+            const name = obj.name;
+            const sources = obj.source;
+            const hitdice = obj.hd ? "d" + obj.hd.faces : "";
+
+            let proficiencies = "";
+            if (obj.startingProficiencies !== undefined) {
+              if (obj.startingProficiencies.armor !== undefined) {
+                proficiencies = "Armor: ";
+                obj.startingProficiencies.armor?.forEach((armor: string) => {
+                  proficiencies += armor + ", ";
+                });
+              }
+              if (obj.startingProficiencies.weapons !== undefined) {
+                proficiencies += "\nWeapons: ";
+                obj.startingProficiencies.weapons?.forEach((wpn: string) => {
+                  proficiencies += wpn + ", ";
+                });
+              }
+              if (obj.startingProficiencies.skills !== undefined) {
+                proficiencies += "\nSkills: ";
+                obj.startingProficiencies.skills[0]?.choose.from.forEach((skill: string) => {
+                  proficiencies += skill + ", ";
+                });
+              }
+              proficiencies = proficiencies
+                .replaceAll("},", "\n")
+                .replaceAll("[", "")
+                .replaceAll("]", "")
+                .replaceAll("}", "")
+                .replaceAll("{@", "")
+                .replaceAll("{", "")
+                .trim();
+            }
+
+            let equipment = "";
+            if (obj.startingEquipment) {
+              obj.startingEquipment.default?.forEach((eqp: string) => {
+                equipment += eqp + ", ";
+              });
+              equipment = equipment
+                .replaceAll("},", "\n")
+                .replaceAll("[", "")
+                .replaceAll("]", "")
+                .replaceAll("}", "")
+                .replaceAll("{@", "")
+                .replaceAll("{", "")
+                .trim();
+            }
+
+            let featureSets: FeatureSet[] = [];
+            if (obj.classTableGroups !== undefined) {
+              obj.classTableGroups.forEach((col: any) => {
+                if (col.title !== undefined && col.title.includes("Slots")) {
+                  col.rows.forEach((row: number[], rowIndex: number) => {
+                    if (featureSets[rowIndex] === undefined) {
+                      featureSets.push(new FeatureSet(rowIndex + 1, 0, [], [], []));
+                    }
+                    featureSets[rowIndex].spellslots = row;
+                  });
+                } else {
+                  col.colLabels.forEach((label: string, colIndex: number) => {
+                    let clearLabel = label
+                      .replaceAll("},", "\n")
+                      .replaceAll("[", "")
+                      .replaceAll("]", "")
+                      .replaceAll("}", "")
+                      .replaceAll("{@", "")
+                      .replaceAll("{", "")
+                      .replaceAll("filter", "")
+                      .split("|")[0]
+                      .trim();
+                    col.rows.forEach((row: any, rowIndex: number) => {
+                      if (featureSets[rowIndex] === undefined) {
+                        featureSets.push(new FeatureSet(rowIndex + 1, 0, [], [], []));
+                      }
+                      let bonis: Boni[] | undefined = featureSets[rowIndex].bonis;
+                      if (bonis === undefined) bonis = [];
+                      bonis.push(new Boni(clearLabel, row[colIndex], false));
+                      featureSets[rowIndex].bonis = bonis;
+                    });
+                  });
+                }
+              });
+            }
+
+            if (obj.classFeatures !== undefined) {
+              obj.classFeatures.forEach((feature: any) => {
+                let featureRaw: string = "";
+                if (typeof feature != "string") {
+                  featureRaw = feature.classFeature;
+                } else {
+                  featureRaw = feature;
+                }
+                const featureParts: string[] = featureRaw.split("|");
+
+                let text = "";
+                json.classFeature.forEach((objFeature: any) => {
+                  if (objFeature.name === featureParts[0] && objFeature.source === sources) {
+                    text = recurdsiveTextAdder(objFeature.entries, text);
+                  }
+                });
+                text = text
+                  .replaceAll("},", "\n")
+                  .replaceAll("[", "")
+                  .replaceAll("]", "")
+                  .replaceAll("}", "")
+                  .replaceAll("{@", "")
+                  .replaceAll("{", "")
+                  .trim();
+                if (featureSets[+featureParts[3] - 1] === undefined) {
+                  featureSets.push(
+                    new FeatureSet(
+                      +featureParts[3],
+                      0,
+                      [new Feature(featureParts[0], text, [], undefined)],
+                      [],
+                      []
+                    )
+                  );
+                } else {
+                  featureSets[+featureParts[3] - 1].features.push(
+                    new Feature(featureParts[0], text, [], undefined)
+                  );
+                }
+              });
+            }
+
+            let newClass = new Class(
+              0,
+              name,
+              featureSets,
+              hitdice,
+              proficiencies,
+              equipment,
+              file.name,
+              sources,
+              ""
+            );
+            promList.push(saveNew("classes", newClass, file.name));
+
+            if (obj.subclasses !== undefined) {
+              obj.subclasses.forEach((subclass: any) => {
+                let features: FeatureSet[] = [];
+                if (subclass.subclassFeatures !== undefined) {
+                  subclass.subclassFeatures.forEach((feature: any) => {
+                    let featureRaw: string = "";
+                    if (typeof feature != "string") {
+                      featureRaw = feature.classFeature;
+                    } else {
+                      featureRaw = feature;
+                    }
+                    const featureParts: string[] = featureRaw.split("|");
+
+                    let text = "";
+                    json.subclassFeature.forEach((objFeature: any) => {
+                      if (
+                        objFeature.subclassShortName === featureParts[3] &&
+                        objFeature.subclassSource === subclass.source
+                      ) {
+                        text = recurdsiveTextAdder(objFeature.entries, text);
+                      }
+                    });
+                    text = text
+                      .replaceAll("},", "\n")
+                      .replaceAll("[", "")
+                      .replaceAll("]", "")
+                      .replaceAll("}", "")
+                      .replaceAll("{@", "")
+                      .replaceAll("{", "")
+                      .trim();
+
+                    let filteredFeatures = features.filter(
+                      (featureSet) => featureSet.level === +featureParts[5]
+                    );
+                    if (filteredFeatures.length === 0) {
+                      features.push(new FeatureSet(+featureParts[5], 0, [], [], []));
+                    }
+
+                    features
+                      .filter((featureSet) => featureSet.level === +featureParts[5])
+                      .forEach((feat) => {
+                        feat.features.push(new Feature(featureParts[0], text, [], undefined));
+                      });
+                  });
+                }
+
+                let newSubclass = new Subclass(
+                  0,
+                  subclass.name,
+                  name,
+                  features,
+                  file.name,
+                  subclass.source
+                );
+                promList.push(saveNew("subclasses", newSubclass, file.name));
+              });
+            }
+          });
+          await Promise.all(promList);
+          callback(json.class.length);
+        }
+      };
+      fileReader.readAsText(file);
+    });
+  }
+};
+
+const recurdsiveTextAdder = (entries: any[], text: string): string => {
+  let newText: string = text;
+  if (Array.isArray(entries)) {
+    entries?.forEach((entry: any) => {
+      if (typeof entry == "string") {
+        newText += entry + "\n";
+      } else if (entry.entries !== undefined) {
+        newText += entry.name + "\n";
+        newText = recurdsiveTextAdder(entry.entries, newText);
+      } else if (entry.items !== undefined) {
+        entry.items.forEach((item: string) => {
+          newText += "• " + item + "\n";
+        });
+      } else {
+        for (const value of Object.entries(entry)) {
+          newText += value[1] + "\n";
+        }
+      }
+    });
+  } else {
+    if (typeof entries == "string") {
+      newText += entries + "\n";
+    } else {
+      for (const value of Object.entries(entries)) {
+        newText += value[1] + "\n";
+      }
+    }
+  }
+
+  return newText + "\n";
+};
 
 export const import5eToolsRacesFiles = (
   fileList: FileList | null,

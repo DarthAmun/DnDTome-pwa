@@ -59,13 +59,13 @@ const CharLab = () => {
     let fullClassList: { class: Class; classSet: ClassSet }[] = [];
     let classList: Promise<Class>[] = [];
 
-    char.classes.forEach((classe) => {
+    char.classes?.forEach((classe) => {
       classList.push(
         recivePromiseByAttribute("classes", "name", classe.classe)
       );
     });
     const results = await Promise.all(classList);
-    results.forEach((classe: Class) => {
+    results?.forEach((classe: Class) => {
       char.classes.forEach((classSet) => {
         if (classe.name === classSet.classe) {
           fullClassList.push({ class: classe, classSet: classSet });
@@ -73,10 +73,10 @@ const CharLab = () => {
       });
     });
 
-    fullClassList.forEach((classe: { class: Class; classSet: ClassSet }) => {
+    fullClassList?.forEach((classe: { class: Class; classSet: ClassSet }) => {
       let featureSet = classe.class.featureSets[classe.classSet.level - 1];
       if (featureSet.bonis) {
-        featureSet.bonis.forEach((boni: Boni) => {
+        featureSet.bonis?.forEach((boni: Boni) => {
           if (boni.isCurrency) {
             bonis = [
               ...bonis,
@@ -103,7 +103,7 @@ const CharLab = () => {
 
     if (char.currencyBonis && char.currencyBonis.length > 0) {
       let updatedBonis = bonis.map((newBoni) => {
-        let updatedOldBonis = char.currencyBonis.map((old) => {
+        let updatedOldBonis = char.currencyBonis?.map((old) => {
           if (newBoni.origin === old.origin) {
             return {
               origin: newBoni.origin,
@@ -131,8 +131,8 @@ const CharLab = () => {
     }
 
     if (char.spellSlots && char.spellSlots.length > 0) {
-      let updatedSpellSlots = spellSlots.map((newSpellSlots) => {
-        let updatedOldSlots = char.spellSlots.map((old) => {
+      let updatedSpellSlots = spellSlots?.map((newSpellSlots) => {
+        let updatedOldSlots = char.spellSlots?.map((old) => {
           if (newSpellSlots.origin === old.origin) {
             return {
               origin: newSpellSlots.origin,
@@ -189,6 +189,7 @@ const CharLab = () => {
           "Finished",
         ]}
         onChange={(tab: string) => setTab(tab)}
+        activeTab={activeTab}
       />
       <CenterWrapper>
         <View>

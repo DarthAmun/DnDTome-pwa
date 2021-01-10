@@ -410,6 +410,7 @@ export const replacePlaceholder = (char: BuildChar, text: string | number) => {
       const rawPlaceholder = text.substring(cutStart + 1, cutEnd);
       text = text.replace(text.substring(cutStart, cutEnd + 1), char.oldCharacter[rawPlaceholder]);
     }
+    // eslint-disable-next-line
     return Math.floor(eval(text));
   }
   return text;

@@ -73,7 +73,7 @@ const CharView = ({ character, modifications }: $Props) => {
       {!loading && buildChar && (
         <CenterWrapper>
           <CharHeader char={buildChar.character} />
-          <TabBar children={tabs} onChange={(tab: string) => setTab(tab)} />
+          <TabBar children={tabs} onChange={(tab: string) => setTab(tab)} activeTab={activeTab} />
           {activeTab === "General" && (
             <>
               <CharGeneral buildChar={buildChar} onChange={saveChar} />

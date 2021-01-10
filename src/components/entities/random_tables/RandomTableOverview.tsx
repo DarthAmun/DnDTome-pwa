@@ -79,7 +79,7 @@ const RandomTableOverview = () => {
 export default RandomTableOverview;
 
 const LibraryContainer = styled(InfiniteScroll)`
-  margin-top: 50px;
+  margin-top: 20px;
   width: 100%;
   display: flex;
   flex-wrap: wrap;

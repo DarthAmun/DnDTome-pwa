@@ -1,9 +1,5 @@
 import styled from "styled-components";
 
-type SearchMode = {
-  open?: boolean;
-};
-
 const Tooltip = styled.span`
   visibility: hidden;
   width: 120px;
@@ -49,28 +45,35 @@ export const RightTooltip = styled(Tooltip)`
   }
 `;
 
+type SearchMode = {
+  open?: boolean;
+};
+
 export const Bar = styled.div<SearchMode>`
-  position: absolute;
-  top: 40px;
-  left: 55px;
-  z-index: 900;
+  position: fixed;
+  z-index: 50;
 
   transition: transform 0.3s ease-in-out;
   transform: ${({ open }) => (open ? "translateY(0)" : "translateY(-100%)")};
 
   height: auto;
   min-height: 30px;
-  min-width: calc(100% - 75px);
-  padding: 20px 10px 10px 10px;
+  min-width: calc(100% - 120px);
+  padding: 10px 10px 10px 10px;
   background: ${({ theme }) => theme.main.backgroundColor};
   box-shadow: 0px 5px 5px 0px rgba(0, 0, 0, 0.25);
-  flex: 1 1;
 
   display: flex;
   flex-wrap: wrap;
   align-items: flex-start;
   align-content: flex-start;
+`;
 
+export const FixedBar = styled(Bar)<SearchMode>`
+  top: 40px;
+  left: 100px;
+  z-index: 900;
+  
   @media (max-width: 576px) {
     min-width: calc(100% - 20px);
     left: 0px;
@@ -80,7 +83,7 @@ export const Bar = styled.div<SearchMode>`
 export const SearchBar = styled.div<SearchMode>`
   position: absolute;
   bottom: -35px;
-  left: calc(50% - 50px);
+  left: calc(50% - 17px);
 
   height: 40px;
   width: 40px;

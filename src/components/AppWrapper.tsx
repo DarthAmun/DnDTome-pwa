@@ -1,4 +1,5 @@
-import React, { ReactNode } from "react";
+import React, { ReactNode, useState } from "react";
+import { useSwipeable } from "react-swipeable";
 import styled from "styled-components";
 import Header from "./navigation/Header";
 import Navigation from "./navigation/Navigation";
@@ -8,10 +9,25 @@ interface $Props {
 }
 
 const AppWrapper = ({ children }: $Props) => {
+  const [open, setOpen] = useState(false);
+
+  const moveNav = (mode: string) => {
+    if (mode === "open") {
+      setOpen(true);
+    } else {
+      setOpen(false);
+    }
+  };
+
+  const handlers = useSwipeable({
+    onSwipedRight: () => moveNav("open"),
+    onSwipedLeft: () => moveNav("close"),
+  });
+
   return (
-    <App>
+    <App {...handlers}>
       <Header />
-      <Navigation />
+      <Navigation open={open} setOpen={setOpen} />
       <Content>{children}</Content>
     </App>
   );
@@ -29,10 +45,11 @@ const App = styled.div`
   flex-wrap: no-wrap;
   align-items: flex-start;
   align-content: flex-start;
+  overflow-x: hidden;
 `;
 
 const Content = styled.div`
-  margin-left: 55px;
+  margin-left: 105px;
   width: 100%;
 
   @media (max-width: 576px) {

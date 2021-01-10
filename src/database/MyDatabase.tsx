@@ -1,5 +1,8 @@
 import Dexie from "dexie";
 import Book from "../data/Book";
+import Campaign from "../data/campaign/Campaign";
+import Npc from "../data/campaign/Npc";
+import Quest from "../data/campaign/Quest";
 import Char from "../data/chars/Char";
 import Class from "../data/classes/Class";
 import Subclass from "../data/classes/Subclass";
@@ -12,6 +15,9 @@ import Subrace from "../data/races/Subrace";
 import RandomTable from "../data/RandomTable";
 import Selection from "../data/Selection";
 import Spell from "../data/Spell";
+import World from "../data/world/World";
+import Location from "../data/world/Location";
+import Event from "../data/world/Event";
 
 export class MyAppDatabase extends Dexie {
   spells: Dexie.Table<Spell, number>; // number = type of the primkey
@@ -27,6 +33,12 @@ export class MyAppDatabase extends Dexie {
   books: Dexie.Table<Book, number>; // number = type of the primkey
   selections: Dexie.Table<Selection, number>; // number = type of the primkey
   randomTables: Dexie.Table<RandomTable, number>; // number = type of the primkey
+  campaigns: Dexie.Table<Campaign, number>; // number = type of the primkey
+  quests: Dexie.Table<Quest, number>; // number = type of the primkey
+  npcs: Dexie.Table<Npc, number>; // number = type of the primkey
+  worlds: Dexie.Table<World, number>; // number = type of the primkey
+  locations: Dexie.Table<Location, number>; // number = type of the primkey
+  events: Dexie.Table<Event, number>; // number = type of the primkey
 
   constructor() {
     super("DnDTomeDB");
@@ -217,6 +229,116 @@ export class MyAppDatabase extends Dexie {
       selections: "++id, name, selectionOptions, filename",
       randomTables: "++id, name, rows, header, filename",
     });
+    this.version(14).stores({
+      spells:
+        "++id, name, classes, sources, level, school, time, range, components, duration, ritual, text, pic, filename",
+      items:
+        "++id, name, sources, pic, description, type, rarity, attunment, magicBonus, base, filename",
+      gears:
+        "++id, name, sources, pic, description, type, cost, damage, weight, properties, filename",
+      monsters:
+        "++id, name, type, subtype, cr, ac, hp, str, dex, con, int, wis, cha, senses, lang, speed, source, skills, savingThrows, dmgImmunities, dmgResistance, dmgVulnerabilitie, conImmunities, sAblt, ablt, lAblt, pic, size, alignment",
+      races:
+        "++id, name, abilityScores, age, alignment, size, speed, lang, traits, sources, pic, filename",
+      subraces: "++id, name, type, abilityScores, traits, sources, filename",
+      classes: "++id, name, featureSets, hitDice, proficiencies, equipment, sources, pic, filename",
+      subclasses: "++id, name, type, features, sources, filename",
+      chars:
+        "++id, name, player, pic, classes, race, background, spells, spellSlots, activeSelections, items, monsters, ac, hp, currentHp, init, speed, str, dex, con, int, wis, cha, saves, actions, bonusActions, reactions, profsLangs, senses, money, skills, spellNotes, alignment, inspiration, castingHit, castingDC",
+      encounters: "++id, name, monsters, players",
+      books: "++id, name, cover, data, pages, tags",
+      selections: "++id, name, selectionOptions, filename",
+      randomTables: "++id, name, rows, header, filename",
+      campaigns:
+        "++id, name, pic, description, world, quests, npcs, notes, players, sources, filename",
+    });
+    this.version(15).stores({
+      spells:
+        "++id, name, classes, sources, level, school, time, range, components, duration, ritual, text, pic, filename",
+      items:
+        "++id, name, sources, pic, description, type, rarity, attunment, magicBonus, base, filename",
+      gears:
+        "++id, name, sources, pic, description, type, cost, damage, weight, properties, filename",
+      monsters:
+        "++id, name, type, subtype, cr, ac, hp, str, dex, con, int, wis, cha, senses, lang, speed, source, skills, savingThrows, dmgImmunities, dmgResistance, dmgVulnerabilitie, conImmunities, sAblt, ablt, lAblt, pic, size, alignment",
+      races:
+        "++id, name, abilityScores, age, alignment, size, speed, lang, traits, sources, pic, filename",
+      subraces: "++id, name, type, abilityScores, traits, sources, filename",
+      classes: "++id, name, featureSets, hitDice, proficiencies, equipment, sources, pic, filename",
+      subclasses: "++id, name, type, features, sources, filename",
+      chars:
+        "++id, name, player, pic, classes, race, background, spells, spellSlots, activeSelections, items, monsters, ac, hp, currentHp, init, speed, str, dex, con, int, wis, cha, saves, actions, bonusActions, reactions, profsLangs, senses, money, skills, spellNotes, alignment, inspiration, castingHit, castingDC",
+      encounters: "++id, name, monsters, players",
+      books: "++id, name, cover, data, pages, tags",
+      selections: "++id, name, selectionOptions, filename",
+      randomTables: "++id, name, rows, header, filename",
+      campaigns:
+        "++id, name, pic, description, world, quests, npcs, notes, players, sources, filename",
+      quests:
+        "++id, name, pic, locations, origin, description, rewards, followQuest, sources, filename",
+      npcs: "++id, name, pic, char, traits, description, sources, filename",
+      worlds: "++id, name, map, description, locations, events, notes, sources, filename",
+      locations: "++id, name, map, description, events, notes, sources, filename",
+      events: "++id, name, description, locations, npcs, notes, sources, filename",
+    });
+    this.version(16).stores({
+      spells:
+        "++id, name, classes, sources, level, school, time, range, components, duration, ritual, text, pic, filename",
+      items:
+        "++id, name, sources, pic, description, type, rarity, attunment, magicBonus, base, filename",
+      gears:
+        "++id, name, sources, pic, description, type, cost, damage, weight, properties, filename",
+      monsters:
+        "++id, name, type, subtype, cr, ac, hp, str, dex, con, int, wis, cha, senses, lang, speed, source, skills, savingThrows, dmgImmunities, dmgResistance, dmgVulnerabilitie, conImmunities, sAblt, ablt, lAblt, pic, size, alignment",
+      races:
+        "++id, name, abilityScores, age, alignment, size, speed, lang, traits, sources, pic, filename",
+      subraces: "++id, name, type, abilityScores, traits, sources, filename",
+      classes: "++id, name, featureSets, hitDice, proficiencies, equipment, sources, pic, filename",
+      subclasses: "++id, name, type, features, sources, filename",
+      chars:
+        "++id, name, player, pic, classes, race, background, spells, spellSlots, activeSelections, items, monsters, ac, hp, currentHp, init, speed, str, dex, con, int, wis, cha, saves, actions, bonusActions, reactions, profsLangs, senses, money, skills, spellNotes, alignment, inspiration, castingHit, castingDC",
+      encounters: "++id, name, monsters, players",
+      books: "++id, name, cover, data, pages, tags",
+      selections: "++id, name, selectionOptions, filename",
+      randomTables: "++id, name, rows, header, filename",
+      campaigns:
+        "++id, name, pic, description, world, quests, npcs, notes, players, map, sources, filename",
+      quests:
+        "++id, name, pic, locations, origin, description, rewards, followQuest, sources, filename",
+      npcs: "++id, name, pic, char, traits, description, sources, filename",
+      worlds: "++id, name, map, description, locations, events, notes, sources, filename",
+      locations: "++id, name, map, description, events, notes, sources, filename",
+      events: "++id, name, description, locations, npcs, notes, sources, filename",
+    });
+    this.version(17).stores({
+      spells:
+        "++id, name, classes, sources, level, school, time, range, components, duration, ritual, text, pic, filename",
+      items:
+        "++id, name, sources, pic, description, type, rarity, attunment, magicBonus, base, filename",
+      gears:
+        "++id, name, sources, pic, description, type, cost, damage, weight, properties, filename",
+      monsters:
+        "++id, name, type, subtype, cr, ac, hp, str, dex, con, int, wis, cha, senses, lang, speed, source, skills, savingThrows, dmgImmunities, dmgResistance, dmgVulnerabilitie, conImmunities, sAblt, ablt, lAblt, pic, size, alignment",
+      races:
+        "++id, name, abilityScores, age, alignment, size, speed, lang, traits, sources, pic, filename",
+      subraces: "++id, name, type, abilityScores, traits, sources, filename",
+      classes: "++id, name, featureSets, hitDice, proficiencies, equipment, sources, pic, filename",
+      subclasses: "++id, name, type, features, sources, filename",
+      chars:
+        "++id, name, player, pic, classes, race, background, spells, spellSlots, activeSelections, items, monsters, ac, hp, currentHp, init, speed, str, dex, con, int, wis, cha, saves, actions, bonusActions, reactions, profsLangs, senses, money, skills, spellNotes, alignment, inspiration, castingHit, castingDC",
+      encounters: "++id, name, monsters, players",
+      books: "++id, name, cover, data, pages, tags",
+      selections: "++id, name, selectionOptions, filename",
+      randomTables: "++id, name, rows, header, filename",
+      campaigns:
+        "++id, name, pic, description, world, npcs, notes, logs, players, flow, map, sources, filename",
+      quests: "++id, name, pic, description, rewards, followQuest, sources, filename",
+      npcs: "++id, name, pic, char, traits, description, sources, filename",
+      worlds: "++id, name, map, description, events, notes, sources, filename",
+      locations:
+        "++id, name, map, dimension, description, events, notes, markers, sources, filename",
+      events: "++id, name, description, npcs, notes, sources, filename",
+    });
 
     this.spells = this.table("spells");
     this.items = this.table("items");
@@ -231,5 +353,11 @@ export class MyAppDatabase extends Dexie {
     this.books = this.table("books");
     this.selections = this.table("selections");
     this.randomTables = this.table("randomTables");
+    this.campaigns = this.table("campaigns");
+    this.quests = this.table("quests");
+    this.npcs = this.table("npcs");
+    this.worlds = this.table("worlds");
+    this.locations = this.table("locations");
+    this.events = this.table("events");
   }
 }

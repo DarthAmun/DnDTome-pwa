@@ -480,6 +480,7 @@ const CharEditView = ({ character, onEdit }: $Props) => {
             <TabBar
               children={["General", "Abilities", "Classes", "Races", "Spells", "Items", "Monster"]}
               onChange={(tab: string) => setTab(tab)}
+              activeTab={activeTab}
             />
             {activeTab === "General" && (
               <>

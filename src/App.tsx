@@ -1,6 +1,8 @@
 import React from "react";
 import { MemoryRouter, Switch, Route } from "react-router";
-
+import CampaignOverview from "./components/entities/campaigns/CampaignOverview";
+import IdToCampaign from "./components/entities/campaigns/details/link_wrapper/IdToCampaign";
+import NameToCampaign from "./components/entities/campaigns/details/link_wrapper/NameToCampaign";
 import CharOverview from "./components/entities/chars/CharOverview";
 import IdToChar from "./components/entities/chars/details/link_wrapper/IdToChar";
 import NameToChar from "./components/entities/chars/details/link_wrapper/NameToChar";
@@ -20,9 +22,18 @@ import ItemOverview from "./components/entities/item/ItemOverview";
 import IdToBook from "./components/entities/library/details/link_wrapper/IdToBook";
 import NameToBook from "./components/entities/library/details/link_wrapper/NameToBook";
 import Library from "./components/entities/library/Library";
+import IdToLocation from "./components/entities/location/details/link_wrapper/IdToLocation";
+import NameToLocation from "./components/entities/location/details/link_wrapper/NameToLocation";
+import LocationOverview from "./components/entities/location/LocationOverview";
 import IdToMonster from "./components/entities/monster/details/link_wrapper/IdToMonster";
 import NameToMonster from "./components/entities/monster/details/link_wrapper/NameToMonster";
 import MonsterOverview from "./components/entities/monster/MonsterOverview";
+import IdToNpc from "./components/entities/npc/details/link_wrapper/IdToNpc";
+import NameToNpc from "./components/entities/npc/details/link_wrapper/NameToNpc";
+import NpcOverview from "./components/entities/npc/NpcOverview";
+import IdToQuest from "./components/entities/quest/details/link_wrapper/IdToQuest";
+import NameToQuest from "./components/entities/quest/details/link_wrapper/NameToQuest";
+import QuestOverview from "./components/entities/quest/QuestOverview";
 import IdToRace from "./components/entities/races/details/link_wrapper/IdToRace";
 import NameToRace from "./components/entities/races/details/link_wrapper/NameToRace";
 import RaceOverview from "./components/entities/races/RaceOverview";
@@ -89,6 +100,18 @@ const App = () => {
           <Route path="/randomTable-detail/name/:name" component={NameToRandomTable}></Route>
           <Route path="/randomTable-detail/id/:id" component={IdToRandomTable}></Route>
           <Route path="/randomTable-overview" component={RandomTableOverview}></Route>
+          <Route path="/campaign-detail/name/:name" component={NameToCampaign}></Route>
+          <Route path="/campaign-detail/id/:id" component={IdToCampaign}></Route>
+          <Route path="/campaign-overview" component={CampaignOverview}></Route>
+          <Route path="/quest-detail/name/:name" component={NameToQuest}></Route>
+          <Route path="/quest-detail/id/:id" component={IdToQuest}></Route>
+          <Route path="/quest-overview" component={QuestOverview}></Route>
+          <Route path="/npc-detail/name/:name" component={NameToNpc}></Route>
+          <Route path="/npc-detail/id/:id" component={IdToNpc}></Route>
+          <Route path="/npc-overview" component={NpcOverview}></Route>
+          <Route path="/location-detail/name/:name" component={NameToLocation}></Route>
+          <Route path="/location-detail/id/:id" component={IdToLocation}></Route>
+          <Route path="/location-overview" component={LocationOverview}></Route>
           <Route path="/statistics" component={Statistics}></Route>
           <Route path="/options" component={Options}></Route>
           <Route path="/library" component={Library}></Route>

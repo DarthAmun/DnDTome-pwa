@@ -29,6 +29,7 @@ const Statistics = () => {
       <TabBar
         children={["General", "Spells", "Gears", "Magic Items", "Monsters"]}
         onChange={(tab: string) => setTab(tab)}
+        activeTab={activeTab}
       />
       {activeTab === "General" && (
         <OptionTab>

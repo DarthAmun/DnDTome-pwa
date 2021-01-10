@@ -3,15 +3,16 @@ import styled from "styled-components";
 
 interface $Props {
   children: string[];
+  activeTab?: string;
   onChange: (name: string) => void;
 }
 
-const TabBar = ({ children, onChange }: $Props) => {
+const TabBar = ({ children, activeTab, onChange }: $Props) => {
   return (
     <Bar>
       {children.map((child, index) => {
         return (
-          <Tab key={index} onClick={(e) => onChange(child)}>
+          <Tab key={index} onClick={(e) => onChange(child)} isActive={child === activeTab}>
             {child}
           </Tab>
         );
@@ -32,6 +33,8 @@ const Bar = styled.div`
   padding: 3px;
   margin: 5px;
   border-radius: 10px;
+  position: relative;
+  z-index: 100;
 
   display: flex;
   flex-wrap: wrap;
@@ -39,7 +42,11 @@ const Bar = styled.div`
   align-items: baseline;
 `;
 
-const Tab = styled.div`
+type ActiveType = {
+  isActive?: boolean;
+};
+
+const Tab = styled.div<ActiveType>`
   flex: 3 1 auto;
   height: 30px;
   line-height: 20px;
@@ -58,4 +65,11 @@ const Tab = styled.div`
     background-color: ${({ theme }) => theme.buttons.backgroundColor};
     color: ${({ theme }) => theme.buttons.color};
   }
+
+  ${(props) => {
+    if (props.isActive) {
+      return `background-color: ${props.theme.buttons.backgroundColor}; 
+      color: ${props.theme.buttons.color};`;
+    }
+  }}
 `;

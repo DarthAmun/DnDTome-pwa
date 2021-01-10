@@ -14,6 +14,7 @@ const Help = () => {
         <TabBar
           children={["Create", "Import", "Export", "Text Formating", "Modifiers"]}
           onChange={(tab: string) => setTab(tab)}
+          activeTab={activeTab}
         />
         {activeTab === "Create" && (
           <>

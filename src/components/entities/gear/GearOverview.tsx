@@ -79,7 +79,7 @@ const GearOverview = () => {
 export default GearOverview;
 
 const GearContainer = styled(InfiniteScroll)`
-  margin-top: 50px;
+  margin-top: 20px;
   width: 100%;
   display: flex;
   flex-wrap: wrap;
