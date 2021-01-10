@@ -28,3 +28,10 @@ export default class Location implements IEntity {
     this.markers = markers || [];
   }
 }
+
+export function isLocation(arg: any): arg is Location {
+  const nameCheck = arg.name !== undefined && typeof arg.name == "string";
+  const sourcesCheck = arg.sources !== undefined && typeof arg.sources == "string";
+  const mapCheck = arg.map !== undefined && typeof arg.map == "string";
+  return arg && nameCheck && sourcesCheck && mapCheck;
+}

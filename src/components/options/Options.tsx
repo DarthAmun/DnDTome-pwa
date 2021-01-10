@@ -14,6 +14,10 @@ import { isMonster } from "../../data/Monster";
 import { isRace } from "../../data/races/Race";
 import { isSubrace } from "../../data/races/Subrace";
 import { isSpell } from "../../data/Spell";
+import { isCampaign } from "../../data/campaign/Campaign";
+import { isNpc } from "../../data/campaign/Npc";
+import { isQuest } from "../../data/campaign/Quest";
+import { isLocation } from "../../data/world/Location";
 
 import { faFileImport, faFileExport } from "@fortawesome/free-solid-svg-icons";
 import { LoadingSpinner } from "../Loading";
@@ -40,6 +44,14 @@ import CharsOptions from "./CharsOptions";
 import EncountersOptions from "./EncountersOptions";
 import SelectionsOptions from "./SelectionsOptions";
 import OtherImportOptions from "./OtherImportOptions";
+import CampaignTile from "../entities/campaigns/CampaignTile";
+import QuestTile from "../entities/quest/QuestTile";
+import LocationTile from "../entities/location/LocationTile";
+import NpcTile from "../entities/npc/NpcTile";
+import LocationsOptions from "./LocationsOptions";
+import CampaignsOptions from "./CampaignsOptions";
+import NpcsOptions from "./NpcsOptions";
+import QuestsOptions from "./QuestsOptions";
 
 const Options = () => {
   const [activeTab, setTab] = useState<string>("General");
@@ -54,6 +66,10 @@ const Options = () => {
   const [subclassAmount, setSubclassAmount] = useState<number>(0);
   const [charAmount, setCharAmount] = useState<number>(0);
   const [encounterAmount, setEncounterAmount] = useState<number>(0);
+  const [campaignAmount, setCampaignAmount] = useState<number>(0);
+  const [questAmount, setQuestAmount] = useState<number>(0);
+  const [locationAmount, setLocationAmount] = useState<number>(0);
+  const [npcAmount, setNpcAmount] = useState<number>(0);
   const [selectionAmount, setSelectionAmount] = useState<number>(0);
 
   const [reload, isReload] = useState<boolean>(true);
@@ -96,6 +112,18 @@ const Options = () => {
       });
       reciveCount("encounters", (result: number) => {
         setEncounterAmount(result);
+      });
+      reciveCount("campaigns", (result: number) => {
+        setCampaignAmount(result);
+      });
+      reciveCount("quests", (result: number) => {
+        setQuestAmount(result);
+      });
+      reciveCount("locations", (result: number) => {
+        setLocationAmount(result);
+      });
+      reciveCount("npcs", (result: number) => {
+        setNpcAmount(result);
       });
       reciveCount("selections", (result: number) => {
         setSelectionAmount(result);
@@ -151,6 +179,14 @@ const Options = () => {
       return <ItemTile key={index} item={entity} />;
     } else if (isEncounter(entity)) {
       return <EncounterTile key={index} encounter={entity} />;
+    } else if (isCampaign(entity)) {
+      return <CampaignTile key={index} campaign={entity} />;
+    } else if (isQuest(entity)) {
+      return <QuestTile key={index} quest={entity} />;
+    } else if (isLocation(entity)) {
+      return <LocationTile key={index} location={entity} />;
+    } else if (isNpc(entity)) {
+      return <NpcTile key={index} npc={entity} />;
     } else if (isChar(entity)) {
       return <CharTile key={index} char={entity} />;
     } else {
@@ -190,6 +226,10 @@ const Options = () => {
           "Selections",
           "Chars",
           "Encounters",
+          "Campaigns",
+          "Quests",
+          "Locations",
+          "Npc's",
           "Other Imports",
           "Recive",
         ]}
@@ -226,6 +266,18 @@ const Options = () => {
       )}
       {activeTab === "Encounters" && (
         <EncountersOptions amount={encounterAmount} triggerDeleteAll={triggerDeleteAll} />
+      )}
+      {activeTab === "Campaigns" && (
+        <CampaignsOptions amount={campaignAmount} triggerDeleteAll={triggerDeleteAll} />
+      )}
+      {activeTab === "Quests" && (
+        <QuestsOptions amount={questAmount} triggerDeleteAll={triggerDeleteAll} />
+      )}
+      {activeTab === "Locations" && (
+        <LocationsOptions amount={locationAmount} triggerDeleteAll={triggerDeleteAll} />
+      )}
+      {activeTab === "Npc's" && (
+        <NpcsOptions amount={npcAmount} triggerDeleteAll={triggerDeleteAll} />
       )}
       {activeTab === "Other Imports" && (
         <OtherImportOptions

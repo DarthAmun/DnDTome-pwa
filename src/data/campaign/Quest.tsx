@@ -6,9 +6,8 @@ export default class Quest implements IEntity {
   name: string;
   pic: string;
   description: string;
-  origin: { name: string; type: string };
-  rewards: { name: string; type: string }[];
-  followQuest: Quest | undefined;
+  rewards: string;
+  followQuest: string;
   sources: string;
   filename?: string;
 
@@ -17,9 +16,8 @@ export default class Quest implements IEntity {
     name?: string,
     pic?: string,
     description?: string,
-    origin?: { name: string; type: string },
-    rewards?: { name: string; type: string }[],
-    followQuest?: Quest,
+    rewards?: string,
+    followQuest?: string,
     sources?: string,
     filename?: string
   ) {
@@ -27,9 +25,8 @@ export default class Quest implements IEntity {
     this.name = name || "";
     this.pic = pic || "";
     this.description = description || "";
-    this.origin = origin || { name: "", type: "" };
-    this.rewards = rewards || [];
-    this.followQuest = followQuest;
+    this.rewards = rewards || "";
+    this.followQuest = followQuest || "";
     this.sources = sources || "";
     this.filename = filename || "";
   }
@@ -40,9 +37,7 @@ export function isQuest(arg: any): arg is Quest {
   const picCheck = arg.pic !== undefined && typeof arg.pic == "string";
   const descriptionCheck = arg.description !== undefined && typeof arg.description == "string";
   const locationsCheck = arg.locations !== undefined && Array.isArray(arg.locations);
-  const rewardsCheck = arg.rewards !== undefined && Array.isArray(arg.rewards);
-  const originCheck =
-    arg.origin !== undefined && arg.origin.name !== undefined && arg.origin.type !== undefined;
+  const rewardsCheck = arg.rewards !== undefined && typeof arg.rewards == "string";
   const sourcesCheck = arg.sources !== undefined && typeof arg.sources == "string";
 
   return (
@@ -52,7 +47,6 @@ export function isQuest(arg: any): arg is Quest {
     descriptionCheck &&
     locationsCheck &&
     rewardsCheck &&
-    originCheck &&
     sourcesCheck
   );
 }

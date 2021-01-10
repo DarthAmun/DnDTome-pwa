@@ -24,8 +24,7 @@ const P2PSender = ({ data, mode }: $Props) => {
       const brokerId = generateBrokerId();
       const newPeer = new Peer(brokerId, {
         host: "peerjs.thedndtome.com",
-        port: 9000,
-        secure: false,
+        secure: true,
       });
       console.log(newPeer);
       newPeer.on("connection", function (conn) {

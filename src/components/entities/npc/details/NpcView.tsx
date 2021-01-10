@@ -115,8 +115,8 @@ const PropWrapper = styled.div`
 
 const Text = styled.div`
   height: auto;
-  width: calc(100% - 30px);
-  margin: 10px 5px 5px 5px;
+  width: 100%;
+  margin: 2px;
   float: left;
   line-height: 18px;
   padding: 10px;

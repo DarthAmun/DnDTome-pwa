@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useHistory } from "react-router";
 import styled from "styled-components";
 
@@ -42,7 +42,7 @@ const LocationDetail = ({ location, isNew }: $Props) => {
     }
   }, [locationObj, location]);
 
-  const updateLocation = (tableName: string, locationObj: Location) => {
+  const updateLocation = useCallback((tableName: string, locationObj: Location) => {
     updateWithCallback(tableName, locationObj, (result) => {
       if (result > 0) {
         setUnsavedChanges(false);
@@ -56,7 +56,7 @@ const LocationDetail = ({ location, isNew }: $Props) => {
         setAlert(false);
       }, 3000);
     });
-  };
+  },[]);
 
   return (
     <>

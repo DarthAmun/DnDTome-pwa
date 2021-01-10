@@ -42,6 +42,12 @@ const QuestView = ({ quest }: $Props) => {
           <Text>
             <FormatedText text={quest.description} />
           </Text>
+          <Text>
+            <FormatedText text={quest.rewards} />
+          </Text>
+          <Prop>
+            <FormatedText text={quest.followQuest} />
+          </Prop>
         </PropWrapper>
         <PropWrapper>
           {!send && (
@@ -111,10 +117,22 @@ const PropWrapper = styled.div`
 
 const Text = styled.div`
   height: auto;
-  width: calc(100% - 30px);
-  margin: 10px 5px 5px 5px;
+  width: 100%;
+  margin: 2px;
   float: left;
   line-height: 18px;
+  padding: 10px;
+  border-radius: 5px;
+  background-color: ${({ theme }) => theme.tile.backgroundColor};
+`;
+
+const Prop = styled.div`
+  flex: 1 1 auto;
+  color: ${({ theme }) => theme.tile.color};
+  max-width: 100%;
+  height: auto;
+  margin: 2px;
+  float: left;
   padding: 10px;
   border-radius: 5px;
   background-color: ${({ theme }) => theme.tile.backgroundColor};

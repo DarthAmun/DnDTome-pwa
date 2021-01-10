@@ -40,6 +40,20 @@ const QuestEditView = ({ quest, onEdit }: $Props) => {
           icon={faBookOpen}
           onChange={(description) => onEdit({ ...quest, description: description })}
         />
+        <TextField
+          value={quest.rewards}
+          label="Rewards"
+          height={"50px"}
+          icon={faBookOpen}
+          onChange={(rewards) => onEdit({ ...quest, rewards: rewards })}
+        />
+        <TextField
+          value={quest.followQuest}
+          label="Followup"
+          height={"30px"}
+          icon={faBookOpen}
+          onChange={(newQuest) => onEdit({ ...quest, followQuest: newQuest })}
+        />
       </View>
     </CenterWrapper>
   );
