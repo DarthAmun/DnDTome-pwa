@@ -72,11 +72,11 @@ const CharEditView = ({ character, onEdit }: $Props) => {
   };
   const onChangeSpell = (newSpell: string, oldSpell: string) => {
     if (buildChar !== undefined) {
-      let spells = buildChar.spells.map((spell) => {
-        if (spell.name === oldSpell) {
+      let spells = buildChar.character.spells.map((spell) => {
+        if (spell === oldSpell) {
           return newSpell;
         } else {
-          return spell.name;
+          return spell;
         }
       });
       onEdit({ ...buildChar.character, spells: spells });
@@ -163,8 +163,8 @@ const CharEditView = ({ character, onEdit }: $Props) => {
   };
   const addNewClass = () => {
     if (buildChar !== undefined) {
-      let newClassList = buildChar.character.classes;
-      newClassList.push({ classe: "", subclasse: "", level: 0 });
+      let newClassList = [...buildChar.character.classes];
+      newClassList.push(new ClassSet("", 0, ""));
       onEdit({ ...buildChar.character, classes: newClassList });
     }
   };
@@ -205,28 +205,30 @@ const CharEditView = ({ character, onEdit }: $Props) => {
           });
         });
         buildChar.subclasses.forEach((subclass: Subclass) => {
-          if (classe.name === subclass.type) {
-            subclass.features.forEach((featureSet: FeatureSet) => {
-              featureSet.features.forEach((feature: Feature) => {
-                if (feature.selections !== undefined && feature.selections.length > 0) {
-                  let count = 1;
-                  feature.selections.forEach((select: string) => {
-                    selections.forEach((selection: Selection) => {
-                      if (selection.name === select) {
-                        newActiveSelections.push({
-                          selectionName: selection.name,
-                          activeOption: selection.selectionOptions[0],
-                          featureName: feature.name,
-                          featureCount: count,
-                          className: subclass.name,
-                        });
-                        count++;
-                      }
+          if (subclass !== undefined) {
+            if (classe.name === subclass.type) {
+              subclass.features.forEach((featureSet: FeatureSet) => {
+                featureSet.features.forEach((feature: Feature) => {
+                  if (feature.selections !== undefined && feature.selections.length > 0) {
+                    let count = 1;
+                    feature.selections.forEach((select: string) => {
+                      selections.forEach((selection: Selection) => {
+                        if (selection.name === select) {
+                          newActiveSelections.push({
+                            selectionName: selection.name,
+                            activeOption: selection.selectionOptions[0],
+                            featureName: feature.name,
+                            featureCount: count,
+                            className: subclass.name,
+                          });
+                          count++;
+                        }
+                      });
                     });
-                  });
-                }
+                  }
+                });
               });
-            });
+            }
           }
         });
       });

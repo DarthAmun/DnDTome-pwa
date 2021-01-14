@@ -1,4 +1,3 @@
-
 import BuildChar from "../data/chars/BuildChar";
 import Char from "../data/chars/Char";
 import Class from "../data/classes/Class";
@@ -89,46 +88,50 @@ export const buildCharacter = async (character: Char): Promise<BuildChar> => {
   subrace = await recivePromiseByAttribute("subraces", "name", character.race.subrace);
 
   classes.forEach((classe: Class) => {
-    let classLevel = 0;
-    character.classes.forEach((charClass) => {
-      if (charClass !== undefined)
-        if (classe.name === charClass.classe) {
-          classLevel = charClass.level;
+    if (classe !== undefined) {
+      let classLevel = 0;
+      character.classes.forEach((charClass) => {
+        if (charClass !== undefined)
+          if (classe.name === charClass.classe) {
+            classLevel = charClass.level;
+          }
+      });
+      classe.featureSets.forEach((featureSet: FeatureSet) => {
+        if (featureSet !== undefined) {
+          if (featureSet.level <= classLevel) {
+            classFeatures.push(featureSet);
+          }
+          if (featureSet.level === level) {
+            prof = featureSet.profBonus;
+          }
+        }
+      });
+      subclasses?.forEach((subclass: Subclass) => {
+        if (subclass !== undefined)
+          if (subclass.type === classe.name) {
+            subclass.features.forEach((featureSet: FeatureSet) => {
+              if (featureSet.level <= classLevel) {
+                classFeatures.push(featureSet);
+              }
+            });
+          }
+      });
+    }
+  });
+  if (race !== undefined) {
+    race.traits.forEach((trait: Trait) => {
+      if (trait !== undefined)
+        if (trait.level <= level) {
+          raceFeatures.push(trait);
         }
     });
-    classe.featureSets.forEach((featureSet: FeatureSet) => {
-      if (featureSet !== undefined) {
-        if (featureSet.level <= classLevel) {
-          classFeatures.push(featureSet);
-        }
-        if (featureSet.level === level) {
-          prof = featureSet.profBonus;
-        }
-      }
-    });
-    subclasses?.forEach((subclass: Subclass) => {
-      if (subclass !== undefined)
-        if (subclass.type === classe.name) {
-          subclass.features.forEach((featureSet: FeatureSet) => {
-            if (featureSet.level <= classLevel) {
-              classFeatures.push(featureSet);
-            }
-          });
+    subrace?.traits.forEach((trait: Trait) => {
+      if (trait !== undefined)
+        if (trait.level <= level) {
+          raceFeatures.push(trait);
         }
     });
-  });
-  race.traits.forEach((trait: Trait) => {
-    if (trait !== undefined)
-      if (trait.level <= level) {
-        raceFeatures.push(trait);
-      }
-  });
-  subrace?.traits.forEach((trait: Trait) => {
-    if (trait !== undefined)
-      if (trait.level <= level) {
-        raceFeatures.push(trait);
-      }
-  });
+  }
   character.items.forEach((originItem) => {
     if (originItem !== undefined) {
       currentItems.forEach(async (item: Item) => {
