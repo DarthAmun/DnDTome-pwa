@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/DnDTome-pwa/static/css/main.a4aed14a.chunk.css",
-    "main.js": "/DnDTome-pwa/static/js/main.a0b0875d.chunk.js",
-    "main.js.map": "/DnDTome-pwa/static/js/main.a0b0875d.chunk.js.map",
+    "main.js": "/DnDTome-pwa/static/js/main.8215189f.chunk.js",
+    "main.js.map": "/DnDTome-pwa/static/js/main.8215189f.chunk.js.map",
     "runtime-main.js": "/DnDTome-pwa/static/js/runtime-main.f1683600.js",
     "runtime-main.js.map": "/DnDTome-pwa/static/js/runtime-main.f1683600.js.map",
     "static/css/2.a4567992.chunk.css": "/DnDTome-pwa/static/css/2.a4567992.chunk.css",
     "static/js/2.cbf450b5.chunk.js": "/DnDTome-pwa/static/js/2.cbf450b5.chunk.js",
     "static/js/2.cbf450b5.chunk.js.map": "/DnDTome-pwa/static/js/2.cbf450b5.chunk.js.map",
     "index.html": "/DnDTome-pwa/index.html",
-    "precache-manifest.ac411b6f1ae3de6db55e74d201c93d0f.js": "/DnDTome-pwa/precache-manifest.ac411b6f1ae3de6db55e74d201c93d0f.js",
+    "precache-manifest.c037767555e9e6a1edcc73b15c3e4cad.js": "/DnDTome-pwa/precache-manifest.c037767555e9e6a1edcc73b15c3e4cad.js",
     "service-worker.js": "/DnDTome-pwa/service-worker.js",
     "static/css/2.a4567992.chunk.css.map": "/DnDTome-pwa/static/css/2.a4567992.chunk.css.map",
     "static/css/main.a4aed14a.chunk.css.map": "/DnDTome-pwa/static/css/main.a4aed14a.chunk.css.map",
@@ -21,6 +21,6 @@
     "static/css/2.a4567992.chunk.css",
     "static/js/2.cbf450b5.chunk.js",
     "static/css/main.a4aed14a.chunk.css",
-    "static/js/main.a0b0875d.chunk.js"
+    "static/js/main.8215189f.chunk.js"
   ]
 }
