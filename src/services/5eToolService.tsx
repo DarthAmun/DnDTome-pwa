@@ -83,7 +83,9 @@ export const import5eToolsClassesFiles = (
                 if (col.title !== undefined && col.title.includes("Slots")) {
                   col.rows.forEach((row: number[], rowIndex: number) => {
                     if (featureSets[rowIndex] === undefined) {
-                      featureSets.push(new FeatureSet(rowIndex + 1, 0, [], [], []));
+                      featureSets.push(
+                        new FeatureSet(rowIndex + 1, getProfForLevel(rowIndex + 1), [], [], [])
+                      );
                     }
                     featureSets[rowIndex].spellslots = row;
                   });
@@ -101,11 +103,28 @@ export const import5eToolsClassesFiles = (
                       .trim();
                     col.rows.forEach((row: any, rowIndex: number) => {
                       if (featureSets[rowIndex] === undefined) {
-                        featureSets.push(new FeatureSet(rowIndex + 1, 0, [], [], []));
+                        featureSets.push(
+                          new FeatureSet(rowIndex + 1, getProfForLevel(rowIndex + 1), [], [], [])
+                        );
                       }
                       let bonis: Boni[] | undefined = featureSets[rowIndex].bonis;
                       if (bonis === undefined) bonis = [];
-                      bonis.push(new Boni(clearLabel, row[colIndex], false));
+                      if (typeof row[colIndex] == "string") {
+                        let text = row[colIndex]
+                          .replaceAll("},", "\n")
+                          .replaceAll("[", "")
+                          .replaceAll("]", "")
+                          .replaceAll("}", "")
+                          .replaceAll("{@", "")
+                          .replaceAll("{", "")
+                          .replaceAll("filter", "")
+                          .split("|")[0]
+                          .trim();
+                        bonis.push(new Boni(clearLabel, text, false));
+                      } else {
+                        if (row[colIndex].value !== undefined)
+                          bonis.push(new Boni(clearLabel, row[colIndex].value + "", false));
+                      }
                       featureSets[rowIndex].bonis = bonis;
                     });
                   });
@@ -116,9 +135,7 @@ export const import5eToolsClassesFiles = (
             if (obj.classFeatures !== undefined) {
               obj.classFeatures.forEach((feature: any) => {
                 let featureRaw: string = "";
-                if (typeof feature != "string") {
-                  featureRaw = feature.classFeature;
-                } else {
+                if (typeof feature === "string") {
                   featureRaw = feature;
                 }
                 const featureParts: string[] = featureRaw.split("|");
@@ -126,7 +143,7 @@ export const import5eToolsClassesFiles = (
                 let text = "";
                 json.classFeature.forEach((objFeature: any) => {
                   if (objFeature.name === featureParts[0] && objFeature.source === sources) {
-                    text = recurdsiveTextAdder(objFeature.entries, text);
+                    text = recursiveTextAdder(objFeature.entries, text);
                   }
                 });
                 text = text
@@ -136,21 +153,28 @@ export const import5eToolsClassesFiles = (
                   .replaceAll("}", "")
                   .replaceAll("{@", "")
                   .replaceAll("{", "")
+                  .replaceAll("|", " ")
                   .trim();
-                if (featureSets[+featureParts[3] - 1] === undefined) {
-                  featureSets.push(
-                    new FeatureSet(
-                      +featureParts[3],
-                      0,
-                      [new Feature(featureParts[0], text, [], undefined)],
-                      [],
-                      []
-                    )
-                  );
-                } else {
-                  featureSets[+featureParts[3] - 1].features.push(
-                    new Feature(featureParts[0], text, [], undefined)
-                  );
+
+                if (text !== undefined && text !== null && text !== "") {
+                  if (featureParts[0].toLocaleLowerCase() === "ability score improvement") {
+                    text = "";
+                  }
+                  if (featureSets[+featureParts[3] - 1] === undefined) {
+                    featureSets.push(
+                      new FeatureSet(
+                        +featureParts[3],
+                        getProfForLevel(+featureParts[3]),
+                        [new Feature(featureParts[0], text, [], undefined)],
+                        [],
+                        []
+                      )
+                    );
+                  } else {
+                    featureSets[+featureParts[3] - 1].features.push(
+                      new Feature(featureParts[0], text, [], undefined)
+                    );
+                  }
                 }
               });
             }
@@ -185,11 +209,12 @@ export const import5eToolsClassesFiles = (
                     json.subclassFeature.forEach((objFeature: any) => {
                       if (
                         objFeature.subclassShortName === featureParts[3] &&
-                        objFeature.subclassSource === subclass.source
+                        objFeature.name === featureParts[0]
                       ) {
-                        text = recurdsiveTextAdder(objFeature.entries, text);
+                        text = recursiveTextAdder(objFeature.entries, text);
                       }
                     });
+
                     text = text
                       .replaceAll("},", "\n")
                       .replaceAll("[", "")
@@ -197,6 +222,7 @@ export const import5eToolsClassesFiles = (
                       .replaceAll("}", "")
                       .replaceAll("{@", "")
                       .replaceAll("{", "")
+                      .replaceAll("|", " ")
                       .trim();
 
                     let filteredFeatures = features.filter(
@@ -206,11 +232,16 @@ export const import5eToolsClassesFiles = (
                       features.push(new FeatureSet(+featureParts[5], 0, [], [], []));
                     }
 
-                    features
-                      .filter((featureSet) => featureSet.level === +featureParts[5])
-                      .forEach((feat) => {
-                        feat.features.push(new Feature(featureParts[0], text, [], undefined));
-                      });
+                    if (text !== undefined && text !== null && text !== "") {
+                      if (featureParts[0].toLocaleLowerCase() === "ability score improvement") {
+                        text = "";
+                      }
+                      features
+                        .filter((featureSet) => featureSet.level === +featureParts[5])
+                        .forEach((feat) => {
+                          feat.features.push(new Feature(featureParts[0], text, [], undefined));
+                        });
+                    }
                   });
                 }
 
@@ -235,7 +266,40 @@ export const import5eToolsClassesFiles = (
   }
 };
 
-const recurdsiveTextAdder = (entries: any[], text: string): string => {
+const getProfForLevel = (level: number): number => {
+  switch (level) {
+    case 0:
+    case 1:
+    case 2:
+    case 3:
+    case 4:
+      return 2;
+    case 5:
+    case 6:
+    case 7:
+    case 8:
+      return 3;
+    case 9:
+    case 10:
+    case 11:
+    case 12:
+      return 4;
+    case 13:
+    case 14:
+    case 15:
+    case 16:
+      return 5;
+    case 17:
+    case 18:
+    case 19:
+    case 20:
+      return 6;
+    default:
+      return 0;
+  }
+};
+
+const recursiveTextAdder = (entries: any[], text: string): string => {
   let newText: string = text;
   if (Array.isArray(entries)) {
     entries?.forEach((entry: any) => {
@@ -243,7 +307,7 @@ const recurdsiveTextAdder = (entries: any[], text: string): string => {
         newText += entry + "\n";
       } else if (entry.entries !== undefined) {
         newText += entry.name + "\n";
-        newText = recurdsiveTextAdder(entry.entries, newText);
+        newText = recursiveTextAdder(entry.entries, newText);
       } else if (entry.items !== undefined) {
         entry.items.forEach((item: string) => {
           newText += "• " + item + "\n";
