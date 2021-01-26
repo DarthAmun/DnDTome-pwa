@@ -1,0 +1,2 @@
+(this.webpackJsonpdndtome=this.webpackJsonpdndtome||[]).push([[79],{670:function(e,a,t){"use strict";t.r(a);var n=t(14),r=t(0),c=t.n(r),l=t(66),m=t(58),s=t(22),i=t(56),u=t(548);a.default=function(e){var a=e.match,t=new l.a,r=Object(m.a)(t.gears,+a.params.id),d=Object(n.a)(r,3),o=d[0],b=d[1],p=d[2];return c.a.createElement(i.a,null,!p&&b&&c.a.createElement(s.b,null),p&&!b&&c.a.createElement(c.a.Fragment,null,"Fail by Id"),!p&&!b&&void 0!==o&&c.a.createElement(u.a,{gear:o,isNew:""===o.name}))}}}]);
+//# sourceMappingURL=79.0cb17059.chunk.js.map
