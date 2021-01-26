@@ -27,3 +27,15 @@ export default class World implements IEntity {
     this.sources = sources || "";
   }
 }
+
+export function isWorld(arg: any): arg is World {
+  const nameCheck = arg.name !== undefined && typeof arg.name == "string";
+  const descriptionCheck = arg.description !== undefined && typeof arg.description == "string";
+  const locationCheck = arg.locations !== undefined && Array.isArray(arg.locations);
+  const eventCheck = arg.events !== undefined && Array.isArray(arg.events);
+  const sourcesCheck = arg.sources !== undefined && typeof arg.sources == "string";
+  const mapCheck = arg.map !== undefined && typeof arg.map == "string";
+  return (
+    arg && nameCheck && descriptionCheck && locationCheck && eventCheck && sourcesCheck && mapCheck
+  );
+}
