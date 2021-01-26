@@ -52,6 +52,12 @@ import LocationsOptions from "./LocationsOptions";
 import CampaignsOptions from "./CampaignsOptions";
 import NpcsOptions from "./NpcsOptions";
 import QuestsOptions from "./QuestsOptions";
+import EventTile from "../entities/events/EventTile";
+import WorldTile from "../entities/worlds/WorldTile";
+import EventsOptions from "./EventsOptions";
+import WorldsOptions from "./WorldsOptions";
+import { isWorld } from "../../data/world/World";
+import { isEvent } from "../../data/world/Event";
 
 const Options = () => {
   const [activeTab, setTab] = useState<string>("General");
@@ -69,6 +75,8 @@ const Options = () => {
   const [campaignAmount, setCampaignAmount] = useState<number>(0);
   const [questAmount, setQuestAmount] = useState<number>(0);
   const [locationAmount, setLocationAmount] = useState<number>(0);
+  const [worldAmount, setWorldAmount] = useState<number>(0);
+  const [eventAmount, setEventAmount] = useState<number>(0);
   const [npcAmount, setNpcAmount] = useState<number>(0);
   const [selectionAmount, setSelectionAmount] = useState<number>(0);
 
@@ -118,6 +126,12 @@ const Options = () => {
       });
       reciveCount("quests", (result: number) => {
         setQuestAmount(result);
+      });
+      reciveCount("worlds", (result: number) => {
+        setWorldAmount(result);
+      });
+      reciveCount("events", (result: number) => {
+        setEventAmount(result);
       });
       reciveCount("locations", (result: number) => {
         setLocationAmount(result);
@@ -187,6 +201,10 @@ const Options = () => {
       return <LocationTile key={index} location={entity} />;
     } else if (isNpc(entity)) {
       return <NpcTile key={index} npc={entity} />;
+    } else if (isWorld(entity)) {
+      return <WorldTile key={index} world={entity} />;
+    } else if (isEvent(entity)) {
+      return <EventTile key={index} event={entity} />;
     } else if (isChar(entity)) {
       return <CharTile key={index} char={entity} />;
     } else {
@@ -228,6 +246,8 @@ const Options = () => {
           "Encounters",
           "Campaigns",
           "Quests",
+          "Worlds",
+          "Events",
           "Locations",
           "Npc's",
           "Other Imports",
@@ -272,6 +292,12 @@ const Options = () => {
       )}
       {activeTab === "Quests" && (
         <QuestsOptions amount={questAmount} triggerDeleteAll={triggerDeleteAll} />
+      )}
+      {activeTab === "Worlds" && (
+        <WorldsOptions amount={worldAmount} triggerDeleteAll={triggerDeleteAll} />
+      )}
+      {activeTab === "Events" && (
+        <EventsOptions amount={eventAmount} triggerDeleteAll={triggerDeleteAll} />
       )}
       {activeTab === "Locations" && (
         <LocationsOptions amount={locationAmount} triggerDeleteAll={triggerDeleteAll} />

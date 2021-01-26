@@ -21,6 +21,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { MdEvent } from "react-icons/md";
+import { HiUserGroup } from "react-icons/hi";
 import { recivePromiseByAttributeCount } from "../../services/DatabaseService";
 
 interface $Props {
@@ -75,6 +76,8 @@ const LinkCheck = ({ type, name }: $Props) => {
         return <FontAwesomeIcon icon={faTable} />;
       case "book":
         return <GiBookshelf />;
+        case "group":
+          return <HiUserGroup />;
       default:
         return "";
     }
