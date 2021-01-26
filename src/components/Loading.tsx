@@ -16,6 +16,20 @@ export const LoadingSpinner = () => (
   </Spinner>
 );
 
+export const CompleteLoadingSpinner = () => (
+  <CompleteWrapper>
+    <Spinner>
+      <Icon icon={faDiceD20} />
+      <svg width="0" height="0">
+        <radialGradient id="rg" r="150%" cx="30%" cy="107%">
+          <stop stopColor="#350069" offset="0" />
+          <stop stopColor="#B973FF" offset="0.9" />
+        </radialGradient>
+      </svg>
+    </Spinner>
+  </CompleteWrapper>
+);
+
 export const LocalLoadingSpinner = () => (
   <Wrapper>
     <LocalSpinner>
@@ -34,6 +48,12 @@ const Wrapper = styled.div`
   height: 100px;
   width: 100px;
   margin: 1em auto;
+`;
+
+const CompleteWrapper = styled.div`
+  height: 100vh;
+  width: 100vw;
+  background-color: ${({ theme }) => theme.main.backgroundColor};
 `;
 
 const LocalSpinner = styled.div`
