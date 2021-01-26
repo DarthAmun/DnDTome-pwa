@@ -1,51 +1,55 @@
 import React, { Suspense, useCallback } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import Campaign from "../../../data/campaign/Campaign";
+import Group from "../../../data/campaign/Group";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { LoadingSpinner } from "../../Loading";
 import { faLink } from "@fortawesome/free-solid-svg-icons";
 
 interface $Props {
-  campaign: Campaign;
+  group: Group;
 }
 
-const CampaignTile = ({ campaign }: $Props) => {
+const GroupTile = ({ group }: $Props) => {
   const getPicture = useCallback(() => {
-    if (campaign !== undefined) {
-      if (campaign.pic === "" || campaign.pic === null) {
+    if (group !== undefined) {
+      if (group.pic === "" || group.pic === null) {
         return "";
       }
-      return campaign.pic;
+      return group.pic;
     }
     return "";
-  }, [campaign]);
+  }, [group]);
 
   return (
-    <Tile to={"/campaign-detail/id/" + campaign.id}>
+    <Tile to={"/group-detail/id/" + group.id}>
       <Suspense fallback={<LoadingSpinner />}>
         {getPicture() !== "" ? <Image pic={getPicture()}></Image> : ""}
 
         <PropWrapper>
           <Name>
-            <b>{campaign.name}</b>
+            <b>{group.name}</b>
           </Name>
           <Text>
             <PropTitle>Description</PropTitle>
-            {campaign.description}
+            {group.description}
           </Text>
-          <WideProp>
-            <Icon icon={faLink} />
-            {campaign.sources}
-          </WideProp>
           <Prop>
             <PropTitle>Players</PropTitle>
-            {campaign.players.length}
+            {group.players.length}
           </Prop>
           <Prop>
             <PropTitle>Npcs</PropTitle>
-            {campaign.npcs.length}
+            {group.npcs.length}
+          </Prop>
+          <Prop>
+            <PropTitle>Monster</PropTitle>
+            {group.monsters.length}
+          </Prop>
+          <Prop>
+            <Icon icon={faLink} />
+            {group.sources}
           </Prop>
         </PropWrapper>
       </Suspense>
@@ -53,7 +57,7 @@ const CampaignTile = ({ campaign }: $Props) => {
   );
 };
 
-export default CampaignTile;
+export default GroupTile;
 
 const Tile = styled(Link)`
   flex: 1 1 15em;
@@ -118,11 +122,6 @@ const PropTitle = styled.span`
   color: ${({ theme }) => theme.tile.backgroundColorLink};
   text-decoration: none;
   margin: 0px 5px 0px 5px;
-`;
-
-const WideProp = styled(Prop)`
-  margin: 0 0 5px 0px;
-  width: calc(100% - 20px);
 `;
 
 const Text = styled.div`

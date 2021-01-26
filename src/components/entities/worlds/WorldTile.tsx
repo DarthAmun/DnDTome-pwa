@@ -1,59 +1,47 @@
-import React, { Suspense, useCallback } from "react";
+import React, { Suspense } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import Campaign from "../../../data/campaign/Campaign";
+import World from "../../../data/world/World";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { LoadingSpinner } from "../../Loading";
 import { faLink } from "@fortawesome/free-solid-svg-icons";
 
 interface $Props {
-  campaign: Campaign;
+  world: World;
 }
 
-const CampaignTile = ({ campaign }: $Props) => {
-  const getPicture = useCallback(() => {
-    if (campaign !== undefined) {
-      if (campaign.pic === "" || campaign.pic === null) {
-        return "";
-      }
-      return campaign.pic;
-    }
-    return "";
-  }, [campaign]);
-
+const WorldTile = ({ world }: $Props) => {
   return (
-    <Tile to={"/campaign-detail/id/" + campaign.id}>
+    <Tile to={"/world-detail/id/" + world.id}>
       <Suspense fallback={<LoadingSpinner />}>
-        {getPicture() !== "" ? <Image pic={getPicture()}></Image> : ""}
-
         <PropWrapper>
           <Name>
-            <b>{campaign.name}</b>
+            <b>{world.name}</b>
           </Name>
           <Text>
             <PropTitle>Description</PropTitle>
-            {campaign.description}
+            {world.description}
           </Text>
+          <Prop>
+            <PropTitle>Locations</PropTitle>
+            {world.locations.length}
+          </Prop>
+          <Prop>
+            <PropTitle>Events</PropTitle>
+            {world.events.length}
+          </Prop>
           <WideProp>
             <Icon icon={faLink} />
-            {campaign.sources}
+            {world.sources}
           </WideProp>
-          <Prop>
-            <PropTitle>Players</PropTitle>
-            {campaign.players.length}
-          </Prop>
-          <Prop>
-            <PropTitle>Npcs</PropTitle>
-            {campaign.npcs.length}
-          </Prop>
         </PropWrapper>
       </Suspense>
     </Tile>
   );
 };
 
-export default CampaignTile;
+export default WorldTile;
 
 const Tile = styled(Link)`
   flex: 1 1 15em;
@@ -143,38 +131,3 @@ const Icon = styled(FontAwesomeIcon)`
   border-radius: 150px;
   color: ${({ theme }) => theme.main.highlight};
 `;
-
-interface $ImageProps {
-  pic: string;
-}
-
-const Image = ({ pic }: $ImageProps) => {
-  if (pic !== "") {
-    return <ImgContainer pic={pic}></ImgContainer>;
-  } else {
-    return <Empty />;
-  }
-};
-
-const ImgContainer = styled.div<{ pic: string }>`
-  margin: 30px;
-  width: 100px;
-  height: 100px;
-  border: 2px double ${({ theme }) => theme.main.highlight};
-  transform: rotate(45deg);
-  overflow: hidden;
-
-  &::before {
-    content: "";
-    position: absolute;
-    width: 200%;
-    height: 200%;
-    top: -50%;
-    left: -50%;
-    z-index: -1;
-    background: url(${(props) => props.pic}) 0 0 no-repeat;
-    background-size: cover;
-    transform: rotate(-45deg);
-  }
-`;
-const Empty = styled.div``;

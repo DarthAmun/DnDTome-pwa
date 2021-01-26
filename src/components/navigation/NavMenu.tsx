@@ -26,6 +26,7 @@ import {
   GiDjinn,
 } from "react-icons/gi";
 import { BiSelectMultiple } from "react-icons/bi";
+import { HiUserGroup } from "react-icons/hi";
 import { RightTooltip } from "../SearchbarStyle";
 import { MdEvent } from "react-icons/md";
 
@@ -66,6 +67,13 @@ const NavMenu = ({ open }: $Props) => {
             <GiScrollUnfurled />
             <RightTooltip>Quests</RightTooltip>
           </Link>
+           <Link
+            to="/group-overview"
+            className={location.pathname === "/group-overview" ? "menuItemActiv" : ""}
+          >
+            <HiUserGroup />
+            <RightTooltip>Groups</RightTooltip>
+          </Link>
           <Link
             to="/npc-overview"
             className={location.pathname === "/npc-overview" ? "menuItemActiv" : ""}
@@ -75,8 +83,8 @@ const NavMenu = ({ open }: $Props) => {
           </Link>
           <Seperator />
           <Link
-            to="/campaign-overview"
-            className={location.pathname === "/campaign-overview" ? "menuItemActiv" : ""}
+            to="/world-overview"
+            className={location.pathname === "/world-overview" ? "menuItemActiv" : ""}
           >
             <GiSolarSystem />
             <RightTooltip>Worlds</RightTooltip>
@@ -89,8 +97,8 @@ const NavMenu = ({ open }: $Props) => {
             <RightTooltip>Locations</RightTooltip>
           </Link>
           <Link
-            to="/campaign-overview"
-            className={location.pathname === "/campaign-overview" ? "menuItemActiv" : ""}
+            to="/event-overview"
+            className={location.pathname === "/event-overview" ? "menuItemActiv" : ""}
           >
             <MdEvent />
             <RightTooltip>Events</RightTooltip>

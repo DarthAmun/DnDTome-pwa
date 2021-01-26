@@ -18,6 +18,7 @@ import Spell from "../data/Spell";
 import World from "../data/world/World";
 import Location from "../data/world/Location";
 import Event from "../data/world/Event";
+import Group from "../data/campaign/Group";
 
 export class MyAppDatabase extends Dexie {
   spells: Dexie.Table<Spell, number>; // number = type of the primkey
@@ -39,6 +40,7 @@ export class MyAppDatabase extends Dexie {
   worlds: Dexie.Table<World, number>; // number = type of the primkey
   locations: Dexie.Table<Location, number>; // number = type of the primkey
   events: Dexie.Table<Event, number>; // number = type of the primkey
+  groups: Dexie.Table<Group, number>; // number = type of the primkey
 
   constructor() {
     super("DnDTomeDB");
@@ -339,6 +341,36 @@ export class MyAppDatabase extends Dexie {
         "++id, name, map, dimension, description, events, notes, markers, sources, filename",
       events: "++id, name, description, npcs, notes, sources, filename",
     });
+    this.version(18).stores({
+      spells:
+        "++id, name, classes, sources, level, school, time, range, components, duration, ritual, text, pic, filename",
+      items:
+        "++id, name, sources, pic, description, type, rarity, attunment, magicBonus, base, filename",
+      gears:
+        "++id, name, sources, pic, description, type, cost, damage, weight, properties, filename",
+      monsters:
+        "++id, name, type, subtype, cr, ac, hp, str, dex, con, int, wis, cha, senses, lang, speed, source, skills, savingThrows, dmgImmunities, dmgResistance, dmgVulnerabilitie, conImmunities, sAblt, ablt, lAblt, pic, size, alignment",
+      races:
+        "++id, name, abilityScores, age, alignment, size, speed, lang, traits, sources, pic, filename",
+      subraces: "++id, name, type, abilityScores, traits, sources, filename",
+      classes: "++id, name, featureSets, hitDice, proficiencies, equipment, sources, pic, filename",
+      subclasses: "++id, name, type, features, sources, filename",
+      chars:
+        "++id, name, player, pic, classes, race, background, spells, spellSlots, activeSelections, items, monsters, ac, hp, currentHp, init, speed, str, dex, con, int, wis, cha, saves, actions, bonusActions, reactions, profsLangs, senses, money, skills, spellNotes, alignment, inspiration, castingHit, castingDC",
+      encounters: "++id, name, monsters, players",
+      books: "++id, name, cover, data, pages, tags",
+      selections: "++id, name, selectionOptions, filename",
+      randomTables: "++id, name, rows, header, filename",
+      campaigns:
+        "++id, name, pic, description, world, npcs, notes, logs, players, flow, map, sources, filename",
+      quests: "++id, name, pic, description, rewards, followQuest, sources, filename",
+      groups: "++id, name, pic, description, npcs, players, monsters, flow, sources, filename",
+      npcs: "++id, name, pic, char, traits, description, sources, filename",
+      worlds: "++id, name, map, description, locations, events, map, sources, filename",
+      locations:
+        "++id, name, map, dimension, description, events, notes, markers, sources, filename",
+      events: "++id, name, description, date, sources, filename",
+    });
 
     this.spells = this.table("spells");
     this.items = this.table("items");
@@ -359,5 +391,6 @@ export class MyAppDatabase extends Dexie {
     this.worlds = this.table("worlds");
     this.locations = this.table("locations");
     this.events = this.table("events");
+    this.groups = this.table("groups");
   }
 }

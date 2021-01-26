@@ -13,9 +13,15 @@ import NameToClass from "./components/entities/classes/details/link_wrapper/Name
 import IdToEncounter from "./components/entities/encounters/details/link_wrapper/IdToEncounter";
 import NameToEncounter from "./components/entities/encounters/details/link_wrapper/NameToEncounter";
 import EncounterOverview from "./components/entities/encounters/EncounterOverview";
+import IdToEvent from "./components/entities/events/details/link_wrapper/IdToEvent";
+import NameToEvent from "./components/entities/events/details/link_wrapper/NameToEvent";
+import EventOverview from "./components/entities/events/EventOverview";
 import IdToGear from "./components/entities/gear/details/link_wrapper/IdToGear";
 import NameToGear from "./components/entities/gear/details/link_wrapper/NameToGear";
 import GearOverview from "./components/entities/gear/GearOverview";
+import IdToGroup from "./components/entities/groups/details/link_wrapper/IdToGroup";
+import NameToGroup from "./components/entities/groups/details/link_wrapper/NameToGroup";
+import GroupOverview from "./components/entities/groups/GroupOverview";
 import IdToItem from "./components/entities/item/details/link_wrapper/IdToItem";
 import NameToItem from "./components/entities/item/details/link_wrapper/NameToItem";
 import ItemOverview from "./components/entities/item/ItemOverview";
@@ -50,6 +56,9 @@ import IdToSubclass from "./components/entities/subclasses/details/link_wrapper/
 import NameToSubclass from "./components/entities/subclasses/details/link_wrapper/NameToSubclass";
 import IdToSubrace from "./components/entities/subraces/details/link_wrapper/IdToSubrace";
 import NameToSubrace from "./components/entities/subraces/details/link_wrapper/NameToSubrace";
+import IdToWorld from "./components/entities/worlds/details/link_wrapper/IdToWorld";
+import NameToWorld from "./components/entities/worlds/details/link_wrapper/NameToWorld";
+import WorldOverview from "./components/entities/worlds/WorldOverview";
 import Help from "./components/help/Help";
 import Home from "./components/home/Home";
 import Options from "./components/options/Options";
@@ -106,9 +115,18 @@ const App = () => {
           <Route path="/quest-detail/name/:name" component={NameToQuest}></Route>
           <Route path="/quest-detail/id/:id" component={IdToQuest}></Route>
           <Route path="/quest-overview" component={QuestOverview}></Route>
+          <Route path="/group-detail/name/:name" component={NameToGroup}></Route>
+          <Route path="/group-detail/id/:id" component={IdToGroup}></Route>
+          <Route path="/group-overview" component={GroupOverview}></Route>
           <Route path="/npc-detail/name/:name" component={NameToNpc}></Route>
           <Route path="/npc-detail/id/:id" component={IdToNpc}></Route>
           <Route path="/npc-overview" component={NpcOverview}></Route>
+          <Route path="/world-detail/name/:name" component={NameToWorld}></Route>
+          <Route path="/world-detail/id/:id" component={IdToWorld}></Route>
+          <Route path="/world-overview" component={WorldOverview}></Route>
+          <Route path="/event-detail/name/:name" component={NameToEvent}></Route>
+          <Route path="/event-detail/id/:id" component={IdToEvent}></Route>
+          <Route path="/event-overview" component={EventOverview}></Route>
           <Route path="/location-detail/name/:name" component={NameToLocation}></Route>
           <Route path="/location-detail/id/:id" component={IdToLocation}></Route>
           <Route path="/location-overview" component={LocationOverview}></Route>
