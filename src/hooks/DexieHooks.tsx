@@ -6,30 +6,29 @@ import ReactDOM from "react-dom";
 type TableState<T> = [T[] | undefined, boolean, Dexie.DexieError | undefined];
 type TableAction<T> =
   | { type: "resolved"; data: T[] }
+  | { type: "empty" }
   | { type: "reset" }
   | { type: "error"; error: Dexie.DexieError };
 
 type ItemState<T> = [T | undefined, boolean, Dexie.DexieError | undefined];
 type ItemAction<T> =
   | { type: "resolved"; data: T }
+  | { type: "empty" }
   | { type: "reset" }
   | { type: "error"; error: Dexie.DexieError };
 
 export const useTable = <T, U>(table: Dexie.Table<T, U>): TableState<T> => {
   const [effect, setEffect] = useState<boolean>(true);
-  const reducer = useCallback(
-    (state: TableState<T>, action: TableAction<T>): TableState<T> => {
-      switch (action.type) {
-        case "resolved":
-          return [action.data, false, undefined];
-        case "error":
-          return [undefined, false, action.error];
-        default:
-          return [undefined, true, undefined];
-      }
-    },
-    []
-  );
+  const reducer = useCallback((state: TableState<T>, action: TableAction<T>): TableState<T> => {
+    switch (action.type) {
+      case "resolved":
+        return [action.data, false, undefined];
+      case "error":
+        return [undefined, false, action.error];
+      default:
+        return [undefined, true, undefined];
+    }
+  }, []);
 
   const [state, dispatch] = useReducer(reducer, [undefined, true, undefined]);
 
@@ -65,21 +64,18 @@ export const useTableByFilter = <T, U>(
 ): TableState<T> => {
   const [effect, setEffect] = useState<boolean>(true);
   const [filter, setFilter] = useState<Filter[]>(filters);
-  const reducer = useCallback(
-    (state: TableState<T>, action: TableAction<T>): TableState<T> => {
-      switch (action.type) {
-        case "resolved":
-          return [action.data, false, undefined];
-        case "error":
-          return [undefined, false, action.error];
-        case "reset":
-          return [undefined, true, undefined];
-        default:
-          return [undefined, true, undefined];
-      }
-    },
-    []
-  );
+  const reducer = useCallback((state: TableState<T>, action: TableAction<T>): TableState<T> => {
+    switch (action.type) {
+      case "resolved":
+        return [action.data, false, undefined];
+      case "error":
+        return [undefined, false, action.error];
+      case "reset":
+        return [undefined, true, undefined];
+      default:
+        return [undefined, true, undefined];
+    }
+  }, []);
 
   const [state, dispatch] = useReducer(reducer, [undefined, true, undefined]);
 
@@ -103,9 +99,7 @@ export const useTableByFilter = <T, U>(
             if (typeof filter.value === "string") {
               test.push(
                 // @ts-ignore
-                obj[filter.fieldName]
-                  .toLowerCase()
-                  .includes(filter.value.toLowerCase())
+                obj[filter.fieldName].toLowerCase().includes(filter.value.toLowerCase())
               );
             } else if (typeof filter.value === "number") {
               // @ts-ignore
@@ -119,9 +113,7 @@ export const useTableByFilter = <T, U>(
                 if (typeof filterPart === "string") {
                   if (
                     // @ts-ignore
-                    obj[filter.fieldName]
-                      .toLowerCase()
-                      .includes(filterPart.toLowerCase())
+                    obj[filter.fieldName].toLowerCase().includes(filterPart.toLowerCase())
                   )
                     arrayTest = true;
                 } else if (typeof filterPart === "number") {
@@ -167,19 +159,18 @@ export const useTableByFilter = <T, U>(
 
 export const useItem = <T, U>(table: Dexie.Table<T, U>, id: U) => {
   const [effect, setEffect] = useState<boolean>(true);
-  const reducer = useCallback(
-    (state: ItemState<T>, action: ItemAction<T>): ItemState<T> => {
-      switch (action.type) {
-        case "resolved":
-          return [action.data, false, undefined];
-        case "error":
-          return [undefined, false, action.error];
-        default:
-          return [undefined, true, undefined];
-      }
-    },
-    []
-  );
+  const reducer = useCallback((state: ItemState<T>, action: ItemAction<T>): ItemState<T> => {
+    switch (action.type) {
+      case "resolved":
+        return [action.data, false, undefined];
+      case "empty":
+        return [undefined, false, undefined];
+      case "error":
+        return [undefined, false, action.error];
+      default:
+        return [undefined, true, undefined];
+    }
+  }, []);
 
   const [state, dispatch] = useReducer(reducer, [undefined, true, undefined]);
 
@@ -189,11 +180,16 @@ export const useItem = <T, U>(table: Dexie.Table<T, U>, id: U) => {
         table
           .get(id)
           .then((data) => {
-            if (data !== undefined)
+            if (data !== undefined) {
               dispatch({
                 type: "resolved",
                 data,
               });
+            } else {
+              dispatch({
+                type: "empty",
+              });
+            }
           })
           .catch((error) => {
             dispatch({
@@ -210,25 +206,20 @@ export const useItem = <T, U>(table: Dexie.Table<T, U>, id: U) => {
   return state;
 };
 
-export const useItemByAttr = <T, U>(
-  table: Dexie.Table<T, U>,
-  attr: string,
-  attrValue: string
-) => {
+export const useItemByAttr = <T, U>(table: Dexie.Table<T, U>, attr: string, attrValue: string) => {
   const [effect, setEffect] = useState<boolean>(true);
-  const reducer = useCallback(
-    (state: ItemState<T>, action: ItemAction<T>): ItemState<T> => {
-      switch (action.type) {
-        case "resolved":
-          return [action.data, false, undefined];
-        case "error":
-          return [undefined, false, action.error];
-        default:
-          return [undefined, true, undefined];
-      }
-    },
-    []
-  );
+  const reducer = useCallback((state: ItemState<T>, action: ItemAction<T>): ItemState<T> => {
+    switch (action.type) {
+      case "resolved":
+        return [action.data, false, undefined];
+      case "empty":
+        return [undefined, false, undefined];
+      case "error":
+        return [undefined, false, action.error];
+      default:
+        return [undefined, true, undefined];
+    }
+  }, []);
 
   const [state, dispatch] = useReducer(reducer, [undefined, true, undefined]);
 
@@ -240,11 +231,16 @@ export const useItemByAttr = <T, U>(
           .equals(attrValue)
           .first()
           .then((data) => {
-            if (data !== undefined)
+            if (data !== undefined) {
               dispatch({
                 type: "resolved",
                 data,
               });
+            } else {
+              dispatch({
+                type: "empty",
+              });
+            }
           })
           .catch((error) => {
             dispatch({

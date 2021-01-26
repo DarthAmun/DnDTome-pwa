@@ -20,10 +20,11 @@ import { EditToggle, ToggleLeft, ToggleRight } from "../../../general_elements/T
 
 interface $Props {
   campaign: Campaign;
+  isNew: boolean;
 }
 
-const CampaignDetail = ({ campaign }: $Props) => {
-  const [editMode, setMode] = useState<boolean>(false);
+const CampaignDetail = ({ campaign, isNew }: $Props) => {
+  const [editMode, setMode] = useState<boolean>(isNew);
   const [campaignObj, editCampaign] = useState<Campaign>(campaign);
   const [showAlert, setAlert] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");

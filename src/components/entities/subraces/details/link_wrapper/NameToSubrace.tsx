@@ -19,7 +19,7 @@ const NameToSubrace = ({ match }: RouteComponentProps<TParams>) => {
   return (
     <AppWrapper>
       {!error && loading && <LoadingSpinner />}
-      {error && !loading && <>Fail by Name</>}
+      {error && !loading && <>Error occured</>}
       {!error && !loading && subrace !== undefined && (
         <SubraceDetail subrace={subrace} isNew={subrace.name === "" ? true : false} />
       )}

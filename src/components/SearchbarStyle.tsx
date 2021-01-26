@@ -50,7 +50,7 @@ type SearchMode = {
 };
 
 export const Bar = styled.div<SearchMode>`
-  position: fixed;
+  position: absolute;
   z-index: 50;
 
   transition: transform 0.3s ease-in-out;
@@ -58,7 +58,7 @@ export const Bar = styled.div<SearchMode>`
 
   height: auto;
   min-height: 30px;
-  min-width: calc(100% - 120px);
+  min-width: calc(100% - 125px);
   padding: 10px 10px 10px 10px;
   background: ${({ theme }) => theme.main.backgroundColor};
   box-shadow: 0px 5px 5px 0px rgba(0, 0, 0, 0.25);
@@ -70,10 +70,11 @@ export const Bar = styled.div<SearchMode>`
 `;
 
 export const FixedBar = styled(Bar)<SearchMode>`
+  position: fixed;
   top: 40px;
   left: 100px;
   z-index: 900;
-  
+
   @media (max-width: 576px) {
     min-width: calc(100% - 20px);
     left: 0px;

@@ -17,7 +17,12 @@ const IdToCampaign = ({ match }: RouteComponentProps<TParams>) => {
     <AppWrapper>
       {!error && loading && <LoadingSpinner />}
       {error && !loading && <>Fail by Id</>}
-      {!error && !loading && campaign !== undefined ? <CampaignDetail campaign={campaign} /> : ""}
+      {!error && !loading && campaign === undefined && <>Fail by Id</>}
+      {!error && !loading && campaign !== undefined ? (
+        <CampaignDetail campaign={campaign} isNew={campaign.name === "" ? true : false} />
+      ) : (
+        ""
+      )}
     </AppWrapper>
   );
 };

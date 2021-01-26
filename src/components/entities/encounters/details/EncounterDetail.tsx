@@ -20,10 +20,11 @@ import { EditToggle, ToggleLeft, ToggleRight } from "../../../general_elements/T
 
 interface $Props {
   encounter: Encounter;
+  isNew: boolean;
 }
 
-const EncounterDetail = ({ encounter }: $Props) => {
-  const [editMode, setMode] = useState<boolean>(false);
+const EncounterDetail = ({ encounter, isNew }: $Props) => {
+  const [editMode, setMode] = useState<boolean>(isNew);
   const [encounterObj, editEncounter] = useState<Encounter>(encounter);
   const [showAlert, setAlert] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");

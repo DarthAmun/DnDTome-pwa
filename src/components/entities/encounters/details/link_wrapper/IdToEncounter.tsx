@@ -18,7 +18,7 @@ const IdToEncounter = ({ match }: RouteComponentProps<TParams>) => {
       {!error && loading && <LoadingSpinner />}
       {error && !loading && <>Fail by Id</>}
       {!error && !loading && encounter !== undefined ? (
-        <EncounterDetail encounter={encounter} />
+        <EncounterDetail encounter={encounter} isNew={encounter.name === "" ? true : false} />
       ) : (
         ""
       )}
