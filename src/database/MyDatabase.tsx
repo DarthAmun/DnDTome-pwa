@@ -364,14 +364,14 @@ export class MyAppDatabase extends Dexie {
       campaigns:
         "++id, name, pic, description, world, npcs, notes, logs, players, flow, map, sources, filename",
       quests: "++id, name, pic, description, rewards, followQuest, sources, filename",
-      groups: "++id, name, pic, description, npcs, players, monsters, flow, sources, filename",
       npcs: "++id, name, pic, char, traits, description, sources, filename",
-      worlds: "++id, name, map, description, locations, events, map, sources, filename",
+      worlds: "++id, name, map, description, locations, events, sources, filename",
       locations:
-        "++id, name, map, dimension, description, events, notes, markers, sources, filename",
+        "++id, name, map, dimension, markers, sources, filename",
       events: "++id, name, description, date, sources, filename",
+      groups: "++id, name, pic, description, npcs, players, monsters, flow, sources, filename",
     });
-
+    
     this.spells = this.table("spells");
     this.items = this.table("items");
     this.gears = this.table("gears");
