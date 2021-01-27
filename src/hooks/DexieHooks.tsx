@@ -228,7 +228,7 @@ export const useItemByAttr = <T, U>(table: Dexie.Table<T, U>, attr: string, attr
       const getAndDispatch = () =>
         table
           .where(attr)
-          .equals(attrValue)
+          .equalsIgnoreCase(attrValue)
           .first()
           .then((data) => {
             if (data !== undefined) {

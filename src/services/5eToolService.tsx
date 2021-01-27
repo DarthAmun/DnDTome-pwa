@@ -825,6 +825,39 @@ export const import5eToolsMonstersFiles = (
                     traits += "\n";
                   }
                 });
+              obj.spellcasting &&
+                obj.spellcasting.forEach((spellcast: any) => {
+                  traits += spellcast.name + " \n";
+                  traits += spellcast.headerEntries + " \n";
+                  if (spellcast.spells !== undefined) {
+                    for (const [key, value] of Object.entries(spellcast.spells)) {
+                      const spellSlotInfo: any = value;
+                      traits += key + " level ";
+                      if (spellSlotInfo.slots !== undefined)
+                        traits += `(${spellSlotInfo.slots} Slots)`;
+                      traits += ": ";
+                      if (
+                        spellSlotInfo !== undefined &&
+                        spellSlotInfo.spells !== undefined &&
+                        Array.isArray(spellSlotInfo.spells)
+                      ) {
+                        // eslint-disable-next-line
+                        spellSlotInfo.spells.forEach((spell: any) => {
+                          if (typeof spell == "string") {
+                            let newSpell = spell
+                              .split("|")[0]
+                              .replaceAll("{@", "[[")
+                              .replaceAll("}", "")
+                              .replaceAll("spell ", "spell.");
+                            traits += newSpell + "]] ";
+                          }
+                        });
+                      }
+                      traits += "\n";
+                    }
+                    traits += "\n";
+                  }
+                });
               traits = traits
                 .replaceAll("}", "")
                 .replaceAll("{@damage ", "")
