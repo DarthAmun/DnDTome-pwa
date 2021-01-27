@@ -3,7 +3,6 @@ import { RouteComponentProps, useHistory } from "react-router";
 import { MyAppDatabase } from "../../../../../database/MyDatabase";
 import { useItemByAttr } from "../../../../../hooks/DexieHooks";
 import { LoadingSpinner } from "../../../../Loading";
-import AppWrapper from "../../../../AppWrapper";
 import GearDetail from "../GearDetail";
 import Gear from "../../../../../data/Gear";
 import { createNewWithId } from "../../../../../services/DatabaseService";
@@ -25,7 +24,7 @@ const NameToGear = ({ match }: RouteComponentProps<TParams>) => {
   };
 
   return (
-    <AppWrapper>
+    <>
       {!error && loading && <LoadingSpinner />}
       {error && !loading && <>Error occured</>}
       {!error && !loading && gear === undefined && (
@@ -38,7 +37,7 @@ const NameToGear = ({ match }: RouteComponentProps<TParams>) => {
       {!error && !loading && gear !== undefined && (
         <GearDetail gear={gear} isNew={gear.name === "" ? true : false} />
       )}
-    </AppWrapper>
+    </>
   );
 };
 

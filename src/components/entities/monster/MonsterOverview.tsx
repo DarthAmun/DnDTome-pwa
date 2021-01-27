@@ -5,7 +5,6 @@ import Monster from "../../../data/Monster";
 
 import { LoadingSpinner } from "../../Loading";
 import MonsterTile from "./MonsterTile";
-import AppWrapper from "../../AppWrapper";
 import MonsterSearchBar from "./MonsterSearchBar";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { reciveAllFiltered } from "../../../services/DatabaseService";
@@ -58,7 +57,7 @@ const MonsterOverview = () => {
   };
 
   return (
-    <AppWrapper>
+    <>
       <MonsterSearchBar onSend={(filterArray) => setFilter(filterArray)} />
       <div id="scrollable" style={{ width: "100%" }}>
         <MonsterContainer
@@ -72,7 +71,7 @@ const MonsterOverview = () => {
           })}
         </MonsterContainer>
       </div>
-    </AppWrapper>
+    </>
   );
 };
 

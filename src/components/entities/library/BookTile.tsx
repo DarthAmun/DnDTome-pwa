@@ -1,10 +1,9 @@
-import React, { useCallback, Suspense } from "react";
+import React, { useCallback } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import Book from "../../../data/Book";
 
 import { GiResize } from "react-icons/gi";
-import { LoadingSpinner } from "../../Loading";
 import { faTags } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -25,28 +24,24 @@ const BookTile = ({ book }: $Props) => {
 
   return (
     <Tile to={"/book-detail/id/" + book.id}>
-      <Suspense fallback={<LoadingSpinner />}>
-        {getPicture() !== "" ? <Image pic={getPicture()}></Image> : ""}
-        <PropWrapper>
-          <Name>
-            <b>{book.name}</b>
-          </Name>
+      {getPicture() !== "" ? <Image pic={getPicture()}></Image> : ""}
+      <PropWrapper>
+        <Name>
+          <b>{book.name}</b>
+        </Name>
 
-          <PropRowWrapper>
-            <RowProp>
-              <GiResize />
-              {book.pages}
-            </RowProp>
-            <RowProp>
-              <FontAwesomeIcon icon={faTags} />
-              {book.tags &&
-                book.tags.map((tag: string, index: number) => (
-                  <Tag key={index}>{tag}</Tag>
-                ))}
-            </RowProp>
-          </PropRowWrapper>
-        </PropWrapper>
-      </Suspense>
+        <PropRowWrapper>
+          <RowProp>
+            <GiResize />
+            {book.pages}
+          </RowProp>
+          <RowProp>
+            <FontAwesomeIcon icon={faTags} />
+            {book.tags &&
+              book.tags.map((tag: string, index: number) => <Tag key={index}>{tag}</Tag>)}
+          </RowProp>
+        </PropRowWrapper>
+      </PropWrapper>
     </Tile>
   );
 };

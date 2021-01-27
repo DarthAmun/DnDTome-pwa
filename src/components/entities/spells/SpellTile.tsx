@@ -1,9 +1,8 @@
-import React, { useCallback, Suspense } from "react";
+import React, { useCallback } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 import Spell from "../../../data/Spell";
-import { LoadingSpinner } from "../../Loading";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -97,57 +96,55 @@ const SpellTile = ({ spell }: $Props) => {
 
   return (
     <Tile to={"/spell-detail/id/" + spell.id}>
-      <Suspense fallback={<LoadingSpinner />}>
-        <School school={spell.school}>{spell.school}</School>
+      <School school={spell.school}>{spell.school}</School>
 
-        <Flag>
-          <b>{hasConcentration()}</b>
-        </Flag>
-        <Flag>
-          <b>{hasRitual()}</b>
-        </Flag>
+      <Flag>
+        <b>{hasConcentration()}</b>
+      </Flag>
+      <Flag>
+        <b>{hasRitual()}</b>
+      </Flag>
 
-        <Level>
-          <b>{formatLevel()}</b>
-        </Level>
-        {getPicture() !== "" ? (
-          <ImageName>
-            <Image pic={getPicture()}></Image>
-            <b>{spell.name}</b>
-          </ImageName>
-        ) : (
-          <Name>
-            <b>{spell.name}</b>
-          </Name>
-        )}
+      <Level>
+        <b>{formatLevel()}</b>
+      </Level>
+      {getPicture() !== "" ? (
+        <ImageName>
+          <Image pic={getPicture()}></Image>
+          <b>{spell.name}</b>
+        </ImageName>
+      ) : (
+        <Name>
+          <b>{spell.name}</b>
+        </Name>
+      )}
 
-        <PropWrapper>
-          <Prop>
-            <Icon icon={faHistory} />
-            {formatTime()}
-          </Prop>
-          <Prop>
-            <Icon icon={faHourglassHalf} />
-            {formatDuration()}
-          </Prop>
-          <Prop>
-            <Icon icon={faPowerOff} transform={{ rotate: 42 }} />
-            {spell.range}
-          </Prop>
-          <Prop>
-            <Icon icon={faMortarPestle} />
-            {formatComponents()}
-          </Prop>
-          <WideProp>
-            <Icon icon={faUser} />
-            {spell.classes}
-          </WideProp>
-          <WideProp>
-            <Icon icon={faLink} />
-            {spell.sources}
-          </WideProp>
-        </PropWrapper>
-      </Suspense>
+      <PropWrapper>
+        <Prop>
+          <Icon icon={faHistory} />
+          {formatTime()}
+        </Prop>
+        <Prop>
+          <Icon icon={faHourglassHalf} />
+          {formatDuration()}
+        </Prop>
+        <Prop>
+          <Icon icon={faPowerOff} transform={{ rotate: 42 }} />
+          {spell.range}
+        </Prop>
+        <Prop>
+          <Icon icon={faMortarPestle} />
+          {formatComponents()}
+        </Prop>
+        <WideProp>
+          <Icon icon={faUser} />
+          {spell.classes}
+        </WideProp>
+        <WideProp>
+          <Icon icon={faLink} />
+          {spell.sources}
+        </WideProp>
+      </PropWrapper>
     </Tile>
   );
 };

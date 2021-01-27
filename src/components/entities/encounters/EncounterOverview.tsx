@@ -4,7 +4,6 @@ import Encounter from "../../../data/encounter/Encounter";
 import Filter from "../../../data/Filter";
 import { reciveAllFiltered } from "../../../services/DatabaseService";
 
-import AppWrapper from "../../AppWrapper";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { LoadingSpinner } from "../../Loading";
 import EncounterTile from "./EncounterTile";
@@ -58,7 +57,7 @@ const EncounterOverview = () => {
   };
 
   return (
-    <AppWrapper>
+    <>
       <EncounterSearchBar onSend={(filterArray) => setFilter(filterArray)} />
       <EncounterContainer
         dataLength={encounters.length}
@@ -70,7 +69,7 @@ const EncounterOverview = () => {
           return <EncounterTile key={index} encounter={encounter}></EncounterTile>;
         })}
       </EncounterContainer>
-    </AppWrapper>
+    </>
   );
 };
 

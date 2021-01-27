@@ -3,7 +3,6 @@ import { RouteComponentProps } from "react-router";
 import { MyAppDatabase } from "../../../../../database/MyDatabase";
 import { useItem } from "../../../../../hooks/DexieHooks";
 
-import AppWrapper from "../../../../AppWrapper";
 import { LoadingSpinner } from "../../../../Loading";
 import EncounterDetail from "../EncounterDetail";
 
@@ -14,7 +13,7 @@ const IdToEncounter = ({ match }: RouteComponentProps<TParams>) => {
   const [encounter, loading, error] = useItem(db.encounters, +match.params.id);
 
   return (
-    <AppWrapper>
+    <>
       {!error && loading && <LoadingSpinner />}
       {error && !loading && <>Fail by Id</>}
       {!error && !loading && encounter !== undefined ? (
@@ -22,7 +21,7 @@ const IdToEncounter = ({ match }: RouteComponentProps<TParams>) => {
       ) : (
         ""
       )}
-    </AppWrapper>
+    </>
   );
 };
 

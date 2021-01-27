@@ -38,7 +38,6 @@ import {
   faTable,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import AppWrapper from "../AppWrapper";
 import TextButton from "../form_elements/TextButton";
 import { BiSelectMultiple } from "react-icons/bi";
 import RandomTable from "../../data/RandomTable";
@@ -206,7 +205,7 @@ const Home = () => {
   };
 
   return (
-    <AppWrapper>
+    <>
       <General>
         <HomeSection>
           <SelectionTitle>
@@ -495,7 +494,7 @@ const Home = () => {
           </ButtonBar>
         </HomeSection>
       </General>
-    </AppWrapper>
+    </>
   );
 };
 

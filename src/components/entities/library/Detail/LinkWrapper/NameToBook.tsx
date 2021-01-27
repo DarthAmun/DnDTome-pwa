@@ -2,7 +2,6 @@ import React from "react";
 import { RouteComponentProps } from "react-router";
 import { MyAppDatabase } from "../../../../../database/MyDatabase";
 import { useItemByAttr } from "../../../../../hooks/DexieHooks";
-import AppWrapper from "../../../../AppWrapper";
 import { LoadingSpinner } from "../../../../Loading";
 import BookDetail from "../BookDetail";
 
@@ -17,13 +16,13 @@ const NameToBook = ({ match }: RouteComponentProps<TParams>) => {
   );
 
   return (
-    <AppWrapper>
+    <>
       {!error && loading && <LoadingSpinner />}
       {error && !loading && <>Fail by Name</>}
       {!error && !loading && book !== undefined && (
         <BookDetail book={book} isNew={book.name === "" ? true : false} />
       )}
-    </AppWrapper>
+    </>
   );
 };
 

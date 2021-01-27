@@ -1,9 +1,8 @@
-import React, { useCallback, Suspense } from "react";
+import React, { useCallback } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 import Monster from "../../../data/Monster";
-import { LoadingSpinner } from "../../Loading";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLink, faRunning } from "@fortawesome/free-solid-svg-icons";
@@ -51,53 +50,50 @@ const MonsterTile = ({ monster }: $Props) => {
 
   return (
     <Tile to={"/monster-detail/id/" + monster.id}>
-      <Suspense fallback={<LoadingSpinner />}>
-        <Type>
-          {monster.type}{" "}
-          {monster.subtype.trim() !== "" ? "(" + monster.subtype + ")" : ""}
-        </Type>
+      <Type>
+        {monster.type} {monster.subtype.trim() !== "" ? "(" + monster.subtype + ")" : ""}
+      </Type>
 
-        <Flag>
-          <b>{isLegendary()}</b>
-        </Flag>
+      <Flag>
+        <b>{isLegendary()}</b>
+      </Flag>
 
-        <CR>
-          <b>{formatCr()}</b>
-        </CR>
-        {getPicture() !== "" ? (
-          <ImageName>
-            <Image pic={getPicture()}></Image>
-            <b>{monster.name}</b>
-          </ImageName>
-        ) : (
-          <Name>
-            <b>{monster.name}</b>
-          </Name>
-        )}
+      <CR>
+        <b>{formatCr()}</b>
+      </CR>
+      {getPicture() !== "" ? (
+        <ImageName>
+          <Image pic={getPicture()}></Image>
+          <b>{monster.name}</b>
+        </ImageName>
+      ) : (
+        <Name>
+          <b>{monster.name}</b>
+        </Name>
+      )}
 
-        <PropWrapper>
-          <Prop>
-            <GiResize />
-            {monster.size}
-          </Prop>
-          <Prop>
-            <GiAngelOutfit />
-            {monster.alignment}
-          </Prop>
-          <WideProp>
-            <Icon icon={faRunning} />
-            {monster.speed}
-          </WideProp>
-          <WideProp>
-            <MdRecordVoiceOver />
-            {monster.lang}
-          </WideProp>
-          <WideProp>
-            <Icon icon={faLink} />
-            {monster.sources}
-          </WideProp>
-        </PropWrapper>
-      </Suspense>
+      <PropWrapper>
+        <Prop>
+          <GiResize />
+          {monster.size}
+        </Prop>
+        <Prop>
+          <GiAngelOutfit />
+          {monster.alignment}
+        </Prop>
+        <WideProp>
+          <Icon icon={faRunning} />
+          {monster.speed}
+        </WideProp>
+        <WideProp>
+          <MdRecordVoiceOver />
+          {monster.lang}
+        </WideProp>
+        <WideProp>
+          <Icon icon={faLink} />
+          {monster.sources}
+        </WideProp>
+      </PropWrapper>
     </Tile>
   );
 };

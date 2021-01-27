@@ -4,7 +4,6 @@ import Selection from "../../../../../data/Selection";
 import { MyAppDatabase } from "../../../../../database/MyDatabase";
 import { useItemByAttr } from "../../../../../hooks/DexieHooks";
 import { LoadingSpinner } from "../../../../Loading";
-import AppWrapper from "../../../../AppWrapper";
 import SelectionDetail from "../SelectionDetail";
 import { createNewWithId } from "../../../../../services/DatabaseService";
 import ErrorTile from "../../../../general_elements/ErrorTile";
@@ -25,7 +24,7 @@ const NameToSelection = ({ match }: RouteComponentProps<TParams>) => {
   };
 
   return (
-    <AppWrapper>
+    <>
       {!error && loading && <LoadingSpinner />}
       {error && !loading && <>Error occured</>}
       {!error && !loading && selection === undefined && (
@@ -38,7 +37,7 @@ const NameToSelection = ({ match }: RouteComponentProps<TParams>) => {
       {!error && !loading && selection !== undefined && (
         <SelectionDetail selection={selection} isNew={selection.name === "" ? true : false} />
       )}
-    </AppWrapper>
+    </>
   );
 };
 

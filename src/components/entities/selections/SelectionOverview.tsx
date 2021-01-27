@@ -5,7 +5,6 @@ import Selection from "../../../data/Selection";
 
 import { LoadingSpinner } from "../../Loading";
 import SelectionTile from "./SelectionTile";
-import AppWrapper from "../../AppWrapper";
 import SelectionSearchBar from "./SelectionSearchBar";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { reciveAllFiltered } from "../../../services/DatabaseService";
@@ -58,7 +57,7 @@ const SelectionOverview = () => {
   };
 
   return (
-    <AppWrapper>
+    <>
       <SelectionSearchBar onSend={(filterArray) => setFilter(filterArray)} />
       <div id="scrollable" style={{ width: "100%" }}>
         <SelectionContainer
@@ -72,7 +71,7 @@ const SelectionOverview = () => {
           })}
         </SelectionContainer>
       </div>
-    </AppWrapper>
+    </>
   );
 };
 

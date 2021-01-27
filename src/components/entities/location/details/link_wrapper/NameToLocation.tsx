@@ -4,7 +4,6 @@ import Location from "../../../../../data/world/Location";
 import { MyAppDatabase } from "../../../../../database/MyDatabase";
 import { useItemByAttr } from "../../../../../hooks/DexieHooks";
 import { LoadingSpinner } from "../../../../Loading";
-import AppWrapper from "../../../../AppWrapper";
 import LocationDetail from "../LocationDetail";
 import { createNewWithId } from "../../../../../services/DatabaseService";
 import ErrorTile from "../../../../general_elements/ErrorTile";
@@ -25,7 +24,7 @@ const NameToLocation = ({ match }: RouteComponentProps<TParams>) => {
   };
 
   return (
-    <AppWrapper>
+    <>
       {!error && loading && <LoadingSpinner />}
       {error && !loading && <>Error occured</>}
       {!error && !loading && location === undefined && (
@@ -38,7 +37,7 @@ const NameToLocation = ({ match }: RouteComponentProps<TParams>) => {
       {!error && !loading && location !== undefined && (
         <LocationDetail location={location} isNew={location.name === "" ? true : false} />
       )}
-    </AppWrapper>
+    </>
   );
 };
 

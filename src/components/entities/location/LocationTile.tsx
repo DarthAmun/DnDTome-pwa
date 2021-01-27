@@ -1,9 +1,8 @@
-import React, { useCallback, Suspense } from "react";
+import React, { useCallback } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 import Location from "../../../data/world/Location";
-import { LoadingSpinner } from "../../Loading";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLink } from "@fortawesome/free-solid-svg-icons";
@@ -25,25 +24,23 @@ const LocationTile = ({ location }: $Props) => {
 
   return (
     <Tile to={"/location-detail/id/" + location.id}>
-      <Suspense fallback={<LoadingSpinner />}>
-        {getPicture() !== "" ? (
-          <ImageName>
-            <Image pic={getPicture()}></Image>
-            <b>{location.name}</b>
-          </ImageName>
-        ) : (
-          <Name>
-            <b>{location.name}</b>
-          </Name>
-        )}
+      {getPicture() !== "" ? (
+        <ImageName>
+          <Image pic={getPicture()}></Image>
+          <b>{location.name}</b>
+        </ImageName>
+      ) : (
+        <Name>
+          <b>{location.name}</b>
+        </Name>
+      )}
 
-        <PropWrapper>
-          <WideProp>
-            <Icon icon={faLink} />
-            {location.sources}
-          </WideProp>
-        </PropWrapper>
-      </Suspense>
+      <PropWrapper>
+        <WideProp>
+          <Icon icon={faLink} />
+          {location.sources}
+        </WideProp>
+      </PropWrapper>
     </Tile>
   );
 };

@@ -5,7 +5,6 @@ import Spell from "../../../data/Spell";
 
 import { LoadingSpinner } from "../../Loading";
 import SpellTile from "./SpellTile";
-import AppWrapper from "../../AppWrapper";
 import SpellSearchBar from "./SpellSearchBar";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { reciveAllFiltered } from "../../../services/DatabaseService";
@@ -58,7 +57,7 @@ const SpellOverview = () => {
   };
 
   return (
-    <AppWrapper>
+    <>
       <SpellSearchBar onSend={(filterArray) => setFilter(filterArray)} />
       <div
         id="scrollable"
@@ -77,7 +76,7 @@ const SpellOverview = () => {
           })}
         </SpellContainer>
       </div>
-    </AppWrapper>
+    </>
   );
 };
 

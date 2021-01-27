@@ -3,7 +3,6 @@ import { RouteComponentProps, useHistory } from "react-router";
 import { MyAppDatabase } from "../../../../../database/MyDatabase";
 import { useItemByAttr } from "../../../../../hooks/DexieHooks";
 import { LoadingSpinner } from "../../../../Loading";
-import AppWrapper from "../../../../AppWrapper";
 import NpcDetail from "../NpcDetail";
 import Npc from "../../../../../data/campaign/Npc";
 import { createNewWithId } from "../../../../../services/DatabaseService";
@@ -25,7 +24,7 @@ const NameToNpc = ({ match }: RouteComponentProps<TParams>) => {
   };
 
   return (
-    <AppWrapper>
+    <>
       {!error && loading && <LoadingSpinner />}
       {error && !loading && <>Error occured</>}
       {!error && !loading && npc === undefined && (
@@ -38,7 +37,7 @@ const NameToNpc = ({ match }: RouteComponentProps<TParams>) => {
       {!error && !loading && npc !== undefined && (
         <NpcDetail npc={npc} isNew={npc.name === "" ? true : false} />
       )}
-    </AppWrapper>
+    </>
   );
 };
 

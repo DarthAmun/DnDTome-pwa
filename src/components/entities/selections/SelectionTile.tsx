@@ -1,9 +1,8 @@
-import React, { Suspense } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 import Selection from "../../../data/Selection";
-import { LoadingSpinner } from "../../Loading";
 
 interface $Props {
   selection: Selection;
@@ -12,15 +11,13 @@ interface $Props {
 const SelectionTile = ({ selection }: $Props) => {
   return (
     <Tile to={"/selection-detail/id/" + selection.id}>
-      <Suspense fallback={<LoadingSpinner />}>
-        <Name>
-          <b>{selection.name}</b>
-        </Name>
+      <Name>
+        <b>{selection.name}</b>
+      </Name>
 
-        <PropWrapper>
-          <WideProp>Options: {selection.selectionOptions.length}</WideProp>
-        </PropWrapper>
-      </Suspense>
+      <PropWrapper>
+        <WideProp>Options: {selection.selectionOptions.length}</WideProp>
+      </PropWrapper>
     </Tile>
   );
 };

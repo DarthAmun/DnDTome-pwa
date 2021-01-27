@@ -5,7 +5,6 @@ import RandomTable from "../../../data/RandomTable";
 import Filter from "../../../data/Filter";
 import { reciveAllFiltered } from "../../../services/DatabaseService";
 
-import AppWrapper from "../../AppWrapper";
 import { LoadingSpinner } from "../../Loading";
 import RandomTableTile from "./RandomTableTile";
 import RandomTableSearchBar from "./RandomTableSearchBar";
@@ -58,7 +57,7 @@ const RandomTableOverview = () => {
   };
 
   return (
-    <AppWrapper>
+    <>
       <RandomTableSearchBar onSend={(filterArray) => setFilter(filterArray)} />
       <div id="scrollable" style={{ width: "100%" }}>
         <LibraryContainer
@@ -72,7 +71,7 @@ const RandomTableOverview = () => {
           })}
         </LibraryContainer>
       </div>
-    </AppWrapper>
+    </>
   );
 };
 

@@ -4,7 +4,6 @@ import Campaign from "../../../data/campaign/Campaign";
 import Filter from "../../../data/Filter";
 import { reciveAllFiltered } from "../../../services/DatabaseService";
 
-import AppWrapper from "../../AppWrapper";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { LoadingSpinner } from "../../Loading";
 import CampaignTile from "./CampaignTile";
@@ -58,7 +57,7 @@ const CampaignOverview = () => {
   };
 
   return (
-    <AppWrapper>
+    <>
       <CampaignSearchBar onSend={(filterArray) => setFilter(filterArray)} />
       <CampaignContainer
         dataLength={campaigns.length}
@@ -70,7 +69,7 @@ const CampaignOverview = () => {
           return <CampaignTile key={index} campaign={campaign}></CampaignTile>;
         })}
       </CampaignContainer>
-    </AppWrapper>
+    </>
   );
 };
 

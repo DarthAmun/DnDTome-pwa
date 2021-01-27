@@ -4,7 +4,6 @@ import World from "../../../data/world/World";
 import Filter from "../../../data/Filter";
 import { reciveAllFiltered } from "../../../services/DatabaseService";
 
-import AppWrapper from "../../AppWrapper";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { LoadingSpinner } from "../../Loading";
 import WorldTile from "./WorldTile";
@@ -58,7 +57,7 @@ const WorldOverview = () => {
   };
 
   return (
-    <AppWrapper>
+    <>
       <WorldSearchBar onSend={(filterArray) => setFilter(filterArray)} />
       <WorldContainer
         dataLength={worlds.length}
@@ -70,7 +69,7 @@ const WorldOverview = () => {
           return <WorldTile key={index} world={world}></WorldTile>;
         })}
       </WorldContainer>
-    </AppWrapper>
+    </>
   );
 };
 

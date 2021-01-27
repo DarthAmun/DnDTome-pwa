@@ -3,7 +3,6 @@ import { RouteComponentProps, useHistory } from "react-router";
 import { MyAppDatabase } from "../../../../../database/MyDatabase";
 import { useItemByAttr } from "../../../../../hooks/DexieHooks";
 import { LoadingSpinner } from "../../../../Loading";
-import AppWrapper from "../../../../AppWrapper";
 import ItemDetail from "../ItemDetail";
 import Item from "../../../../../data/Item";
 import { createNewWithId } from "../../../../../services/DatabaseService";
@@ -25,7 +24,7 @@ const NameToItem = ({ match }: RouteComponentProps<TParams>) => {
   };
 
   return (
-    <AppWrapper>
+    <>
       {!error && loading && <LoadingSpinner />}
       {error && !loading && <>Error occured</>}
       {!error && !loading && item === undefined && (
@@ -38,7 +37,7 @@ const NameToItem = ({ match }: RouteComponentProps<TParams>) => {
       {!error && !loading && item !== undefined && (
         <ItemDetail item={item} isNew={item.name === "" ? true : false} />
       )}
-    </AppWrapper>
+    </>
   );
 };
 

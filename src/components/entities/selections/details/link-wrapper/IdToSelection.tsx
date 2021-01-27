@@ -3,7 +3,6 @@ import { RouteComponentProps } from "react-router";
 import { MyAppDatabase } from "../../../../../database/MyDatabase";
 import { useItem } from "../../../../../hooks/DexieHooks";
 import { LoadingSpinner } from "../../../../Loading";
-import AppWrapper from "../../../../AppWrapper";
 import SelectionDetail from "../SelectionDetail";
 
 
@@ -14,13 +13,13 @@ const IdToSelection = ({ match }: RouteComponentProps<TParams>) => {
   const [selection, loading, error] = useItem(db.selections, +match.params.id);
 
   return (
-    <AppWrapper>
+    <>
       {!error && loading && <LoadingSpinner />}
       {error && !loading && <>Fail by Id</>}
       {!error && !loading && selection !== undefined && (
         <SelectionDetail selection={selection} isNew={selection.name === "" ? true : false} />
       )}
-    </AppWrapper>
+    </>
   );
 };
 

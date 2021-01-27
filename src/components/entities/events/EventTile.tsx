@@ -1,9 +1,8 @@
-import React, { Suspense } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 import Event from "../../../data/world/Event";
-import { LoadingSpinner } from "../../Loading";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCalendarAlt, faLink } from "@fortawesome/free-solid-svg-icons";
@@ -15,22 +14,20 @@ interface $Props {
 const EventTile = ({ event }: $Props) => {
   return (
     <Tile to={"/event-detail/id/" + event.id}>
-      <Suspense fallback={<LoadingSpinner />}>
-        <Name>
-          <b>{event.name}</b>
-        </Name>
+      <Name>
+        <b>{event.name}</b>
+      </Name>
 
-        <PropWrapper>
-          <WideProp>
-            <Icon icon={faCalendarAlt} />
-            {event.date}
-          </WideProp>
-          <WideProp>
-            <Icon icon={faLink} />
-            {event.sources}
-          </WideProp>
-        </PropWrapper>
-      </Suspense>
+      <PropWrapper>
+        <WideProp>
+          <Icon icon={faCalendarAlt} />
+          {event.date}
+        </WideProp>
+        <WideProp>
+          <Icon icon={faLink} />
+          {event.sources}
+        </WideProp>
+      </PropWrapper>
     </Tile>
   );
 };

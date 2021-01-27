@@ -1,9 +1,8 @@
-import React, { useCallback, Suspense } from "react";
+import React, { useCallback } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 import Quest from "../../../data/campaign/Quest";
-import { LoadingSpinner } from "../../Loading";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLink } from "@fortawesome/free-solid-svg-icons";
@@ -25,25 +24,23 @@ const QuestTile = ({ quest }: $Props) => {
 
   return (
     <Tile to={"/quest-detail/id/" + quest.id}>
-      <Suspense fallback={<LoadingSpinner />}>
-        {getPicture() !== "" ? (
-          <ImageName>
-            <Image pic={getPicture()}></Image>
-            <b>{quest.name}</b>
-          </ImageName>
-        ) : (
-          <Name>
-            <b>{quest.name}</b>
-          </Name>
-        )}
+      {getPicture() !== "" ? (
+        <ImageName>
+          <Image pic={getPicture()}></Image>
+          <b>{quest.name}</b>
+        </ImageName>
+      ) : (
+        <Name>
+          <b>{quest.name}</b>
+        </Name>
+      )}
 
-        <PropWrapper>
-          <WideProp>
-            <Icon icon={faLink} />
-            {quest.sources}
-          </WideProp>
-        </PropWrapper>
-      </Suspense>
+      <PropWrapper>
+        <WideProp>
+          <Icon icon={faLink} />
+          {quest.sources}
+        </WideProp>
+      </PropWrapper>
     </Tile>
   );
 };

@@ -5,7 +5,6 @@ import Item from "../../../data/Item";
 
 import { LoadingSpinner } from "../../Loading";
 import ItemTile from "./ItemTile";
-import AppWrapper from "../../AppWrapper";
 import ItemSearchBar from "./ItemSearchBar";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { reciveAllFiltered } from "../../../services/DatabaseService";
@@ -57,7 +56,7 @@ const ItemOverview = () => {
     });
   };
   return (
-    <AppWrapper>
+    <>
       <ItemSearchBar onSend={(filterArray) => setFilter(filterArray)} />
       <div id="scrollable" style={{ width: "100%" }}>
         <ItemContainer
@@ -71,7 +70,7 @@ const ItemOverview = () => {
           })}
         </ItemContainer>
       </div>
-    </AppWrapper>
+    </>
   );
 };
 

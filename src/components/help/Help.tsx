@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 
-import AppWrapper from "../AppWrapper";
 import FormatedText from "../general_elements/FormatedText";
 import TabBar from "../general_elements/TabBar";
 
@@ -9,7 +8,7 @@ const Help = () => {
   const [activeTab, setTab] = useState<string>("Create");
 
   return (
-    <AppWrapper>
+    <>
       <General>
         <TabBar
           children={["Create", "Import", "Export", "Text Formating", "Modifiers"]}
@@ -287,7 +286,7 @@ const Help = () => {
           </>
         )}
       </General>
-    </AppWrapper>
+    </>
   );
 };
 

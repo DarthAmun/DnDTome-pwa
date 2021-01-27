@@ -2,6 +2,7 @@ import React, { lazy, Suspense } from "react";
 import { MemoryRouter, Switch, Route } from "react-router";
 import { MyThemeProvider } from "./components/theme/MyThemeProvider";
 import { CompleteLoadingSpinner } from "./components/Loading";
+import AppWrapper from "./components/AppWrapper";
 
 const CampaignOverview = lazy(() => import("./components/entities/campaigns/CampaignOverview"));
 const IdToCampaign = lazy(
@@ -125,74 +126,76 @@ const App = () => {
   return (
     <MyThemeProvider>
       <MemoryRouter>
-        <Suspense fallback={<CompleteLoadingSpinner />}>
-          <Switch>
-            <Route exact path="/" component={Home}></Route>
-            <Route exact path="/home" component={Home}></Route>
-            <Route path="/spell-detail/name/:name" component={NameToSpell}></Route>
-            <Route path="/spell-detail/id/:id" component={IdToSpell}></Route>
-            <Route path="/spell-overview" component={SpellOverview}></Route>
-            <Route path="/gear-detail/name/:name" component={NameToGear}></Route>
-            <Route path="/gear-detail/id/:id" component={IdToGear}></Route>
-            <Route path="/gear-overview" component={GearOverview}></Route>
-            <Route path="/item-detail/name/:name" component={NameToItem}></Route>
-            <Route path="/item-detail/id/:id" component={IdToItem}></Route>
-            <Route path="/item-overview" component={ItemOverview}></Route>
-            <Route path="/monster-detail/name/:name" component={NameToMonster}></Route>
-            <Route path="/monster-detail/id/:id" component={IdToMonster}></Route>
-            <Route path="/monster-overview" component={MonsterOverview}></Route>
-            <Route path="/race-detail/name/:name" component={NameToRace}></Route>
-            <Route path="/race-detail/id/:id" component={IdToRace}></Route>
-            <Route path="/race-overview" component={RaceOverview}></Route>
-            <Route path="/subrace-detail/name/:name" component={NameToSubrace}></Route>
-            <Route path="/subrace-detail/id/:id" component={IdToSubrace}></Route>
-            <Route path="/class-detail/name/:name" component={NameToClass}></Route>
-            <Route path="/class-detail/id/:id" component={IdToClass}></Route>
-            <Route path="/class-overview" component={ClassOverview}></Route>
-            <Route path="/subclass-detail/name/:name" component={NameToSubclass}></Route>
-            <Route path="/subclass-detail/id/:id" component={IdToSubclass}></Route>
-            <Route path="/char-detail/name/:name" component={NameToChar}></Route>
-            <Route path="/char-detail/id/:id" component={IdToChar}></Route>
-            <Route path="/char-overview" component={CharOverview}></Route>
-            <Route path="/char-lab" component={CharLab}></Route>
-            <Route path="/encounter-detail/name/:name" component={NameToEncounter}></Route>
-            <Route path="/encounter-detail/id/:id" component={IdToEncounter}></Route>
-            <Route path="/encounter-overview" component={EncounterOverview}></Route>
-            <Route path="/book-detail/name/:name" component={NameToBook}></Route>
-            <Route path="/book-detail/id/:id" component={IdToBook}></Route>
-            <Route path="/selection-detail/name/:name" component={NameToSelection}></Route>
-            <Route path="/selection-detail/id/:id" component={IdToSelection}></Route>
-            <Route path="/selection-overview" component={SelectionOverview}></Route>
-            <Route path="/randomTable-detail/name/:name" component={NameToRandomTable}></Route>
-            <Route path="/randomTable-detail/id/:id" component={IdToRandomTable}></Route>
-            <Route path="/randomTable-overview" component={RandomTableOverview}></Route>
-            <Route path="/campaign-detail/name/:name" component={NameToCampaign}></Route>
-            <Route path="/campaign-detail/id/:id" component={IdToCampaign}></Route>
-            <Route path="/campaign-overview" component={CampaignOverview}></Route>
-            <Route path="/quest-detail/name/:name" component={NameToQuest}></Route>
-            <Route path="/quest-detail/id/:id" component={IdToQuest}></Route>
-            <Route path="/quest-overview" component={QuestOverview}></Route>
-            <Route path="/group-detail/name/:name" component={NameToGroup}></Route>
-            <Route path="/group-detail/id/:id" component={IdToGroup}></Route>
-            <Route path="/group-overview" component={GroupOverview}></Route>
-            <Route path="/npc-detail/name/:name" component={NameToNpc}></Route>
-            <Route path="/npc-detail/id/:id" component={IdToNpc}></Route>
-            <Route path="/npc-overview" component={NpcOverview}></Route>
-            <Route path="/world-detail/name/:name" component={NameToWorld}></Route>
-            <Route path="/world-detail/id/:id" component={IdToWorld}></Route>
-            <Route path="/world-overview" component={WorldOverview}></Route>
-            <Route path="/event-detail/name/:name" component={NameToEvent}></Route>
-            <Route path="/event-detail/id/:id" component={IdToEvent}></Route>
-            <Route path="/event-overview" component={EventOverview}></Route>
-            <Route path="/location-detail/name/:name" component={NameToLocation}></Route>
-            <Route path="/location-detail/id/:id" component={IdToLocation}></Route>
-            <Route path="/location-overview" component={LocationOverview}></Route>
-            <Route path="/statistics" component={Statistics}></Route>
-            <Route path="/options" component={Options}></Route>
-            <Route path="/library" component={Library}></Route>
-            <Route path="/help" component={Help}></Route>
-          </Switch>
-        </Suspense>
+        <AppWrapper>
+          <Suspense fallback={<CompleteLoadingSpinner />}>
+            <Switch>
+              <Route exact path="/" component={Home}></Route>
+              <Route exact path="/home" component={Home}></Route>
+              <Route path="/spell-detail/name/:name" component={NameToSpell}></Route>
+              <Route path="/spell-detail/id/:id" component={IdToSpell}></Route>
+              <Route path="/spell-overview" component={SpellOverview}></Route>
+              <Route path="/gear-detail/name/:name" component={NameToGear}></Route>
+              <Route path="/gear-detail/id/:id" component={IdToGear}></Route>
+              <Route path="/gear-overview" component={GearOverview}></Route>
+              <Route path="/item-detail/name/:name" component={NameToItem}></Route>
+              <Route path="/item-detail/id/:id" component={IdToItem}></Route>
+              <Route path="/item-overview" component={ItemOverview}></Route>
+              <Route path="/monster-detail/name/:name" component={NameToMonster}></Route>
+              <Route path="/monster-detail/id/:id" component={IdToMonster}></Route>
+              <Route path="/monster-overview" component={MonsterOverview}></Route>
+              <Route path="/race-detail/name/:name" component={NameToRace}></Route>
+              <Route path="/race-detail/id/:id" component={IdToRace}></Route>
+              <Route path="/race-overview" component={RaceOverview}></Route>
+              <Route path="/subrace-detail/name/:name" component={NameToSubrace}></Route>
+              <Route path="/subrace-detail/id/:id" component={IdToSubrace}></Route>
+              <Route path="/class-detail/name/:name" component={NameToClass}></Route>
+              <Route path="/class-detail/id/:id" component={IdToClass}></Route>
+              <Route path="/class-overview" component={ClassOverview}></Route>
+              <Route path="/subclass-detail/name/:name" component={NameToSubclass}></Route>
+              <Route path="/subclass-detail/id/:id" component={IdToSubclass}></Route>
+              <Route path="/char-detail/name/:name" component={NameToChar}></Route>
+              <Route path="/char-detail/id/:id" component={IdToChar}></Route>
+              <Route path="/char-overview" component={CharOverview}></Route>
+              <Route path="/char-lab" component={CharLab}></Route>
+              <Route path="/encounter-detail/name/:name" component={NameToEncounter}></Route>
+              <Route path="/encounter-detail/id/:id" component={IdToEncounter}></Route>
+              <Route path="/encounter-overview" component={EncounterOverview}></Route>
+              <Route path="/book-detail/name/:name" component={NameToBook}></Route>
+              <Route path="/book-detail/id/:id" component={IdToBook}></Route>
+              <Route path="/selection-detail/name/:name" component={NameToSelection}></Route>
+              <Route path="/selection-detail/id/:id" component={IdToSelection}></Route>
+              <Route path="/selection-overview" component={SelectionOverview}></Route>
+              <Route path="/randomTable-detail/name/:name" component={NameToRandomTable}></Route>
+              <Route path="/randomTable-detail/id/:id" component={IdToRandomTable}></Route>
+              <Route path="/randomTable-overview" component={RandomTableOverview}></Route>
+              <Route path="/campaign-detail/name/:name" component={NameToCampaign}></Route>
+              <Route path="/campaign-detail/id/:id" component={IdToCampaign}></Route>
+              <Route path="/campaign-overview" component={CampaignOverview}></Route>
+              <Route path="/quest-detail/name/:name" component={NameToQuest}></Route>
+              <Route path="/quest-detail/id/:id" component={IdToQuest}></Route>
+              <Route path="/quest-overview" component={QuestOverview}></Route>
+              <Route path="/group-detail/name/:name" component={NameToGroup}></Route>
+              <Route path="/group-detail/id/:id" component={IdToGroup}></Route>
+              <Route path="/group-overview" component={GroupOverview}></Route>
+              <Route path="/npc-detail/name/:name" component={NameToNpc}></Route>
+              <Route path="/npc-detail/id/:id" component={IdToNpc}></Route>
+              <Route path="/npc-overview" component={NpcOverview}></Route>
+              <Route path="/world-detail/name/:name" component={NameToWorld}></Route>
+              <Route path="/world-detail/id/:id" component={IdToWorld}></Route>
+              <Route path="/world-overview" component={WorldOverview}></Route>
+              <Route path="/event-detail/name/:name" component={NameToEvent}></Route>
+              <Route path="/event-detail/id/:id" component={IdToEvent}></Route>
+              <Route path="/event-overview" component={EventOverview}></Route>
+              <Route path="/location-detail/name/:name" component={NameToLocation}></Route>
+              <Route path="/location-detail/id/:id" component={IdToLocation}></Route>
+              <Route path="/location-overview" component={LocationOverview}></Route>
+              <Route path="/statistics" component={Statistics}></Route>
+              <Route path="/options" component={Options}></Route>
+              <Route path="/library" component={Library}></Route>
+              <Route path="/help" component={Help}></Route>
+            </Switch>
+          </Suspense>
+        </AppWrapper>
       </MemoryRouter>
     </MyThemeProvider>
   );

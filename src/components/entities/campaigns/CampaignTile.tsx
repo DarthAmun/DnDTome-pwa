@@ -1,10 +1,9 @@
-import React, { Suspense, useCallback } from "react";
+import React, { useCallback } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import Campaign from "../../../data/campaign/Campaign";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { LoadingSpinner } from "../../Loading";
 import { faLink } from "@fortawesome/free-solid-svg-icons";
 
 interface $Props {
@@ -24,31 +23,29 @@ const CampaignTile = ({ campaign }: $Props) => {
 
   return (
     <Tile to={"/campaign-detail/id/" + campaign.id}>
-      <Suspense fallback={<LoadingSpinner />}>
-        {getPicture() !== "" ? <Image pic={getPicture()}></Image> : ""}
+      {getPicture() !== "" ? <Image pic={getPicture()}></Image> : ""}
 
-        <PropWrapper>
-          <Name>
-            <b>{campaign.name}</b>
-          </Name>
-          <Text>
-            <PropTitle>Description</PropTitle>
-            {campaign.description}
-          </Text>
-          <WideProp>
-            <Icon icon={faLink} />
-            {campaign.sources}
-          </WideProp>
-          <Prop>
-            <PropTitle>Players</PropTitle>
-            {campaign.players.length}
-          </Prop>
-          <Prop>
-            <PropTitle>Npcs</PropTitle>
-            {campaign.npcs.length}
-          </Prop>
-        </PropWrapper>
-      </Suspense>
+      <PropWrapper>
+        <Name>
+          <b>{campaign.name}</b>
+        </Name>
+        <Text>
+          <PropTitle>Description</PropTitle>
+          {campaign.description}
+        </Text>
+        <WideProp>
+          <Icon icon={faLink} />
+          {campaign.sources}
+        </WideProp>
+        <Prop>
+          <PropTitle>Players</PropTitle>
+          {campaign.players.length}
+        </Prop>
+        <Prop>
+          <PropTitle>Npcs</PropTitle>
+          {campaign.npcs.length}
+        </Prop>
+      </PropWrapper>
     </Tile>
   );
 };

@@ -4,7 +4,6 @@ import Campaign from "../../../../../data/campaign/Campaign";
 import { MyAppDatabase } from "../../../../../database/MyDatabase";
 import { useItemByAttr } from "../../../../../hooks/DexieHooks";
 import { createNewWithId } from "../../../../../services/DatabaseService";
-import AppWrapper from "../../../../AppWrapper";
 import ErrorTile from "../../../../general_elements/ErrorTile";
 import { LoadingSpinner } from "../../../../Loading";
 import CampaignDetail from "../CampaignDetail";
@@ -25,7 +24,7 @@ const NameToCampaign = ({ match }: RouteComponentProps<TParams>) => {
   };
 
   return (
-    <AppWrapper>
+    <>
       {!error && loading && <LoadingSpinner />}
       {error && !loading && <>Error occured</>}
       {!error && !loading && campaign === undefined && (
@@ -40,7 +39,7 @@ const NameToCampaign = ({ match }: RouteComponentProps<TParams>) => {
       ) : (
         ""
       )}
-    </AppWrapper>
+    </>
   );
 };
 

@@ -5,7 +5,6 @@ import Npc from "../../../data/campaign/Npc";
 
 import { LoadingSpinner } from "../../Loading";
 import NpcTile from "./NpcTile";
-import AppWrapper from "../../AppWrapper";
 import NpcSearchBar from "./NpcSearchBar";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { reciveAllFiltered } from "../../../services/DatabaseService";
@@ -58,7 +57,7 @@ const NpcOverview = () => {
   };
 
   return (
-    <AppWrapper>
+    <>
       <NpcSearchBar onSend={(filterArray) => setFilter(filterArray)} />
       <div id="scrollable" style={{ width: "100%" }}>
         <NpcContainer
@@ -72,7 +71,7 @@ const NpcOverview = () => {
           })}
         </NpcContainer>
       </div>
-    </AppWrapper>
+    </>
   );
 };
 

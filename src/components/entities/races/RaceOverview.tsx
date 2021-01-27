@@ -5,7 +5,6 @@ import Race from "../../../data/races/Race";
 
 import { LoadingSpinner } from "../../Loading";
 import RaceTile from "./RaceTile";
-import AppWrapper from "../../AppWrapper";
 import RaceSearchBar from "./RaceSearchBar";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { reciveAllFiltered } from "../../../services/DatabaseService";
@@ -58,7 +57,7 @@ const RaceOverview = () => {
   };
 
   return (
-    <AppWrapper>
+    <>
       <RaceSearchBar onSend={(filterArray) => setFilter(filterArray)} />
       <div id="scrollable" style={{ width: "100%" }}>
         <RaceContainer
@@ -72,7 +71,7 @@ const RaceOverview = () => {
           })}
         </RaceContainer>
       </div>
-    </AppWrapper>
+    </>
   );
 };
 

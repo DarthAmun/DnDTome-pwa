@@ -3,7 +3,6 @@ import { RouteComponentProps, useHistory } from "react-router";
 import { MyAppDatabase } from "../../../../../database/MyDatabase";
 import { useItemByAttr } from "../../../../../hooks/DexieHooks";
 import { LoadingSpinner } from "../../../../Loading";
-import AppWrapper from "../../../../AppWrapper";
 import EventDetail from "../EventDetail";
 import Event from "../../../../../data/world/Event";
 import { createNewWithId } from "../../../../../services/DatabaseService";
@@ -25,7 +24,7 @@ const NameToEvent = ({ match }: RouteComponentProps<TParams>) => {
   };
 
   return (
-    <AppWrapper>
+    <>
       {!error && loading && <LoadingSpinner />}
       {error && !loading && <>Error occured</>}
       {!error && !loading && event === undefined && (
@@ -38,7 +37,7 @@ const NameToEvent = ({ match }: RouteComponentProps<TParams>) => {
       {!error && !loading && event !== undefined && (
         <EventDetail event={event} isNew={event.name === "" ? true : false} />
       )}
-    </AppWrapper>
+    </>
   );
 };
 

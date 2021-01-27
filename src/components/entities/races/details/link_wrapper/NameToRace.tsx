@@ -3,7 +3,6 @@ import { RouteComponentProps, useHistory } from "react-router";
 import { MyAppDatabase } from "../../../../../database/MyDatabase";
 import { useItemByAttr } from "../../../../../hooks/DexieHooks";
 import { LoadingSpinner } from "../../../../Loading";
-import AppWrapper from "../../../../AppWrapper";
 import RaceDetail from "../RaceDetail";
 import Race from "../../../../../data/races/Race";
 import { createNewWithId } from "../../../../../services/DatabaseService";
@@ -25,7 +24,7 @@ const NameToRace = ({ match }: RouteComponentProps<TParams>) => {
   };
 
   return (
-    <AppWrapper>
+    <>
       {!error && loading && <LoadingSpinner />}
       {error && !loading && <>Error occured</>}
       {!error && !loading && race === undefined && (
@@ -38,7 +37,7 @@ const NameToRace = ({ match }: RouteComponentProps<TParams>) => {
       {!error && !loading && race !== undefined && (
         <RaceDetail race={race} isNew={race.name === "" ? true : false} />
       )}
-    </AppWrapper>
+    </>
   );
 };
 

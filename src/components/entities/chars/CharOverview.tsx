@@ -5,7 +5,6 @@ import Char from "../../../data/chars/Char";
 
 import { LoadingSpinner } from "../../Loading";
 import CharTile from "./CharTile";
-import AppWrapper from "../../AppWrapper";
 import CharSearchBar from "./CharSearchBar";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { reciveAllFiltered } from "../../../services/DatabaseService";
@@ -58,7 +57,7 @@ const CharOverview = () => {
   };
 
   return (
-    <AppWrapper>
+    <>
       <CharSearchBar onSend={(filterArray) => setFilter(filterArray)} />
       <div id="scrollable" style={{ width: "100%" }}>
         <CharContainer
@@ -72,7 +71,7 @@ const CharOverview = () => {
           })}
         </CharContainer>
       </div>
-    </AppWrapper>
+    </>
   );
 };
 

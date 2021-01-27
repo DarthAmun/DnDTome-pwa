@@ -4,7 +4,6 @@ import Group from "../../../data/campaign/Group";
 import Filter from "../../../data/Filter";
 import { reciveAllFiltered } from "../../../services/DatabaseService";
 
-import AppWrapper from "../../AppWrapper";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { LoadingSpinner } from "../../Loading";
 import GroupTile from "./GroupTile";
@@ -58,7 +57,7 @@ const GroupOverview = () => {
   };
 
   return (
-    <AppWrapper>
+    <>
       <GroupSearchBar onSend={(filterArray) => setFilter(filterArray)} />
       <GroupContainer
         dataLength={groups.length}
@@ -70,7 +69,7 @@ const GroupOverview = () => {
           return <GroupTile key={index} group={group}></GroupTile>;
         })}
       </GroupContainer>
-    </AppWrapper>
+    </>
   );
 };
 

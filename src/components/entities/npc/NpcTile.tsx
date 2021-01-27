@@ -1,9 +1,8 @@
-import React, { useCallback, Suspense } from "react";
+import React, { useCallback } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 import Npc from "../../../data/campaign/Npc";
-import { LoadingSpinner } from "../../Loading";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLink } from "@fortawesome/free-solid-svg-icons";
@@ -25,19 +24,17 @@ const NpcTile = ({ npc }: $Props) => {
 
   return (
     <Tile to={"/npc-detail/id/" + npc.id}>
-      <Suspense fallback={<LoadingSpinner />}>
-        {getPicture() !== "" ? <Image pic={getPicture()}></Image> : ""}
-        <PropWrapper>
-          <Name>
-            <b>{npc.name}</b>
-          </Name>
+      {getPicture() !== "" ? <Image pic={getPicture()}></Image> : ""}
+      <PropWrapper>
+        <Name>
+          <b>{npc.name}</b>
+        </Name>
 
-          <WideProp>
-            <Icon icon={faLink} />
-            {npc.sources}
-          </WideProp>
-        </PropWrapper>
-      </Suspense>
+        <WideProp>
+          <Icon icon={faLink} />
+          {npc.sources}
+        </WideProp>
+      </PropWrapper>
     </Tile>
   );
 };

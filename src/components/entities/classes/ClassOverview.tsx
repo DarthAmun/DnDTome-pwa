@@ -5,7 +5,6 @@ import Class from "../../../data/classes/Class";
 
 import { LoadingSpinner } from "../../Loading";
 import ClassTile from "./ClassTile";
-import AppWrapper from "../../AppWrapper";
 import ClassSearchBar from "./ClassSearchBar";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { reciveAllFiltered } from "../../../services/DatabaseService";
@@ -58,7 +57,7 @@ const ClassOverview = () => {
   };
 
   return (
-    <AppWrapper>
+    <>
       <ClassSearchBar onSend={(filterArray) => setFilter(filterArray)} />
       <div id="scrollable" style={{ width: "100%" }}>
         <ClassContainer
@@ -72,7 +71,7 @@ const ClassOverview = () => {
           })}
         </ClassContainer>
       </div>
-    </AppWrapper>
+    </>
   );
 };
 

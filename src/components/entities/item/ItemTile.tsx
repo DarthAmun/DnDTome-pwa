@@ -1,9 +1,8 @@
-import React, { useCallback, Suspense } from "react";
+import React, { useCallback } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 import Item from "../../../data/Item";
-import { LoadingSpinner } from "../../Loading";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLink } from "@fortawesome/free-solid-svg-icons";
@@ -34,43 +33,41 @@ const ItemTile = ({ item }: $Props) => {
 
   return (
     <Tile to={"/item-detail/id/" + item.id}>
-      <Suspense fallback={<LoadingSpinner />}>
-        <Rarity rarity={item.rarity}>{item.rarity}</Rarity>
+      <Rarity rarity={item.rarity}>{item.rarity}</Rarity>
 
-        <Flag>
-          <b>{hasAttunment()}</b>
-        </Flag>
+      <Flag>
+        <b>{hasAttunment()}</b>
+      </Flag>
 
-        {getPicture() !== "" ? (
-          <ImageName>
-            <Image pic={getPicture()}></Image>
-            <b>{item.name}</b>
-          </ImageName>
-        ) : (
-          <Name>
-            <b>{item.name}</b>
-          </Name>
-        )}
+      {getPicture() !== "" ? (
+        <ImageName>
+          <Image pic={getPicture()}></Image>
+          <b>{item.name}</b>
+        </ImageName>
+      ) : (
+        <Name>
+          <b>{item.name}</b>
+        </Name>
+      )}
 
-        <PropWrapper>
-          <Prop>{item.type}</Prop>
-          {item.base && (
-            <>
-              <Prop>{item.base}</Prop>
-              <WideProp>
-                <Icon icon={faLink} />
-                {item.sources}
-              </WideProp>
-            </>
-          )}
-          {!item.base && (
-            <Prop>
+      <PropWrapper>
+        <Prop>{item.type}</Prop>
+        {item.base && (
+          <>
+            <Prop>{item.base}</Prop>
+            <WideProp>
               <Icon icon={faLink} />
               {item.sources}
-            </Prop>
-          )}
-        </PropWrapper>
-      </Suspense>
+            </WideProp>
+          </>
+        )}
+        {!item.base && (
+          <Prop>
+            <Icon icon={faLink} />
+            {item.sources}
+          </Prop>
+        )}
+      </PropWrapper>
     </Tile>
   );
 };

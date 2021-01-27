@@ -1,10 +1,9 @@
-import React, { Suspense } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import RandomTable from "../../../data/RandomTable";
 
 import { GiResize } from "react-icons/gi";
-import { LoadingSpinner } from "../../Loading";
 
 interface $Props {
   randomTable: RandomTable;
@@ -13,20 +12,18 @@ interface $Props {
 const RandomTableTile = ({ randomTable }: $Props) => {
   return (
     <Tile to={"/randomTable-detail/id/" + randomTable.id}>
-      <Suspense fallback={<LoadingSpinner />}>
-        <PropWrapper>
-          <Name>
-            <b>{randomTable.name}</b>
-          </Name>
+      <PropWrapper>
+        <Name>
+          <b>{randomTable.name}</b>
+        </Name>
 
-          <PropRowWrapper>
-            <RowProp>
-              <GiResize />
-              Rows: {randomTable.rows.length}
-            </RowProp>
-          </PropRowWrapper>
-        </PropWrapper>
-      </Suspense>
+        <PropRowWrapper>
+          <RowProp>
+            <GiResize />
+            Rows: {randomTable.rows.length}
+          </RowProp>
+        </PropRowWrapper>
+      </PropWrapper>
     </Tile>
   );
 };

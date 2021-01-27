@@ -1,9 +1,8 @@
-import React, { useCallback, Suspense } from "react";
+import React, { useCallback } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 import Race from "../../../data/races/Race";
-import { LoadingSpinner } from "../../Loading";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLink } from "@fortawesome/free-solid-svg-icons";
@@ -26,23 +25,21 @@ const RaceTile = ({ race }: $Props) => {
 
   return (
     <Tile to={"/race-detail/id/" + race.id}>
-      <Suspense fallback={<LoadingSpinner />}>
-        {getPicture() !== "" ? <Image pic={getPicture()}></Image> : ""}
-        <PropWrapper>
-          <Name>
-            <b>{race.name}</b>
-          </Name>
+      {getPicture() !== "" ? <Image pic={getPicture()}></Image> : ""}
+      <PropWrapper>
+        <Name>
+          <b>{race.name}</b>
+        </Name>
 
-          <Prop>
-            <GiUpgrade />
-            {race.abilityScores}
-          </Prop>
-          <Prop>
-            <Icon icon={faLink} />
-            {race.sources}
-          </Prop>
-        </PropWrapper>
-      </Suspense>
+        <Prop>
+          <GiUpgrade />
+          {race.abilityScores}
+        </Prop>
+        <Prop>
+          <Icon icon={faLink} />
+          {race.sources}
+        </Prop>
+      </PropWrapper>
     </Tile>
   );
 };

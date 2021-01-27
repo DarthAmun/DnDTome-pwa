@@ -3,7 +3,6 @@ import { RouteComponentProps } from "react-router";
 import { MyAppDatabase } from "../../../../../database/MyDatabase";
 import { useItem } from "../../../../../hooks/DexieHooks";
 
-import AppWrapper from "../../../../AppWrapper";
 import { LoadingSpinner } from "../../../../Loading";
 import GroupDetail from "../GroupDetail";
 
@@ -14,7 +13,7 @@ const IdToGroup = ({ match }: RouteComponentProps<TParams>) => {
   const [group, loading, error] = useItem(db.groups, +match.params.id);
 
   return (
-    <AppWrapper>
+    <>
       {!error && loading && <LoadingSpinner />}
       {error && !loading && <>Fail by Id</>}
       {!error && !loading && group === undefined && <>Fail by Id</>}
@@ -23,7 +22,7 @@ const IdToGroup = ({ match }: RouteComponentProps<TParams>) => {
       ) : (
         ""
       )}
-    </AppWrapper>
+    </>
   );
 };
 

@@ -5,7 +5,6 @@ import Book from "../../../data/Book";
 import Filter from "../../../data/Filter";
 import { reciveAllFiltered } from "../../../services/DatabaseService";
 
-import AppWrapper from "../../AppWrapper";
 import { LoadingSpinner } from "../../Loading";
 import BookTile from "./BookTile";
 import LibrarySearchBar from "./LibrarySearchBar";
@@ -58,7 +57,7 @@ const Library = () => {
   };
 
   return (
-    <AppWrapper>
+    <>
       <LibrarySearchBar onSend={(filterArray) => setFilter(filterArray)} />
       <div id="scrollable" style={{ width: "100%" }}>
         <LibraryContainer
@@ -72,7 +71,7 @@ const Library = () => {
           })}
         </LibraryContainer>
       </div>
-    </AppWrapper>
+    </>
   );
 };
 

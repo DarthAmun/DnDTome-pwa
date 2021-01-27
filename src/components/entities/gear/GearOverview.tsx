@@ -5,7 +5,6 @@ import Gear from "../../../data/Gear";
 
 import { LoadingSpinner } from "../../Loading";
 import GearTile from "./GearTile";
-import AppWrapper from "../../AppWrapper";
 import GearSearchBar from "./GearSearchBar";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { reciveAllFiltered } from "../../../services/DatabaseService";
@@ -58,7 +57,7 @@ const GearOverview = () => {
   };
 
   return (
-    <AppWrapper>
+    <>
       <GearSearchBar onSend={(filterArray) => setFilter(filterArray)} />
       <div id="scrollable" style={{ width: "100%" }}>
         <GearContainer
@@ -72,7 +71,7 @@ const GearOverview = () => {
           })}
         </GearContainer>
       </div>
-    </AppWrapper>
+    </>
   );
 };
 

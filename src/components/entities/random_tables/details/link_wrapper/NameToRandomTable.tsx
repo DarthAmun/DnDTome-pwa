@@ -4,7 +4,6 @@ import RandomTable from "../../../../../data/RandomTable";
 import { MyAppDatabase } from "../../../../../database/MyDatabase";
 import { useItemByAttr } from "../../../../../hooks/DexieHooks";
 import { createNewWithId } from "../../../../../services/DatabaseService";
-import AppWrapper from "../../../../AppWrapper";
 import ErrorTile from "../../../../general_elements/ErrorTile";
 import { LoadingSpinner } from "../../../../Loading";
 import RandomTableDetail from "../RandomTableDetail";
@@ -25,7 +24,7 @@ const NameToRandomTable = ({ match }: RouteComponentProps<TParams>) => {
   };
 
   return (
-    <AppWrapper>
+    <>
       {!error && loading && <LoadingSpinner />}
       {error && !loading && <>Error occured</>}
       {!error && !loading && randomTable === undefined && (
@@ -41,7 +40,7 @@ const NameToRandomTable = ({ match }: RouteComponentProps<TParams>) => {
           isNew={randomTable.name === "" ? true : false}
         />
       )}
-    </AppWrapper>
+    </>
   );
 };
 

@@ -4,7 +4,6 @@ import Group from "../../../../../data/campaign/Group";
 import { MyAppDatabase } from "../../../../../database/MyDatabase";
 import { useItemByAttr } from "../../../../../hooks/DexieHooks";
 import { createNewWithId } from "../../../../../services/DatabaseService";
-import AppWrapper from "../../../../AppWrapper";
 import ErrorTile from "../../../../general_elements/ErrorTile";
 import { LoadingSpinner } from "../../../../Loading";
 import GroupDetail from "../GroupDetail";
@@ -25,7 +24,7 @@ const NameToGroup = ({ match }: RouteComponentProps<TParams>) => {
   };
 
   return (
-    <AppWrapper>
+    <>
       {!error && loading && <LoadingSpinner />}
       {error && !loading && <>Error occured</>}
       {!error && !loading && group === undefined && (
@@ -40,7 +39,7 @@ const NameToGroup = ({ match }: RouteComponentProps<TParams>) => {
       ) : (
         ""
       )}
-    </AppWrapper>
+    </>
   );
 };
 

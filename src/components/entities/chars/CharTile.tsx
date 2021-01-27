@@ -1,10 +1,8 @@
-import React, { useCallback, Suspense } from "react";
+import React, { useCallback } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import Char from "../../../data/chars/Char";
 import ClassSet from "../../../data/chars/ClassSet";
-
-import { LoadingSpinner } from "../../Loading";
 
 interface $Props {
   char: Char;
@@ -31,33 +29,31 @@ const CharTile = ({ char }: $Props) => {
 
   return (
     <Tile to={"/char-detail/id/" + char.id}>
-      <Suspense fallback={<LoadingSpinner />}>
-        {getPicture() !== "" ? <Image pic={getPicture()}></Image> : ""}
-        <PropWrapper>
-          <Name>
-            <b>{char.name}</b>
-          </Name>
+      {getPicture() !== "" ? <Image pic={getPicture()}></Image> : ""}
+      <PropWrapper>
+        <Name>
+          <b>{char.name}</b>
+        </Name>
 
-          <PropRowWrapper>
-            <RowProp>{calcLevel()}</RowProp>
-            <RowProp>{char.player}</RowProp>
-            <RowProp>{char.race.race}</RowProp>
-            <RowProp>{char.race.subrace}</RowProp>
-          </PropRowWrapper>
-          {char.classes &&
-            char.classes.map((classSet: ClassSet, index: number) => {
-              return (
-                <PropRowWrapper key={index}>
-                  <RowProp>{classSet.level}</RowProp>
-                  <RowProp>{classSet.classe}</RowProp>
-                  <RowProp>{classSet.subclasse}</RowProp>
-                </PropRowWrapper>
-              );
-            })}
-          <Prop>{char.background}</Prop>
-          <Prop>{char.alignment}</Prop>
-        </PropWrapper>
-      </Suspense>
+        <PropRowWrapper>
+          <RowProp>{calcLevel()}</RowProp>
+          <RowProp>{char.player}</RowProp>
+          <RowProp>{char.race.race}</RowProp>
+          <RowProp>{char.race.subrace}</RowProp>
+        </PropRowWrapper>
+        {char.classes &&
+          char.classes.map((classSet: ClassSet, index: number) => {
+            return (
+              <PropRowWrapper key={index}>
+                <RowProp>{classSet.level}</RowProp>
+                <RowProp>{classSet.classe}</RowProp>
+                <RowProp>{classSet.subclasse}</RowProp>
+              </PropRowWrapper>
+            );
+          })}
+        <Prop>{char.background}</Prop>
+        <Prop>{char.alignment}</Prop>
+      </PropWrapper>
     </Tile>
   );
 };

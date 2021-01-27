@@ -21,7 +21,6 @@ import { isLocation } from "../../data/world/Location";
 
 import { faFileImport, faFileExport } from "@fortawesome/free-solid-svg-icons";
 import { LoadingSpinner } from "../Loading";
-import AppWrapper from "../AppWrapper";
 import TabBar from "../general_elements/TabBar";
 import FileField from "../form_elements/FileField";
 import IconButton from "../form_elements/IconButton";
@@ -213,7 +212,7 @@ const Options = () => {
   };
 
   return (
-    <AppWrapper>
+    <>
       {message && showAlert && <Message>{message}</Message>}
       <OptionSection>
         <SelectionTitle>Import</SelectionTitle>
@@ -339,7 +338,7 @@ const Options = () => {
             </OptionSection>
           );
         })}
-    </AppWrapper>
+    </>
   );
 };
 

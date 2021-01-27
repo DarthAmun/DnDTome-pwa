@@ -5,7 +5,6 @@ import Quest from "../../../data/campaign/Quest";
 
 import { LoadingSpinner } from "../../Loading";
 import QuestTile from "./QuestTile";
-import AppWrapper from "../../AppWrapper";
 import QuestSearchBar from "./QuestSearchBar";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { reciveAllFiltered } from "../../../services/DatabaseService";
@@ -58,7 +57,7 @@ const QuestOverview = () => {
   };
 
   return (
-    <AppWrapper>
+    <>
       <QuestSearchBar onSend={(filterArray) => setFilter(filterArray)} />
       <div id="scrollable" style={{ width: "100%" }}>
         <QuestContainer
@@ -72,7 +71,7 @@ const QuestOverview = () => {
           })}
         </QuestContainer>
       </div>
-    </AppWrapper>
+    </>
   );
 };
 

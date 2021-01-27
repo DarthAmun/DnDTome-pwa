@@ -3,7 +3,6 @@ import { RouteComponentProps } from "react-router";
 import { MyAppDatabase } from "../../../../../database/MyDatabase";
 import { useItem } from "../../../../../hooks/DexieHooks";
 
-import AppWrapper from "../../../../AppWrapper";
 import { LoadingSpinner } from "../../../../Loading";
 import CampaignDetail from "../CampaignDetail";
 
@@ -14,7 +13,7 @@ const IdToCampaign = ({ match }: RouteComponentProps<TParams>) => {
   const [campaign, loading, error] = useItem(db.campaigns, +match.params.id);
 
   return (
-    <AppWrapper>
+    <>
       {!error && loading && <LoadingSpinner />}
       {error && !loading && <>Fail by Id</>}
       {!error && !loading && campaign === undefined && <>Fail by Id</>}
@@ -23,7 +22,7 @@ const IdToCampaign = ({ match }: RouteComponentProps<TParams>) => {
       ) : (
         ""
       )}
-    </AppWrapper>
+    </>
   );
 };
 

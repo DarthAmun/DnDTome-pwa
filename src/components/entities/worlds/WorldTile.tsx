@@ -1,10 +1,9 @@
-import React, { Suspense } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import World from "../../../data/world/World";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { LoadingSpinner } from "../../Loading";
 import { faLink } from "@fortawesome/free-solid-svg-icons";
 
 interface $Props {
@@ -14,29 +13,27 @@ interface $Props {
 const WorldTile = ({ world }: $Props) => {
   return (
     <Tile to={"/world-detail/id/" + world.id}>
-      <Suspense fallback={<LoadingSpinner />}>
-        <PropWrapper>
-          <Name>
-            <b>{world.name}</b>
-          </Name>
-          <Text>
-            <PropTitle>Description</PropTitle>
-            {world.description}
-          </Text>
-          <Prop>
-            <PropTitle>Locations</PropTitle>
-            {world.locations.length}
-          </Prop>
-          <Prop>
-            <PropTitle>Events</PropTitle>
-            {world.events.length}
-          </Prop>
-          <WideProp>
-            <Icon icon={faLink} />
-            {world.sources}
-          </WideProp>
-        </PropWrapper>
-      </Suspense>
+      <PropWrapper>
+        <Name>
+          <b>{world.name}</b>
+        </Name>
+        <Text>
+          <PropTitle>Description</PropTitle>
+          {world.description}
+        </Text>
+        <Prop>
+          <PropTitle>Locations</PropTitle>
+          {world.locations.length}
+        </Prop>
+        <Prop>
+          <PropTitle>Events</PropTitle>
+          {world.events.length}
+        </Prop>
+        <WideProp>
+          <Icon icon={faLink} />
+          {world.sources}
+        </WideProp>
+      </PropWrapper>
     </Tile>
   );
 };

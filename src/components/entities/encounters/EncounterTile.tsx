@@ -1,11 +1,10 @@
-import React, { Suspense } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import Encounter from "../../../data/encounter/Encounter";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDragon, faUser } from "@fortawesome/free-solid-svg-icons";
-import { LoadingSpinner } from "../../Loading";
 
 interface $Props {
   encounter: Encounter;
@@ -14,31 +13,29 @@ interface $Props {
 const EncounterTile = ({ encounter }: $Props) => {
   return (
     <Tile to={"/encounter-detail/id/" + encounter.id}>
-      <Suspense fallback={<LoadingSpinner />}>
-        <Name>
-          <b>{encounter.name}</b>
-        </Name>
+      <Name>
+        <b>{encounter.name}</b>
+      </Name>
 
-        <PropWrapper>
-          <Prop>
-            <Icon icon={faUser} />
-            {encounter.players.length}
-          </Prop>
-          <Prop>
-            <Icon icon={faDragon} />
-            {encounter.enemies.length}
-          </Prop>
-          {encounter.isPlaying && (
-            <>
-              <Prop>Aktiv playing</Prop>
-              <Prop>
-                <PropTitle>Round: </PropTitle>
-                {encounter.roundCounter}
-              </Prop>
-            </>
-          )}
-        </PropWrapper>
-      </Suspense>
+      <PropWrapper>
+        <Prop>
+          <Icon icon={faUser} />
+          {encounter.players.length}
+        </Prop>
+        <Prop>
+          <Icon icon={faDragon} />
+          {encounter.enemies.length}
+        </Prop>
+        {encounter.isPlaying && (
+          <>
+            <Prop>Aktiv playing</Prop>
+            <Prop>
+              <PropTitle>Round: </PropTitle>
+              {encounter.roundCounter}
+            </Prop>
+          </>
+        )}
+      </PropWrapper>
     </Tile>
   );
 };

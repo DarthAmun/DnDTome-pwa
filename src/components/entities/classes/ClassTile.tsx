@@ -1,9 +1,8 @@
-import React, { useCallback, Suspense } from "react";
+import React, { useCallback } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 import Class from "../../../data/classes/Class";
-import { LoadingSpinner } from "../../Loading";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLink } from "@fortawesome/free-solid-svg-icons";
@@ -26,23 +25,21 @@ const ClassTile = ({ classe }: $Props) => {
 
   return (
     <Tile to={"/class-detail/id/" + classe.id}>
-      <Suspense fallback={<LoadingSpinner />}>
-        {getPicture() !== "" ? <Image pic={getPicture()}></Image> : ""}
-        <PropWrapper>
-          <Name>
-            <b>{classe.name}</b>
-          </Name>
+      {getPicture() !== "" ? <Image pic={getPicture()}></Image> : ""}
+      <PropWrapper>
+        <Name>
+          <b>{classe.name}</b>
+        </Name>
 
-          <Prop>
-            <Icon icon={faLink} />
-            {classe.sources}
-          </Prop>
-          <Prop>
-            <GiDiceEightFacesEight />
-            {classe.hitDices}
-          </Prop>
-        </PropWrapper>
-      </Suspense>
+        <Prop>
+          <Icon icon={faLink} />
+          {classe.sources}
+        </Prop>
+        <Prop>
+          <GiDiceEightFacesEight />
+          {classe.hitDices}
+        </Prop>
+      </PropWrapper>
     </Tile>
   );
 };

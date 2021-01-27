@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 
-import AppWrapper from "../AppWrapper";
 import TabBar from "../general_elements/TabBar";
 import CostRatioChart from "./gear/CostRatioChart";
 import DamageRatioChart from "./gear/DamageRatioChart";
@@ -25,7 +24,7 @@ const Statistics = () => {
   const [activeTab, setTab] = useState<string>("General");
 
   return (
-    <AppWrapper>
+    <>
       <TabBar
         children={["General", "Spells", "Gears", "Magic Items", "Monsters"]}
         onChange={(tab: string) => setTab(tab)}
@@ -68,7 +67,7 @@ const Statistics = () => {
           <CrRatioChart />
         </OptionTab>
       )}
-    </AppWrapper>
+    </>
   );
 };
 

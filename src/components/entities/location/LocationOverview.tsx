@@ -5,7 +5,6 @@ import Location from "../../../data/world/Location";
 
 import { LoadingSpinner } from "../../Loading";
 import LocationTile from "./LocationTile";
-import AppWrapper from "../../AppWrapper";
 import LocationSearchBar from "./LocationSearchBar";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { reciveAllFiltered } from "../../../services/DatabaseService";
@@ -58,7 +57,7 @@ const LocationOverview = () => {
   };
 
   return (
-    <AppWrapper>
+    <>
       <LocationSearchBar onSend={(filterArray) => setFilter(filterArray)} />
       <div id="scrollable" style={{ width: "100%" }}>
         <LocationContainer
@@ -72,7 +71,7 @@ const LocationOverview = () => {
           })}
         </LocationContainer>
       </div>
-    </AppWrapper>
+    </>
   );
 };
 

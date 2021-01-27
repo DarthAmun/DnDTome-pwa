@@ -3,7 +3,6 @@ import { RouteComponentProps, useHistory } from "react-router";
 import { MyAppDatabase } from "../../../../../database/MyDatabase";
 import { useItemByAttr } from "../../../../../hooks/DexieHooks";
 import { LoadingSpinner } from "../../../../Loading";
-import AppWrapper from "../../../../AppWrapper";
 import SpellDetail from "../SpellDetail";
 import Spell from "../../../../../data/Spell";
 import { createNewWithId } from "../../../../../services/DatabaseService";
@@ -25,7 +24,7 @@ const NameToSpell = ({ match }: RouteComponentProps<TParams>) => {
   };
 
   return (
-    <AppWrapper>
+    <>
       {!error && loading && <LoadingSpinner />}
       {error && !loading && <>Error occured</>}
       {!error && !loading && spell === undefined && (
@@ -38,7 +37,7 @@ const NameToSpell = ({ match }: RouteComponentProps<TParams>) => {
       {!error && !loading && spell !== undefined && (
         <SpellDetail spell={spell} isNew={spell.name === "" ? true : false} />
       )}
-    </AppWrapper>
+    </>
   );
 };
 

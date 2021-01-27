@@ -5,7 +5,6 @@ import Event from "../../../data/world/Event";
 
 import { LoadingSpinner } from "../../Loading";
 import EventTile from "./EventTile";
-import AppWrapper from "../../AppWrapper";
 import EventSearchBar from "./EventSearchBar";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { reciveAllFiltered } from "../../../services/DatabaseService";
@@ -58,7 +57,7 @@ const EventOverview = () => {
   };
 
   return (
-    <AppWrapper>
+    <>
       <EventSearchBar onSend={(filterArray) => setFilter(filterArray)} />
       <div
         id="scrollable"
@@ -77,7 +76,7 @@ const EventOverview = () => {
           })}
         </EventContainer>
       </div>
-    </AppWrapper>
+    </>
   );
 };
 

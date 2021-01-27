@@ -3,7 +3,6 @@ import { RouteComponentProps, useHistory } from "react-router";
 import { MyAppDatabase } from "../../../../../database/MyDatabase";
 import { useItemByAttr } from "../../../../../hooks/DexieHooks";
 import { LoadingSpinner } from "../../../../Loading";
-import AppWrapper from "../../../../AppWrapper";
 import QuestDetail from "../QuestDetail";
 import Quest from "../../../../../data/campaign/Quest";
 import { createNewWithId } from "../../../../../services/DatabaseService";
@@ -25,7 +24,7 @@ const NameToQuest = ({ match }: RouteComponentProps<TParams>) => {
   };
 
   return (
-    <AppWrapper>
+    <>
       {!error && loading && <LoadingSpinner />}
       {error && !loading && <>Error occured</>}
       {!error && !loading && quest === undefined && (
@@ -38,7 +37,7 @@ const NameToQuest = ({ match }: RouteComponentProps<TParams>) => {
       {!error && !loading && quest !== undefined && (
         <QuestDetail quest={quest} isNew={quest.name === "" ? true : false} />
       )}
-    </AppWrapper>
+    </>
   );
 };
 

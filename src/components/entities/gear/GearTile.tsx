@@ -1,16 +1,11 @@
-import React, { useCallback, Suspense } from "react";
+import React, { useCallback } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 import Gear from "../../../data/Gear";
-import { LoadingSpinner } from "../../Loading";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faLink,
-  faCoins,
-  faWeightHanging,
-} from "@fortawesome/free-solid-svg-icons";
+import { faLink, faCoins, faWeightHanging } from "@fortawesome/free-solid-svg-icons";
 
 interface $Props {
   gear: Gear;
@@ -29,34 +24,32 @@ const GearTile = ({ gear }: $Props) => {
 
   return (
     <Tile to={"/gear-detail/id/" + gear.id}>
-      <Suspense fallback={<LoadingSpinner />}>
-        {getPicture() !== "" ? (
-          <ImageName>
-            <Image pic={getPicture()}></Image>
-            <b>{gear.name}</b>
-          </ImageName>
-        ) : (
-          <Name>
-            <b>{gear.name}</b>
-          </Name>
-        )}
+      {getPicture() !== "" ? (
+        <ImageName>
+          <Image pic={getPicture()}></Image>
+          <b>{gear.name}</b>
+        </ImageName>
+      ) : (
+        <Name>
+          <b>{gear.name}</b>
+        </Name>
+      )}
 
-        <PropWrapper>
-          <Prop>
-            <Icon icon={faCoins} />
-            {gear.cost}
-          </Prop>
-          <Prop>
-            <Icon icon={faWeightHanging} />
-            {gear.weight}
-          </Prop>
-          <WideProp>{gear.type}</WideProp>
-          <WideProp>
-            <Icon icon={faLink} />
-            {gear.sources}
-          </WideProp>
-        </PropWrapper>
-      </Suspense>
+      <PropWrapper>
+        <Prop>
+          <Icon icon={faCoins} />
+          {gear.cost}
+        </Prop>
+        <Prop>
+          <Icon icon={faWeightHanging} />
+          {gear.weight}
+        </Prop>
+        <WideProp>{gear.type}</WideProp>
+        <WideProp>
+          <Icon icon={faLink} />
+          {gear.sources}
+        </WideProp>
+      </PropWrapper>
     </Tile>
   );
 };

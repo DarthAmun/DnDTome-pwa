@@ -8,7 +8,6 @@ import Class from "../../../../data/classes/Class";
 import Char from "../../../../data/chars/Char";
 
 import { faCheckCircle, faEdit } from "@fortawesome/free-solid-svg-icons";
-import AppWrapper from "../../../AppWrapper";
 import IconButton from "../../../form_elements/IconButton";
 import TabBar from "../../../general_elements/TabBar";
 import CharLabGeneral from "./CharLabGeneral";
@@ -178,7 +177,7 @@ const CharLab = () => {
   }
 
   return (
-    <AppWrapper>
+    <>
       <TabBar
         children={[
           "General",
@@ -314,7 +313,7 @@ const CharLab = () => {
           )}
         </View>
       </CenterWrapper>
-    </AppWrapper>
+    </>
   );
 };
 

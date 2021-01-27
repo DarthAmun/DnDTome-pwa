@@ -1,10 +1,9 @@
-import React, { Suspense, useCallback } from "react";
+import React, { useCallback } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import Group from "../../../data/campaign/Group";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { LoadingSpinner } from "../../Loading";
 import { faLink } from "@fortawesome/free-solid-svg-icons";
 
 interface $Props {
@@ -24,35 +23,33 @@ const GroupTile = ({ group }: $Props) => {
 
   return (
     <Tile to={"/group-detail/id/" + group.id}>
-      <Suspense fallback={<LoadingSpinner />}>
-        {getPicture() !== "" ? <Image pic={getPicture()}></Image> : ""}
+      {getPicture() !== "" ? <Image pic={getPicture()}></Image> : ""}
 
-        <PropWrapper>
-          <Name>
-            <b>{group.name}</b>
-          </Name>
-          <Text>
-            <PropTitle>Description</PropTitle>
-            {group.description}
-          </Text>
-          <Prop>
-            <PropTitle>Players</PropTitle>
-            {group.players.length}
-          </Prop>
-          <Prop>
-            <PropTitle>Npcs</PropTitle>
-            {group.npcs.length}
-          </Prop>
-          <Prop>
-            <PropTitle>Monster</PropTitle>
-            {group.monsters.length}
-          </Prop>
-          <Prop>
-            <Icon icon={faLink} />
-            {group.sources}
-          </Prop>
-        </PropWrapper>
-      </Suspense>
+      <PropWrapper>
+        <Name>
+          <b>{group.name}</b>
+        </Name>
+        <Text>
+          <PropTitle>Description</PropTitle>
+          {group.description}
+        </Text>
+        <Prop>
+          <PropTitle>Players</PropTitle>
+          {group.players.length}
+        </Prop>
+        <Prop>
+          <PropTitle>Npcs</PropTitle>
+          {group.npcs.length}
+        </Prop>
+        <Prop>
+          <PropTitle>Monster</PropTitle>
+          {group.monsters.length}
+        </Prop>
+        <Prop>
+          <Icon icon={faLink} />
+          {group.sources}
+        </Prop>
+      </PropWrapper>
     </Tile>
   );
 };

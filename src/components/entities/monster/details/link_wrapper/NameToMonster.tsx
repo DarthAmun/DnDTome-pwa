@@ -3,7 +3,6 @@ import { RouteComponentProps, useHistory } from "react-router";
 import { MyAppDatabase } from "../../../../../database/MyDatabase";
 import { useItemByAttr } from "../../../../../hooks/DexieHooks";
 import { LoadingSpinner } from "../../../../Loading";
-import AppWrapper from "../../../../AppWrapper";
 import MonsterDetail from "../MonsterDetail";
 import Monster from "../../../../../data/Monster";
 import { createNewWithId } from "../../../../../services/DatabaseService";
@@ -25,7 +24,7 @@ const NameToMonster = ({ match }: RouteComponentProps<TParams>) => {
   };
 
   return (
-    <AppWrapper>
+    <>
       {!error && loading && <LoadingSpinner />}
       {error && !loading && <>Error occured</>}
       {!error && !loading && monster === undefined && (
@@ -38,7 +37,7 @@ const NameToMonster = ({ match }: RouteComponentProps<TParams>) => {
       {!error && !loading && monster !== undefined && (
         <MonsterDetail monster={monster} isNew={monster.name === "" ? true : false} />
       )}
-    </AppWrapper>
+    </>
   );
 };
 
