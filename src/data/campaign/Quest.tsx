@@ -36,7 +36,7 @@ export function isQuest(arg: any): arg is Quest {
   const nameCheck = arg.name !== undefined && typeof arg.name == "string";
   const picCheck = arg.pic !== undefined && typeof arg.pic == "string";
   const descriptionCheck = arg.description !== undefined && typeof arg.description == "string";
-  const locationsCheck = arg.locations !== undefined && Array.isArray(arg.locations);
+  const followQuestCheck = arg.followQuest !== undefined && typeof arg.followQuest == "string";
   const rewardsCheck = arg.rewards !== undefined && typeof arg.rewards == "string";
   const sourcesCheck = arg.sources !== undefined && typeof arg.sources == "string";
 
@@ -45,7 +45,7 @@ export function isQuest(arg: any): arg is Quest {
     nameCheck &&
     picCheck &&
     descriptionCheck &&
-    locationsCheck &&
+    followQuestCheck &&
     rewardsCheck &&
     sourcesCheck
   );

@@ -33,5 +33,10 @@ export function isLocation(arg: any): arg is Location {
   const nameCheck = arg.name !== undefined && typeof arg.name == "string";
   const sourcesCheck = arg.sources !== undefined && typeof arg.sources == "string";
   const mapCheck = arg.map !== undefined && typeof arg.map == "string";
-  return arg && nameCheck && sourcesCheck && mapCheck;
+  const dimensionCheck =
+    arg.dimension !== undefined &&
+    typeof arg.dimension.height == "number" &&
+    typeof arg.dimension.width == "number";
+  const markersCheck = arg.markers !== undefined && Array.isArray(arg.markers);
+  return arg && nameCheck && sourcesCheck && mapCheck && dimensionCheck && markersCheck;
 }

@@ -52,7 +52,7 @@ export function isCampaign(arg: any): arg is Campaign {
   const mapCheck = arg.map !== undefined && typeof arg.map == "string";
   const descriptionCheck = arg.description !== undefined && typeof arg.description == "string";
   const playersCheck = arg.players !== undefined && Array.isArray(arg.players);
-  const logCheck = arg.log !== undefined && Array.isArray(arg.log);
+  const logsCheck = arg.logs !== undefined && Array.isArray(arg.logs);
   const npcsCheck = arg.npcs !== undefined && Array.isArray(arg.npcs);
   const notesCheck = arg.notes !== undefined && Array.isArray(arg.notes);
   const sourcesCheck = arg.sources !== undefined && typeof arg.sources == "string";
@@ -63,7 +63,7 @@ export function isCampaign(arg: any): arg is Campaign {
     picCheck &&
     descriptionCheck &&
     playersCheck &&
-    logCheck &&
+    logsCheck &&
     npcsCheck &&
     notesCheck &&
     mapCheck &&
