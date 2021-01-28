@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { importFiles, exportAll } from "../../services/OptionService";
+import { exportAll } from "../../services/OptionService";
 import { deleteAll, reciveCount, reciveAllPromise } from "../../services/DatabaseService";
 import IEntity from "../../data/IEntity";
 import P2PReciver from "../p2p/P2PReciver";
@@ -19,10 +19,8 @@ import { isNpc } from "../../data/campaign/Npc";
 import { isQuest } from "../../data/campaign/Quest";
 import { isLocation } from "../../data/world/Location";
 
-import { faFileImport, faFileExport } from "@fortawesome/free-solid-svg-icons";
-import { LoadingSpinner } from "../Loading";
+import { faFileExport } from "@fortawesome/free-solid-svg-icons";
 import TabBar from "../general_elements/TabBar";
-import FileField from "../form_elements/FileField";
 import IconButton from "../form_elements/IconButton";
 import ClassTile from "../entities/classes/ClassTile";
 import EncounterTile from "../entities/encounters/EncounterTile";
@@ -57,6 +55,7 @@ import EventsOptions from "./EventsOptions";
 import WorldsOptions from "./WorldsOptions";
 import { isWorld } from "../../data/world/World";
 import { isEvent } from "../../data/world/Event";
+import ImportField, { ImportModus } from "../form_elements/ImportField";
 
 const Options = () => {
   const [activeTab, setTab] = useState<string>("General");
@@ -80,12 +79,6 @@ const Options = () => {
   const [selectionAmount, setSelectionAmount] = useState<number>(0);
 
   const [reload, isReload] = useState<boolean>(true);
-
-  const [loading, isLoading] = useState<boolean>(false);
-  const [showAlert, setAlert] = useState<boolean>(false);
-  const [message, setMessage] = useState<string>("");
-
-  const [failedObjs, setFailedObjs] = useState<string[]>([]);
   const [data, setData] = useState<IEntity[] | IEntity>();
 
   useEffect(() => {
@@ -148,26 +141,6 @@ const Options = () => {
     }
   }, [reload]);
 
-  const triggerImportFiles = (fileList: FileList | null) => {
-    isLoading(true);
-    importFiles(fileList, (failed: number, failedObj: string[], max: number) => {
-      setFailedObjs(failedObj);
-      isReload(true);
-      isLoading(false);
-
-      if (failed > 0) {
-        setMessage(failed + " of " + max + " failed!");
-      } else {
-        setMessage(max + " imported successfully!");
-      }
-      setAlert(true);
-
-      setTimeout(() => {
-        setAlert(false);
-      }, 5000);
-    });
-  };
-
   const triggerDeleteAll = (tableName: string) => {
     deleteAll(tableName);
     isReload(true);
@@ -213,16 +186,9 @@ const Options = () => {
 
   return (
     <>
-      {message && showAlert && <Message>{message}</Message>}
       <OptionSection>
         <SelectionTitle>Import</SelectionTitle>
-        <FileField
-          label=""
-          isMulti={true}
-          accept={".json"}
-          icon={faFileImport}
-          onChange={(file) => triggerImportFiles(file)}
-        />
+        <ImportField modus={ImportModus.NORMAL} />
       </OptionSection>
       <OptionSection>
         <SelectionTitle>Export</SelectionTitle>
@@ -304,14 +270,7 @@ const Options = () => {
       {activeTab === "Npc's" && (
         <NpcsOptions amount={npcAmount} triggerDeleteAll={triggerDeleteAll} />
       )}
-      {activeTab === "Other Imports" && (
-        <OtherImportOptions
-          isLoading={isLoading}
-          isReload={isReload}
-          setMessage={setMessage}
-          setAlert={setAlert}
-        />
-      )}
+      {activeTab === "Other Imports" && <OtherImportOptions />}
       {activeTab === "Recive" && (
         <OptionTab>
           <OptionSectionLarge>
@@ -325,8 +284,7 @@ const Options = () => {
           {data !== undefined && !Array.isArray(data) && returnTile(data, 0)}
         </OptionTab>
       )}
-      {loading && <LoadingSpinner />}
-      {failedObjs &&
+      {/* {failedObjs &&
         failedObjs.length > 0 &&
         failedObjs.map((obj: string, index: number) => {
           return (
@@ -337,7 +295,7 @@ const Options = () => {
               </SectionText>
             </OptionSection>
           );
-        })}
+        })} */}
     </>
   );
 };
@@ -401,16 +359,4 @@ const SectionRow = styled.div`
 
 const SectionText = styled.div`
   flex: 1 1 auto;
-`;
-
-const Message = styled.div`
-  color: ${({ theme }) => theme.tile.color};
-  background-color: ${({ theme }) => theme.tile.backgroundColor};
-  font-size: 16px;
-  overflow: hidden;
-  min-width: calc(100% - 20px);
-  flex: 1 1 auto;
-  padding: 3px;
-  margin: 5px;
-  border-radius: 5px;
 `;

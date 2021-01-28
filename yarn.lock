@@ -1499,6 +1499,11 @@
   dependencies:
     pako "^1.0.10"
 
+"@ramonak/react-progress-bar@^2.1.2":
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/@ramonak/react-progress-bar/-/react-progress-bar-2.1.2.tgz#6281435172fa09ec6badcedc15f5b85a26b833e6"
+  integrity sha512-G5VY8gYR1i9FfgxRL566Gyl8NCUL+UVf5+Dp7Zg6fHpBftV3BiMLHqX1VJYIs4N1TC8IwFKXkTFXLPJGEscMqA==
+
 "@react-leaflet/core@^1.0.2":
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/@react-leaflet/core/-/core-1.0.2.tgz#39c6a73f61c666d5dcf673741cea2672fa4bbae1"

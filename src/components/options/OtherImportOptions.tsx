@@ -1,149 +1,29 @@
-import { faFileImport } from "@fortawesome/free-solid-svg-icons";
 import React from "react";
 import styled from "styled-components";
-import {
-  import5eToolsClassesFiles,
-  import5eToolsItemsFiles,
-  import5eToolsMonstersFiles,
-  import5eToolsRacesFiles,
-  import5eToolsSpellsFiles,
-} from "../../services/5eToolService";
-import FileField from "../form_elements/FileField";
+import ImportField, { ImportModus } from "../form_elements/ImportField";
 
-interface $Props {
-  isLoading: (loading: boolean) => void;
-  isReload: (loading: boolean) => void;
-  setMessage: (msg: string) => void;
-  setAlert: (loading: boolean) => void;
-}
-
-const OtherImportOptions = ({ isLoading, isReload, setMessage, setAlert }: $Props) => {
-  const trigger5eToolsSpellImport = (fileList: FileList | null) => {
-    isLoading(true);
-    import5eToolsSpellsFiles(fileList, (max: number) => {
-      isReload(true);
-      isLoading(false);
-
-      setMessage(max + " imported successfully!");
-      setAlert(true);
-
-      setTimeout(() => {
-        setAlert(false);
-      }, 5000);
-    });
-  };
-
-  const trigger5eToolsMonsterImport = (fileList: FileList | null) => {
-    isLoading(true);
-    import5eToolsMonstersFiles(fileList, (max: number) => {
-      isReload(true);
-      isLoading(false);
-
-      setMessage(max + " imported successfully!");
-      setAlert(true);
-
-      setTimeout(() => {
-        setAlert(false);
-      }, 5000);
-    });
-  };
-
-  const trigger5eToolsRacesImport = (fileList: FileList | null) => {
-    isLoading(true);
-    import5eToolsRacesFiles(fileList, (max: number) => {
-      isReload(true);
-      isLoading(false);
-
-      setMessage(max + " imported successfully!");
-      setAlert(true);
-
-      setTimeout(() => {
-        setAlert(false);
-      }, 5000);
-    });
-  };
-
-  const trigger5eToolsClassesImport = (fileList: FileList | null) => {
-    isLoading(true);
-    import5eToolsClassesFiles(fileList, (max: number) => {
-      isReload(true);
-      isLoading(false);
-
-      setMessage(max + " imported successfully!");
-      setAlert(true);
-
-      setTimeout(() => {
-        setAlert(false);
-      }, 5000);
-    });
-  };
-
-  const trigger5eToolsItemsImport = (fileList: FileList | null) => {
-    isLoading(true);
-    import5eToolsItemsFiles(fileList, (max: number) => {
-      isReload(true);
-      isLoading(false);
-
-      setMessage(max + " imported successfully!");
-      setAlert(true);
-
-      setTimeout(() => {
-        setAlert(false);
-      }, 5000);
-    });
-  };
-
+const OtherImportOptions = () => {
   return (
     <OptionTab>
       <OptionSection>
         <SelectionTitle>Import 5eTools Spells</SelectionTitle>
-        <FileField
-          label=""
-          accept={".json"}
-          isMulti={true}
-          icon={faFileImport}
-          onChange={(file) => trigger5eToolsSpellImport(file)}
-        />
+        <ImportField modus={ImportModus.ETOOLSSPELLS} />
       </OptionSection>
       <OptionSection>
         <SelectionTitle>Import 5eTools Monsters</SelectionTitle>
-        <FileField
-          label=""
-          accept={".json"}
-          isMulti={true}
-          icon={faFileImport}
-          onChange={(file) => trigger5eToolsMonsterImport(file)}
-        />
+        <ImportField modus={ImportModus.ETOOLSMONSTERS} />
       </OptionSection>
       <OptionSection>
         <SelectionTitle>Import 5eTools Items/Gear</SelectionTitle>
-        <FileField
-          label=""
-          accept={".json"}
-          isMulti={true}
-          icon={faFileImport}
-          onChange={(file) => trigger5eToolsItemsImport(file)}
-        />
+        <ImportField modus={ImportModus.ETOOLSITEMS} />
       </OptionSection>
       <OptionSection>
         <SelectionTitle>Import 5eTools Races</SelectionTitle>
-        <FileField
-          label=""
-          accept={".json"}
-          isMulti={true}
-          icon={faFileImport}
-          onChange={(file) => trigger5eToolsRacesImport(file)}
-        />
+        <ImportField modus={ImportModus.ETOOLSRACES} />
       </OptionSection>
       <OptionSection>
         <SelectionTitle>Import 5eTools Classes</SelectionTitle>
-        <FileField
-          label=""
-          accept={".json"}
-          isMulti={true}
-          icon={faFileImport}
-          onChange={(file) => trigger5eToolsClassesImport(file)}
-        />
+        <ImportField modus={ImportModus.ETOOLSCLASSES} />
       </OptionSection>
     </OptionTab>
   );
