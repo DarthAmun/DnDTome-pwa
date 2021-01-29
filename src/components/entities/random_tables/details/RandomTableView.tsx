@@ -87,7 +87,7 @@ const RandomTableView = ({ randomTable }: $Props) => {
                     <tr key={index}>
                       <TableProp key={index}>{row.value}</TableProp>
                       {row.cells
-                        .split(",")
+                        .split("|")
                         .map((cell: string, index: number) => {
                           return (
                             <TableProp key={index}>

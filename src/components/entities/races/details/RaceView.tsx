@@ -1,20 +1,13 @@
 import React, { useCallback, useState, useEffect } from "react";
 import { useHistory } from "react-router";
-import {
-  reciveAllFiltered,
-  createNewWithId,
-} from "../../../../services/DatabaseService";
+import { reciveAllFiltered, createNewWithId } from "../../../../services/DatabaseService";
 import Race from "../../../../data/races/Race";
 import Trait from "../../../../data/races/Trait";
 import Subrace from "../../../../data/races/Subrace";
 import styled from "styled-components";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faLink,
-  faPaperPlane,
-  faPlusCircle,
-} from "@fortawesome/free-solid-svg-icons";
+import { faLink, faPaperPlane, faPlusCircle } from "@fortawesome/free-solid-svg-icons";
 import { GiUpgrade } from "react-icons/gi";
 import FormatedText from "../../../general_elements/FormatedText";
 import TextButton from "../../../form_elements/TextButton";
@@ -127,9 +120,9 @@ const RaceView = ({ race }: $Props) => {
           {!!send && <P2PSender data={race} mode={"THIS"} />}
         </PropWrapper>
       </View>
-      {race.traits.map((trait: Trait, index: number) => {
-        return (
-          <View key={index}>
+      <View>
+        {race.traits.map((trait: Trait, index: number) => {
+          return (
             <TraitWrapper>
               <TraitName>{trait.name}</TraitName>
               <TraitLevel>{trait.level}</TraitLevel>
@@ -137,9 +130,9 @@ const RaceView = ({ race }: $Props) => {
                 <FormatedText text={trait.text} />
               </TraitText>
             </TraitWrapper>
-          </View>
-        );
-      })}
+          );
+        })}
+      </View>
     </CenterWrapper>
   );
 };
