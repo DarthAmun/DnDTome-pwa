@@ -5,16 +5,34 @@ import FormatedText from "../general_elements/FormatedText";
 import TabBar from "../general_elements/TabBar";
 
 const Help = () => {
-  const [activeTab, setTab] = useState<string>("Create");
+  const [activeTab, setTab] = useState<string>("Install");
 
   return (
     <>
       <General>
         <TabBar
-          children={["Create", "Import", "Export", "Text Formating", "Modifiers"]}
+          children={["Install", "Create", "Import", "Export", "Text Formating", "Modifiers"]}
           onChange={(tab: string) => setTab(tab)}
           activeTab={activeTab}
         />
+        {activeTab === "Install" && (
+          <>
+            <HelpSection>
+              <SelectionTitle>How to install DnDTome on desktop</SelectionTitle>
+              <SectionText>
+                To install this webapp as an app use chrome and click on the plus in your navigation
+                bar right next to the favorite star icon.
+              </SectionText>
+            </HelpSection>
+            <HelpSection>
+              <SelectionTitle>How to install DnDTome on mobile</SelectionTitle>
+              <SectionText>
+                To install this webapp as an app on mobile find and click the "Add to home screen"
+                option in your firefox, chrome or safari.
+              </SectionText>
+            </HelpSection>
+          </>
+        )}
         {activeTab === "Create" && (
           <>
             <HelpSection>

@@ -18,6 +18,9 @@ import { isCampaign } from "../../data/campaign/Campaign";
 import { isNpc } from "../../data/campaign/Npc";
 import { isQuest } from "../../data/campaign/Quest";
 import { isLocation } from "../../data/world/Location";
+import { isGroup } from "../../data/campaign/Group";
+import { isWorld } from "../../data/world/World";
+import { isEvent } from "../../data/world/Event";
 
 import { faFileExport } from "@fortawesome/free-solid-svg-icons";
 import TabBar from "../general_elements/TabBar";
@@ -53,9 +56,9 @@ import EventTile from "../entities/events/EventTile";
 import WorldTile from "../entities/worlds/WorldTile";
 import EventsOptions from "./EventsOptions";
 import WorldsOptions from "./WorldsOptions";
-import { isWorld } from "../../data/world/World";
-import { isEvent } from "../../data/world/Event";
 import ImportField, { ImportModus } from "../form_elements/ImportField";
+import GroupTile from "../entities/groups/GroupTile";
+import GroupsOptions from "./GroupsOptions";
 
 const Options = () => {
   const [activeTab, setTab] = useState<string>("General");
@@ -76,6 +79,7 @@ const Options = () => {
   const [worldAmount, setWorldAmount] = useState<number>(0);
   const [eventAmount, setEventAmount] = useState<number>(0);
   const [npcAmount, setNpcAmount] = useState<number>(0);
+  const [groupAmount, setGroupAmount] = useState<number>(0);
   const [selectionAmount, setSelectionAmount] = useState<number>(0);
 
   const [reload, isReload] = useState<boolean>(true);
@@ -131,6 +135,9 @@ const Options = () => {
       reciveCount("npcs", (result: number) => {
         setNpcAmount(result);
       });
+      reciveCount("groups", (result: number) => {
+        setGroupAmount(result);
+      });
       reciveCount("selections", (result: number) => {
         setSelectionAmount(result);
       });
@@ -175,6 +182,8 @@ const Options = () => {
       return <NpcTile key={index} npc={entity} />;
     } else if (isWorld(entity)) {
       return <WorldTile key={index} world={entity} />;
+    } else if (isGroup(entity)) {
+      return <GroupTile key={index} group={entity} />;
     } else if (isEvent(entity)) {
       return <EventTile key={index} event={entity} />;
     } else if (isChar(entity)) {
@@ -211,10 +220,11 @@ const Options = () => {
           "Encounters",
           "Campaigns",
           "Quests",
+          "Groups",
+          "Npc's",
           "Worlds",
           "Events",
           "Locations",
-          "Npc's",
           "Other Imports",
           "Recive",
         ]}
@@ -258,6 +268,12 @@ const Options = () => {
       {activeTab === "Quests" && (
         <QuestsOptions amount={questAmount} triggerDeleteAll={triggerDeleteAll} />
       )}
+      {activeTab === "Groups" && (
+        <GroupsOptions amount={groupAmount} triggerDeleteAll={triggerDeleteAll} />
+      )}
+      {activeTab === "Npc's" && (
+        <NpcsOptions amount={npcAmount} triggerDeleteAll={triggerDeleteAll} />
+      )}
       {activeTab === "Worlds" && (
         <WorldsOptions amount={worldAmount} triggerDeleteAll={triggerDeleteAll} />
       )}
@@ -266,9 +282,6 @@ const Options = () => {
       )}
       {activeTab === "Locations" && (
         <LocationsOptions amount={locationAmount} triggerDeleteAll={triggerDeleteAll} />
-      )}
-      {activeTab === "Npc's" && (
-        <NpcsOptions amount={npcAmount} triggerDeleteAll={triggerDeleteAll} />
       )}
       {activeTab === "Other Imports" && <OtherImportOptions />}
       {activeTab === "Recive" && (

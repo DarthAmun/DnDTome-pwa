@@ -45,7 +45,7 @@ export function isGroup(arg: any): arg is Group {
   const playersCheck = arg.players !== undefined && Array.isArray(arg.players);
   const npcsCheck = arg.npcs !== undefined && Array.isArray(arg.npcs);
   const monstersCheck = arg.monsters !== undefined && Array.isArray(arg.monsters);
-  const notesCheck = arg.notes !== undefined && Array.isArray(arg.notes);
+  const flowCheck = arg.flow !== undefined && Array.isArray(arg.flow);
   const sourcesCheck = arg.sources !== undefined && typeof arg.sources == "string";
 
   return (
@@ -56,7 +56,7 @@ export function isGroup(arg: any): arg is Group {
     playersCheck &&
     npcsCheck &&
     monstersCheck &&
-    notesCheck &&
+    flowCheck &&
     sourcesCheck
   );
 }

@@ -32,6 +32,7 @@ import {
   makeSubclass,
   makeSubrace,
 } from "../../services/5eToolService";
+import Group, { isGroup } from "../../data/campaign/Group";
 
 export enum ImportModus {
   NORMAL,
@@ -68,7 +69,12 @@ const ImportField = ({ modus }: $Props) => {
           onChange={(file) => changeFile(file)}
         />
       </Files>
-      <Files>{files && files.map((file: File) => <FileTile modus={modus} file={file} />)}</Files>
+      <Files>
+        {files &&
+          files.map((file: File, index: number) => (
+            <FileTile key={index} modus={modus} file={file} />
+          ))}
+      </Files>
     </>
   );
 };
@@ -116,6 +122,8 @@ const FileTile = ({ file, modus }: $FileProps) => {
         await saveNew("campaigns", json[i] as Campaign, fileName);
       } else if (isQuest(json[i])) {
         await saveNew("quests", json[i] as Quest, fileName);
+      } else if (isGroup(json[i])) {
+        await saveNew("groups", json[i] as Group, fileName);
       } else if (isNpc(json[i])) {
         await saveNew("npcs", json[i] as Npc, fileName);
       } else if (isWorld(json[i])) {
@@ -129,36 +137,41 @@ const FileTile = ({ file, modus }: $FileProps) => {
       }
     } else if (modus === ImportModus.ETOOLSMONSTERS) {
       const newMonster = makeMonster(json[i]);
-      await saveNew("monsters", newMonster, fileName);
+      if (newMonster.name !== "") await saveNew("monsters", newMonster, fileName);
     } else if (modus === ImportModus.ETOOLSSPELLS) {
       const newSpell = makeSpell(json[i], fileName);
-      await saveNew("spells", newSpell, fileName);
+      if (newSpell.name !== "") await saveNew("spells", newSpell, fileName);
     } else if (modus === ImportModus.ETOOLSITEMS) {
       const newItem = makeItems(json[i], fileName);
-      if (isGear(newItem)) {
-        await saveNew("gears", newItem, fileName);
-      } else if (isItem(newItem)) {
-        await saveNew("items", newItem, fileName);
-      }
+      if (newItem.name !== "")
+        if (isGear(newItem)) {
+          await saveNew("gears", newItem, fileName);
+        } else if (isItem(newItem)) {
+          await saveNew("items", newItem, fileName);
+        }
     } else if (modus === ImportModus.ETOOLSRACES) {
       const newRace = makeRace(json[i], fileName);
-      await saveNew("races", newRace, fileName);
-      if (json[i]._copy === undefined && json[i].source !== "DMG") {
-        if (json[i].subraces !== undefined) {
-          json[i].subraces.forEach(async (subrace: any) => {
-            const newSubrace = makeSubrace(subrace, newRace, file.name);
-            await saveNew("subraces", newSubrace, file.name);
-          });
+      if (newRace.name !== "") {
+        await saveNew("races", newRace, fileName);
+        if (json[i]._copy === undefined && json[i].source !== "DMG") {
+          if (json[i].subraces !== undefined) {
+            json[i].subraces.forEach(async (subrace: any) => {
+              const newSubrace = makeSubrace(subrace, newRace, file.name);
+              await saveNew("subraces", newSubrace, file.name);
+            });
+          }
         }
       }
     } else if (modus === ImportModus.ETOOLSCLASSES) {
       const newClass = makeClass(json[i], originalJson, fileName);
-      await saveNew("classes", newClass, fileName);
-      if (json[i].subclasses !== undefined) {
-        json[i].subclasses.forEach(async (subclass: any) => {
-          const newSubclass = makeSubclass(subclass, originalJson, newClass, file.name);
-          await saveNew("subclasses", newSubclass, file.name);
-        });
+      if (newClass.name !== "") {
+        await saveNew("classes", newClass, fileName);
+        if (json[i].subclasses !== undefined) {
+          json[i].subclasses.forEach(async (subclass: any) => {
+            const newSubclass = makeSubclass(subclass, originalJson, newClass, file.name);
+            await saveNew("subclasses", newSubclass, file.name);
+          });
+        }
       }
     }
 

@@ -1,472 +1,57 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
+import packageJson from "../../../package.json";
 import { useHistory } from "react-router";
 import styled from "styled-components";
 
-import Book from "../../data/Book";
-import Selection from "../../data/Selection";
-import Class from "../../data/classes/Class";
-import Subclass from "../../data/classes/Subclass";
-import Encounter from "../../data/encounter/Encounter";
-import Gear from "../../data/Gear";
-import Item from "../../data/Item";
-import Monster from "../../data/Monster";
-import Race from "../../data/races/Race";
-import Subrace from "../../data/races/Subrace";
-import Spell from "../../data/Spell";
-import {
-  createNewWithId,
-  reciveAllPromise,
-  reciveCount,
-} from "../../services/DatabaseService";
-
-import {
-  GiCrystalWand,
-  GiBackpack,
-  GiWomanElfFace,
-  GiPlagueDoctorProfile,
-  GiBookmarklet,
-  GiSwordClash,
-} from "react-icons/gi";
-import {
-  faChartPie,
-  faCog,
-  faDragon,
-  faIdCard,
-  faMeteor,
-  faPlusCircle,
-  faQuestionCircle,
-  faTable,
-} from "@fortawesome/free-solid-svg-icons";
+import { faCog, faQuestionCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import TextButton from "../form_elements/TextButton";
-import { BiSelectMultiple } from "react-icons/bi";
-import RandomTable from "../../data/RandomTable";
+import { faDiscord, faReddit } from "@fortawesome/free-brands-svg-icons";
 
 const Home = () => {
   let history = useHistory();
-  const [reload, isReload] = useState<boolean>(true);
-
-  const [spellAmount, setSpellAmount] = useState<number>(0);
-  const [gearAmount, setGearAmount] = useState<number>(0);
-  const [itemAmount, setItemAmount] = useState<number>(0);
-  const [monsterAmount, setMonsterAmount] = useState<number>(0);
-  const [raceAmount, setRaceAmount] = useState<number>(0);
-  const [subraceAmount, setSubraceAmount] = useState<number>(0);
-  const [classAmount, setClassAmount] = useState<number>(0);
-  const [subclassAmount, setSubclassAmount] = useState<number>(0);
-  const [charAmount, setCharAmount] = useState<number>(0);
-  const [encounterAmount, setEncounterAmount] = useState<number>(0);
-  const [bookAmount, setBookAmount] = useState<number>(0);
-  const [selectionAmount, setSelectionAmount] = useState<number>(0);
-  const [tableAmount, setTableAmount] = useState<number>(0);
-
-  useEffect(() => {
-    if (reload) {
-      reciveCount("spells", (result: number) => {
-        setSpellAmount(result);
-      });
-      reciveCount("gears", (result: number) => {
-        setGearAmount(result);
-      });
-      reciveCount("items", (result: number) => {
-        setItemAmount(result);
-      });
-      reciveCount("monsters", (result: number) => {
-        setMonsterAmount(result);
-      });
-      reciveCount("races", (result: number) => {
-        setRaceAmount(result);
-      });
-      reciveCount("subraces", (result: number) => {
-        setSubraceAmount(result);
-      });
-      reciveCount("classes", (result: number) => {
-        setClassAmount(result);
-      });
-      reciveCount("subclasses", (result: number) => {
-        setSubclassAmount(result);
-      });
-      reciveCount("chars", (result: number) => {
-        setCharAmount(result);
-      });
-      reciveCount("encounters", (result: number) => {
-        setEncounterAmount(result);
-      });
-      reciveCount("books", (result: number) => {
-        setBookAmount(result);
-      });
-      reciveCount("selections", (result: number) => {
-        setSelectionAmount(result);
-      });
-      reciveCount("randomTables", (result: number) => {
-        setTableAmount(result);
-      });
-      reciveAllPromise("chars").then((result: any[]) => {
-        return result;
-      });
-      isReload(false);
-    }
-  }, [reload]);
-
-  const createNewEncounter = () => {
-    let newEncounter = new Encounter();
-    delete newEncounter.id;
-    createNewWithId("encounters", newEncounter, (id) => {
-      history.push(`/encounter-detail/id/${id}`);
-    });
-  };
-
-  const createNewSpell = () => {
-    let newSpell = new Spell();
-    delete newSpell.id;
-    createNewWithId("spells", newSpell, (id) => {
-      history.push(`/spell-detail/id/${id}`);
-    });
-  };
-
-  const createNewItem = () => {
-    let newItem = new Item();
-    delete newItem.id;
-    createNewWithId("items", newItem, (id) => {
-      history.push(`/item-detail/id/${id}`);
-    });
-  };
-
-  const createNewGear = () => {
-    let newGear = new Gear();
-    delete newGear.id;
-    createNewWithId("gears", newGear, (id) => {
-      history.push(`/gear-detail/id/${id}`);
-    });
-  };
-
-  const createNewRace = () => {
-    let newRace = new Race();
-    delete newRace.id;
-    createNewWithId("races", newRace, (id) => {
-      history.push(`/race-detail/id/${id}`);
-    });
-  };
-
-  const createNewClass = () => {
-    let newClass = new Class();
-    delete newClass.id;
-    createNewWithId("classes", newClass, (id) => {
-      history.push(`/class-detail/id/${id}`);
-    });
-  };
-
-  const createNewMonster = () => {
-    let newMonster = new Monster();
-    delete newMonster.id;
-    createNewWithId("monsters", newMonster, (id) => {
-      history.push(`/monster-detail/id/${id}`);
-    });
-  };
-
-  const createNewSubrace = () => {
-    let newSubrace = new Subrace();
-    delete newSubrace.id;
-    createNewWithId("subraces", newSubrace, (id) => {
-      history.push(`/subrace-detail/id/${id}`);
-    });
-  };
-
-  const createNewSubclass = () => {
-    let newSubclass = new Subclass();
-    delete newSubclass.id;
-    createNewWithId("subclasses", newSubclass, (id) => {
-      history.push(`/subclass-detail/id/${id}`);
-    });
-  };
-
-  const createNewBook = () => {
-    let newBook = new Book();
-    delete newBook.id;
-    createNewWithId("books", newBook, (id) => {
-      history.push(`/book-detail/id/${id}`);
-    });
-  };
-
-  const createNewSelection = () => {
-    let newSelection = new Selection();
-    delete newSelection.id;
-    createNewWithId("selections", newSelection, (id) => {
-      history.push(`/selection-detail/id/${id}`);
-    });
-  };
-
-  const createNewRandomTable = () => {
-    let newRandomTable = new RandomTable();
-    delete newRandomTable.id;
-    createNewWithId("randomTables", newRandomTable, (id) => {
-      history.push(`/randomTable-detail/id/${id}`);
-    });
-  };
 
   return (
     <>
       <General>
-        <HomeSection>
-          <SelectionTitle>
-            <FontAwesomeIcon icon={faMeteor} /> Spells
-          </SelectionTitle>
+        <WideHomeSection>
+          <SelectionTitle>Welcome to DnDTome!</SelectionTitle>
           <SectionText>
-            {`You have ${spellAmount} spells in your collection. `}
-            {spellAmount <= 0 && `Try import some in the options.`}
+            DnDTome is a progressive web app that lets you manage all of your campaigns, spells,
+            classes and more. It is in continous development and currently in{" "}
+            <b>v{packageJson.version}</b>.
           </SectionText>
-          <ButtonBar>
-            <TextButton
-              text={"Go to spells"}
-              onClick={() => history.push(`/spell-overview`)}
-            />
-            <TextButton
-              icon={faPlusCircle}
-              text={"Create"}
-              onClick={() => createNewSpell()}
-            />
-          </ButtonBar>
-        </HomeSection>
-        <HomeSection>
-          <SelectionTitle>
-            <GiCrystalWand /> Magic Items
-          </SelectionTitle>
           <SectionText>
-            {`You have ${itemAmount} magic items in your collection. `}
-            {itemAmount <= 0 && `Try import some in the options.`}
+            You can install this webapp as a app in certain browsers. For more infos on this visit
+            the discord or the help section down below. Additionally this webapp works without an connection to the internet once
+            visited. So no worries playing in the woods.
           </SectionText>
-          <ButtonBar>
-            <TextButton
-              text={"Go to items"}
-              onClick={() => history.push(`/item-overview`)}
-            />
-            <TextButton
-              icon={faPlusCircle}
-              text={"Create"}
-              onClick={() => createNewItem()}
-            />
-          </ButtonBar>
-        </HomeSection>
-        <HomeSection>
-          <SelectionTitle>
-            <GiBackpack /> Gears
-          </SelectionTitle>
           <SectionText>
-            {`You have ${gearAmount} gears in your collection. `}
-            {gearAmount <= 0 && `Try import some in the options.`}
+            If the webapp does not contain anything please import data via the options. For more
+            infos on this visit the discord. None of you data is shared via the internet. Everything
+            you put into this webapp is stored inside your browser. You can however export and
+            import everything.
           </SectionText>
-          <ButtonBar>
-            <TextButton
-              text={"Go to gears"}
-              onClick={() => history.push(`/gear-overview`)}
-            />
-            <TextButton
-              icon={faPlusCircle}
-              text={"Create"}
-              onClick={() => createNewGear()}
-            />
-          </ButtonBar>
-        </HomeSection>
-        <HomeSection>
-          <SelectionTitle>
-            <GiWomanElfFace /> Races
-          </SelectionTitle>
           <SectionText>
-            {`You have ${raceAmount} races in your collection. `}
-            {raceAmount <= 0 && `Try import some in the options.`}
+            If you have suggestions or encounter a bug please visit:<br></br>
+            <ExternalLink
+              href="https://discord.gg/2KB3tzG"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="discord"
+            >
+              <FontAwesomeIcon icon={faDiscord} /> Join the discord
+            </ExternalLink>
+            <ExternalLink
+              href="https://www.reddit.com/r/DnDTome/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="reddit"
+            >
+              <FontAwesomeIcon icon={faReddit} /> Join the reddit
+            </ExternalLink>
           </SectionText>
-          <ButtonBar>
-            <TextButton
-              text={"Go to races"}
-              onClick={() => history.push(`/race-overview`)}
-            />
-            <TextButton
-              icon={faPlusCircle}
-              text={"Create"}
-              onClick={() => createNewRace()}
-            />
-          </ButtonBar>
-        </HomeSection>
-        <HomeSection>
-          <SelectionTitle>Subraces</SelectionTitle>
-          <SectionText>
-            {`You have ${subraceAmount} subraces in your collection. `}
-            {subraceAmount <= 0 && `Try import some in the options.`}
-          </SectionText>
-          <ButtonBar>
-            <TextButton
-              icon={faPlusCircle}
-              text={"Create"}
-              onClick={() => createNewSubrace()}
-            />
-          </ButtonBar>
-        </HomeSection>
-        <HomeSection>
-          <SelectionTitle>
-            <GiPlagueDoctorProfile /> Classes
-          </SelectionTitle>
-          <SectionText>
-            {`You have ${classAmount} classes in your collection. `}
-            {classAmount <= 0 && `Try import some in the options.`}
-          </SectionText>
-          <ButtonBar>
-            <TextButton
-              text={"Go to classes"}
-              onClick={() => history.push(`/class-overview`)}
-            />
-            <TextButton
-              icon={faPlusCircle}
-              text={"Create"}
-              onClick={() => createNewClass()}
-            />
-          </ButtonBar>
-        </HomeSection>
-        <HomeSection>
-          <SelectionTitle>Subclass</SelectionTitle>
-          <SectionText>
-            {`You have ${subclassAmount} subclass in your collection. `}
-            {subclassAmount <= 0 && `Try import some in the options.`}
-          </SectionText>
-          <ButtonBar>
-            <TextButton
-              icon={faPlusCircle}
-              text={"Create"}
-              onClick={() => createNewSubclass()}
-            />
-          </ButtonBar>
-        </HomeSection>
-        <HomeSection>
-          <SelectionTitle>
-            <BiSelectMultiple /> Selection
-          </SelectionTitle>
-          <SectionText>
-            {`You have ${selectionAmount} selections in your collection. `}
-            {selectionAmount <= 0 && `Try import some in the options.`}
-          </SectionText>
-          <ButtonBar>
-            <TextButton
-              text={"Go to selections"}
-              onClick={() => history.push(`/selection-overview`)}
-            />
-            <TextButton
-              icon={faPlusCircle}
-              text={"Create"}
-              onClick={() => createNewSelection()}
-            />
-          </ButtonBar>
-        </HomeSection>
-        <HomeSection>
-          <SelectionTitle>
-            <FontAwesomeIcon icon={faIdCard} /> Characters
-          </SelectionTitle>
-          <SectionText>
-            {`You have ${charAmount} characters in your collection. `}
-            {charAmount <= 0 && `Try creating one.`}
-          </SectionText>
-          <ButtonBar>
-            <TextButton
-              text={"Go to characters"}
-              onClick={() => history.push(`/char-overview`)}
-            />
-            <TextButton
-              icon={faPlusCircle}
-              text={"Create"}
-              onClick={() => history.push(`/char-lab`)}
-            />
-          </ButtonBar>
-        </HomeSection>
-        <HomeSection>
-          <SelectionTitle>
-            <FontAwesomeIcon icon={faDragon} /> Monsters
-          </SelectionTitle>
-          <SectionText>
-            {`You have ${monsterAmount} monsters in your collection. `}
-            {monsterAmount <= 0 && `Try import some in the options.`}
-          </SectionText>
-          <ButtonBar>
-            <TextButton
-              text={"Go to monsters"}
-              onClick={() => history.push(`/monster-overview`)}
-            />
-            <TextButton
-              icon={faPlusCircle}
-              text={"Create"}
-              onClick={() => createNewMonster()}
-            />
-          </ButtonBar>
-        </HomeSection>
-        <HomeSection>
-          <SelectionTitle>
-            <GiSwordClash /> Encounters
-          </SelectionTitle>
-          <SectionText>
-            {`You have ${encounterAmount} encounters in your collection. `}
-            {encounterAmount <= 0 && `Try creating one.`}
-          </SectionText>
-          <ButtonBar>
-            <TextButton
-              text={"Go to encounters"}
-              onClick={() => history.push(`/encounter-overview`)}
-            />
-            <TextButton
-              icon={faPlusCircle}
-              text={"Create"}
-              onClick={() => createNewEncounter()}
-            />
-          </ButtonBar>
-        </HomeSection>
-        <HomeSection>
-          <SelectionTitle>
-            <FontAwesomeIcon icon={faTable} /> Random Tables
-          </SelectionTitle>
-          <SectionText>
-            {`You have ${tableAmount} random tables in your collection. `}
-            {tableAmount <= 0 && `Try creating one.`}
-          </SectionText>
-          <ButtonBar>
-            <TextButton
-              text={"Go to Tables"}
-              onClick={() => history.push(`/randomTable-overview`)}
-            />
-            <TextButton
-              icon={faPlusCircle}
-              text={"Create"}
-              onClick={() => createNewRandomTable()}
-            />
-          </ButtonBar>
-        </HomeSection>
-        <HomeSection>
-          <SelectionTitle>
-            <GiBookmarklet /> Library
-          </SelectionTitle>
-          <SectionText>
-            {`You have ${bookAmount} pdf's in your collection. `}
-            {bookAmount <= 0 && `Try adding one.`}
-          </SectionText>
-          <ButtonBar>
-            <TextButton
-              text={"Go to library"}
-              onClick={() => history.push(`/library`)}
-            />
-            <TextButton
-              icon={faPlusCircle}
-              text={"Add"}
-              onClick={() => createNewBook()}
-            />
-          </ButtonBar>
-        </HomeSection>
-        <HomeSection>
-          <SelectionTitle>
-            <FontAwesomeIcon icon={faChartPie} /> Statistics
-          </SelectionTitle>
-          <SectionText>For more Statistics on your collection...</SectionText>
-          <ButtonBar>
-            <TextButton
-              text={"Go to statistics"}
-              onClick={() => history.push(`/statistics`)}
-            />
-          </ButtonBar>
-        </HomeSection>
+        </WideHomeSection>
         <HomeSection>
           <SelectionTitle>
             <FontAwesomeIcon icon={faCog} /> Options
@@ -475,10 +60,7 @@ const Home = () => {
             To import/export or to make other adjustments to your collection...
           </SectionText>
           <ButtonBar>
-            <TextButton
-              text={"Go to options"}
-              onClick={() => history.push(`/options`)}
-            />
+            <TextButton text={"Go to options"} onClick={() => history.push(`/options`)} />
           </ButtonBar>
         </HomeSection>
         <HomeSection>
@@ -486,8 +68,7 @@ const Home = () => {
             <FontAwesomeIcon icon={faQuestionCircle} /> Help
           </SelectionTitle>
           <SectionText>
-            Help on where to find what and how to add tables or hyperlinks
-            inside of text fields.
+            Help on where to find what and how to add tables or hyperlinks inside of text fields.
           </SectionText>
           <ButtonBar>
             <TextButton text={"Help"} onClick={() => history.push(`/help`)} />
@@ -526,6 +107,10 @@ const HomeSection = styled.div`
   align-content: space-between;
 `;
 
+const WideHomeSection = styled(HomeSection)`
+  flex: 1 1 100%;
+`;
+
 const SelectionTitle = styled.div`
   flex: 1 1 auto;
   padding: 5px;
@@ -548,4 +133,33 @@ const SectionText = styled.div`
 const ButtonBar = styled(SectionText)`
   align-self: flex-end;
   max-height: 50px;
+`;
+
+const ExternalLink = styled.a`
+  flex: 1 1 auto;
+  display: inline-block;
+  text-decoration: none;
+  background-color: ${({ theme }) => theme.buttons.backgroundColor};
+  height: 38px;
+  border: none;
+  border-radius: 5px;
+  padding-left: 10px;
+  padding-right: 10px;
+  margin: 5px;
+  text-align: center;
+  font-family: inherit;
+  font-size: 14px;
+  color: ${({ theme }) => theme.buttons.color};
+  cursor: pointer;
+  line-height: 36px;
+
+  &.patreon {
+    background-color: rgb(232, 91, 70);
+  }
+  &.discord {
+    background-color: #7289da;
+  }
+  &.reddit {
+    background-color: #ff4500;
+  }
 `;
