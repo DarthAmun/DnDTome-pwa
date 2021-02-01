@@ -26,6 +26,9 @@ export const buildCampaign = async (campaign: Campaign): Promise<BuildCampaign> 
   map = await recivePromiseByAttribute("locations", "name", campaign.map);
   console.timeEnd("load");
 
+  characters = characters.filter((char) => char !== undefined);
+  npcs = npcs.filter((npc) => npc !== undefined);
+
   console.timeEnd("t");
   return new BuildCampaign(campaign, characters, npcs, map);
 };

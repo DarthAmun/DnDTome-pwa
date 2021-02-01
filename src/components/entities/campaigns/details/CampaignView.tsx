@@ -30,10 +30,15 @@ const CampaignView = ({ campaign, onEdit }: $Props) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [loadedCampaign, setLoadedCampaign] = useState<BuildCampaign>(new BuildCampaign());
   const [activeTab, setTab] = useState<string>("General");
+  const [tabs, setTabs] = useState<string[]>(["General"]);
   const [filters, setFilters] = useState<Filter[]>([]);
 
   useEffect(() => {
     buildCampaign(campaign).then((buildCampaign) => {
+      let newTabs = ["General"];
+      if (buildCampaign.characters.length > 0) newTabs.push("Players");
+      if (buildCampaign.npcs.length > 0) newTabs.push("Npcs");
+      setTabs([...newTabs, "Notes", "Log", "Graph", "Map"]);
       setLoadedCampaign(buildCampaign);
       setLoading(false);
     });
@@ -72,11 +77,7 @@ const CampaignView = ({ campaign, onEdit }: $Props) => {
               )}
             </View>
           </Header>
-          <TabBar
-            children={["General", "Players", "Npcs", "Notes", "Log", "Graph", "Map"]}
-            onChange={(tab: string) => setTab(tab)}
-            activeTab={activeTab}
-          />
+          <TabBar children={tabs} onChange={(tab: string) => setTab(tab)} activeTab={activeTab} />
           {activeTab === "General" && (
             <View>
               <Text>
@@ -91,14 +92,14 @@ const CampaignView = ({ campaign, onEdit }: $Props) => {
               </PropWrapper>
             </View>
           )}
-          {activeTab === "Players" && (
+          {activeTab === "Players" && loadedCampaign.characters && (
             <PropWrapper>
               {loadedCampaign.characters.map((player: Char, index: number) => {
                 return <CharTile char={player} key={index} />;
               })}
             </PropWrapper>
           )}
-          {activeTab === "Npcs" && (
+          {activeTab === "Npcs" && loadedCampaign.npcs && (
             <PropWrapper>
               {loadedCampaign.npcs.map((npc: Npc, index: number) => {
                 return <NpcTile npc={npc} key={index} />;

@@ -9,6 +9,7 @@ const Tooltip = styled.span`
   text-align: center;
   border-radius: 10px;
   padding: 5px 0;
+  margin-top: -5px;
   position: absolute;
   z-index: 1;
   opacity: 0.6;

@@ -30,6 +30,10 @@ export const buildGroup = async (group: Group): Promise<BuildGroup> => {
   monsters = await Promise.all(monsterList);
   console.timeEnd("load");
 
+  characters = characters.filter((char) => char !== undefined);
+  npcs = npcs.filter((npc) => npc !== undefined);
+  monsters = monsters.filter((monster) => monster !== undefined);
+
   console.timeEnd("t");
   return new BuildGroup(group, characters, npcs, monsters);
 };

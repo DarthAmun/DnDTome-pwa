@@ -1,8 +1,9 @@
 import React, { lazy, Suspense } from "react";
-import { MemoryRouter, Switch, Route } from "react-router";
+import { Switch, Route } from "react-router";
 import { MyThemeProvider } from "./components/theme/MyThemeProvider";
 import { CompleteLoadingSpinner } from "./components/Loading";
 import AppWrapper from "./components/AppWrapper";
+import { BrowserRouter } from "react-router-dom";
 
 const CampaignOverview = lazy(() => import("./components/entities/campaigns/CampaignOverview"));
 const IdToCampaign = lazy(
@@ -125,7 +126,7 @@ const Statistics = lazy(() => import("./components/statistics/Statistics"));
 const App = () => {
   return (
     <MyThemeProvider>
-      <MemoryRouter>
+      <BrowserRouter>
         <AppWrapper>
           <Suspense fallback={<CompleteLoadingSpinner />}>
             <Switch>
@@ -196,7 +197,7 @@ const App = () => {
             </Switch>
           </Suspense>
         </AppWrapper>
-      </MemoryRouter>
+      </BrowserRouter>
     </MyThemeProvider>
   );
 };

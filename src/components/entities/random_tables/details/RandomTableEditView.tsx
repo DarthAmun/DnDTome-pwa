@@ -45,7 +45,7 @@ const RandomTableEditView = ({ randomTable, onEdit }: $Props) => {
           value={randomTable.header}
           label="Header"
           onChange={(name) => onEdit({ ...randomTable, header: name })}
-          placeholder={"Items, Description,..."}
+          placeholder={"Items| Description|..."}
         />
       </RandomTableView>
       <RandomTableView>
@@ -64,7 +64,7 @@ const RandomTableEditView = ({ randomTable, onEdit }: $Props) => {
                   value={row.cells}
                   label={"Row " + index}
                   onChange={(text) => onRowChange("cells", text, index)}
-                  placeholder={`Item ${index}, Description ${index},...`}
+                  placeholder={`Item ${index}| Description ${index}|...`}
                 />
                 <IconButton icon={faTrash} onClick={() => removeRow(index)} />
               </RowWrapper>

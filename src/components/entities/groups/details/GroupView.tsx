@@ -27,9 +27,15 @@ const GroupView = ({ group, onEdit }: $Props) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [loadedGroup, setLoadedGroup] = useState<BuildGroup>(new BuildGroup());
   const [activeTab, setTab] = useState<string>("General");
+  const [tabs, setTabs] = useState<string[]>(["General"]);
 
   useEffect(() => {
     buildGroup(group).then((buildGroup) => {
+      let newTabs = ["General"];
+      if (buildGroup.characters.length > 0) newTabs.push("Players");
+      if (buildGroup.npcs.length > 0) newTabs.push("Npcs");
+      if (buildGroup.monsters.length > 0) newTabs.push("Monsters");
+      setTabs([...newTabs, "Relationships"]);
       setLoadedGroup(buildGroup);
       setLoading(false);
     });
@@ -64,11 +70,7 @@ const GroupView = ({ group, onEdit }: $Props) => {
               )}
             </View>
           </Header>
-          <TabBar
-            children={["General", "Players", "Npcs", "Monsters", "Relationships"]}
-            onChange={(tab: string) => setTab(tab)}
-            activeTab={activeTab}
-          />
+          <TabBar children={tabs} onChange={(tab: string) => setTab(tab)} activeTab={activeTab} />
           {activeTab === "General" && (
             <View>
               <Text>

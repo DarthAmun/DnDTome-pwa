@@ -175,6 +175,10 @@ export const buildCharacter = async (character: Char): Promise<BuildChar> => {
   });
   console.timeEnd("modifier");
 
+  items = items.filter((item) => item !== undefined);
+  spells = spells.filter((spell) => spell !== undefined);
+  monsters = monsters.filter((monster) => monster !== undefined);
+
   console.timeEnd("t");
   return new BuildChar(
     character,

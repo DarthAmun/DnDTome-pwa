@@ -35,32 +35,19 @@ const CharView = ({ character, modifications }: $Props) => {
   const [buildChar, setBuildChar] = useState<BuildChar>(new BuildChar());
   const [loading, setLoading] = useState<boolean>(true);
   const [activeTab, setTab] = useState<string>("General");
-  const [tabs, setTabs] = useState<string[]>([
-    "General",
-    "Combat",
-    "Race",
-    "Classes",
-    "Notes",
-    "Modifications",
-  ]);
+  const [tabs, setTabs] = useState<string[]>(["General"]);
 
   useEffect(() => {
     buildCharacter(character).then(async (buildChar) => {
+      let newTabs = ["General", "Combat", "Classes", "Race"];
+      if (buildChar.items.length > 0) newTabs.push("Items");
+      if (buildChar.spells.length > 0) newTabs.push("Spells");
+      if (buildChar.monsters.length > 0) newTabs.push("Monsters");
+      setTabs([...newTabs, "Notes", "Modifications"]);
       setBuildChar(await applyMods(buildChar, modifications));
       setLoading(false);
     });
   }, [character, setBuildChar, modifications]);
-
-  useEffect(() => {
-    if (!tabs.includes("Monster") && buildChar.monsters.length > 0)
-      setTabs((t) => [...t, "Monster"]);
-  }, [buildChar.monsters, tabs]);
-  useEffect(() => {
-    if (!tabs.includes("Items") && buildChar.items.length > 0) setTabs((t) => [...t, "Items"]);
-  }, [buildChar.items, tabs]);
-  useEffect(() => {
-    if (!tabs.includes("Spells") && buildChar.spells.length > 0) setTabs((t) => [...t, "Spells"]);
-  }, [buildChar.spells, tabs]);
 
   const saveChar = (char: BuildChar) => {
     setBuildChar(char);
