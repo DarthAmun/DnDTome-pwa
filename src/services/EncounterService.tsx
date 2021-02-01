@@ -1,5 +1,48 @@
+import Char from "../data/chars/Char";
+import BuildEncounter from "../data/encounter/BuildEncounter";
+import BuildPlayer from "../data/encounter/BuildPlayer";
 import Encounter from "../data/encounter/Encounter";
 import Player from "../data/encounter/Player";
+import Monster from "../data/Monster";
+import { recivePromiseByAttribute } from "./DatabaseService";
+
+export const buildEncounter = async (encounter: Encounter): Promise<BuildEncounter> => {
+  console.time("t");
+  let characters: BuildPlayer[];
+  let enemies: BuildPlayer[];
+
+  console.time("load");
+  let characterList: Promise<BuildPlayer>[] = [];
+  let enemyList: Promise<BuildPlayer>[] = [];
+
+  encounter.players.forEach((player: Player) => {
+    characterList.push(buildPlayer(player));
+  });
+  encounter.enemies.forEach((enemy: Player) => {
+    enemyList.push(buildPlayer(enemy));
+  });
+  characters = await Promise.all(characterList);
+  enemies = await Promise.all(enemyList);
+  console.timeEnd("load");
+
+  characters = characters.filter((char) => char !== undefined);
+  enemies = enemies.filter((enemy) => enemy !== undefined);
+  const players = [...characters, ...enemies];
+
+  const difficulty = calcDifficulty(encounter);
+
+  console.timeEnd("t");
+  return new BuildEncounter(encounter, characters, enemies, players, difficulty);
+};
+
+export const buildPlayer = async (player: Player): Promise<BuildPlayer> => {
+  let newPlayer: any;
+
+  if (player.isMonster) newPlayer = await recivePromiseByAttribute("monsters", "name", player.name);
+  else newPlayer = await recivePromiseByAttribute("chars", "name", player.name);
+
+  return new BuildPlayer(player, newPlayer);
+};
 
 const crExpTable: { cr: number; exp: number }[] = [
   { cr: 0, exp: 0 },
