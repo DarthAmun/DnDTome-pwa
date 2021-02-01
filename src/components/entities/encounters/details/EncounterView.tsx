@@ -200,7 +200,7 @@ const EncounterView = ({ encounter, onEdit }: $Props) => {
                     </PropField>
                     <Prop>
                       {buildPlayer.entity.pic !== "" && buildPlayer.entity.pic !== undefined ? (
-                        <Image pic={buildPlayer.entity.pic}></Image>
+                        <PlayerImage player={buildPlayer}></PlayerImage>
                       ) : (
                         <></>
                       )}
@@ -250,12 +250,20 @@ const EncounterView = ({ encounter, onEdit }: $Props) => {
           </Table>
         )}
       </View>
-      <Board img={encounter.map}></Board>
+      {loadedEncounter && <Board players={loadedEncounter.players} img={encounter.map}></Board>}
     </CenterWrapper>
   );
 };
 
 export default EncounterView;
+
+interface $PlayerImageProps {
+  player: BuildPlayer;
+}
+
+const PlayerImage = ({ player }: $PlayerImageProps) => {
+  return <Image pic={player.entity.pic} />;
+};
 
 const Table = styled.table`
   width: 100%;
@@ -403,5 +411,9 @@ const ImageElm = styled.div`
   box-shadow: 0px 0px 10px 0px rgba(172, 172, 172, 0.2);
   background-color: white;
   overflow: hidden;
+
+  @media (max-width: 576px) {
+    display: none;
+  }
 `;
 const Empty = styled.div``;

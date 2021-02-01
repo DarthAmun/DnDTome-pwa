@@ -1,13 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
+import BuildPlayer from "../../../data/encounter/BuildPlayer";
 import NumberField from "../../form_elements/NumberField";
 
 interface $Props {
   img: string;
+  players: BuildPlayer[];
 }
 
-const Board = ({ img }: $Props) => {
-  const [board, setBoard] = useState<JSX.Element[]>([]);
+const Board = ({ img, players }: $Props) => {
+  const [playerIcons, setPlayerIcons] = useState<{ player: BuildPlayer; cord: number[] }[]>([]);
   const [dimension, setDimension] = useState<{ width: number; height: number; size: number }>({
     width: 30,
     height: 30,
@@ -15,21 +17,43 @@ const Board = ({ img }: $Props) => {
   });
 
   useEffect(() => {
-    let newBoard: JSX.Element[] = [];
-    for (let i = 0; i < dimension.height; i++) {
-      newBoard.push(<BoardRow>{makeRow(i).map((slot) => slot)}</BoardRow>);
-    }
-    setBoard(newBoard);
-    console.log(newBoard);
-  }, [dimension]);
+    let newPlayerIcons = players.map((player: BuildPlayer, index: number) => {
+      return { player: player, cord: [0, index] };
+    });
+    setPlayerIcons(newPlayerIcons);
+  }, [players]);
 
-  const makeRow = (row: number) => {
-    let slots: JSX.Element[] = [];
-    for (let j = 0; j < dimension.width; j++) {
-      slots.push(<Slot key={"" + row + j} size={dimension.size}></Slot>);
+  const makeRow = useCallback(
+    (row: number) => {
+      let list: any = [];
+      for (let j = 0; j < dimension.width; j++) {
+        list.push(
+          <Slot key={"slot" + row + "" + j} size={dimension.size}>
+            {playerIcons.map((playerIcon: { player: BuildPlayer; cord: number[] }) => {
+              if (playerIcon.cord[0] === row && playerIcon.cord[1] === j)
+                return (
+                  <Image
+                    key={"icon" + row + "" + j + ""}
+                    pic={playerIcon.player.entity.pic}
+                    size={dimension.size}
+                  />
+                );
+            })}
+          </Slot>
+        );
+      }
+      return list;
+    },
+    [dimension.width, dimension.size, playerIcons]
+  );
+
+  const makeBoard = useCallback(() => {
+    let list: any = [];
+    for (let i = 0; i < dimension.height; i++) {
+      list.push(<BoardRow key={i}>{makeRow(i)}</BoardRow>);
     }
-    return slots;
-  };
+    return list;
+  }, [dimension, makeRow]);
 
   return (
     <BoardWrapper>
@@ -51,7 +75,7 @@ const Board = ({ img }: $Props) => {
         />
       </BoardBar>
       <BoardContainer>
-        <BoardLayer>{board}</BoardLayer>
+        <BoardLayer>{makeBoard()}</BoardLayer>
         <MapLayer src={img} />
       </BoardContainer>
     </BoardWrapper>
@@ -134,5 +158,40 @@ const Slot = styled.div<SizeProp>`
   max-width: ${({ size }) => size}px;
 
   box-sizing: border-box;
-  border: 1px solid rgba(0, 0, 0, .3);
+  border: 1px solid rgba(0, 0, 0, 0.3);
 `;
+
+interface $ImageProps {
+  pic: string;
+  size: number;
+}
+
+const Image = ({ pic, size }: $ImageProps) => {
+  const style = {
+    backgroundImage: `url(${pic})`,
+    backgroundPosition: "center",
+    backgroundSize: "cover",
+    backgroundRepeat: "no-repeat",
+    height: size - 6 + "px",
+    width: size - 6 + "px",
+  };
+
+  if (pic !== "") {
+    return <ImageElm style={style}></ImageElm>;
+  } else {
+    return <Empty />;
+  }
+};
+
+const ImageElm = styled.div`
+  margin: 3px;
+  float: left;
+  border-radius: 100px;
+  border: 3px solid ${({ theme }) => theme.main.highlight};
+  box-shadow: 0px 0px 10px 0px rgba(172, 172, 172, 0.2);
+  background-color: white;
+  overflow: hidden;
+  box-sizing: border-box;
+  cursor: move;
+`;
+const Empty = styled.div``;
