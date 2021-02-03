@@ -148,7 +148,12 @@ const PlayerSlot = ({
   return (
     <Slot size={size} onDrop={(e) => drop(e, cord)} onDragOver={dragOver}>
       {players.map((playerIcon: BuildPlayer, index: number) => {
-        if (playerIcon.player.cord[0] === cord[0] && playerIcon.player.cord[1] === cord[1])
+        if (
+          (playerIcon.player.cord === undefined && cord[0] === 0 && cord[1] === 0) ||
+          (playerIcon.player.cord !== undefined &&
+            playerIcon.player.cord[0] === cord[0] &&
+            playerIcon.player.cord[1] === cord[1])
+        )
           return (
             <Image
               key={"icon" + index}

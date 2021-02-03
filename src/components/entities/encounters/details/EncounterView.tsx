@@ -273,11 +273,15 @@ const EncounterView = ({ encounter, onEdit }: $Props) => {
           </Table>
         )}
       </View>
-      {loadedEncounter && (
+      {loadedEncounter && encounter.map !== "" && encounter.map !== undefined && (
         <Board
           onChangePlayers={onChangePlayers}
           players={loadedEncounter.players}
-          dimension={encounter.dimension}
+          dimension={
+            encounter.dimension !== undefined
+              ? encounter.dimension
+              : { width: 20, height: 20, size: 20 }
+          }
           currentPlayerNumber={loadedEncounter.encounter.currentInit}
           onChangeDimension={onChangeDimension}
           img={encounter.map}
