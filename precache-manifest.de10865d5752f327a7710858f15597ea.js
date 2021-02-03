@@ -1,6 +1,6 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "d7900900114c1f2b418fe91bc587ed5b",
+    "revision": "e68149d474333186b165f1e9254e3b0f",
     "url": "/DnDTome-pwa/index.html"
   },
   {
@@ -40,8 +40,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/DnDTome-pwa/static/js/12.21d6d58f.chunk.js"
   },
   {
-    "revision": "6d1db217ac7cf19f05ae",
-    "url": "/DnDTome-pwa/static/js/13.f0a4df05.chunk.js"
+    "revision": "2223eebf35f551206f22",
+    "url": "/DnDTome-pwa/static/js/13.f308f365.chunk.js"
   },
   {
     "revision": "9d84e53f7572d84746f7",
@@ -408,8 +408,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/DnDTome-pwa/static/js/main.7935b164.chunk.js"
   },
   {
-    "revision": "19c1bc2abfb8cd737d5a",
-    "url": "/DnDTome-pwa/static/js/runtime-main.0d8fbe3d.js"
+    "revision": "15d36f5d6427103e360b",
+    "url": "/DnDTome-pwa/static/js/runtime-main.98096e19.js"
   },
   {
     "revision": "a0b12edf02c3f325bdf7975e77ac2194",
