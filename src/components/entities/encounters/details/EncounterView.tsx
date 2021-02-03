@@ -39,7 +39,7 @@ const EncounterView = ({ encounter, onEdit }: $Props) => {
 
   const onChangePlayerField = (field: string, newField: string | number, oldPlayer: Player) => {
     if (oldPlayer.isMonster) {
-      let newPlayers = encounter.enemies.map((newPlayer: Player) => {
+      let newPlayers = loadedEncounter.encounter.enemies.map((newPlayer: Player) => {
         if (oldPlayer === newPlayer) {
           return { ...newPlayer, [field]: newField };
         } else {
@@ -48,7 +48,7 @@ const EncounterView = ({ encounter, onEdit }: $Props) => {
       });
       onEdit({ ...encounter, enemies: newPlayers });
     } else {
-      let newPlayers = encounter.players.map((newPlayer: Player) => {
+      let newPlayers = loadedEncounter.encounter.players.map((newPlayer: Player) => {
         if (oldPlayer === newPlayer) {
           return { ...newPlayer, [field]: newField };
         } else {
@@ -117,7 +117,7 @@ const EncounterView = ({ encounter, onEdit }: $Props) => {
     }
 
     let counter = 0;
-    while (loadedEncounter.encounter.players[nextInit].currentHp <= 0) {
+    while (loadedEncounter.players[nextInit].player.currentHp <= 0) {
       if ((nextInit + 1) % loadedEncounter.players.length === 0) {
         roundCounter++;
       }
@@ -135,6 +135,29 @@ const EncounterView = ({ encounter, onEdit }: $Props) => {
         currentInit: nextInit,
         roundCounter: roundCounter,
       });
+    }
+  };
+
+  const onChangeDimension = (dimension: { width: number; height: number; size: number }) => {
+    onEdit({ ...loadedEncounter.encounter, dimension: dimension });
+  };
+
+  const onChangePlayers = (players: BuildPlayer[]) => {
+    if (players !== loadedEncounter.players) {
+      let newPlayers: Player[] = [];
+      players.forEach((player: BuildPlayer) => {
+        if (!player.player.isMonster) {
+          newPlayers.push(player.player);
+        }
+      });
+      let newEnemies: Player[] = [];
+      players.forEach((player: BuildPlayer) => {
+        if (player.player.isMonster) {
+          newEnemies.push(player.player);
+        }
+      });
+
+      onEdit({ ...loadedEncounter.encounter, players: newPlayers, enemies: newEnemies });
     }
   };
 
@@ -250,7 +273,16 @@ const EncounterView = ({ encounter, onEdit }: $Props) => {
           </Table>
         )}
       </View>
-      {loadedEncounter && <Board players={loadedEncounter.players} img={encounter.map}></Board>}
+      {loadedEncounter && (
+        <Board
+          onChangePlayers={onChangePlayers}
+          players={loadedEncounter.players}
+          dimension={encounter.dimension}
+          currentPlayerNumber={loadedEncounter.encounter.currentInit}
+          onChangeDimension={onChangeDimension}
+          img={encounter.map}
+        ></Board>
+      )}
     </CenterWrapper>
   );
 };

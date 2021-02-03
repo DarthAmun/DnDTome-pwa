@@ -10,6 +10,7 @@ export default class Encounter implements IEntity {
   currentInit: number;
   roundCounter: number;
   map: string;
+  dimension: { width: number; height: number; size: number };
 
   constructor(
     id?: number,
@@ -19,7 +20,8 @@ export default class Encounter implements IEntity {
     isPlaying?: boolean,
     currentInit?: number,
     roundCounter?: number,
-    map?: string
+    map?: string,
+    dimension?: { width: number; height: number; size: number }
   ) {
     this.id = id;
     this.name = name || "";
@@ -29,6 +31,7 @@ export default class Encounter implements IEntity {
     this.currentInit = currentInit || 0;
     this.roundCounter = roundCounter || 0;
     this.map = map || "";
+    this.dimension = dimension || { width: 20, height: 20, size: 20 };
   }
 }
 
@@ -38,5 +41,16 @@ export function isEncounter(arg: any): arg is Encounter {
   const playersCheck = arg.players !== undefined && Array.isArray(arg.players);
   const isPlayingCheck = arg.isPlaying !== undefined && typeof arg.isPlaying == "boolean";
   const mapCheck = arg.map !== undefined && typeof arg.map == "string";
-  return arg && nameCheck && enemiesCheck && playersCheck && isPlayingCheck && mapCheck;
+  const currentInitCheck = arg.currentInit !== undefined && typeof arg.currentInit == "number";
+  const roundCounterCheck = arg.roundCounter !== undefined && typeof arg.roundCounter == "number";
+  return (
+    arg &&
+    nameCheck &&
+    enemiesCheck &&
+    playersCheck &&
+    isPlayingCheck &&
+    mapCheck &&
+    currentInitCheck &&
+    roundCounterCheck
+  );
 }
