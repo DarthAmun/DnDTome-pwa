@@ -2,9 +2,10 @@ import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router";
 import styled from "styled-components";
 import Encounter from "../../../../data/encounter/Encounter";
+import BuildPlayer from "../../../../data/encounter/BuildPlayer";
 import Player from "../../../../data/encounter/Player";
 import { rollDie } from "../../../../services/DiceService";
-import { calcDifficulty } from "../../../../services/EncounterService";
+import { buildEncounter } from "../../../../services/EncounterService";
 
 import {
   faPlayCircle,
@@ -16,6 +17,8 @@ import { LoadingSpinner } from "../../../Loading";
 import IconButton from "../../../form_elements/IconButton";
 import TextButton from "../../../form_elements/TextButton";
 import TinyNumberField from "../../../form_elements/TinyNumberField";
+import Board from "../../../general_elements/board/Board";
+import BuildEncounter from "../../../../data/encounter/BuildEncounter";
 
 interface $Props {
   encounter: Encounter;
@@ -24,31 +27,19 @@ interface $Props {
 
 const EncounterView = ({ encounter, onEdit }: $Props) => {
   let history = useHistory();
+  const [loadedEncounter, setLoadedEncounter] = useState<BuildEncounter>(new BuildEncounter());
   const [loading, isLoading] = useState<boolean>(true);
-  const [players, setPlayers] = useState<Player[]>([]);
-  const [difficulty, setDifficulty] = useState<string>("");
 
   useEffect(() => {
-    const { difficulty } = calcDifficulty(encounter);
-    setDifficulty(difficulty);
-  }, [encounter]);
+    buildEncounter(encounter).then((buildEncounter) => {
+      setLoadedEncounter(buildEncounter);
+      isLoading(false);
+    });
+  }, [encounter, setLoadedEncounter]);
 
-  useEffect(() => {
-    let newPlayers = [...encounter.enemies, ...encounter.players];
-    if (encounter.isPlaying) {
-      newPlayers = newPlayers.sort((a, b) => (a.init < b.init ? 1 : -1));
-    }
-    setPlayers(newPlayers);
-    isLoading(false);
-  }, [encounter]);
-
-  const onChangePlayerField = (
-    field: string,
-    newField: string | number,
-    oldPlayer: Player
-  ) => {
+  const onChangePlayerField = (field: string, newField: string | number, oldPlayer: Player) => {
     if (oldPlayer.isMonster) {
-      let newPlayers = encounter.enemies.map((newPlayer: Player) => {
+      let newPlayers = loadedEncounter.encounter.enemies.map((newPlayer: Player) => {
         if (oldPlayer === newPlayer) {
           return { ...newPlayer, [field]: newField };
         } else {
@@ -57,7 +48,7 @@ const EncounterView = ({ encounter, onEdit }: $Props) => {
       });
       onEdit({ ...encounter, enemies: newPlayers });
     } else {
-      let newPlayers = encounter.players.map((newPlayer: Player) => {
+      let newPlayers = loadedEncounter.encounter.players.map((newPlayer: Player) => {
         if (oldPlayer === newPlayer) {
           return { ...newPlayer, [field]: newField };
         } else {
@@ -119,24 +110,24 @@ const EncounterView = ({ encounter, onEdit }: $Props) => {
   };
 
   const nextPlayer = () => {
-    let nextInit = (encounter.currentInit + 1) % players.length;
+    let nextInit = (encounter.currentInit + 1) % loadedEncounter.players.length;
     let roundCounter = encounter.roundCounter;
-    if ((encounter.currentInit + 1) % players.length === 0) {
+    if ((encounter.currentInit + 1) % loadedEncounter.players.length === 0) {
       roundCounter++;
     }
 
     let counter = 0;
-    while (players[nextInit].currentHp <= 0) {
-      if ((nextInit + 1) % players.length === 0) {
+    while (loadedEncounter.players[nextInit].player.currentHp <= 0) {
+      if ((nextInit + 1) % loadedEncounter.players.length === 0) {
         roundCounter++;
       }
-      nextInit = (nextInit + 1) % players.length;
+      nextInit = (nextInit + 1) % loadedEncounter.players.length;
       counter++;
-      if (counter > players.length) {
+      if (counter > loadedEncounter.players.length) {
         break;
       }
     }
-    if (counter > players.length) {
+    if (counter > loadedEncounter.players.length) {
       finishEncounter();
     } else {
       onEdit({
@@ -144,6 +135,29 @@ const EncounterView = ({ encounter, onEdit }: $Props) => {
         currentInit: nextInit,
         roundCounter: roundCounter,
       });
+    }
+  };
+
+  const onChangeDimension = (dimension: { width: number; height: number; size: number }) => {
+    onEdit({ ...loadedEncounter.encounter, dimension: dimension });
+  };
+
+  const onChangePlayers = (players: BuildPlayer[]) => {
+    if (players !== loadedEncounter.players) {
+      let newPlayers: Player[] = [];
+      players.forEach((player: BuildPlayer) => {
+        if (!player.player.isMonster) {
+          newPlayers.push(player.player);
+        }
+      });
+      let newEnemies: Player[] = [];
+      players.forEach((player: BuildPlayer) => {
+        if (player.player.isMonster) {
+          newEnemies.push(player.player);
+        }
+      });
+
+      onEdit({ ...loadedEncounter.encounter, players: newPlayers, enemies: newEnemies });
     }
   };
 
@@ -156,7 +170,7 @@ const EncounterView = ({ encounter, onEdit }: $Props) => {
         <PropWrapper>
           <PropElm>
             <PropTitle>Difficulty: </PropTitle>
-            {difficulty}
+            {loadedEncounter.difficulty.difficulty}
           </PropElm>
           <PropElm>
             <PropTitle>Round: </PropTitle>
@@ -171,11 +185,7 @@ const EncounterView = ({ encounter, onEdit }: $Props) => {
           )}
           {encounter && encounter.isPlaying && (
             <>
-              <TextButton
-                text={"Next"}
-                icon={faStepForward}
-                onClick={() => nextPlayer()}
-              />
+              <TextButton text={"Next"} icon={faStepForward} onClick={() => nextPlayer()} />
               <TextButton
                 text={"End Encounter"}
                 icon={faStopCircle}
@@ -198,60 +208,61 @@ const EncounterView = ({ encounter, onEdit }: $Props) => {
               </tr>
             </thead>
             <tbody>
-              {players.map((player: Player, index: number) => {
+              {loadedEncounter.players.map((buildPlayer: BuildPlayer, index: number) => {
                 return (
                   <Row
-                    current={
-                      encounter.currentInit === index && encounter.isPlaying
-                    }
-                    isDead={player.currentHp <= 0}
+                    current={encounter.currentInit === index && encounter.isPlaying}
+                    isDead={buildPlayer.player.currentHp <= 0}
                     key={index}
                   >
                     <PropField>
                       <TinyNumberField
-                        value={player.init}
-                        onChange={(init) =>
-                          onChangePlayerField("init", init, player)
-                        }
+                        value={buildPlayer.player.init}
+                        onChange={(init) => onChangePlayerField("init", init, buildPlayer.player)}
                       />
                     </PropField>
                     <Prop>
-                      {player.isMonster && (
+                      {buildPlayer.entity.pic !== "" && buildPlayer.entity.pic !== undefined ? (
+                        <PlayerImage player={buildPlayer}></PlayerImage>
+                      ) : (
+                        <></>
+                      )}
+                      {buildPlayer.player.isMonster && (
                         <MainLink
                           onClick={() =>
-                            history.push(`/monster-detail/name/${player.name}`)
+                            history.push(`/monster-detail/name/${buildPlayer.player.name}`)
                           }
                         >
-                          {player.name}
+                          {buildPlayer.player.name}
                         </MainLink>
                       )}
-                      {!player.isMonster && (
+                      {!buildPlayer.player.isMonster && (
                         <MainLink
                           onClick={() =>
-                            history.push(`/char-detail/name/${player.name}`)
+                            history.push(`/char-detail/name/${buildPlayer.player.name}`)
                           }
                         >
-                          {player.name}
+                          {buildPlayer.player.name}
                         </MainLink>
                       )}
                     </Prop>
                     <PropField>
                       <TinyNumberField
-                        value={player.currentHp}
-                        max={player.hp}
+                        value={buildPlayer.player.currentHp}
+                        max={buildPlayer.player.hp}
                         onChange={(currentHp) =>
-                          onChangePlayerField("currentHp", currentHp, player)
+                          onChangePlayerField("currentHp", currentHp, buildPlayer.player)
                         }
                       />
                     </PropField>
-                    <Prop>{player.hp}</Prop>
-                    <Prop>{player.ac}</Prop>
+                    <Prop>{buildPlayer.player.hp}</Prop>
+                    <Prop>{buildPlayer.player.ac}</Prop>
                     {/* <Prop>{player.tag}</Prop> */}
                     <td>
-                      {player.currentHp > 0 && (
+                      {buildPlayer.player.currentHp > 0 && (
                         <IconButton
                           icon={faSkullCrossbones}
-                          onClick={() => killEnemy(player)}
+                          onClick={() => killEnemy(buildPlayer.player)}
                         />
                       )}
                     </td>
@@ -262,11 +273,29 @@ const EncounterView = ({ encounter, onEdit }: $Props) => {
           </Table>
         )}
       </View>
+      {loadedEncounter && (
+        <Board
+          onChangePlayers={onChangePlayers}
+          players={loadedEncounter.players}
+          dimension={encounter.dimension}
+          currentPlayerNumber={loadedEncounter.encounter.currentInit}
+          onChangeDimension={onChangeDimension}
+          img={encounter.map}
+        ></Board>
+      )}
     </CenterWrapper>
   );
 };
 
 export default EncounterView;
+
+interface $PlayerImageProps {
+  player: BuildPlayer;
+}
+
+const PlayerImage = ({ player }: $PlayerImageProps) => {
+  return <Image pic={player.entity.pic} />;
+};
 
 const Table = styled.table`
   width: 100%;
@@ -322,6 +351,7 @@ const Prop = styled.td`
   padding: 5px;
   border-radius: 5px;
   background-color: ${({ theme }) => theme.tile.backgroundColor};
+  line-height: 34px;
 
   svg {
     margin-right: 5px;
@@ -381,3 +411,41 @@ const PropWrapper = styled.div`
   flex-wrap: wrap;
   justify-content: space-around;
 `;
+
+interface $ImageProps {
+  pic: string;
+}
+
+const Image = ({ pic }: $ImageProps) => {
+  const style = {
+    backgroundImage: `url(${pic})`,
+    backgroundPosition: "center",
+    backgroundSize: "cover",
+    backgroundRepeat: "no-repeat",
+  };
+
+  if (pic !== "") {
+    return <ImageElm style={style}></ImageElm>;
+  } else {
+    return <Empty />;
+  }
+};
+
+const ImageElm = styled.div`
+  margin-right: 5px;
+  margin-top: -7px;
+  margin-bottom: -7px;
+  height: 43px;
+  width: 43px;
+  float: left;
+  border-radius: 100px;
+  border: 3px solid ${({ theme }) => theme.main.highlight};
+  box-shadow: 0px 0px 10px 0px rgba(172, 172, 172, 0.2);
+  background-color: white;
+  overflow: hidden;
+
+  @media (max-width: 576px) {
+    display: none;
+  }
+`;
+const Empty = styled.div``;

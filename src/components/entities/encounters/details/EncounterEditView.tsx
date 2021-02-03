@@ -137,6 +137,12 @@ const EncounterEditView = ({ encounter, onEdit }: $Props) => {
           label="Encounter Name"
           onChange={(name) => onEdit({ ...encounter, name: name })}
         />
+        <AutoStringField
+          optionTable={"locations"}
+          value={encounter.map}
+          label="Map"
+          onChange={(newMap) => onEdit({ ...encounter, map: newMap })}
+        />
       </View>
       <View>
         <PropWrapper>
@@ -158,16 +164,12 @@ const EncounterEditView = ({ encounter, onEdit }: $Props) => {
                 optionTable={["monsters", "chars"]}
                 value={enemy.name}
                 label="Monster"
-                onChange={(newMonster) =>
-                  onChangeEnemy(newMonster, enemy, index)
-                }
+                onChange={(newMonster) => onChangeEnemy(newMonster, enemy, index)}
               />
               <NumberField
                 value={enemy.currentHp}
                 label="Current Hp"
-                onChange={(currentHp) =>
-                  onChangeEnemyField("currentHp", currentHp, enemy, index)
-                }
+                onChange={(currentHp) => onChangeEnemyField("currentHp", currentHp, enemy, index)}
               />
               <NumberField
                 value={enemy.hp}
@@ -182,27 +184,19 @@ const EncounterEditView = ({ encounter, onEdit }: $Props) => {
               <NumberField
                 value={enemy.initBonus}
                 label="Init Bonus"
-                onChange={(initBonus) =>
-                  onChangeEnemyField("initBonus", initBonus, enemy, index)
-                }
+                onChange={(initBonus) => onChangeEnemyField("initBonus", initBonus, enemy, index)}
               />
               <NumberField
                 value={enemy.level}
                 label="Cr"
-                onChange={(level) =>
-                  onChangePlayerField("level", level, enemy, index)
-                }
+                onChange={(level) => onChangePlayerField("level", level, enemy, index)}
               />
               <IconButton icon={faTrash} onClick={() => removeEnemy(index)} />
             </Container>
           );
         })}
         <Container>
-          <TextButton
-            text={"Add new Monster"}
-            icon={faPlus}
-            onClick={() => addNewEnemy()}
-          />
+          <TextButton text={"Add new Monster"} icon={faPlus} onClick={() => addNewEnemy()} />
         </Container>
       </CharView>
       <CharView>
@@ -213,16 +207,12 @@ const EncounterEditView = ({ encounter, onEdit }: $Props) => {
                 optionTable={"chars"}
                 value={player.name}
                 label="Character"
-                onChange={(newPlayer) =>
-                  onChangePlayer(newPlayer, player, index)
-                }
+                onChange={(newPlayer) => onChangePlayer(newPlayer, player, index)}
               />
               <NumberField
                 value={player.currentHp}
                 label="Current Hp"
-                onChange={(currentHp) =>
-                  onChangePlayerField("currentHp", currentHp, player, index)
-                }
+                onChange={(currentHp) => onChangePlayerField("currentHp", currentHp, player, index)}
               />
               <NumberField
                 value={player.hp}
@@ -237,27 +227,19 @@ const EncounterEditView = ({ encounter, onEdit }: $Props) => {
               <NumberField
                 value={player.initBonus}
                 label="Init Bonus"
-                onChange={(initBonus) =>
-                  onChangePlayerField("initBonus", initBonus, player, index)
-                }
+                onChange={(initBonus) => onChangePlayerField("initBonus", initBonus, player, index)}
               />
               <NumberField
                 value={player.level}
                 label="Level"
-                onChange={(level) =>
-                  onChangePlayerField("level", level, player, index)
-                }
+                onChange={(level) => onChangePlayerField("level", level, player, index)}
               />
               <IconButton icon={faTrash} onClick={() => removePlayer(index)} />
             </Container>
           );
         })}
         <Container>
-          <TextButton
-            text={"Add new Character"}
-            icon={faPlus}
-            onClick={() => addNewPlayer()}
-          />
+          <TextButton text={"Add new Character"} icon={faPlus} onClick={() => addNewPlayer()} />
         </Container>
       </CharView>
     </CenterWrapper>

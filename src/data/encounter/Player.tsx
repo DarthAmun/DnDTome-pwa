@@ -8,6 +8,7 @@ export default class Player {
   tag: string;
   isMonster: boolean;
   level: number;
+  cord: number[];
 
   constructor(
     name?: string,
@@ -18,7 +19,8 @@ export default class Player {
     ac?: number,
     tag?: string,
     isMonster?: boolean,
-    level?: number
+    level?: number,
+    cord?: number[]
   ) {
     this.name = name || "";
     this.hp = hp || 0;
@@ -29,6 +31,7 @@ export default class Player {
     this.tag = tag || "";
     this.isMonster = isMonster || false;
     this.level = level || 0;
+    this.cord = cord || [0,0];
   }
 }
 
@@ -37,8 +40,7 @@ export function isPlayer(arg: any): arg is Player {
   const hpCheck = arg.hp !== undefined && typeof arg.hp == "number";
   const tempHpCheck = arg.tempHp !== undefined && typeof arg.tempHp == "number";
   const initCheck = arg.init !== undefined && typeof arg.init == "number";
-  const initBonusCheck =
-    arg.initBonus !== undefined && typeof arg.initBonus == "number";
+  const initBonusCheck = arg.initBonus !== undefined && typeof arg.initBonus == "number";
   const acCheck = arg.ac !== undefined && typeof arg.ac == "number";
   const tagCheck = arg.tag !== undefined && typeof arg.tag == "string";
   const levelCheck = arg.level !== undefined && typeof arg.level == "number";
