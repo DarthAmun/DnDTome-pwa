@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 import styled from "styled-components";
 import BuildPlayer from "../../../data/encounter/BuildPlayer";
 import Monster from "../../../data/Monster";
@@ -161,6 +161,7 @@ const PlayerSlot = ({
               isCurrent={currentPlayerNumber === index}
             />
           );
+        return <Empty key={"icon" + index} />;
       })}
     </Slot>
   );
@@ -294,3 +295,5 @@ const ImageElm = styled.div`
   cursor: move;
   position: absolute;
 `;
+
+const Empty = styled.div``;
