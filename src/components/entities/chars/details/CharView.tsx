@@ -41,6 +41,7 @@ const CharView = ({ character, modifications }: $Props) => {
     buildCharacter(character).then(async (buildChar) => {
       let newTabs = ["General", "Combat", "Classes", "Race"];
       if (buildChar.items.length > 0) newTabs.push("Items");
+      else if (buildChar.gears.length > 0) newTabs.push("Items");
       if (buildChar.spells.length > 0) newTabs.push("Spells");
       if (buildChar.monsters.length > 0) newTabs.push("Monsters");
       setTabs([...newTabs, "Notes", "Modifications"]);

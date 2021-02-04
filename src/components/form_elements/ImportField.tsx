@@ -191,7 +191,8 @@ const FileTile = ({ file, modus }: $FileProps) => {
     } else if (modus === ImportModus.ETOOLSSPELLS) {
       newJson = json.spell;
     } else if (modus === ImportModus.ETOOLSITEMS) {
-      newJson = json.item;
+      if (json.item !== undefined) newJson = json.item;
+      if (json.baseitem !== undefined) newJson = json.baseitem;
     } else if (modus === ImportModus.ETOOLSRACES) {
       newJson = json.race;
     } else if (modus === ImportModus.ETOOLSCLASSES) {

@@ -176,6 +176,7 @@ export const buildCharacter = async (character: Char): Promise<BuildChar> => {
   console.timeEnd("modifier");
 
   items = items.filter((item) => item !== undefined);
+  gears = gears.filter((gear) => gear !== undefined);
   spells = spells.filter((spell) => spell !== undefined);
   monsters = monsters.filter((monster) => monster !== undefined);
 

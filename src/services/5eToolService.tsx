@@ -64,17 +64,82 @@ const parseGear = (obj: any, fileName: string) => {
 
   let type = "";
   if (obj.type !== undefined) {
-    type = obj.type;
+    switch (obj.type) {
+      case "A":
+        type = "ammunition";
+        break;
+      case "AIR":
+        type = "air vehicle";
+        break;
+      case "AT":
+        type = "tools";
+        break;
+      case "EXP":
+        type = "explosive";
+        break;
+      case "FD":
+        type = "food";
+        break;
+      case "GS":
+        type = "game set";
+        break;
+      case "HA":
+        type = "heavy armor";
+        break;
+      case "INS":
+        type = "instrument";
+        break;
+      case "LA":
+        type = "light armor";
+        break;
+      case "M":
+        type = "martial weapon";
+        break;
+      case "MA":
+        type = "medium armor";
+        break;
+      case "MNT":
+        type = "mount";
+        break;
+      case "R":
+        type = "martial ranged weapon";
+        break;
+      case "S":
+        type = "simple weapon";
+        break;
+      case "SCF":
+        type = "spellcasting focus";
+        break;
+      case "SHP":
+        type = "ship";
+        break;
+      case "TG":
+        type = "trade good";
+        break;
+      case "VEH":
+        type = "vehicle";
+      default:
+        type = "gear";
+    }
   }
 
   let damage = "";
   if (obj.dmg1 !== undefined) {
     damage += obj.dmg1;
     if (obj.dmgType !== undefined) {
-      if (obj.dmgType === "S") damage += " slashing damage";
-      else if (obj.dmgType === "P") damage += " piercing damage";
-      else if (obj.dmgType === "B") damage += " bludgeoning damage";
-      else if (obj.dmgType === "R") damage += " radiant damage";
+      switch (obj.dmgType) {
+        case "S":
+          damage += " slashing damage";
+          break;
+        case "P":
+          damage += " piercing damage";
+          break;
+        case "B":
+          damage += " bludgeoning damage";
+          break;
+        case "R":
+          damage += " radiant damage";
+      }
     }
   }
 
@@ -84,18 +149,47 @@ const parseGear = (obj: any, fileName: string) => {
   }
   if (obj.property !== undefined) {
     obj.property.forEach((prop: string) => {
-      if (prop === "L") properties += "light, ";
-      else if (prop === "AF") properties += "radiant damage, ";
-      else if (prop === "RLD") properties += "loading, ";
-      else if (prop === "2H") properties += "two-handed, ";
-      else if (prop === "F") properties += "finesse, ";
-      else if (prop === "H") properties += "heavy, ";
-      else if (prop === "R") properties += "reach, ";
-      else if (prop === "T") properties += "thrown, ";
-      else if (prop === "V") properties += "versatile, ";
+      switch (prop) {
+        case "L":
+          properties += "light, ";
+          break;
+        case "AF":
+          properties += "radiant damage, ";
+          break;
+        case "RLD":
+          properties += "loading, ";
+          break;
+        case "2H":
+          properties += "two-handed, ";
+          break;
+        case "F":
+          properties += "finesse, ";
+          break;
+        case "H":
+          properties += "heavy, ";
+          break;
+        case "R":
+          properties += "reach, ";
+          break;
+        case "T":
+          properties += "thrown, ";
+          break;
+        case "V":
+          properties += "versatile, ";
+      }
     });
   }
   properties = properties.trim();
+
+  let weight = obj.weight;
+  if (typeof weight == "number") {
+    weight = weight + "lbs";
+  }
+
+  let value = obj.value;
+  if (typeof value == "number") {
+    value = value + "gp";
+  }
 
   let newGear = new Gear(
     0,
@@ -103,9 +197,9 @@ const parseGear = (obj: any, fileName: string) => {
     obj.source,
     description,
     "",
-    obj.value,
+    value,
     damage,
-    obj.weight,
+    weight,
     properties,
     type,
     fileName
@@ -203,7 +297,7 @@ const parseItem = (obj: any, fileName: string) => {
 };
 
 export const makeItems = (obj: any, fileName: string): Item | Gear => {
-  if (obj.rarity !== undefined) {
+  if (obj !== undefined && obj.rarity !== undefined) {
     if (obj.rarity === "none" || obj.rarity === "unknown") {
       return parseGear(obj, fileName);
     } else {

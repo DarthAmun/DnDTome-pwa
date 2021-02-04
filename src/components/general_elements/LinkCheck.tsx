@@ -76,8 +76,8 @@ const LinkCheck = ({ type, name }: $Props) => {
         return <FontAwesomeIcon icon={faTable} />;
       case "book":
         return <GiBookshelf />;
-        case "group":
-          return <HiUserGroup />;
+      case "group":
+        return <HiUserGroup />;
       default:
         return "";
     }
