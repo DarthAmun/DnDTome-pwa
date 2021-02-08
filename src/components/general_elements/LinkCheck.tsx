@@ -34,7 +34,9 @@ const LinkCheck = ({ type, name }: $Props) => {
   const [entitiyFound, setEntity] = useState<boolean>(false);
 
   useEffect(() => {
-    recivePromiseByAttributeCount(type + "s", "name", name).then((count: number) => {
+    let newType = type + "s";
+    if (type === "class" || type === "subclass") newType = type + "es";
+    recivePromiseByAttributeCount(newType, "name", name).then((count: number) => {
       setEntity(count > 0);
       setLoading(false);
     });
@@ -49,8 +51,10 @@ const LinkCheck = ({ type, name }: $Props) => {
       case "gear":
         return <GiBackpack />;
       case "race":
+      case "subrace":
         return <GiWomanElfFace />;
       case "class":
+      case "subclass":
         return <GiPlagueDoctorProfile />;
       case "selection":
         return <BiSelectMultiple />;
