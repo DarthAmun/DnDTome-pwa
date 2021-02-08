@@ -118,6 +118,7 @@ const parseGear = (obj: any, fileName: string) => {
         break;
       case "VEH":
         type = "vehicle";
+        break;
       default:
         type = "gear";
     }
@@ -273,11 +274,71 @@ const parseItem = (obj: any, fileName: string) => {
   }
 
   let base = "";
-  let type = "";
   if (obj.baseItem !== undefined) {
     let baseParts: string[] = obj.baseItem.split("|");
     base = baseParts[0];
-    type = baseParts[0];
+  }
+
+  let type = "";
+  if (obj.type !== undefined) {
+    switch (obj.type) {
+      case "A":
+        type = "ammunition";
+        break;
+      case "AIR":
+        type = "air vehicle";
+        break;
+      case "AT":
+        type = "tools";
+        break;
+      case "EXP":
+        type = "explosive";
+        break;
+      case "FD":
+        type = "food";
+        break;
+      case "GS":
+        type = "game set";
+        break;
+      case "HA":
+        type = "heavy armor";
+        break;
+      case "INS":
+        type = "instrument";
+        break;
+      case "LA":
+        type = "light armor";
+        break;
+      case "M":
+        type = "martial weapon";
+        break;
+      case "MA":
+        type = "medium armor";
+        break;
+      case "MNT":
+        type = "mount";
+        break;
+      case "R":
+        type = "martial ranged weapon";
+        break;
+      case "S":
+        type = "simple weapon";
+        break;
+      case "SCF":
+        type = "spellcasting focus";
+        break;
+      case "SHP":
+        type = "ship";
+        break;
+      case "TG":
+        type = "trade good";
+        break;
+      case "VEH":
+        type = "vehicle";
+        break;
+      default:
+        type = "gear";
+    }
   }
 
   let newItem = new Item(

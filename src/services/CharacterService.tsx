@@ -84,6 +84,7 @@ export const buildCharacter = async (character: Char): Promise<BuildChar> => {
   spells = await Promise.all(spellList);
   let currentGears = await Promise.all(gearList);
   let currentBases = await Promise.all(baseList);
+
   race = await recivePromiseByAttribute("races", "name", character.race.race);
   subrace = await recivePromiseByAttribute("subraces", "name", character.race.subrace);
 
@@ -135,11 +136,11 @@ export const buildCharacter = async (character: Char): Promise<BuildChar> => {
   character.items.forEach((originItem) => {
     if (originItem !== undefined) {
       currentItems.forEach(async (item: Item) => {
-        if (item !== undefined)
-          if (originItem.origin === item.name) {
+        if (item !== undefined) {
+          if (originItem.origin.toLowerCase() === item.name.toLowerCase()) {
             if (item.base !== "") {
               currentBases.forEach((base: Gear) => {
-                if (base !== undefined && base.name === item.base) {
+                if (base !== undefined && base.name.toLowerCase() === item.base.toLowerCase()) {
                   items.push({ ...originItem, item: item, base: base });
                 }
               });
@@ -147,10 +148,11 @@ export const buildCharacter = async (character: Char): Promise<BuildChar> => {
               items.push({ ...originItem, item: item, base: undefined });
             }
           }
+        }
       });
       currentGears.forEach((gear: Gear) => {
         if (gear !== undefined)
-          if (originItem.origin === gear.name) {
+          if (originItem.origin.toLowerCase() === gear.name.toLowerCase()) {
             gears.push({ ...originItem, gear: gear });
           }
       });

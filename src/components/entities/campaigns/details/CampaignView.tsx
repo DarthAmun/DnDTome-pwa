@@ -109,12 +109,12 @@ const CampaignView = ({ campaign, onEdit }: $Props) => {
           {activeTab === "Notes" && (
             <>
               <NoteSearchBar hasTitle={true} onSend={setFilters} />
-              <SearchableView>
+              <SearchableNoteView>
                 {loadedCampaign.campaign.notes
                   .filter((note: Note) => applyFilters(note, filters))
                   .map((note: Note, index: number) => {
                     return (
-                      <PropWrapper key={index}>
+                      <NoteWrapper key={index}>
                         <Prop>
                           <PropTitle>{note.title}</PropTitle>
                           <FormatedText text={note.content} />
@@ -123,10 +123,10 @@ const CampaignView = ({ campaign, onEdit }: $Props) => {
                           <Icon icon={faTags} />
                           {note.tags}
                         </Prop>
-                      </PropWrapper>
+                      </NoteWrapper>
                     );
                   })}
-              </SearchableView>
+              </SearchableNoteView>
             </>
           )}
           {activeTab === "Log" && (
@@ -182,8 +182,15 @@ const View = styled.div`
   margin-right: auto;
 `;
 
-const SearchableView = styled(View)`
+const SearchableView = styled.div`
   margin-top: 50px;
+`;
+
+const SearchableNoteView = styled(SearchableView)`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
 `;
 
 const Header = styled.div`
@@ -227,6 +234,12 @@ const PropWrapper = styled.div`
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
+`;
+
+const NoteWrapper = styled(PropWrapper)`
+  flex: 1 1 100%;
+  max-width: 800px;
+  padding: 10px;
 `;
 
 const PropTitle = styled.span`
