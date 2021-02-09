@@ -430,7 +430,7 @@ export class MyAppDatabase extends Dexie {
         worlds: "++id, name, map, description, locations, events, sources, filename",
         locations: "++id, name, map, dimension, markers, sources, filename",
         events: "++id, name, description, date, sources, filename",
-        groups: "++id, name, pic, description, npcs, players, monsters, flow, sources, filename",
+        groups: "++id, name, pic, description, notes, npcs, players, monsters, flow, sources, filename",
       })
       .upgrade((trans: any) => {
         return trans.chars.toCollection().modify((char: Char) => {

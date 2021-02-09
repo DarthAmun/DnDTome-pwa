@@ -11,12 +11,16 @@ import FormatedText from "../../../general_elements/FormatedText";
 import TabBar from "../../../general_elements/TabBar";
 import NpcTile from "../../npc/NpcTile";
 import CharTile from "../../chars/CharTile";
-import { faLink } from "@fortawesome/free-solid-svg-icons";
+import { faLink, faTags } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { LoadingSpinner } from "../../../Loading";
 import FlowChart from "../../../general_elements/flow/FlowChart";
 import MonsterTile from "../../monster/MonsterTile";
 import Monster from "../../../../data/Monster";
+import Note from "../../../../data/campaign/Note";
+import { applyFilters } from "../../../../services/DatabaseService";
+import NoteSearchBar from "../../campaigns/NoteSearchBar";
+import Filter from "../../../../data/Filter";
 
 interface $Props {
   group: Group;
@@ -28,10 +32,11 @@ const GroupView = ({ group, onEdit }: $Props) => {
   const [loadedGroup, setLoadedGroup] = useState<BuildGroup>(new BuildGroup());
   const [activeTab, setTab] = useState<string>("General");
   const [tabs, setTabs] = useState<string[]>(["General"]);
+  const [filters, setFilters] = useState<Filter[]>([]);
 
   useEffect(() => {
     buildGroup(group).then((buildGroup) => {
-      let newTabs = ["General"];
+      let newTabs = ["General", "Notes"];
       if (buildGroup.characters.length > 0) newTabs.push("Players");
       if (buildGroup.npcs.length > 0) newTabs.push("Npcs");
       if (buildGroup.monsters.length > 0) newTabs.push("Monsters");
@@ -85,6 +90,29 @@ const GroupView = ({ group, onEdit }: $Props) => {
               </PropWrapper>
             </View>
           )}
+          {activeTab === "Notes" && (
+            <>
+              <NoteSearchBar hasTitle={true} onSend={setFilters} />
+              <SearchableNoteView>
+                {loadedGroup.group.notes
+                  .filter((note: Note) => applyFilters(note, filters))
+                  .map((note: Note, index: number) => {
+                    return (
+                      <NoteWrapper key={index}>
+                        <Prop>
+                          <PropTitle>{note.title}</PropTitle>
+                          <FormatedText text={note.content} />
+                        </Prop>
+                        <Prop>
+                          <Icon icon={faTags} />
+                          {note.tags}
+                        </Prop>
+                      </NoteWrapper>
+                    );
+                  })}
+              </SearchableNoteView>
+            </>
+          )}
           {activeTab === "Players" && (
             <PropWrapper>
               {loadedGroup.characters.map((player: Char, index: number) => {
@@ -134,6 +162,17 @@ const View = styled.div`
   margin-right: auto;
 `;
 
+const SearchableView = styled.div`
+  margin-top: 50px;
+`;
+
+const SearchableNoteView = styled(SearchableView)`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+`;
+
 const Header = styled.div`
   position: relative;
   z-index: 200;
@@ -175,6 +214,12 @@ const PropWrapper = styled.div`
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
+`;
+
+const NoteWrapper = styled(PropWrapper)`
+  flex: 1 1 100%;
+  max-width: 800px;
+  padding: 10px;
 `;
 
 const PropTitle = styled.span`

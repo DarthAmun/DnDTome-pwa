@@ -11,6 +11,7 @@ import AutoStringField from "../../../form_elements/AutoStringField";
 import IconButton from "../../../form_elements/IconButton";
 import TextButton from "../../../form_elements/TextButton";
 import FlowChart from "../../../general_elements/flow/FlowChart";
+import Note from "../../../../data/campaign/Note";
 
 interface $Props {
   group: Group;
@@ -116,10 +117,42 @@ const GroupEditView = ({ group, onEdit }: $Props) => {
     }
   };
 
+  const removeNote = (oldNote: Note) => {
+    if (group !== undefined) {
+      let newNotelList = group.notes
+        .filter((note: Note) => note !== oldNote)
+        .map((note: Note) => {
+          return note;
+        });
+      onEdit({ ...group, notes: newNotelList });
+    }
+  };
+  const addNewNote = () => {
+    if (group !== undefined) {
+      let newNotelList = group.notes.map((note: Note) => {
+        return note;
+      });
+      newNotelList.push(new Note());
+      onEdit({ ...group, notes: newNotelList });
+    }
+  };
+  const onChangeNote = (field: string, newValue: string, oldNote: Note) => {
+    if (group !== undefined) {
+      let newNotelList = group.notes.map((note: Note) => {
+        if (note === oldNote) {
+          return { ...note, [field]: newValue };
+        } else {
+          return note;
+        }
+      });
+      onEdit({ ...group, notes: newNotelList });
+    }
+  };
+
   return (
     <CenterWrapper>
       <TabBar
-        children={["General", "Players", "Npcs", "Monsters", "Relationships"]}
+        children={["General", "Notes", "Players", "Npcs", "Monsters", "Relationships"]}
         onChange={(tab: string) => setTab(tab)}
         activeTab={activeTab}
       />
@@ -149,6 +182,33 @@ const GroupEditView = ({ group, onEdit }: $Props) => {
             onChange={(description) => onEdit({ ...group, description: description })}
           />
         </View>
+      )}
+      {activeTab === "Notes" && (
+        <>
+          {group.notes.map((note: Note, index: number) => {
+            return (
+              <Container key={index}>
+                <StringField
+                  value={note.title}
+                  label="Title"
+                  onChange={(newNote) => onChangeNote("title", newNote, note)}
+                />
+                <IconButton icon={faTrash} onClick={() => removeNote(note)} />
+                <TextField
+                  value={note.content}
+                  label="Feature Text"
+                  onChange={(newContent) => onChangeNote("content", newContent, note)}
+                />
+                <StringField
+                  value={note.tags}
+                  label="Tags"
+                  onChange={(newTags) => onChangeNote("tags", newTags, note)}
+                />
+              </Container>
+            );
+          })}
+          <TextButton text={"Add new Note"} icon={faPlus} onClick={() => addNewNote()} />
+        </>
       )}
       {activeTab === "Players" && (
         <>
