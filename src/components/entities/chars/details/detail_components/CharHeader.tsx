@@ -4,13 +4,7 @@ import styled from "styled-components";
 import Char from "../../../../../data/chars/Char";
 import ClassSet from "../../../../../data/chars/ClassSet";
 
-import {
-  Radar,
-  RadarChart,
-  PolarGrid,
-  PolarAngleAxis,
-  PolarRadiusAxis,
-} from "recharts";
+import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis } from "recharts";
 
 interface $Props {
   char: Char;
@@ -53,8 +47,8 @@ const CharHeader = ({ char }: $Props) => {
           <Image pic={getPicture()}></Image>
         </ImageView>
       ) : (
-          ""
-        )}
+        ""
+      )}
       <View>
         <Name>
           <b>{char.name}</b>
@@ -70,23 +64,19 @@ const CharHeader = ({ char }: $Props) => {
             {char.player}
           </Prop>
           <Prop>
+            <PropTitle>Campaign:</PropTitle>
+            {char.campaign}
+          </Prop>
+          <Prop>
             <PropTitle>Race:</PropTitle>
-            <MainLink
-              onClick={() =>
-                history.push(`/race-detail/name/${char.race.race}`)
-              }
-            >
+            <MainLink onClick={() => history.push(`/race-detail/name/${char.race.race}`)}>
               {char.race.race}
             </MainLink>
           </Prop>
           {char.race.subrace && (
             <Prop>
               <PropTitle>Subrace:</PropTitle>
-              <MainLink
-                onClick={() =>
-                  history.push(`/subrace-detail/name/${char.race.subrace}`)
-                }
-              >
+              <MainLink onClick={() => history.push(`/subrace-detail/name/${char.race.subrace}`)}>
                 {char.race.subrace}
               </MainLink>
             </Prop>
@@ -100,21 +90,13 @@ const CharHeader = ({ char }: $Props) => {
                     {classSet.level}
                   </Prop>
                   <Prop>
-                    <MainLink
-                      onClick={() =>
-                        history.push(`/class-detail/name/${classSet.classe}`)
-                      }
-                    >
+                    <MainLink onClick={() => history.push(`/class-detail/name/${classSet.classe}`)}>
                       {classSet.classe}
                     </MainLink>
                   </Prop>
                   <Prop>
                     <MainLink
-                      onClick={() =>
-                        history.push(
-                          `/subclass-detail/name/${classSet.subclasse}`
-                        )
-                      }
+                      onClick={() => history.push(`/subclass-detail/name/${classSet.subclasse}`)}
                     >
                       {classSet.subclasse}
                     </MainLink>
@@ -219,19 +201,8 @@ const CharHeader = ({ char }: $Props) => {
           >
             <PolarGrid />
             <PolarAngleAxis dataKey="subject" tick={{ fill: "#8000ff" }} />
-            <PolarRadiusAxis
-              angle={90}
-              domain={[0, "dataMax"]}
-              axisLine={false}
-              tick={false}
-            />
-            <Radar
-              name="Mike"
-              dataKey="A"
-              stroke="#8884d8"
-              fill="#8884d8"
-              fillOpacity={0.6}
-            />
+            <PolarRadiusAxis angle={90} domain={[0, "dataMax"]} axisLine={false} tick={false} />
+            <Radar name="Mike" dataKey="A" stroke="#8884d8" fill="#8884d8" fillOpacity={0.6} />
           </RadarChart>
         </StatProp>
       </MinView>

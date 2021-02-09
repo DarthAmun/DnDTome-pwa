@@ -34,7 +34,7 @@ const CharTile = ({ char }: $Props) => {
         <Name>
           <b>{char.name}</b>
         </Name>
-
+        {char.campaign && <Name>{char.campaign}</Name>}
         <PropRowWrapper>
           <RowProp>{calcLevel()}</RowProp>
           <RowProp>{char.player}</RowProp>

@@ -412,6 +412,12 @@ const CharEditView = ({ character, onEdit }: $Props) => {
               label="Player"
               onChange={(player) => onEdit({ ...buildChar.character, player: player })}
             />
+            <AutoStringField
+              optionTable={"campaigns"}
+              value={buildChar.character.campaign}
+              label="Campaign"
+              onChange={(campaign) => onEdit({ ...buildChar.character, campaign: campaign })}
+            />
             <StringField
               value={buildChar.character.pic}
               label="Picture"

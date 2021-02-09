@@ -5,6 +5,7 @@ import Char from "../../../../data/chars/Char";
 import IconButton from "../../../form_elements/IconButton";
 import StringField from "../../../form_elements/StringField";
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
+import AutoStringField from "../../../form_elements/AutoStringField";
 
 interface $Props {
   char: Char;
@@ -25,6 +26,12 @@ const CharLabGeneral = ({ char, onChange, completed }: $Props) => {
           value={char.player}
           label="Player *"
           onChange={(player) => onChange({ ...char, player: player })}
+        />
+        <AutoStringField
+          optionTable={"campaigns"}
+          value={char.campaign}
+          label="Campaign"
+          onChange={(campaign) => onChange({ ...char, campaign: campaign })}
         />
         <StringField
           value={char.pic}

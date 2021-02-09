@@ -9,6 +9,7 @@ export default class Char implements IEntity {
   id?: number;
   name: string;
   player: string;
+  campaign: string;
   pic: string;
   classes: ClassSet[];
   race: RaceSet;
@@ -61,6 +62,7 @@ export default class Char implements IEntity {
     id?: number,
     name?: string,
     player?: string,
+    campaign?: string,
     pic?: string,
     classes?: ClassSet[],
     race?: RaceSet,
@@ -112,6 +114,7 @@ export default class Char implements IEntity {
     this.id = id || -1;
     this.name = name || "";
     this.player = player || "";
+    this.campaign = campaign || "";
     this.pic = pic || "";
     this.classes = classes || [];
     this.race = race || new RaceSet();
@@ -150,23 +153,21 @@ export default class Char implements IEntity {
 export function isChar(arg: any): arg is Char {
   const nameCheck = arg.name !== undefined && typeof arg.name == "string";
   const playerCheck = arg.player !== undefined && typeof arg.player == "string";
+  const campaignCheck = arg.campaign !== undefined && typeof arg.campaign == "string";
   const picCheck = arg.pic !== undefined && typeof arg.pic == "string";
   const raceCheck = arg.race !== undefined && isRaceSet(arg.race);
-  const backgroundCheck =
-    arg.background !== undefined && typeof arg.background == "string";
+  const backgroundCheck = arg.background !== undefined && typeof arg.background == "string";
   const acCheck = arg.ac !== undefined && typeof arg.ac == "number";
   const hpCheck = arg.hp !== undefined && typeof arg.hp == "number";
-  const currentHpCheck =
-    arg.currentHp !== undefined && typeof arg.currentHp == "number";
+  const currentHpCheck = arg.currentHp !== undefined && typeof arg.currentHp == "number";
   const initCheck = arg.init !== undefined && typeof arg.init == "number";
   const classesCheck =
-    arg.classes !== undefined &&
-    Array.isArray(arg.classes) &&
-    isClassSet(arg.classes[0]);
+    arg.classes !== undefined && Array.isArray(arg.classes) && isClassSet(arg.classes[0]);
   return (
     arg &&
     nameCheck &&
     playerCheck &&
+    campaignCheck &&
     picCheck &&
     raceCheck &&
     backgroundCheck &&

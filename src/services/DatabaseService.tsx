@@ -259,6 +259,7 @@ export const applyFilters = (obj: any, filters: Filter[]) => {
           test.push(false);
         }
       } else {
+        console.log(obj, filter);
         test.push(
           // @ts-ignore
           obj[filter.fieldName].toLowerCase().includes(filter.value.toLowerCase())

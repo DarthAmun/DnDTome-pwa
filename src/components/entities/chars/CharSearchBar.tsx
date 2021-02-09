@@ -26,6 +26,7 @@ const CharSearchBar = ({ onSend }: $Props) => {
   let history = useHistory();
 
   const [name, setName] = useState<string>("");
+  const [campaign, setCampaign] = useState<string>("");
   const [sources, setSources] = useState<string>("");
 
   const [sort, setSort] = useState<{
@@ -42,6 +43,9 @@ const CharSearchBar = ({ onSend }: $Props) => {
     let newFilters: Filter[] = [];
     if (name !== "") {
       newFilters = [...newFilters, new Filter("name", name)];
+    }
+    if (campaign !== "") {
+      newFilters = [...newFilters, new Filter("campaign", campaign)];
     }
     if (sources !== "") {
       newFilters = [...newFilters, new Filter("sources", sources)];
@@ -61,6 +65,7 @@ const CharSearchBar = ({ onSend }: $Props) => {
   const reset = () => {
     ReactDOM.unstable_batchedUpdates(() => {
       setName("");
+      setCampaign("");
       setSources("");
       setOpen(false);
       setSort({
@@ -90,6 +95,16 @@ const CharSearchBar = ({ onSend }: $Props) => {
           label="Name"
           onChange={(name: string, sort: { name: string; label: string; sort: number }) => {
             setName(name);
+            setSort(sort);
+          }}
+        />
+        <StringSearchField
+          value={campaign}
+          sort={sort}
+          field={"campaign"}
+          label="Campaign"
+          onChange={(name: string, sort: { name: string; label: string; sort: number }) => {
+            setCampaign(name);
             setSort(sort);
           }}
         />
