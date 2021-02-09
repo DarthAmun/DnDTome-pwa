@@ -36,7 +36,8 @@ const GroupView = ({ group, onEdit }: $Props) => {
 
   useEffect(() => {
     buildGroup(group).then((buildGroup) => {
-      let newTabs = ["General", "Notes"];
+      let newTabs = ["General"];
+      if (buildGroup.group.notes.length > 0) newTabs.push("Notes");
       if (buildGroup.characters.length > 0) newTabs.push("Players");
       if (buildGroup.npcs.length > 0) newTabs.push("Npcs");
       if (buildGroup.monsters.length > 0) newTabs.push("Monsters");
