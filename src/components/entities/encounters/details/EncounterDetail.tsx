@@ -96,9 +96,14 @@ const TopBar = styled.div`
   font-size: 16px;
   overflow: hidden;
   flex: 1 1;
-  min-width: calc(100% - 20px);
+  width: 100%;
+  max-width: calc(100% - 120px);
   height: 45px;
   padding: 10px;
+
+  @media (max-width: 576px) {
+    max-width: calc(100% - 20px);
+  }
 `;
 
 const Message = styled.div`

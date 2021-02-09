@@ -177,23 +177,20 @@ const BoardWrapper = styled.div`
   padding: 5px;
   margin: 5px;
   position: relative;
-
-  height: calc(100vh - 20px);
-  width: calc(100vw - 120px);
+  max-width: calc(100% - 130px);
 
   @media (max-width: 576px) {
-    width: 100vw;
+    max-width: 100vw;
   }
 
   display: flex;
   flex-wrap: wrap;
 `;
 const BoardContainer = styled.div`
-  flex: 1 1 100%;
+  flex: 1 1 auto;
   position: relative;
 
-  height: calc(100% - 50px);
-  max-width: 100%;
+  max-width: max-content;
 
   overflow: scroll;
 
@@ -203,9 +200,6 @@ const BoardContainer = styled.div`
 
 const BoardLayer = styled.div`
   position: absolute;
-
-  height: calc(100% - 50px);
-  width: 100%;
 
   display: flex;
   flex-wrap: wrap;
