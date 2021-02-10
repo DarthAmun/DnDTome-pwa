@@ -9,19 +9,13 @@ interface $Props {
   value: number;
   label: string;
   max?: number;
+  step?: number;
   icon?: IconDefinition;
   transform?: string | Transform;
   onChange: (value: number) => void;
 }
 
-const NumberField = ({
-  value,
-  max,
-  label,
-  icon,
-  transform,
-  onChange,
-}: $Props) => {
+const NumberField = ({ value, max, step, label, icon, transform, onChange }: $Props) => {
   return (
     <Field>
       <LabelText>
@@ -31,6 +25,7 @@ const NumberField = ({
         <Input
           type="number"
           max={max}
+          step={step ? step : 1}
           value={value}
           onChange={(e) => onChange(+e.target.value)}
         />
@@ -38,6 +33,7 @@ const NumberField = ({
       {!max && (
         <Input
           type="number"
+          step={step ? step : 1}
           value={value}
           onChange={(e) => onChange(+e.target.value)}
         />

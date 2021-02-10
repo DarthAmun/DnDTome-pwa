@@ -7,10 +7,10 @@ import NumberField from "../../form_elements/NumberField";
 interface $Props {
   img: string;
   players: BuildPlayer[];
-  dimension: { width: number; height: number; size: number };
+  dimension: { width: number; height: number; size: number; zoom: number };
   currentPlayerNumber: number;
   onChangePlayers: (value: BuildPlayer[]) => void;
-  onChangeDimension: (value: { width: number; height: number; size: number }) => void;
+  onChangeDimension: (value: { width: number; height: number; size: number; zoom: number }) => void;
 }
 
 const Board = ({
@@ -41,6 +41,7 @@ const Board = ({
             cord={[row, j]}
             players={players}
             size={dimension.size}
+            zoom={dimension.zoom / 100}
             makeDrop={makeDrop}
             makeDrag={makeDrag}
             updatePlayers={onChangePlayers}
@@ -50,7 +51,7 @@ const Board = ({
       }
       return list;
     },
-    [dimension.width, dimension.size, players, onChangePlayers, currentPlayerNumber, makeDrop]
+    [dimension, players, onChangePlayers, currentPlayerNumber, makeDrop]
   );
 
   const makeBoard = useCallback(() => {
@@ -65,13 +66,19 @@ const Board = ({
     <BoardWrapper>
       <BoardBar>
         <NumberField
+          value={dimension.zoom}
+          label="Zoom"
+          step={10}
+          onChange={(zoom) => onChangeDimension({ ...dimension, zoom: zoom })}
+        />
+        <NumberField
           value={dimension.width}
-          label="Width Count"
+          label="Horizontal"
           onChange={(width) => onChangeDimension({ ...dimension, width: width })}
         />
         <NumberField
           value={dimension.height}
-          label="Height Count"
+          label="Vertical"
           onChange={(height) => onChangeDimension({ ...dimension, height: height })}
         />
         <NumberField
@@ -82,7 +89,7 @@ const Board = ({
       </BoardBar>
       <BoardContainer>
         <BoardLayer>{makeBoard()}</BoardLayer>
-        <MapLayer src={img} />
+        <MapLayer zoom={dimension.zoom / 100} src={img} />
       </BoardContainer>
     </BoardWrapper>
   );
@@ -92,6 +99,7 @@ export default Board;
 
 interface $PlayerSlotProps {
   size: number;
+  zoom: number;
   cord: number[];
   currentPlayerNumber: number;
   players: BuildPlayer[];
@@ -101,6 +109,7 @@ interface $PlayerSlotProps {
 }
 const PlayerSlot = ({
   size,
+  zoom,
   cord,
   players,
   currentPlayerNumber,
@@ -130,23 +139,26 @@ const PlayerSlot = ({
     e.preventDefault();
   };
 
-  const defineSize = useCallback((size: number, player: BuildPlayer): number => {
-    if (player.player.isMonster) {
-      const monster = player.entity as Monster;
-      switch (monster.size) {
-        case "gargantuan":
-          return size * 4;
-        case "huge":
-          return size * 3;
-        case "large":
-          return size * 2;
+  const defineSize = useCallback(
+    (size: number, player: BuildPlayer): number => {
+      if (player.player.isMonster) {
+        const monster = player.entity as Monster;
+        switch (monster.size) {
+          case "gargantuan":
+            return size * 4 * zoom;
+          case "huge":
+            return size * 3 * zoom;
+          case "large":
+            return size * 2 * zoom;
+        }
       }
-    }
-    return size;
-  }, []);
+      return size * zoom;
+    },
+    [zoom]
+  );
 
   return (
-    <Slot size={size} onDrop={(e) => drop(e, cord)} onDragOver={dragOver}>
+    <Slot size={size * zoom} onDrop={(e) => drop(e, cord)} onDragOver={dragOver}>
       {players.map((playerIcon: BuildPlayer, index: number) => {
         if (
           (playerIcon.player.cord === undefined && cord[0] === 0 && cord[1] === 0) ||
@@ -173,11 +185,11 @@ const PlayerSlot = ({
 };
 
 const BoardWrapper = styled.div`
-  flex: 1;
+  flex: 1 1 min-content;
   padding: 5px;
   margin: 5px;
-  position: relative;
-  max-width: calc(100% - 130px);
+  // position: relative;
+  max-width: calc(100vw - 120px);
 
   @media (max-width: 576px) {
     max-width: 100vw;
@@ -187,10 +199,10 @@ const BoardWrapper = styled.div`
   flex-wrap: wrap;
 `;
 const BoardContainer = styled.div`
-  flex: 1 1 auto;
+  flex: 1 1 100%;
   position: relative;
 
-  max-width: max-content;
+  max-width: calc(100% - 10px);
 
   overflow: scroll;
 
@@ -208,8 +220,12 @@ const BoardLayer = styled.div`
   align-content: flex-start;
 `;
 
-const MapLayer = styled.img`
-  width: auto;
+type ZoomProp = {
+  zoom: number;
+};
+
+const MapLayer = styled.img<ZoomProp>`
+  width: calc(800px * ${({ zoom }) => zoom});
 `;
 
 const BoardBar = styled.div`

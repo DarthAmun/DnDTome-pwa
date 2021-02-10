@@ -14,15 +14,7 @@ interface $Props {
   onChange: (index: number, value: number) => void;
 }
 
-const SmallNumberArrayField = ({
-  values,
-  label,
-  icon,
-  transform,
-  max,
-  onChange,
-}: $Props) => {
-
+const SmallNumberArrayField = ({ values, label, icon, transform, max, onChange }: $Props) => {
   return (
     <Field>
       <LabelText>
@@ -101,4 +93,10 @@ const Input = styled.input`
   border-radius: 5px;
   margin: 2px;
   -moz-appearance: textfield;
+
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
 `;

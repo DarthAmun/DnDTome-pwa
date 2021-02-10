@@ -22,10 +22,11 @@ import BuildEncounter from "../../../../data/encounter/BuildEncounter";
 
 interface $Props {
   encounter: Encounter;
+  dmView: boolean;
   onEdit: (value: Encounter) => void;
 }
 
-const EncounterView = ({ encounter, onEdit }: $Props) => {
+const EncounterView = ({ encounter, dmView, onEdit }: $Props) => {
   let history = useHistory();
   const [loadedEncounter, setLoadedEncounter] = useState<BuildEncounter>(new BuildEncounter());
   const [loading, isLoading] = useState<boolean>(true);
@@ -138,7 +139,12 @@ const EncounterView = ({ encounter, onEdit }: $Props) => {
     }
   };
 
-  const onChangeDimension = (dimension: { width: number; height: number; size: number }) => {
+  const onChangeDimension = (dimension: {
+    width: number;
+    height: number;
+    size: number;
+    zoom: number;
+  }) => {
     onEdit({ ...loadedEncounter.encounter, dimension: dimension });
   };
 
@@ -168,10 +174,12 @@ const EncounterView = ({ encounter, onEdit }: $Props) => {
           <b>{encounter.name}</b>
         </Name>
         <PropWrapper>
-          <PropElm>
-            <PropTitle>Difficulty: </PropTitle>
-            {loadedEncounter.difficulty.difficulty}
-          </PropElm>
+          {dmView && (
+            <PropElm>
+              <PropTitle>Difficulty: </PropTitle>
+              {loadedEncounter.difficulty.difficulty}
+            </PropElm>
+          )}
           <PropElm>
             <PropTitle>Round: </PropTitle>
             {encounter.roundCounter}
@@ -201,9 +209,9 @@ const EncounterView = ({ encounter, onEdit }: $Props) => {
               <tr>
                 <th>Init</th>
                 <th>Name</th>
-                <th>Current Hp</th>
-                <th>Hp</th>
-                <th>AC</th>
+                {dmView && <th>Current Hp</th>}
+                {dmView && <th>Hp</th>}
+                {dmView && <th>AC</th>}
                 <th></th>
               </tr>
             </thead>
@@ -233,7 +241,7 @@ const EncounterView = ({ encounter, onEdit }: $Props) => {
                             history.push(`/monster-detail/name/${buildPlayer.player.name}`)
                           }
                         >
-                          {buildPlayer.player.name}
+                          {dmView ? buildPlayer.player.name : "???"}
                         </MainLink>
                       )}
                       {!buildPlayer.player.isMonster && (
@@ -246,17 +254,21 @@ const EncounterView = ({ encounter, onEdit }: $Props) => {
                         </MainLink>
                       )}
                     </Prop>
-                    <PropField>
-                      <TinyNumberField
-                        value={buildPlayer.player.currentHp}
-                        max={buildPlayer.player.hp}
-                        onChange={(currentHp) =>
-                          onChangePlayerField("currentHp", currentHp, buildPlayer.player)
-                        }
-                      />
-                    </PropField>
-                    <Prop>{buildPlayer.player.hp}</Prop>
-                    <Prop>{buildPlayer.player.ac}</Prop>
+                    {dmView && (
+                      <>
+                        <PropField>
+                          <TinyNumberField
+                            value={buildPlayer.player.currentHp}
+                            max={buildPlayer.player.hp}
+                            onChange={(currentHp) =>
+                              onChangePlayerField("currentHp", currentHp, buildPlayer.player)
+                            }
+                          />
+                        </PropField>
+                        <Prop>{buildPlayer.player.hp}</Prop>
+                        <Prop>{buildPlayer.player.ac}</Prop>
+                      </>
+                    )}
                     {/* <Prop>{player.tag}</Prop> */}
                     <td>
                       {buildPlayer.player.currentHp > 0 && (
@@ -280,7 +292,7 @@ const EncounterView = ({ encounter, onEdit }: $Props) => {
           dimension={
             encounter.dimension !== undefined
               ? encounter.dimension
-              : { width: 20, height: 20, size: 20 }
+              : { width: 20, height: 20, size: 20, zoom: 100 }
           }
           currentPlayerNumber={loadedEncounter.encounter.currentInit}
           onChangeDimension={onChangeDimension}
@@ -309,15 +321,23 @@ const CenterWrapper = styled.div`
   overflow: hidden;
   width: 100%;
   height: 100%;
+
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
 `;
 
 const View = styled.div`
+  flex: 1 1;
   color: ${({ theme }) => theme.tile.color};
   font-size: 16px;
   max-width: 800px;
+  min-width: 500px;
   padding: 5px;
-  margin-left: auto;
-  margin-right: auto;
+
+  @media (max-width: 576px) {
+    min-width: 100%;
+  }
 `;
 
 const Name = styled.div`
@@ -343,7 +363,7 @@ const Row = styled.tr<Type>`
       return "opacity: 0.5;";
     }
     if (props.current) {
-      return "td:nth-child(1) {background-color: #8000ff;}";
+      return `td:nth-child(1) {background-color: ${props.theme.main.highlight};}`;
     }
     return "";
   }}

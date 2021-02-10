@@ -10,7 +10,7 @@ export default class Encounter implements IEntity {
   currentInit: number;
   roundCounter: number;
   map: string;
-  dimension: { width: number; height: number; size: number };
+  dimension: { width: number; height: number; size: number, zoom: number };
 
   constructor(
     id?: number,
@@ -21,7 +21,7 @@ export default class Encounter implements IEntity {
     currentInit?: number,
     roundCounter?: number,
     map?: string,
-    dimension?: { width: number; height: number; size: number }
+    dimension?: { width: number; height: number; size: number, zoom: number }
   ) {
     this.id = id;
     this.name = name || "";
@@ -31,7 +31,7 @@ export default class Encounter implements IEntity {
     this.currentInit = currentInit || 0;
     this.roundCounter = roundCounter || 0;
     this.map = map || "";
-    this.dimension = dimension || { width: 20, height: 20, size: 20 };
+    this.dimension = dimension || { width: 20, height: 20, size: 20, zoom: 100 };
   }
 }
 

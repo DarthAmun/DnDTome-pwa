@@ -171,11 +171,12 @@ const CharView = ({ character, modifications }: $Props) => {
               </PropWrapper>
             </View>
           )}
-          {activeTab === "Monster" && (
+          {activeTab === "Monsters" && (
             <View>
               <PropWrapper>
                 {buildChar.monsters &&
                   buildChar.monsters.map((monster, index: number) => {
+                    console.log(monster);
                     return <MonsterTile key={index} monster={monster} />;
                   })}
               </PropWrapper>

@@ -25,6 +25,7 @@ interface $Props {
 
 const EncounterDetail = ({ encounter, isNew }: $Props) => {
   const [editMode, setMode] = useState<boolean>(isNew);
+  const [dmMode, setDmMode] = useState<boolean>(true);
   const [encounterObj, editEncounter] = useState<Encounter>(encounter);
   const [showAlert, setAlert] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
@@ -67,6 +68,12 @@ const EncounterDetail = ({ encounter, isNew }: $Props) => {
     <>
       <TopBar>
         <BackButton icon={faArrowLeft} action={() => history.goBack()} />
+        {!editMode && (
+          <EditToggle mode={(!dmMode).toString()}>
+            <ToggleLeft onClick={() => setDmMode(true)}>DM View</ToggleLeft>
+            <ToggleRight onClick={() => setDmMode(false)}>Player View</ToggleRight>
+          </EditToggle>
+        )}
         <EditToggle mode={editMode.toString()}>
           <ToggleLeft onClick={() => setMode(false)}>View</ToggleLeft>
           <ToggleRight onClick={() => setMode(true)}>Edit</ToggleRight>
@@ -83,7 +90,7 @@ const EncounterDetail = ({ encounter, isNew }: $Props) => {
       {editMode ? (
         <EncounterEditView encounter={encounterObj} onEdit={(value) => editEncounter(value)} />
       ) : (
-        <EncounterView encounter={encounterObj} onEdit={(value) => editAndSaveEncounter(value)} />
+        <EncounterView encounter={encounterObj} dmView={dmMode} onEdit={(value) => editAndSaveEncounter(value)} />
       )}
     </>
   );
@@ -97,7 +104,7 @@ const TopBar = styled.div`
   overflow: hidden;
   flex: 1 1;
   width: 100%;
-  max-width: calc(100% - 120px);
+  max-width: calc(100% - 20px);
   height: 45px;
   padding: 10px;
 
