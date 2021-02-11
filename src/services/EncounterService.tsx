@@ -25,9 +25,12 @@ export const buildEncounter = async (encounter: Encounter): Promise<BuildEncount
 
   characters = characters.filter((char) => char !== undefined);
   enemies = enemies.filter((enemy) => enemy !== undefined);
-  const players = [...characters, ...enemies].sort((a: BuildPlayer, b: BuildPlayer) =>
-    a.player.init < b.player.init ? 1 : -1
-  );
+  let players = [...characters, ...enemies];
+  if (encounter.isPlaying) {
+    players = players.sort((a: BuildPlayer, b: BuildPlayer) =>
+      a.player.init < b.player.init ? 1 : -1
+    );
+  }
 
   const difficulty = calcDifficulty(encounter);
 

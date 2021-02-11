@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useHistory } from "react-router";
 import styled from "styled-components";
 import Encounter from "../../../../data/encounter/Encounter";
@@ -139,16 +139,16 @@ const EncounterView = ({ encounter, dmView, onEdit }: $Props) => {
     }
   };
 
-  const onChangeDimension = (dimension: {
+  const onChangeDimension = useCallback((dimension: {
     width: number;
     height: number;
     size: number;
     zoom: number;
   }) => {
     onEdit({ ...loadedEncounter.encounter, dimension: dimension });
-  };
+  },[loadedEncounter.encounter, onEdit]);
 
-  const onChangePlayers = (players: BuildPlayer[]) => {
+  const onChangePlayers = useCallback((players: BuildPlayer[]) => {
     if (players !== loadedEncounter.players) {
       let newPlayers: Player[] = [];
       players.forEach((player: BuildPlayer) => {
@@ -165,7 +165,7 @@ const EncounterView = ({ encounter, dmView, onEdit }: $Props) => {
 
       onEdit({ ...loadedEncounter.encounter, players: newPlayers, enemies: newEnemies });
     }
-  };
+  },[loadedEncounter.encounter, loadedEncounter.players, onEdit]);
 
   return (
     <CenterWrapper>

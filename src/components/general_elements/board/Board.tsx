@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import BuildPlayer from "../../../data/encounter/BuildPlayer";
 import Monster from "../../../data/Monster";
@@ -21,6 +21,7 @@ const Board = ({
   onChangePlayers,
   onChangeDimension,
 }: $Props) => {
+  const [board, setBoard] = useState<JSX.Element>();
   const [dragItem, setDragItem] = useState<BuildPlayer>();
 
   const makeDrag = (player: BuildPlayer) => {
@@ -59,8 +60,14 @@ const Board = ({
     for (let i = 0; i < dimension.height; i++) {
       list.push(<BoardRow key={i}>{makeRow(i)}</BoardRow>);
     }
-    return list;
+    setBoard(list);
   }, [dimension, makeRow]);
+
+  useEffect(() => {
+    console.log("Redo Board");
+    makeBoard();
+    // eslint-disable-next-line
+  }, [img, dimension, players, makeDrop]);
 
   return (
     <BoardWrapper>
@@ -88,7 +95,7 @@ const Board = ({
         />
       </BoardBar>
       <BoardContainer>
-        <BoardLayer>{makeBoard()}</BoardLayer>
+        <BoardLayer>{board}</BoardLayer>
         <MapLayer zoom={dimension.zoom / 100} src={img} />
       </BoardContainer>
     </BoardWrapper>
