@@ -11,6 +11,7 @@ import { GiDiceEightFacesEight } from "react-icons/gi";
 import FormatedText from "../../../general_elements/FormatedText";
 import TextButton from "../../../form_elements/TextButton";
 import P2PSender from "../../../p2p/P2PSender";
+import CheckField from "../../../form_elements/CheckField";
 
 interface $Props {
   classe: Class;
@@ -19,20 +20,23 @@ interface $Props {
 const ClassView = ({ classe }: $Props) => {
   const [send, setSend] = useState<boolean>(false);
   const [subclasses, setSubclasses] = useState<Subclass[]>([]);
+  const [hardSubselect, setHardSubselect] = useState<boolean>(true);
   let history = useHistory();
 
   useEffect(() => {
     reciveAllFiltered(
       "subclasses",
-      [
-        { fieldName: "type", value: classe.name, sort: 0 },
-        { fieldName: "sources", value: classe.sources, sort: 0 },
-      ],
+      hardSubselect
+        ? [
+            { fieldName: "type", value: classe.name, sort: 0 },
+            { fieldName: "sources", value: classe.sources, sort: 0 },
+          ]
+        : [{ fieldName: "type", value: classe.name, sort: 0 }],
       (results: any[]) => {
         setSubclasses(results);
       }
     );
-  }, [classe]);
+  }, [classe, hardSubselect]);
 
   const printSpellslots = (length: number) => {
     let count = length - 3;
@@ -96,6 +100,7 @@ const ClassView = ({ classe }: $Props) => {
               <FormatedText text={classe.equipment} />
             </Text>
             <Text>
+              <CheckField value={hardSubselect} label="Hard Select" onChange={setHardSubselect} />
               <PropTitle>Subclasses:</PropTitle>
               {subclasses.length !== 0 &&
                 subclasses.map((subclass: Subclass, index: number) => {
