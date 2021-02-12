@@ -1078,7 +1078,7 @@ export const makeClass = (obj: any, json: any, fileName: string): Class => {
   return new Class(0, name, featureSets, hitdice, proficiencies, equipment, fileName, sources, "");
 };
 
-export const makeSubclass = (obj: any, json: any, classe: Class, fileName: string): Subclass => {
+export const makeSubclass = (obj: any, json: any, classe: string, fileName: string): Subclass => {
   let features: FeatureSet[] = [];
   if (obj.subclassFeatures !== undefined) {
     obj.subclassFeatures.forEach((feature: any) => {
@@ -1128,7 +1128,7 @@ export const makeSubclass = (obj: any, json: any, classe: Class, fileName: strin
     });
   }
 
-  return new Subclass(0, obj.name, classe.name, features, fileName, obj.source);
+  return new Subclass(0, obj.name, classe, features, fileName, obj.source);
 };
 
 const getProfForLevel = (level: number): number => {

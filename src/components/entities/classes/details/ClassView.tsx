@@ -1,9 +1,6 @@
 import React, { useCallback, useState, useEffect } from "react";
 import { useHistory } from "react-router";
-import {
-  reciveAllFiltered,
-  createNewWithId,
-} from "../../../../services/DatabaseService";
+import { reciveAllFiltered, createNewWithId } from "../../../../services/DatabaseService";
 import Class from "../../../../data/classes/Class";
 import Subclass from "../../../../data/classes/Subclass";
 import styled from "styled-components";
@@ -27,7 +24,10 @@ const ClassView = ({ classe }: $Props) => {
   useEffect(() => {
     reciveAllFiltered(
       "subclasses",
-      [{ fieldName: "type", value: classe.name, sort: 0 }],
+      [
+        { fieldName: "type", value: classe.name, sort: 0 },
+        { fieldName: "sources", value: classe.sources, sort: 0 },
+      ],
       (results: any[]) => {
         setSubclasses(results);
       }
@@ -101,10 +101,7 @@ const ClassView = ({ classe }: $Props) => {
                 subclasses.map((subclass: Subclass, index: number) => {
                   const link: string = "/subclass-detail/id/" + subclass.id;
                   return (
-                    <SubclasseLink
-                      key={index}
-                      onClick={() => history.push(link)}
-                    >
+                    <SubclasseLink key={index} onClick={() => history.push(link)}>
                       {subclass.name}
                     </SubclasseLink>
                   );
@@ -133,9 +130,7 @@ const ClassView = ({ classe }: $Props) => {
                 <FeatureWrapper>
                   <thead>
                     <FeatureRow>
-                      <FeatureHeadProp
-                        colSpan={classe.featureSets[0].spellslots.length + 1}
-                      >
+                      <FeatureHeadProp colSpan={classe.featureSets[0].spellslots.length + 1}>
                         Spellslots
                       </FeatureHeadProp>
                     </FeatureRow>
@@ -144,18 +139,10 @@ const ClassView = ({ classe }: $Props) => {
                     <FeatureRow>
                       <SpellProp>Level</SpellProp>
                       <SpellProp>1st</SpellProp>
-                      {classe.featureSets[0].spellslots.length >= 2 && (
-                        <SpellProp>2nd</SpellProp>
-                      )}
-                      {classe.featureSets[0].spellslots.length >= 3 && (
-                        <SpellProp>3rd</SpellProp>
-                      )}
+                      {classe.featureSets[0].spellslots.length >= 2 && <SpellProp>2nd</SpellProp>}
+                      {classe.featureSets[0].spellslots.length >= 3 && <SpellProp>3rd</SpellProp>}
                       {classe.featureSets[0].spellslots.length >= 4 && (
-                        <>
-                          {printSpellslots(
-                            classe.featureSets[0].spellslots.length
-                          )}
-                        </>
+                        <>{printSpellslots(classe.featureSets[0].spellslots.length)}</>
                       )}
                     </FeatureRow>
                     {classe.featureSets.map((featureSet, index: number) => {
@@ -164,15 +151,13 @@ const ClassView = ({ classe }: $Props) => {
                           {featureSet.spellslots && (
                             <>
                               <SpellProp>{featureSet.level}</SpellProp>
-                              {featureSet.spellslots.map(
-                                (spellslot, index: number) => {
-                                  return (
-                                    <SpellProp key={index}>
-                                      {spellslot === 0 ? "-" : spellslot}
-                                    </SpellProp>
-                                  );
-                                }
-                              )}
+                              {featureSet.spellslots.map((spellslot, index: number) => {
+                                return (
+                                  <SpellProp key={index}>
+                                    {spellslot === 0 ? "-" : spellslot}
+                                  </SpellProp>
+                                );
+                              })}
                             </>
                           )}
                         </FeatureRow>
@@ -194,15 +179,9 @@ const ClassView = ({ classe }: $Props) => {
                     <FeatureHeadProp>Features</FeatureHeadProp>
                     {classe.featureSets[0].bonis &&
                       classe.featureSets[0].bonis.length > 0 &&
-                      classe.featureSets[0].bonis?.map(
-                        (boni, index: number) => {
-                          return (
-                            <FeatureHeadProp key={index}>
-                              {boni.name}
-                            </FeatureHeadProp>
-                          );
-                        }
-                      )}
+                      classe.featureSets[0].bonis?.map((boni, index: number) => {
+                        return <FeatureHeadProp key={index}>{boni.name}</FeatureHeadProp>;
+                      })}
                   </FeatureRow>
                 </thead>
                 <tbody>
@@ -217,9 +196,7 @@ const ClassView = ({ classe }: $Props) => {
                           })}
                         </FeatureProp>
                         {featureSet.bonis?.map((boni, index: number) => {
-                          return (
-                            <FeatureProp key={index}>{boni.value}</FeatureProp>
-                          );
+                          return <FeatureProp key={index}>{boni.value}</FeatureProp>;
                         })}
                       </FeatureRow>
                     );

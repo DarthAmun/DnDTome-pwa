@@ -6,11 +6,7 @@ import Class from "../../../../data/classes/Class";
 import ClassSet from "../../../../data/chars/ClassSet";
 
 import IconButton from "../../../form_elements/IconButton";
-import {
-  faCheckCircle,
-  faPlus,
-  faTrash,
-} from "@fortawesome/free-solid-svg-icons";
+import { faCheckCircle, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
 import AutoStringField from "../../../form_elements/AutoStringField";
 import NumberField from "../../../form_elements/NumberField";
 import TextButton from "../../../form_elements/TextButton";
@@ -105,10 +101,7 @@ const CharLabClass = ({ char, onChange, completed }: $Props) => {
                 label="Level *"
                 onChange={(level) => changeClassLevel(classSet, level)}
               />
-              <IconButton
-                icon={faTrash}
-                onClick={() => removeClass(classSet)}
-              />
+              <IconButton icon={faTrash} onClick={() => removeClass(classSet)} />
               <AutoStringField
                 optionTable={"classes"}
                 value={classSet.classe}
@@ -117,20 +110,15 @@ const CharLabClass = ({ char, onChange, completed }: $Props) => {
               />
               <AutoStringField
                 optionTable={"subclasses"}
+                filters={[{ fieldName: "type", value: classSet.classe, sort: 0 }]}
                 value={classSet.subclasse}
                 label="Subclass"
-                onChange={(subclasse) =>
-                  changeClassSubclass(classSet, subclasse)
-                }
+                onChange={(subclasse) => changeClassSubclass(classSet, subclasse)}
               />
             </PropWrapper>
           );
         })}
-        <TextButton
-          text={"Add new Class"}
-          icon={faPlus}
-          onClick={() => addNewClass()}
-        />
+        <TextButton text={"Add new Class"} icon={faPlus} onClick={() => addNewClass()} />
         <IconButton
           icon={faCheckCircle}
           disabled={

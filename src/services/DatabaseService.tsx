@@ -58,24 +58,16 @@ export const saveNew = (tableName: string, entity: IEntity, filename: string) =>
     });
 };
 
-export const saveNewFromList = (
-  tableName: string,
-  entities: IEntity[],
-  filename: string,
-  callback: () => void
-) => {
+export const saveNewFromList = (tableName: string, entities: IEntity[], filename: string) => {
   const db = new MyAppDatabase();
   db.open()
-    .then(function () {
+    .then(async function () {
       const refinedEntities = (entities as IEntity[]).map((entity: IEntity) => {
         delete entity["id"];
         return { ...entity, filename: filename };
       });
-      db.table(tableName)
-        .bulkPut(refinedEntities)
-        .then(() => {
-          callback();
-        });
+      const prom = await db.table(tableName).bulkPut(refinedEntities);
+      return prom;
     })
     .finally(function () {
       db.close();
@@ -332,6 +324,39 @@ export const reciveAllFiltered = (
           .then((data) => {
             callback(data);
           });
+      }
+    })
+    .finally(function () {
+      db.close();
+    });
+};
+
+export const reciveAllFilteredPromise = (tableName: string, filters: Filter[]) => {
+  const db = new MyAppDatabase();
+  return db
+    .open()
+    .then(function () {
+      let sortedFiled: string = "name";
+      let reverse: boolean = false;
+
+      filters.forEach((filter: Filter) => {
+        if (filter.sort !== 0) {
+          sortedFiled = filter.fieldName;
+          if (filter.sort === 2) reverse = true;
+        }
+      });
+
+      if (reverse) {
+        return db
+          .table(tableName)
+          .filter((obj) => applyFilters(obj, filters))
+          .reverse()
+          .sortBy(sortedFiled);
+      } else {
+        return db
+          .table(tableName)
+          .filter((obj) => applyFilters(obj, filters))
+          .sortBy(sortedFiled);
       }
     })
     .finally(function () {

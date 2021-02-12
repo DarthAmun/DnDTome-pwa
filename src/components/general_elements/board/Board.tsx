@@ -24,9 +24,9 @@ const Board = ({
   const [board, setBoard] = useState<JSX.Element>();
   const [dragItem, setDragItem] = useState<BuildPlayer>();
 
-  const makeDrag = (player: BuildPlayer) => {
+  const makeDrag = useCallback((player: BuildPlayer) => {
     setDragItem(player);
-  };
+  }, []);
 
   const makeDrop = useCallback((): BuildPlayer | undefined => {
     return dragItem;
@@ -52,7 +52,7 @@ const Board = ({
       }
       return list;
     },
-    [dimension, players, onChangePlayers, currentPlayerNumber, makeDrop]
+    [dimension, players, onChangePlayers, currentPlayerNumber, makeDrop, makeDrag]
   );
 
   const makeBoard = useCallback(() => {

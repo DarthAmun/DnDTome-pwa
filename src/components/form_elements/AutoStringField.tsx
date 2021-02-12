@@ -5,10 +5,12 @@ import IEntity from "../../data/IEntity";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { IconDefinition } from "@fortawesome/free-solid-svg-icons";
 import { Transform } from "@fortawesome/fontawesome-svg-core";
-import { reciveAll, reciveAllPromise } from "../../services/DatabaseService";
+import { reciveAllFiltered, reciveAllFilteredPromise } from "../../services/DatabaseService";
+import Filter from "../../data/Filter";
 
 interface $Props {
   optionTable: string | string[];
+  filters?: Filter[];
   value: string;
   label: string;
   icon?: IconDefinition;
@@ -18,6 +20,7 @@ interface $Props {
 
 const AutoStringField = ({
   optionTable,
+  filters,
   value,
   label,
   icon,
@@ -28,27 +31,30 @@ const AutoStringField = ({
   const [options, setOptions] = useState<IEntity[]>([]);
   const [filteredOptions, setFilteredOptions] = useState<IEntity[]>([]);
 
-  const findAllItems = async (optionsTable: string[]) => {
-    let itemList: Promise<IEntity[]>[] = [];
-    optionsTable.forEach((table) => {
-      itemList.push(reciveAllPromise(table));
-    });
-    const results = await Promise.all(itemList);
-    results.forEach((items: IEntity[]) => {
-      setOptions((o) => o.concat(items));
-    });
-  };
+  const findAllItems = useCallback(
+    async (optionsTable: string[]) => {
+      let itemList: Promise<IEntity[]>[] = [];
+      optionsTable.forEach((table) => {
+        itemList.push(reciveAllFilteredPromise(table, filters !== undefined ? filters : []));
+      });
+      const results = await Promise.all(itemList);
+      results.forEach((items: IEntity[]) => {
+        setOptions((o) => o.concat(items));
+      });
+    },
+    [filters]
+  );
 
   useEffect(() => {
     if (typeof optionsTable === "string") {
-      reciveAll(optionsTable, (data: any[]) => {
+      reciveAllFiltered(optionsTable, filters !== undefined ? filters : [], (data: any[]) => {
         setOptions(data);
       });
     }
     if (optionsTable instanceof Array && optionsTable.length > 0) {
       findAllItems(optionsTable);
     }
-  }, [optionsTable]);
+  }, [optionsTable, findAllItems, filters]);
 
   const onSearch = useCallback(
     (searchTerm: string) => {
@@ -66,11 +72,7 @@ const AutoStringField = ({
       <LabelText>
         {icon ? <Icon icon={icon} transform={transform} /> : ""} {label}
       </LabelText>
-      <Input
-        type="text"
-        value={value}
-        onChange={(e) => onSearch(e.target.value)}
-      ></Input>
+      <Input type="text" value={value} onChange={(e) => onSearch(e.target.value)}></Input>
       <Options>
         {filteredOptions.length > 0 &&
           filteredOptions.map((opt, index: number) => {

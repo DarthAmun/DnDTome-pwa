@@ -20,7 +20,7 @@ import Spell, { isSpell } from "../../data/Spell";
 import Event, { isEvent } from "../../data/world/Event";
 import Location, { isLocation } from "../../data/world/Location";
 import World, { isWorld } from "../../data/world/World";
-import { saveNew } from "../../services/DatabaseService";
+import { saveNew, saveNewFromList } from "../../services/DatabaseService";
 
 import ProgressBar from "@ramonak/react-progress-bar";
 import {
@@ -33,14 +33,11 @@ import {
   makeSubrace,
 } from "../../services/5eToolService";
 import Group, { isGroup } from "../../data/campaign/Group";
+import IEntity from "../../data/IEntity";
 
 export enum ImportModus {
   NORMAL,
-  ETOOLSMONSTERS,
-  ETOOLSSPELLS,
-  ETOOLSITEMS,
-  ETOOLSRACES,
-  ETOOLSCLASSES,
+  ETOOLS,
 }
 
 interface $Props {
@@ -97,82 +94,42 @@ const FileTile = ({ file, modus }: $FileProps) => {
     fileName: string,
     originalJson: any
   ) => {
-    if (modus === ImportModus.NORMAL) {
-      if (isClass(json[i])) {
-        await saveNew("classes", json[i] as Class, fileName);
-      } else if (isSubclass(json[i])) {
-        await saveNew("subclasses", json[i] as Subclass, fileName);
-      } else if (isRace(json[i])) {
-        await saveNew("races", json[i] as Race, fileName);
-      } else if (isSubrace(json[i])) {
-        await saveNew("subraces", json[i] as Subrace, fileName);
-      } else if (isMonster(json[i])) {
-        await saveNew("monsters", json[i] as Monster, fileName);
-      } else if (isSpell(json[i])) {
-        await saveNew("spells", json[i] as Spell, fileName);
-      } else if (isGear(json[i])) {
-        await saveNew("gears", json[i] as Gear, fileName);
-      } else if (isItem(json[i])) {
-        await saveNew("items", json[i] as Item, fileName);
-      } else if (isEncounter(json[i])) {
-        await saveNew("encounters", json[i] as Encounter, fileName);
-      } else if (isSelection(json[i])) {
-        await saveNew("selections", json[i] as Selection, fileName);
-      } else if (isCampaign(json[i])) {
-        await saveNew("campaigns", json[i] as Campaign, fileName);
-      } else if (isQuest(json[i])) {
-        await saveNew("quests", json[i] as Quest, fileName);
-      } else if (isGroup(json[i])) {
-        await saveNew("groups", json[i] as Group, fileName);
-      } else if (isNpc(json[i])) {
-        await saveNew("npcs", json[i] as Npc, fileName);
-      } else if (isWorld(json[i])) {
-        await saveNew("worlds", json[i] as World, fileName);
-      } else if (isLocation(json[i])) {
-        await saveNew("locations", json[i] as Location, fileName);
-      } else if (isEvent(json[i])) {
-        await saveNew("events", json[i] as Event, fileName);
-      } else if (isChar(json[i])) {
-        await saveNew("chars", json[i] as Char, fileName);
-      }
-    } else if (modus === ImportModus.ETOOLSMONSTERS) {
-      const newMonster = makeMonster(json[i]);
-      if (newMonster.name !== "") await saveNew("monsters", newMonster, fileName);
-    } else if (modus === ImportModus.ETOOLSSPELLS) {
-      const newSpell = makeSpell(json[i], fileName);
-      if (newSpell.name !== "") await saveNew("spells", newSpell, fileName);
-    } else if (modus === ImportModus.ETOOLSITEMS) {
-      const newItem = makeItems(json[i], fileName);
-      if (newItem.name !== "")
-        if (isGear(newItem)) {
-          await saveNew("gears", newItem, fileName);
-        } else if (isItem(newItem)) {
-          await saveNew("items", newItem, fileName);
-        }
-    } else if (modus === ImportModus.ETOOLSRACES) {
-      const newRace = makeRace(json[i], fileName);
-      if (newRace.name !== "") {
-        await saveNew("races", newRace, fileName);
-        if (json[i]._copy === undefined && json[i].source !== "DMG") {
-          if (json[i].subraces !== undefined) {
-            json[i].subraces.forEach(async (subrace: any) => {
-              const newSubrace = makeSubrace(subrace, newRace, file.name);
-              await saveNew("subraces", newSubrace, file.name);
-            });
-          }
-        }
-      }
-    } else if (modus === ImportModus.ETOOLSCLASSES) {
-      const newClass = makeClass(json[i], originalJson, fileName);
-      if (newClass.name !== "") {
-        await saveNew("classes", newClass, fileName);
-        if (json[i].subclasses !== undefined) {
-          json[i].subclasses.forEach(async (subclass: any) => {
-            const newSubclass = makeSubclass(subclass, originalJson, newClass, file.name);
-            await saveNew("subclasses", newSubclass, file.name);
-          });
-        }
-      }
+    if (isClass(json[i])) {
+      await saveNew("classes", json[i] as Class, fileName);
+    } else if (isSubclass(json[i])) {
+      await saveNew("subclasses", json[i] as Subclass, fileName);
+    } else if (isRace(json[i])) {
+      await saveNew("races", json[i] as Race, fileName);
+    } else if (isSubrace(json[i])) {
+      await saveNew("subraces", json[i] as Subrace, fileName);
+    } else if (isMonster(json[i])) {
+      await saveNew("monsters", json[i] as Monster, fileName);
+    } else if (isSpell(json[i])) {
+      await saveNew("spells", json[i] as Spell, fileName);
+    } else if (isGear(json[i])) {
+      await saveNew("gears", json[i] as Gear, fileName);
+    } else if (isItem(json[i])) {
+      await saveNew("items", json[i] as Item, fileName);
+    } else if (isEncounter(json[i])) {
+      await saveNew("encounters", json[i] as Encounter, fileName);
+    } else if (isSelection(json[i])) {
+      await saveNew("selections", json[i] as Selection, fileName);
+    } else if (isCampaign(json[i])) {
+      await saveNew("campaigns", json[i] as Campaign, fileName);
+    } else if (isQuest(json[i])) {
+      await saveNew("quests", json[i] as Quest, fileName);
+    } else if (isGroup(json[i])) {
+      await saveNew("groups", json[i] as Group, fileName);
+    } else if (isNpc(json[i])) {
+      await saveNew("npcs", json[i] as Npc, fileName);
+    } else if (isWorld(json[i])) {
+      await saveNew("worlds", json[i] as World, fileName);
+    } else if (isLocation(json[i])) {
+      await saveNew("locations", json[i] as Location, fileName);
+    } else if (isEvent(json[i])) {
+      await saveNew("events", json[i] as Event, fileName);
+    } else if (isChar(json[i])) {
+      await saveNew("chars", json[i] as Char, fileName);
     }
 
     setSucc(i + 1);
@@ -181,29 +138,93 @@ const FileTile = ({ file, modus }: $FileProps) => {
     }
   };
 
-  const scanImportFileTest = async (json: any, fileName: string) => {
+  const makeEntity = (
+    key: string,
+    obj: any,
+    fileName: string,
+    json: any,
+    listOfNew: { tableName: string; newEntitiy: IEntity }[]
+  ) => {
+    if (key === "monster") {
+      const newMonster = makeMonster(obj);
+      if (newMonster.name !== "") listOfNew.push({ tableName: "monsters", newEntitiy: newMonster });
+    } else if (key === "spell") {
+      const newSpell = makeSpell(obj, fileName);
+      if (newSpell.name !== "") listOfNew.push({ tableName: "spells", newEntitiy: newSpell });
+    } else if (key === "item" || key === "baseitem") {
+      const newItem = makeItems(obj, fileName);
+      if (newItem.name !== "")
+        if (isGear(newItem)) {
+          listOfNew.push({ tableName: "gears", newEntitiy: newItem });
+        } else if (isItem(newItem)) {
+          listOfNew.push({ tableName: "items", newEntitiy: newItem });
+        }
+    } else if (key === "race") {
+      const newRace = makeRace(obj, fileName);
+      if (newRace.name !== "") {
+        listOfNew.push({ tableName: "races", newEntitiy: newRace });
+        if (obj._copy === undefined && obj.source !== "DMG") {
+          if (obj.subraces !== undefined) {
+            obj.subraces.forEach(async (subrace: any) => {
+              const newSubrace = makeSubrace(subrace, newRace, file.name);
+              listOfNew.push({ tableName: "subraces", newEntitiy: newSubrace });
+            });
+          }
+        }
+      }
+    } else if (key === "class") {
+      const newClass = makeClass(obj, json, fileName);
+      if (newClass.name !== "") {
+        listOfNew.push({ tableName: "classes", newEntitiy: newClass });
+        if (obj.subclasses !== undefined) {
+          obj.subclasses.forEach(async (subclass: any) => {
+            const newSubclass = makeSubclass(subclass, json, newClass.name, file.name);
+            listOfNew.push({ tableName: "subclasses", newEntitiy: newSubclass });
+          });
+        }
+      }
+    } else if (key === "subclass") {
+      if (obj.className !== undefined) {
+        const newSubclass = makeSubclass(obj, json, obj.className, file.name);
+        if (newSubclass.name !== "")
+          listOfNew.push({ tableName: "subclasses", newEntitiy: newSubclass });
+      }
+    }
+    return listOfNew;
+  };
+
+  const scanImportFile = async (json: any, fileName: string) => {
     console.log("Start Json interpreting " + fileName);
+    setMax(json.length);
+    iterateJson([...json], 0, json.length, fileName, [...json]);
+  };
 
-    const originalJson = json;
-    let newJson = json;
-    if (modus === ImportModus.ETOOLSMONSTERS) {
-      newJson = json.monster;
-    } else if (modus === ImportModus.ETOOLSSPELLS) {
-      newJson = json.spell;
-    } else if (modus === ImportModus.ETOOLSITEMS) {
-      if (json.item !== undefined) newJson = json.item;
-      if (json.baseitem !== undefined) newJson = json.baseitem;
-    } else if (modus === ImportModus.ETOOLSRACES) {
-      newJson = json.race;
-    } else if (modus === ImportModus.ETOOLSCLASSES) {
-      newJson = json.class;
-    }
+  const scanImport5eToolsFile = async (json: any, fileName: string) => {
+    console.log("Start 5eTools Json interpreting " + fileName);
 
-    if (!Array.isArray(newJson)) {
-      newJson = [newJson];
+    let listOfNew: { tableName: string; newEntitiy: IEntity }[] = [];
+
+    let newMax: number = 0;
+    for (const [key, value] of Object.entries(json)) {
+      if (Array.isArray(value)) {
+        newMax += value.length;
+        // eslint-disable-next-line
+        value.forEach((obj: any) => makeEntity(key, obj, fileName, json, listOfNew));
+      }
     }
-    setMax(newJson.length);
-    iterateJson(newJson, 0, newJson.length, fileName, originalJson);
+    setMax(newMax);
+
+    while (listOfNew.length > 0) {
+      let newTableName = listOfNew[0].tableName;
+      let bulkList: IEntity[] = listOfNew
+        .filter((newEntitiy) => newEntitiy.tableName === newTableName)
+        .map((entity: { tableName: string; newEntitiy: IEntity }) => {
+          return entity.newEntitiy;
+        });
+      await saveNewFromList(newTableName, bulkList, fileName);
+      listOfNew = listOfNew.filter((entity) => entity.tableName !== newTableName);
+      setSucc(newMax - listOfNew.length);
+    }
   };
 
   useEffect(() => {
@@ -214,7 +235,11 @@ const FileTile = ({ file, modus }: $FileProps) => {
       if (content !== null) {
         let json = JSON.parse(content.toString());
         console.log("Json loaded from " + file.name);
-        scanImportFileTest(json, file.name);
+        if (modus === ImportModus.NORMAL) {
+          scanImportFile(json, file.name);
+        } else if (modus === ImportModus.ETOOLS) {
+          scanImport5eToolsFile(json, file.name);
+        }
       }
     };
     fileReader.readAsText(file);

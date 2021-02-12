@@ -6,24 +6,8 @@ const OtherImportOptions = () => {
   return (
     <OptionTab>
       <OptionSection>
-        <SelectionTitle>Import 5eTools Spells</SelectionTitle>
-        <ImportField modus={ImportModus.ETOOLSSPELLS} />
-      </OptionSection>
-      <OptionSection>
-        <SelectionTitle>Import 5eTools Monsters</SelectionTitle>
-        <ImportField modus={ImportModus.ETOOLSMONSTERS} />
-      </OptionSection>
-      <OptionSection>
-        <SelectionTitle>Import 5eTools Items/Gear</SelectionTitle>
-        <ImportField modus={ImportModus.ETOOLSITEMS} />
-      </OptionSection>
-      <OptionSection>
-        <SelectionTitle>Import 5eTools Races</SelectionTitle>
-        <ImportField modus={ImportModus.ETOOLSRACES} />
-      </OptionSection>
-      <OptionSection>
-        <SelectionTitle>Import 5eTools Classes</SelectionTitle>
-        <ImportField modus={ImportModus.ETOOLSCLASSES} />
+        <SelectionTitle>Import 5eTools</SelectionTitle>
+        <ImportField modus={ImportModus.ETOOLS} />
       </OptionSection>
     </OptionTab>
   );
