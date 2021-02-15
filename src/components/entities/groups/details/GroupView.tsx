@@ -9,13 +9,13 @@ import { buildGroup } from "../../../../services/GroupService";
 
 import FormatedText from "../../../general_elements/FormatedText";
 import TabBar from "../../../general_elements/TabBar";
-import NpcTile from "../../npc/NpcTile";
+import NpcTile from "../../npcs/NpcTile";
 import CharTile from "../../chars/CharTile";
 import { faLink, faTags } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { LoadingSpinner } from "../../../Loading";
 import FlowChart from "../../../general_elements/flow/FlowChart";
-import MonsterTile from "../../monster/MonsterTile";
+import MonsterTile from "../../monsters/MonsterTile";
 import Monster from "../../../../data/Monster";
 import Note from "../../../../data/campaign/Note";
 import { applyFilters } from "../../../../services/DatabaseService";

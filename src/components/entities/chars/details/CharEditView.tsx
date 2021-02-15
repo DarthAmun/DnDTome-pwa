@@ -90,7 +90,7 @@ const CharEditView = ({ character, onEdit }: $Props) => {
     attribute: string;
   }) => {
     if (buildChar !== undefined) {
-      let newItemList = buildChar.items.filter((item) => item.origin !== oldItem.origin);
+      let newItemList = buildChar.character.items.filter((item) => item.origin !== oldItem.origin);
       onEdit({ ...buildChar.character, items: newItemList });
     }
   };
@@ -1012,7 +1012,7 @@ const Container = styled.div`
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
-  flex: 1 1 600px;
+  flex: 1 1 100%;
 `;
 
 const PropWrapper = styled.div`

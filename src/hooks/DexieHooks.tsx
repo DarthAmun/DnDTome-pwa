@@ -175,7 +175,7 @@ export const useItem = <T, U>(table: Dexie.Table<T, U>, id: U) => {
   const [state, dispatch] = useReducer(reducer, [undefined, true, undefined]);
 
   useEffect(() => {
-    if (effect) {
+    if (effect && table !== undefined) {
       const getAndDispatch = () =>
         table
           .get(id)
@@ -224,7 +224,7 @@ export const useItemByAttr = <T, U>(table: Dexie.Table<T, U>, attr: string, attr
   const [state, dispatch] = useReducer(reducer, [undefined, true, undefined]);
 
   useEffect(() => {
-    if (effect) {
+    if (effect && table !== undefined) {
       const getAndDispatch = () =>
         table
           .where(attr)

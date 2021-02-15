@@ -181,6 +181,18 @@ export const recivePromiseByAttribute = (tableName: string, name: string, value:
     });
 };
 
+export const recivePromise = (tableName: string, value: number) => {
+  const db = new MyAppDatabase();
+  return db
+    .open()
+    .then(async function () {
+      return await db.table(tableName).get(value);
+    })
+    .finally(function () {
+      db.close();
+    });
+};
+
 export const recivePromiseByAttributeCount = (
   tableName: string,
   name: string,
@@ -251,7 +263,6 @@ export const applyFilters = (obj: any, filters: Filter[]) => {
           test.push(false);
         }
       } else {
-        console.log(obj, filter);
         test.push(
           // @ts-ignore
           obj[filter.fieldName].toLowerCase().includes(filter.value.toLowerCase())

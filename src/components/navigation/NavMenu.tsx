@@ -147,8 +147,8 @@ const NavMenu = ({ open }: $Props) => {
             <RightTooltip>Races</RightTooltip>
           </Link>
           <Link
-            to="/class-overview"
-            className={location.pathname === "/class-overview" ? "menuItemActiv" : ""}
+            to="/classe-overview"
+            className={location.pathname === "/classe-overview" ? "menuItemActiv" : ""}
           >
             <GiPlagueDoctorProfile />
             <RightTooltip>Classes</RightTooltip>

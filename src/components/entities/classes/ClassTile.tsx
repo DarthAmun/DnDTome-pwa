@@ -24,7 +24,7 @@ const ClassTile = ({ classe }: $Props) => {
   }, [classe]);
 
   return (
-    <Tile to={"/class-detail/id/" + classe.id}>
+    <Tile to={"/classe-detail/id/" + classe.id}>
       {getPicture() !== "" ? <Image pic={getPicture()}></Image> : ""}
       <PropWrapper>
         <Name>

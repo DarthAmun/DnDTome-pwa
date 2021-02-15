@@ -14,7 +14,7 @@ import FormatedText from "../../../general_elements/FormatedText";
 import NoteSearchBar from "../NoteSearchBar";
 import TabBar from "../../../general_elements/TabBar";
 import Map from "../../../general_elements/map/Map";
-import NpcTile from "../../npc/NpcTile";
+import NpcTile from "../../npcs/NpcTile";
 import CharTile from "../../chars/CharTile";
 import { faLink, faTags } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

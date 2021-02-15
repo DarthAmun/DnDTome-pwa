@@ -404,7 +404,6 @@ export const applyMods = async (char: BuildChar, modifiers: boolean): Promise<Bu
       }
     });
     await Promise.all(modPromises);
-    console.log(newChar);
     return newChar;
   } else {
     return { ...char, character: char.oldCharacter };

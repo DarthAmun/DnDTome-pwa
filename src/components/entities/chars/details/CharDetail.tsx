@@ -217,6 +217,10 @@ const CharDetail = ({ char, isNew }: $Props) => {
       )}
       <TopBar>
         <BackButton icon={faArrowLeft} action={() => history.goBack()} />
+        <EditToggle mode={editMode.toString()}>
+          <ToggleLeft onClick={() => setMode(false)}>View</ToggleLeft>
+          <ToggleRight onClick={() => setMode(true)}>Edit</ToggleRight>
+        </EditToggle>
         {!editMode && (
           <EditToggle mode={(!modMode).toString()}>
             <ToggleLeft onClick={() => setModMode(true)}>
@@ -227,10 +231,6 @@ const CharDetail = ({ char, isNew }: $Props) => {
             </ToggleRight>
           </EditToggle>
         )}
-        <EditToggle mode={editMode.toString()}>
-          <ToggleLeft onClick={() => setMode(false)}>View</ToggleLeft>
-          <ToggleRight onClick={() => setMode(true)}>Edit</ToggleRight>
-        </EditToggle>
         {unsavedChanges && <Icon icon={faExclamationTriangle} title={"Unsaved changes!"} />}
         {editMode && (
           <>

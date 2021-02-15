@@ -11,10 +11,10 @@ import Trait from "../../../../data/races/Trait";
 import TabBar from "../../../general_elements/TabBar";
 import CharGeneral from "./detail_components/CharGeneral";
 import CharHeader from "./detail_components/CharHeader";
-import ItemTile from "../../item/ItemTile";
+import ItemTile from "../../items/ItemTile";
 import GearTile from "../../gear/GearTile";
 import CharCombat from "./detail_components/CharCombat";
-import MonsterTile from "../../monster/MonsterTile";
+import MonsterTile from "../../monsters/MonsterTile";
 import FormatedText from "../../../general_elements/FormatedText";
 import CharSpell from "./detail_components/CharSpells";
 import { faFilePdf, faPaperPlane } from "@fortawesome/free-solid-svg-icons";
@@ -176,7 +176,6 @@ const CharView = ({ character, modifications }: $Props) => {
               <PropWrapper>
                 {buildChar.monsters &&
                   buildChar.monsters.map((monster, index: number) => {
-                    console.log(monster);
                     return <MonsterTile key={index} monster={monster} />;
                   })}
               </PropWrapper>

@@ -7,10 +7,11 @@ import {
   faSave,
   faTrash,
   faExclamationTriangle,
+  faClone,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Encounter from "../../../../data/encounter/Encounter";
-import { remove, updateWithCallback } from "../../../../services/DatabaseService";
+import { createNewWithId, remove, updateWithCallback } from "../../../../services/DatabaseService";
 
 import BackButton from "../../../form_elements/BackButton";
 import IconButton from "../../../form_elements/IconButton";
@@ -43,11 +44,11 @@ const EncounterDetail = ({ encounter, isNew }: $Props) => {
     }
   }, [encounterObj, encounter]);
 
-  const updateEncounter = (tableName: string, encounterObj: Encounter) => {
+  const updateEncounter = (tableName: string, encounterObj: Encounter, msg: string) => {
     updateWithCallback(tableName, encounterObj, (result) => {
       if (result > 0) {
         setUnsavedChanges(false);
-        setMessage("Saved successful!");
+        setMessage(msg);
         setAlert(true);
       } else {
         setMessage("Something went wrong!");
@@ -59,9 +60,20 @@ const EncounterDetail = ({ encounter, isNew }: $Props) => {
     });
   };
 
-  const editAndSaveEncounter = (encounter: Encounter) => {
+  const duplicateEncounter = (tableName: string, obj: Encounter) => {
+    let newObj = { ...obj };
+    delete newObj.id;
+    createNewWithId(tableName, newObj, (id) => {
+      editAndSaveEncounter(
+        { ...encounter, name: encounter.name + " [Clone]" },
+        "Cloning successful!"
+      );
+    });
+  };
+
+  const editAndSaveEncounter = (encounter: Encounter, msg: string) => {
     editEncounter(encounter);
-    updateEncounter("encounters", encounter);
+    updateEncounter("encounters", encounter, msg);
   };
 
   return (
@@ -81,7 +93,14 @@ const EncounterDetail = ({ encounter, isNew }: $Props) => {
         {editMode && unsavedChanges && <Icon icon={faExclamationTriangle} />}
         {editMode && (
           <>
-            <IconButton onClick={() => updateEncounter("encounters", encounterObj)} icon={faSave} />
+            <IconButton
+              onClick={() => updateEncounter("encounters", encounterObj, "Saved successful!")}
+              icon={faSave}
+            />
+            <IconButton
+              onClick={() => duplicateEncounter("encounters", encounterObj)}
+              icon={faClone}
+            />
             <IconButton onClick={() => deleteEncounter(encounterObj.id)} icon={faTrash} />
             {message && showAlert && <Message>{message}</Message>}
           </>
@@ -90,7 +109,11 @@ const EncounterDetail = ({ encounter, isNew }: $Props) => {
       {editMode ? (
         <EncounterEditView encounter={encounterObj} onEdit={(value) => editEncounter(value)} />
       ) : (
-        <EncounterView encounter={encounterObj} dmView={dmMode} onEdit={(value) => editAndSaveEncounter(value)} />
+        <EncounterView
+          encounter={encounterObj}
+          dmView={dmMode}
+          onEdit={(value) => editAndSaveEncounter(value, "Saved successful!")}
+        />
       )}
     </>
   );

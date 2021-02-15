@@ -90,13 +90,13 @@ const CharHeader = ({ char }: $Props) => {
                     {classSet.level}
                   </Prop>
                   <Prop>
-                    <MainLink onClick={() => history.push(`/class-detail/name/${classSet.classe}`)}>
+                    <MainLink onClick={() => history.push(`/classe-detail/name/${classSet.classe}`)}>
                       {classSet.classe}
                     </MainLink>
                   </Prop>
                   <Prop>
                     <MainLink
-                      onClick={() => history.push(`/subclass-detail/name/${classSet.subclasse}`)}
+                      onClick={() => history.push(`/subclasse-detail/name/${classSet.subclasse}`)}
                     >
                       {classSet.subclasse}
                     </MainLink>

@@ -13,7 +13,7 @@ import Map from "../../../general_elements/map/Map";
 import { faLink } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { LoadingSpinner } from "../../../Loading";
-import LocationTile from "../../location/LocationTile";
+import LocationTile from "../../locations/LocationTile";
 import EventTile from "../../events/EventTile";
 
 interface $Props {
