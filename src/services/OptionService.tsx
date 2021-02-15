@@ -5,7 +5,6 @@ import Class, { isClass } from "../data/classes/Class";
 import Subclass, { isSubclass } from "../data/classes/Subclass";
 import Encounter, { isEncounter } from "../data/encounter/Encounter";
 import Gear, { isGear } from "../data/Gear";
-import IEntity from "../data/IEntity";
 import Item, { isItem } from "../data/Item";
 import Monster, { isMonster } from "../data/Monster";
 import Race, { isRace } from "../data/races/Race";
@@ -250,25 +249,47 @@ export const exportAllFromTable = (tableName: string, filename: string) => {
 };
 
 export const exportAll = async (filename: string) => {
-  let tableList: Promise<IEntity[]>[] = [];
-  tableList.push(reciveAllPromise("spells"));
-  tableList.push(reciveAllPromise("items"));
-  tableList.push(reciveAllPromise("gears"));
-  tableList.push(reciveAllPromise("monsters"));
-  tableList.push(reciveAllPromise("races"));
-  tableList.push(reciveAllPromise("subraces"));
-  tableList.push(reciveAllPromise("classes"));
-  tableList.push(reciveAllPromise("subclasses"));
-  tableList.push(reciveAllPromise("chars"));
-  tableList.push(reciveAllPromise("encounters"));
-  tableList.push(reciveAllPromise("selections"));
-  const results = await Promise.all(tableList);
-  let all: IEntity[] = [];
-  results.forEach((list: IEntity[]) => {
-    list.forEach((entity: IEntity) => {
-      all.push(entity);
-    });
-  });
+  const spells = await reciveAllPromise("spells");
+  let items = await reciveAllPromise("items");
+  let gears = await reciveAllPromise("gears");
+  let monsters = await reciveAllPromise("monsters");
+  let races = await reciveAllPromise("races");
+  let subraces = await reciveAllPromise("subraces");
+  let classes = await reciveAllPromise("classes");
+  let subclasses = await reciveAllPromise("subclasses");
+  let chars = await reciveAllPromise("chars");
+  let encounters = await reciveAllPromise("encounters");
+  let selections = await reciveAllPromise("selections");
+  let randomTables = await reciveAllPromise("randomTables");
+  let campaigns = await reciveAllPromise("campaigns");
+  let quests = await reciveAllPromise("quests");
+  let npcs = await reciveAllPromise("npcs");
+  let worlds = await reciveAllPromise("worlds");
+  let locations = await reciveAllPromise("locations");
+  let events = await reciveAllPromise("events");
+  let groups = await reciveAllPromise("groups");
+
+  let all: any = {
+    spells: spells,
+    items: items,
+    gears: gears,
+    monsters: monsters,
+    races: races,
+    subraces: subraces,
+    classes: classes,
+    subclasses: subclasses,
+    chars: chars,
+    encounters: encounters,
+    selections: selections,
+    randomTables: randomTables,
+    campaigns: campaigns,
+    quests: quests,
+    npcs: npcs,
+    worlds: worlds,
+    locations: locations,
+    events: events,
+    groups: groups,
+  };
 
   let contentType = "application/json;charset=utf-8;";
   if (window.navigator && window.navigator.msSaveOrOpenBlob) {

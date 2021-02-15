@@ -3,24 +3,9 @@ import styled from "styled-components";
 
 import FileField from "./FileField";
 import { faFileImport } from "@fortawesome/free-solid-svg-icons";
-import Campaign, { isCampaign } from "../../data/campaign/Campaign";
-import Npc, { isNpc } from "../../data/campaign/Npc";
-import Quest, { isQuest } from "../../data/campaign/Quest";
-import Char, { isChar } from "../../data/chars/Char";
-import Class, { isClass } from "../../data/classes/Class";
-import Subclass, { isSubclass } from "../../data/classes/Subclass";
-import Encounter, { isEncounter } from "../../data/encounter/Encounter";
-import Gear, { isGear } from "../../data/Gear";
-import Item, { isItem } from "../../data/Item";
-import Monster, { isMonster } from "../../data/Monster";
-import Race, { isRace } from "../../data/races/Race";
-import Subrace, { isSubrace } from "../../data/races/Subrace";
-import Selection, { isSelection } from "../../data/Selection";
-import Spell, { isSpell } from "../../data/Spell";
-import Event, { isEvent } from "../../data/world/Event";
-import Location, { isLocation } from "../../data/world/Location";
-import World, { isWorld } from "../../data/world/World";
-import { saveNew, saveNewFromList } from "../../services/DatabaseService";
+import { isGear } from "../../data/Gear";
+import { isItem } from "../../data/Item";
+import { saveNewFromList } from "../../services/DatabaseService";
 
 import ProgressBar from "@ramonak/react-progress-bar";
 import {
@@ -32,7 +17,6 @@ import {
   makeSubclass,
   makeSubrace,
 } from "../../services/5eToolService";
-import Group, { isGroup } from "../../data/campaign/Group";
 import IEntity from "../../data/IEntity";
 
 export enum ImportModus {
@@ -87,58 +71,7 @@ const FileTile = ({ file, modus }: $FileProps) => {
   const [succCount, setSucc] = useState<number>(0);
   const [maxCount, setMax] = useState<number>(0);
 
-  const iterateJson = async (
-    json: any,
-    i: number,
-    max: number,
-    fileName: string,
-    originalJson: any
-  ) => {
-    if (isClass(json[i])) {
-      await saveNew("classes", json[i] as Class, fileName);
-    } else if (isSubclass(json[i])) {
-      await saveNew("subclasses", json[i] as Subclass, fileName);
-    } else if (isRace(json[i])) {
-      await saveNew("races", json[i] as Race, fileName);
-    } else if (isSubrace(json[i])) {
-      await saveNew("subraces", json[i] as Subrace, fileName);
-    } else if (isMonster(json[i])) {
-      await saveNew("monsters", json[i] as Monster, fileName);
-    } else if (isSpell(json[i])) {
-      await saveNew("spells", json[i] as Spell, fileName);
-    } else if (isGear(json[i])) {
-      await saveNew("gears", json[i] as Gear, fileName);
-    } else if (isItem(json[i])) {
-      await saveNew("items", json[i] as Item, fileName);
-    } else if (isEncounter(json[i])) {
-      await saveNew("encounters", json[i] as Encounter, fileName);
-    } else if (isSelection(json[i])) {
-      await saveNew("selections", json[i] as Selection, fileName);
-    } else if (isCampaign(json[i])) {
-      await saveNew("campaigns", json[i] as Campaign, fileName);
-    } else if (isQuest(json[i])) {
-      await saveNew("quests", json[i] as Quest, fileName);
-    } else if (isGroup(json[i])) {
-      await saveNew("groups", json[i] as Group, fileName);
-    } else if (isNpc(json[i])) {
-      await saveNew("npcs", json[i] as Npc, fileName);
-    } else if (isWorld(json[i])) {
-      await saveNew("worlds", json[i] as World, fileName);
-    } else if (isLocation(json[i])) {
-      await saveNew("locations", json[i] as Location, fileName);
-    } else if (isEvent(json[i])) {
-      await saveNew("events", json[i] as Event, fileName);
-    } else if (isChar(json[i])) {
-      await saveNew("chars", json[i] as Char, fileName);
-    }
-
-    setSucc(i + 1);
-    if (max - 1 > i) {
-      iterateJson(json, i + 1, max, fileName, originalJson);
-    }
-  };
-
-  const makeEntity = (
+  const make5eToolsEntity = (
     key: string,
     obj: any,
     fileName: string,
@@ -194,12 +127,6 @@ const FileTile = ({ file, modus }: $FileProps) => {
   };
 
   const scanImportFile = async (json: any, fileName: string) => {
-    console.log("Start Json interpreting " + fileName);
-    setMax(json.length);
-    iterateJson([...json], 0, json.length, fileName, [...json]);
-  };
-
-  const scanImport5eToolsFile = async (json: any, fileName: string) => {
     console.log("Start 5eTools Json interpreting " + fileName);
 
     let listOfNew: { tableName: string; newEntitiy: IEntity }[] = [];
@@ -208,8 +135,13 @@ const FileTile = ({ file, modus }: $FileProps) => {
     for (const [key, value] of Object.entries(json)) {
       if (Array.isArray(value)) {
         newMax += value.length;
-        // eslint-disable-next-line
-        value.forEach((obj: any) => makeEntity(key, obj, fileName, json, listOfNew));
+        if (modus === ImportModus.NORMAL) {
+          // eslint-disable-next-line
+          value.forEach((obj: any) => listOfNew.push({ tableName: key, newEntitiy: obj }));
+        } else if (modus === ImportModus.ETOOLS) {
+          // eslint-disable-next-line
+          value.forEach((obj: any) => make5eToolsEntity(key, obj, fileName, json, listOfNew));
+        }
       }
     }
     setMax(newMax);
@@ -235,11 +167,7 @@ const FileTile = ({ file, modus }: $FileProps) => {
       if (content !== null) {
         let json = JSON.parse(content.toString());
         console.log("Json loaded from " + file.name);
-        if (modus === ImportModus.NORMAL) {
-          scanImportFile(json, file.name);
-        } else if (modus === ImportModus.ETOOLS) {
-          scanImport5eToolsFile(json, file.name);
-        }
+        scanImportFile(json, file.name);
       }
     };
     fileReader.readAsText(file);
