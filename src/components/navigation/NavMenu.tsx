@@ -112,7 +112,7 @@ const NavMenu = ({ open }: $Props) => {
             <RightTooltip>Random Tables</RightTooltip>
           </Link>
           <Seperator />
-          <Link to="/library" className={location.pathname === "/library" ? "menuItemActiv" : ""}>
+          <Link to="/book-overview" className={location.pathname === "/book-overview" ? "menuItemActiv" : ""}>
             <GiBookshelf />
             <RightTooltip>Library</RightTooltip>
           </Link>

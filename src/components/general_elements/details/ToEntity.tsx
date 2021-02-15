@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { RouteComponentProps, useHistory } from "react-router";
-import Details from "./Details";
+import Details from "./EntityDetail";
 
 import { LoadingSpinner } from "../../Loading";
 import ErrorTile from "../ErrorTile";

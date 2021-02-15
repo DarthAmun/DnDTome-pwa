@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import Campaign from "../../../data/campaign/Campaign";
@@ -11,6 +11,10 @@ interface $Props {
 }
 
 const CampaignTile = ({ campaign }: $Props) => {
+  useEffect(() => {
+    console.log(campaign);
+  }, [campaign]);
+
   const getPicture = useCallback(() => {
     if (campaign !== undefined) {
       if (campaign.pic === "" || campaign.pic === null) {

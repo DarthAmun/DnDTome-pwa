@@ -16,7 +16,7 @@ interface $Props {
   onSend: (filters: Filter[]) => void;
 }
 
-const LibrarySearchBar = ({ onSend }: $Props) => {
+const BookSearchBar = ({ onSend }: $Props) => {
   const [open, setOpen] = useState(false);
   let history = useHistory();
 
@@ -120,4 +120,4 @@ const LibrarySearchBar = ({ onSend }: $Props) => {
   );
 };
 
-export default LibrarySearchBar;
+export default BookSearchBar;
