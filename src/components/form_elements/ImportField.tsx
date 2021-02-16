@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 
 import FileField from "./FileField";
+import IEntity from "../../data/IEntity";
+import Selection from "../../data/Selection";
 import { faFileImport } from "@fortawesome/free-solid-svg-icons";
 import { isGear } from "../../data/Gear";
 import { isItem } from "../../data/Item";
@@ -13,11 +15,11 @@ import {
   makeItems,
   makeMonster,
   makeRace,
+  makeSelection,
   makeSpell,
   makeSubclass,
   makeSubrace,
 } from "../../services/5eToolService";
-import IEntity from "../../data/IEntity";
 
 export enum ImportModus {
   NORMAL,
@@ -126,6 +128,71 @@ const FileTile = ({ file, modus }: $FileProps) => {
     return listOfNew;
   };
 
+  const convertTypes = (types: string[]): string[] => {
+    let newTypes: string[] = types.map((type: string) => {
+      switch (type.split(":")[0]) {
+        case "OR":
+          return "Onomancy Resonant";
+        case "EI":
+          return "Invocations";
+        case "AF":
+          return "Alchemical Formular";
+        case "MV":
+          return "Maneuver";
+        case "FS":
+          return "Fighting Styles";
+        case "AI":
+          return "Artificer Infusion";
+        case "AS":
+          return "Arcane Shot";
+        case "ED":
+          return "Elemental Disciplin";
+        case "MM":
+          return "Metamagic";
+        case "RN":
+          return "Rune";
+        case "PB":
+          return "Pact Boon";
+        default:
+          return "Unknown";
+      }
+    });
+    return newTypes;
+  };
+
+  const make5eToolsSelections = (
+    value: any[],
+    json: any,
+    fileName: string,
+    listOfNew: { tableName: string; newEntitiy: IEntity }[]
+  ) => {
+    let selections: Selection[] = [];
+
+    value.forEach((obj: any) => {
+      convertTypes(obj.featureType).forEach((type: string) => {
+        if (selections.filter((selc) => selc.name === type).length <= 0) {
+          selections.push({
+            name: type,
+            filename: fileName,
+            selectionOptions: [makeSelection(obj)],
+          });
+        } else {
+          selections = selections.map((selc) => {
+            if (selc.name === type) {
+              return { ...selc, selectionOptions: [...selc.selectionOptions, makeSelection(obj)] };
+            }
+            return selc;
+          });
+        }
+      });
+    });
+
+    selections.forEach((selc: Selection) => {
+      listOfNew.push({ tableName: "selections", newEntitiy: selc });
+    });
+    return listOfNew;
+  };
+
   const scanImportFile = async (json: any, fileName: string) => {
     console.log("Start 5eTools Json interpreting " + fileName);
 
@@ -139,8 +206,12 @@ const FileTile = ({ file, modus }: $FileProps) => {
           // eslint-disable-next-line
           value.forEach((obj: any) => listOfNew.push({ tableName: key, newEntitiy: obj }));
         } else if (modus === ImportModus.ETOOLS) {
-          // eslint-disable-next-line
-          value.forEach((obj: any) => make5eToolsEntity(key, obj, fileName, json, listOfNew));
+          if (key === "optionalfeature") {
+            make5eToolsSelections(value, json, fileName, listOfNew);
+          } else {
+            // eslint-disable-next-line
+            value.forEach((obj: any) => make5eToolsEntity(key, obj, fileName, json, listOfNew));
+          }
         }
       }
     }

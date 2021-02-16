@@ -3,7 +3,12 @@ import IEntity, { isIEntity } from "./IEntity";
 export default class Selection implements IEntity {
   id?: number;
   name: string;
-  selectionOptions: { entityName: string; entityText: string; level: number }[];
+  selectionOptions: {
+    entityName: string;
+    entityPrerequsite: string;
+    entityText: string;
+    level: number;
+  }[];
   filename?: string;
 
   constructor(
@@ -12,6 +17,7 @@ export default class Selection implements IEntity {
     filename?: string,
     selectionOptions?: {
       entityName: string;
+      entityPrerequsite: string;
       entityText: string;
       level: number;
     }[]

@@ -1195,3 +1195,115 @@ const recursiveTextAdder = (entries: any[], text: string): string => {
 
   return newText + "\n";
 };
+
+export const makeSelection = (
+  obj: any
+): {
+  entityName: string;
+  entityPrerequsite: string;
+  entityText: string;
+  level: number;
+} => {
+  let text = "";
+  obj.entries.forEach((textPart: string | any) => {
+    if (typeof textPart === "string") {
+      text += textPart + "\n";
+    } else {
+      if (textPart.name !== undefined && textPart.entries !== undefined) {
+        text += "\n" + textPart.name + ". ";
+        textPart.entries.forEach((entryTextPart: string) => {
+          text += entryTextPart + "\n";
+        });
+      } else if (textPart.items !== undefined) {
+        textPart.items.forEach((listItem: string) => {
+          text += "• " + listItem + "\n";
+        });
+      } else if (textPart.type !== undefined && textPart.type === "table") {
+        text += "||table||\n";
+        if (textPart.colLabels !== undefined) {
+          text += "||";
+          textPart.colLabels.forEach((listItem: string) => {
+            text += listItem + "|";
+          });
+          text += "|\n";
+        }
+        textPart.rows.forEach((rows: string[]) => {
+          text += "||";
+          rows.forEach((cel: string) => {
+            text += cel + "|";
+          });
+          text += "|\n";
+        });
+        text += "||table||\n";
+      } else {
+        let convertText = JSON.stringify(textPart);
+        convertText = convertText
+          .replaceAll("},", "\n")
+          .replaceAll("[", "")
+          .replaceAll("]", "")
+          .replaceAll("}", "")
+          .replaceAll("{@", "")
+          .replaceAll("{", "");
+        convertText = convertText.trim();
+        text += convertText;
+      }
+    }
+  });
+  text = text.replaceAll("}", "").replaceAll("{@", "");
+  text = text.trim();
+
+  let level: number = 0;
+  let prequisite: string = "";
+  if (obj.prerequisite !== undefined) {
+    for (const [key, value] of Object.entries(obj.prerequisite[0])) {
+      if (key === "level") {
+        for (const [key2, value2] of Object.entries(value as Object)) {
+          if (key2 === "level") {
+            level = value2;
+          } else {
+            prequisite += key2 + ": " + value2.name + ", ";
+          }
+        }
+      } else if (typeof value === "number") {
+        prequisite += key + ": " + value + ", ";
+      } else if (typeof value === "string") {
+        prequisite += key + ": " + value + ", ";
+      } else if (Array.isArray(value)) {
+        prequisite += key + ": ";
+        value.forEach((val) => {
+          prequisite += val + ", ";
+        });
+      } else {
+        prequisite += key + " ";
+        for (const [key2, value2] of Object.entries(value as Object)) {
+          if (typeof value2 === "number") {
+            prequisite += key2 + ": " + value2 + ", ";
+          } else if (typeof value2 === "string") {
+            prequisite += key2 + ": " + value2 + ", ";
+          } else {
+            prequisite += key + " ";
+            for (const [key3, value3] of Object.entries(value as Object)) {
+              if (typeof value3 === "number") {
+                prequisite += key3 + ": " + value3 + ", ";
+              } else if (typeof value3 === "string") {
+                prequisite += key3 + ": " + value3 + ", ";
+              }
+            }
+            prequisite += ", ";
+          }
+        }
+        prequisite += ", ";
+      }
+    }
+  }
+
+  let name = obj.name;
+  name = obj.source !== undefined ? name + " (" + obj.source + ")" : name;
+
+  return {
+    entityName: name,
+    entityPrerequsite: prequisite,
+    entityText: text,
+    level: level,
+  };
+};

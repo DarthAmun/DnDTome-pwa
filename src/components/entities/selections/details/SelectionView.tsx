@@ -35,6 +35,7 @@ const SelectionView = ({ selection }: $Props) => {
         (
           trait: {
             entityName: string;
+            entityPrerequsite: string;
             entityText: string;
             level: number;
           },
@@ -51,6 +52,12 @@ const SelectionView = ({ selection }: $Props) => {
                   <PropTitle>Level:</PropTitle>
                   {trait.level}
                 </Prop>
+                {trait.entityPrerequsite !== "" && (
+                  <Prop>
+                    <PropTitle>Prerequisite:</PropTitle>
+                    {trait.entityPrerequsite}
+                  </Prop>
+                )}
                 <Text>
                   <FormatedText text={trait.entityText} />
                 </Text>

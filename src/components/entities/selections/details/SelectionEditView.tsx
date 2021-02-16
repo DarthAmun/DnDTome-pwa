@@ -22,6 +22,7 @@ const SelectionEditView = ({ selection, onEdit }: $Props) => {
     let selections = selection.selectionOptions.map(
       (selection: {
         entityName: string;
+        entityPrerequsite: string;
         entityText: string;
         level: number;
       }) => {
@@ -43,13 +44,14 @@ const SelectionEditView = ({ selection, onEdit }: $Props) => {
       ...selection,
       selectionOptions: [
         ...selection.selectionOptions,
-        { entityName: "", entityText: "", level: 0 },
+        { entityName: "", entityPrerequsite: "", entityText: "", level: 0 },
       ],
     });
   };
 
   const removeSelection = (oldSelection: {
     entityName: string;
+    entityPrerequsite: string;
     entityText: string;
     level: number;
   }) => {
@@ -73,6 +75,7 @@ const SelectionEditView = ({ selection, onEdit }: $Props) => {
           (
             selection: {
               entityName: string;
+              entityPrerequsite: string;
               entityText: string;
               level: number;
             },
@@ -83,26 +86,24 @@ const SelectionEditView = ({ selection, onEdit }: $Props) => {
                 <SelectionName
                   value={selection.entityName}
                   label="Name"
-                  onChange={(name) =>
-                    onSelectionChange(selection, "entityName", name)
-                  }
+                  onChange={(name) => onSelectionChange(selection, "entityName", name)}
                 />
                 <SelectionLevel
                   value={selection.level}
                   label="Level"
-                  onChange={(level) =>
-                    onSelectionChange(selection, "level", level)
-                  }
+                  onChange={(level) => onSelectionChange(selection, "level", level)}
                 />
-                <IconButton
-                  icon={faTrash}
-                  onClick={() => removeSelection(selection)}
+                <IconButton icon={faTrash} onClick={() => removeSelection(selection)} />
+                <SelectionText
+                  value={selection.entityPrerequsite}
+                  label="Prerequsite"
+                  onChange={(text) => onSelectionChange(selection, "entityPrerequsite", text)}
                 />
                 <SelectionText
-                value={selection.entityText}
-                label="Text"
-                onChange={(text) => onSelectionChange(selection, "entityText", text)}
-              />
+                  value={selection.entityText}
+                  label="Text"
+                  onChange={(text) => onSelectionChange(selection, "entityText", text)}
+                />
               </SelectionWrapper>
             );
           }
