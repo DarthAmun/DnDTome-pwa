@@ -80,16 +80,16 @@ const EncounterDetail = ({ encounter, isNew }: $Props) => {
     <>
       <TopBar>
         <BackButton icon={faArrowLeft} action={() => history.goBack()} />
+        <EditToggle mode={editMode.toString()}>
+          <ToggleLeft onClick={() => setMode(false)}>View</ToggleLeft>
+          <ToggleRight onClick={() => setMode(true)}>Edit</ToggleRight>
+        </EditToggle>
         {!editMode && (
           <EditToggle mode={(!dmMode).toString()}>
             <ToggleLeft onClick={() => setDmMode(true)}>DM View</ToggleLeft>
             <ToggleRight onClick={() => setDmMode(false)}>Player View</ToggleRight>
           </EditToggle>
         )}
-        <EditToggle mode={editMode.toString()}>
-          <ToggleLeft onClick={() => setMode(false)}>View</ToggleLeft>
-          <ToggleRight onClick={() => setMode(true)}>Edit</ToggleRight>
-        </EditToggle>
         {editMode && unsavedChanges && <Icon icon={faExclamationTriangle} />}
         {editMode && (
           <>
