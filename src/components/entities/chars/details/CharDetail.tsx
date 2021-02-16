@@ -10,6 +10,7 @@ import {
   remove,
   updateWithCallback,
   recivePromiseByAttribute,
+  createNewWithId,
 } from "../../../../services/DatabaseService";
 
 import {
@@ -19,6 +20,7 @@ import {
   faExclamationTriangle,
   faSlidersH,
   faList,
+  faClone,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import CharView from "./CharView";
@@ -172,13 +174,13 @@ const CharDetail = ({ char, isNew }: $Props) => {
     return updatedChar;
   };
 
-  const updateChar = (tableName: string, charObj: Char) => {
+  const updateChar = (tableName: string, charObj: Char, msg: string) => {
     recalcClasses(charObj)
       .then((updatedChar) => {
         updateWithCallback(tableName, updatedChar, (result) => {
           if (result > 0) {
             setUnsavedChanges(false);
-            setMessage("Saved successful!");
+            setMessage(msg);
             setAlert(true);
           } else {
             setMessage("Something went wrong!");
@@ -196,6 +198,19 @@ const CharDetail = ({ char, isNew }: $Props) => {
           setAlert(false);
         }, 3000);
       });
+  };
+
+  const duplicateChar = (tableName: string, obj: Char) => {
+    let newObj = { ...obj };
+    delete newObj.id;
+    createNewWithId(tableName, newObj, () => {
+      editAndSaveChar({ ...obj, name: obj.name + " [Clone]" }, "Cloning successful!");
+    });
+  };
+
+  const editAndSaveChar = (obj: Char, msg: string) => {
+    editChar(obj);
+    updateChar("chars", obj, msg);
   };
 
   return (
@@ -234,7 +249,11 @@ const CharDetail = ({ char, isNew }: $Props) => {
         {unsavedChanges && <Icon icon={faExclamationTriangle} title={"Unsaved changes!"} />}
         {editMode && (
           <>
-            <IconButton onClick={() => updateChar("chars", charObj)} icon={faSave} />
+            <IconButton
+              onClick={() => updateChar("chars", charObj, "Saved successful!")}
+              icon={faSave}
+            />{" "}
+            <IconButton onClick={() => duplicateChar("chars", charObj)} icon={faClone} />
             <IconButton onClick={() => deleteChar()} icon={faTrash} />
             {message && showAlert && <Message>{message}</Message>}
           </>
