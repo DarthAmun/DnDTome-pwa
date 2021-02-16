@@ -25,7 +25,9 @@ const FormatedText = ({ text }: $Props) => {
             if (part.includes("]]")) {
               const codePart: string[] = part.split("]]");
               const linkParts: string[] = codePart[0].split(".");
-              const link: string = "/" + linkParts[0] + "-detail/name/" + linkParts[1];
+              let linkEntity = linkParts[0];
+              if (linkEntity === "class" || linkEntity === "subclass") linkEntity += "e";
+              const link: string = "/" + linkEntity + "-detail/name/" + linkParts[1];
               formattedParts.push(
                 <TextPart key={index}>
                   <Link onClick={() => history.push(link)}>
