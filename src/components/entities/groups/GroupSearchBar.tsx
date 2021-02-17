@@ -29,7 +29,7 @@ const GroupSearchBar = ({ onSend }: $Props) => {
     }
     setFilters(newFilters);
     setOpen(false);
-    onSend(newFilters);
+    history.push(`/group-overview?filter=${JSON.stringify(newFilters)}`);
   };
 
   const reset = () => {
@@ -37,7 +37,7 @@ const GroupSearchBar = ({ onSend }: $Props) => {
       setName("");
       setOpen(false);
     });
-    onSend([]);
+    history.push(`/group-overview}`);
   };
 
   const createNewGroup = () => {

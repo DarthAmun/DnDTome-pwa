@@ -18,11 +18,7 @@ import Quest from "../../../data/campaign/Quest";
 import StringSearchField from "../../form_elements/StringSearchField";
 import { FixedBar, SearchBar, CreateButton, ExportButton, LeftTooltip } from "../../SearchbarStyle";
 
-interface $Props {
-  onSend: (filters: Filter[]) => void;
-}
-
-const QuestSearchBar = ({ onSend }: $Props) => {
+const QuestSearchBar = () => {
   const [open, setOpen] = useState(false);
   const [filters, setFilters] = useState<Filter[]>([]);
   let history = useHistory();
@@ -61,7 +57,7 @@ const QuestSearchBar = ({ onSend }: $Props) => {
     });
     setFilters(newFilters);
     setOpen(false);
-    onSend(newFilters);
+    history.push(`/quest-overview?filter=${JSON.stringify(newFilters)}`);
   };
 
   const reset = () => {
@@ -75,7 +71,7 @@ const QuestSearchBar = ({ onSend }: $Props) => {
         sort: 0,
       });
     });
-    onSend([]);
+    history.push(`/quest-overview}`);
   };
 
   const createNewQuest = () => {

@@ -26,11 +26,7 @@ import Gear from "../../../data/Gear";
 import StringSearchField from "../../form_elements/StringSearchField";
 import { FixedBar, SearchBar, CreateButton, ExportButton, LeftTooltip } from "../../SearchbarStyle";
 
-interface $Props {
-  onSend: (filters: Filter[]) => void;
-}
-
-const GearSearchBar = ({ onSend }: $Props) => {
+const GearSearchBar = () => {
   const [open, setOpen] = useState(false);
   const [filters, setFilters] = useState<Filter[]>([]);
   let history = useHistory();
@@ -101,7 +97,7 @@ const GearSearchBar = ({ onSend }: $Props) => {
     });
     setFilters(newFilters);
     setOpen(false);
-    onSend(newFilters);
+    history.push(`/gear-overview?filter=${JSON.stringify(newFilters)}`);
   };
 
   const reset = () => {
@@ -121,7 +117,7 @@ const GearSearchBar = ({ onSend }: $Props) => {
         sort: 0,
       });
     });
-    onSend([]);
+    history.push(`/gear-overview}`);
   };
 
   const createNewGear = () => {

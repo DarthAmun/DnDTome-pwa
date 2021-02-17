@@ -16,11 +16,7 @@ import StringSearchField from "../../form_elements/StringSearchField";
 import { exportFilteredFromTable } from "../../../services/DatabaseService";
 import { FixedBar, SearchBar, CreateButton, ExportButton, LeftTooltip } from "../../SearchbarStyle";
 
-interface $Props {
-  onSend: (filters: Filter[]) => void;
-}
-
-const CharSearchBar = ({ onSend }: $Props) => {
+const CharSearchBar = () => {
   const [open, setOpen] = useState(false);
   const [filters, setFilters] = useState<Filter[]>([]);
   let history = useHistory();
@@ -59,7 +55,7 @@ const CharSearchBar = ({ onSend }: $Props) => {
 
     setFilters(newFilters);
     setOpen(false);
-    onSend(newFilters);
+    history.push(`/char-overview?filter=${JSON.stringify(newFilters)}`);
   };
 
   const reset = () => {
@@ -74,7 +70,7 @@ const CharSearchBar = ({ onSend }: $Props) => {
         sort: 0,
       });
     });
-    onSend([]);
+    history.push(`/char-overview}`);
   };
 
   const createNewChar = () => {

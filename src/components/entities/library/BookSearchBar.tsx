@@ -12,11 +12,7 @@ import NumberField from "../../form_elements/NumberField";
 import StringSearchField from "../../form_elements/StringSearchField";
 import { FixedBar, SearchBar, CreateButton, LeftTooltip } from "../../SearchbarStyle";
 
-interface $Props {
-  onSend: (filters: Filter[]) => void;
-}
-
-const BookSearchBar = ({ onSend }: $Props) => {
+const BookSearchBar = () => {
   const [open, setOpen] = useState(false);
   let history = useHistory();
 
@@ -54,7 +50,7 @@ const BookSearchBar = ({ onSend }: $Props) => {
     });
 
     setOpen(false);
-    onSend(newFilters);
+    history.push(`/book-overview?filter=${JSON.stringify(newFilters)}`);
   };
 
   const reset = () => {
@@ -69,7 +65,7 @@ const BookSearchBar = ({ onSend }: $Props) => {
         sort: 0,
       });
     });
-    onSend([]);
+    history.push(`/book-overview}`);
   };
 
   const createNewBook = () => {

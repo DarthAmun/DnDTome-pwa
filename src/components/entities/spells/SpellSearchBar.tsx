@@ -27,16 +27,19 @@ import StringSearchField from "../../form_elements/StringSearchField";
 import CheckField from "../../form_elements/CheckField";
 import IconButton from "../../form_elements/IconButton";
 import Spell from "../../../data/Spell";
-import { FixedBar, FieldGroup, SearchBar, CreateButton, ExportButton, LeftTooltip } from "../../SearchbarStyle";
+import {
+  FixedBar,
+  FieldGroup,
+  SearchBar,
+  CreateButton,
+  ExportButton,
+  LeftTooltip,
+} from "../../SearchbarStyle";
 
-interface $Props {
-  onSend: (filters: Filter[]) => void;
-}
-
-const SpellSearchBar = ({ onSend }: $Props) => {
+const SpellSearchBar = () => {
+  let history = useHistory();
   const [open, setOpen] = useState(false);
   const [filters, setFilters] = useState<Filter[]>([]);
-  let history = useHistory();
 
   const [name, setName] = useState<string>("");
   const [school, setSchool] = useState<string[]>([]);
@@ -128,7 +131,7 @@ const SpellSearchBar = ({ onSend }: $Props) => {
 
     setFilters(newFilters);
     setOpen(false);
-    onSend(newFilters);
+    history.push(`/spell-overview?filter=${JSON.stringify(newFilters)}`);
   };
 
   const reset = () => {
@@ -151,7 +154,7 @@ const SpellSearchBar = ({ onSend }: $Props) => {
         sort: 0,
       });
     });
-    onSend([]);
+    history.push(`/spell-overview`);
   };
 
   const createNewSpell = () => {

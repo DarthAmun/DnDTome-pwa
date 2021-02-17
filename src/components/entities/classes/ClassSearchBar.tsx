@@ -17,11 +17,7 @@ import { createNewWithId, exportFilteredFromTable } from "../../../services/Data
 import StringSearchField from "../../form_elements/StringSearchField";
 import { FixedBar, SearchBar, CreateButton, ExportButton, LeftTooltip } from "../../SearchbarStyle";
 
-interface $Props {
-  onSend: (filters: Filter[]) => void;
-}
-
-const ClassSearchBar = ({ onSend }: $Props) => {
+const ClassSearchBar = () => {
   const [open, setOpen] = useState(false);
   const [filters, setFilters] = useState<Filter[]>([]);
   let history = useHistory();
@@ -57,7 +53,7 @@ const ClassSearchBar = ({ onSend }: $Props) => {
 
     setFilters(newFilters);
     setOpen(false);
-    onSend(newFilters);
+    history.push(`/classe-overview?filter=${JSON.stringify(newFilters)}`);
   };
 
   const reset = () => {
@@ -71,14 +67,14 @@ const ClassSearchBar = ({ onSend }: $Props) => {
         sort: 0,
       });
     });
-    onSend([]);
+    history.push(`/classe-overview}`);
   };
 
   const createNewClass = () => {
     let newClass = new Class();
     delete newClass.id;
     createNewWithId("classes", newClass, (id) => {
-      history.push(`/class-detail/id/${id}`);
+      history.push(`/classe-detail/id/${id}`);
     });
   };
 

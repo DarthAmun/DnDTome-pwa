@@ -11,11 +11,7 @@ import IconButton from "../../form_elements/IconButton";
 import StringSearchField from "../../form_elements/StringSearchField";
 import { FixedBar, SearchBar, CreateButton, ExportButton, LeftTooltip } from "../../SearchbarStyle";
 
-interface $Props {
-  onSend: (filters: Filter[]) => void;
-}
-
-const RandomTableSearchBar = ({ onSend }: $Props) => {
+const RandomTableSearchBar = () => {
   const [open, setOpen] = useState(false);
   const [filters, setFilters] = useState<Filter[]>([]);
   let history = useHistory();
@@ -47,7 +43,7 @@ const RandomTableSearchBar = ({ onSend }: $Props) => {
 
     setFilters(newFilters);
     setOpen(false);
-    onSend(newFilters);
+    history.push(`/randomTable-overview?filter=${JSON.stringify(newFilters)}`);
   };
 
   const reset = () => {
@@ -60,7 +56,7 @@ const RandomTableSearchBar = ({ onSend }: $Props) => {
         sort: 0,
       });
     });
-    onSend([]);
+    history.push(`/eandomTable-overview}`);
   };
 
   const createNewRandomTable = () => {

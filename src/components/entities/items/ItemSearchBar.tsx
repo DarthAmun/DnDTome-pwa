@@ -24,11 +24,7 @@ import Item from "../../../data/Item";
 import StringSearchField from "../../form_elements/StringSearchField";
 import { FixedBar, SearchBar, CreateButton, ExportButton, LeftTooltip } from "../../SearchbarStyle";
 
-interface $Props {
-  onSend: (filters: Filter[]) => void;
-}
-
-const ItemSearchBar = ({ onSend }: $Props) => {
+const ItemSearchBar = () => {
   const [open, setOpen] = useState(false);
   const [filters, setFilters] = useState<Filter[]>([]);
   let history = useHistory();
@@ -117,7 +113,7 @@ const ItemSearchBar = ({ onSend }: $Props) => {
 
     setFilters(newFilters);
     setOpen(false);
-    onSend(newFilters);
+    history.push(`/item-overview?filter=${JSON.stringify(newFilters)}`);
   };
 
   const reset = () => {
@@ -136,7 +132,7 @@ const ItemSearchBar = ({ onSend }: $Props) => {
         sort: 0,
       });
     });
-    onSend([]);
+    history.push(`/item-overview}`);
   };
 
   const createNewItem = () => {

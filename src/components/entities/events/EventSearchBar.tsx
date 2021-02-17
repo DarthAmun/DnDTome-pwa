@@ -11,11 +11,7 @@ import IconButton from "../../form_elements/IconButton";
 import Event from "../../../data/world/Event";
 import { FixedBar, SearchBar, CreateButton, ExportButton, LeftTooltip } from "../../SearchbarStyle";
 
-interface $Props {
-  onSend: (filters: Filter[]) => void;
-}
-
-const EventSearchBar = ({ onSend }: $Props) => {
+const EventSearchBar = () => {
   const [open, setOpen] = useState(false);
   const [filters, setFilters] = useState<Filter[]>([]);
   let history = useHistory();
@@ -51,7 +47,7 @@ const EventSearchBar = ({ onSend }: $Props) => {
 
     setFilters(newFilters);
     setOpen(false);
-    onSend(newFilters);
+    history.push(`/event-overview?filter=${JSON.stringify(newFilters)}`);
   };
 
   const reset = () => {
@@ -65,7 +61,7 @@ const EventSearchBar = ({ onSend }: $Props) => {
         sort: 0,
       });
     });
-    onSend([]);
+    history.push(`/event-overview}`);
   };
 
   const createNewEvent = () => {

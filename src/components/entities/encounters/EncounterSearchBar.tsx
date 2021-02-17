@@ -11,11 +11,7 @@ import IconButton from "../../form_elements/IconButton";
 import StringField from "../../form_elements/StringField";
 import { FixedBar, SearchBar, CreateButton, ExportButton, LeftTooltip } from "../../SearchbarStyle";
 
-interface $Props {
-  onSend: (filters: Filter[]) => void;
-}
-
-const EncounterSearchBar = ({ onSend }: $Props) => {
+const EncounterSearchBar = () => {
   const [open, setOpen] = useState(false);
   const [filters, setFilters] = useState<Filter[]>([]);
   let history = useHistory();
@@ -29,7 +25,7 @@ const EncounterSearchBar = ({ onSend }: $Props) => {
     }
     setFilters(newFilters);
     setOpen(false);
-    onSend(newFilters);
+    history.push(`/encounter-overview?filter=${JSON.stringify(newFilters)}`);
   };
 
   const reset = () => {
@@ -37,7 +33,7 @@ const EncounterSearchBar = ({ onSend }: $Props) => {
       setName("");
       setOpen(false);
     });
-    onSend([]);
+    history.push(`/encounter-overview}`);
   };
 
   const createNewEncounter = () => {

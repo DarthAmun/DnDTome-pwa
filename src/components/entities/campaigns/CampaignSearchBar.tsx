@@ -11,11 +11,7 @@ import IconButton from "../../form_elements/IconButton";
 import StringField from "../../form_elements/StringField";
 import { FixedBar, SearchBar, CreateButton, ExportButton, LeftTooltip } from "../../SearchbarStyle";
 
-interface $Props {
-  onSend: (filters: Filter[]) => void;
-}
-
-const CampaignSearchBar = ({ onSend }: $Props) => {
+const CampaignSearchBar = () => {
   const [open, setOpen] = useState(false);
   const [filters, setFilters] = useState<Filter[]>([]);
   let history = useHistory();
@@ -29,7 +25,7 @@ const CampaignSearchBar = ({ onSend }: $Props) => {
     }
     setFilters(newFilters);
     setOpen(false);
-    onSend(newFilters);
+    history.push(`/campaign-overview?filter=${JSON.stringify(newFilters)}`);
   };
 
   const reset = () => {
@@ -37,7 +33,7 @@ const CampaignSearchBar = ({ onSend }: $Props) => {
       setName("");
       setOpen(false);
     });
-    onSend([]);
+    history.push(`/campaign-overview}`);
   };
 
   const createNewCampaign = () => {

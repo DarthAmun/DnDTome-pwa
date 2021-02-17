@@ -45,8 +45,10 @@ import RandomTableTile from "../entities/random_tables/RandomTableTile";
 import SelectionTile from "../entities/selections/SelectionTile";
 import SpellTile from "../entities/spells/SpellTile";
 import WorldTile from "../entities/worlds/WorldTile";
+import { useQuery } from "../../hooks/QueryHook";
 
 const EntityOverview = ({ match }: RouteComponentProps) => {
+  const rawFilters = useQuery().get("filter");
   const [entityName, setEntityName] = useState<string>("");
   const [filters, setFilter] = useState<Filter[]>([]);
   const [allEntitys, setAllEntitys] = useState<IEntity[]>([]);
@@ -62,7 +64,8 @@ const EntityOverview = ({ match }: RouteComponentProps) => {
   });
 
   useEffect(() => {
-    setFilter([]);
+    if (rawFilters !== null) setFilter(JSON.parse(rawFilters));
+    else setFilter([]);
     setAllEntitys([]);
     setEntitys([]);
     setParam({
@@ -75,7 +78,7 @@ const EntityOverview = ({ match }: RouteComponentProps) => {
       .filter((match: string) => match.includes("-overview"))[0]
       .replaceAll("-overview", "");
     setEntityName(newMatch);
-  }, [match]);
+  }, [match, rawFilters]);
 
   useEffect(() => {
     if (entityName !== "")
@@ -153,10 +156,7 @@ const EntityOverview = ({ match }: RouteComponentProps) => {
 
   return (
     <>
-      {entityName !== "" &&
-        React.createElement(searchbars[entityName], {
-          onSend: (filterArray: Filter[]) => setFilter(filterArray),
-        })}
+      {entityName !== "" && React.createElement(searchbars[entityName], {})}
       <div id="scrollable" style={{ width: "100%" }}>
         <EntityContainer
           dataLength={entitys.length}

@@ -18,11 +18,7 @@ import Npc from "../../../data/campaign/Npc";
 import StringSearchField from "../../form_elements/StringSearchField";
 import { FixedBar, SearchBar, CreateButton, ExportButton, LeftTooltip } from "../../SearchbarStyle";
 
-interface $Props {
-  onSend: (filters: Filter[]) => void;
-}
-
-const NpcSearchBar = ({ onSend }: $Props) => {
+const NpcSearchBar = () => {
   const [open, setOpen] = useState(false);
   const [filters, setFilters] = useState<Filter[]>([]);
   let history = useHistory();
@@ -58,7 +54,7 @@ const NpcSearchBar = ({ onSend }: $Props) => {
     });
     setFilters(newFilters);
     setOpen(false);
-    onSend(newFilters);
+    history.push(`/npc-overview?filter=${JSON.stringify(newFilters)}`);
   };
 
   const reset = () => {
@@ -72,7 +68,7 @@ const NpcSearchBar = ({ onSend }: $Props) => {
         sort: 0,
       });
     });
-    onSend([]);
+    history.push(`/npc-overview}`);
   };
 
   const createNewNpc = () => {

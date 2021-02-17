@@ -23,11 +23,7 @@ import Monster from "../../../data/Monster";
 import NumberField from "../../form_elements/NumberField";
 import { FixedBar, SearchBar, CreateButton, ExportButton, LeftTooltip } from "../../SearchbarStyle";
 
-interface $Props {
-  onSend: (filters: Filter[]) => void;
-}
-
-const MonsterSearchBar = ({ onSend }: $Props) => {
+const MonsterSearchBar = () => {
   const [open, setOpen] = useState(false);
   const [filters, setFilters] = useState<Filter[]>([]);
   let history = useHistory();
@@ -146,7 +142,7 @@ const MonsterSearchBar = ({ onSend }: $Props) => {
     });
     setFilters(newFilters);
     setOpen(false);
-    onSend(newFilters);
+    history.push(`/monster-overview?filter=${JSON.stringify(newFilters)}`);
   };
 
   const reset = () => {
@@ -175,7 +171,7 @@ const MonsterSearchBar = ({ onSend }: $Props) => {
         sort: 0,
       });
     });
-    onSend([]);
+    history.push(`/monster-overview}`);
   };
 
   const createNewMonster = () => {

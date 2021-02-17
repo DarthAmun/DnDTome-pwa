@@ -3,7 +3,13 @@ import { useHistory } from "react-router";
 import Filter from "../../../data/Filter";
 import ReactDOM from "react-dom";
 
-import { faLink, faSearch, faRedoAlt, faPlusCircle, faFileExport } from "@fortawesome/free-solid-svg-icons";
+import {
+  faLink,
+  faSearch,
+  faRedoAlt,
+  faPlusCircle,
+  faFileExport,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import IconButton from "../../form_elements/IconButton";
 import Race from "../../../data/races/Race";
@@ -11,11 +17,7 @@ import { createNewWithId, exportFilteredFromTable } from "../../../services/Data
 import StringSearchField from "../../form_elements/StringSearchField";
 import { FixedBar, SearchBar, CreateButton, ExportButton, LeftTooltip } from "../../SearchbarStyle";
 
-interface $Props {
-  onSend: (filters: Filter[]) => void;
-}
-
-const RaceSearchBar = ({ onSend }: $Props) => {
+const RaceSearchBar = () => {
   const [open, setOpen] = useState(false);
   const [filters, setFilters] = useState<Filter[]>([]);
   let history = useHistory();
@@ -55,7 +57,7 @@ const RaceSearchBar = ({ onSend }: $Props) => {
 
     setFilters(newFilters);
     setOpen(false);
-    onSend(newFilters);
+    history.push(`/race-overview?filter=${JSON.stringify(newFilters)}`);
   };
 
   const reset = () => {
@@ -70,7 +72,7 @@ const RaceSearchBar = ({ onSend }: $Props) => {
         sort: 0,
       });
     });
-    onSend([]);
+    history.push(`/race-overview)}`);
   };
 
   const createNewRace = () => {

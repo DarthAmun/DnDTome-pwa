@@ -11,11 +11,7 @@ import IconButton from "../../form_elements/IconButton";
 import StringField from "../../form_elements/StringField";
 import { FixedBar, SearchBar, CreateButton, ExportButton, LeftTooltip } from "../../SearchbarStyle";
 
-interface $Props {
-  onSend: (filters: Filter[]) => void;
-}
-
-const WorldSearchBar = ({ onSend }: $Props) => {
+const WorldSearchBar = () => {
   const [open, setOpen] = useState(false);
   const [filters, setFilters] = useState<Filter[]>([]);
   let history = useHistory();
@@ -29,7 +25,7 @@ const WorldSearchBar = ({ onSend }: $Props) => {
     }
     setFilters(newFilters);
     setOpen(false);
-    onSend(newFilters);
+    history.push(`/world-overview?filter=${JSON.stringify(newFilters)}`);
   };
 
   const reset = () => {
@@ -37,7 +33,7 @@ const WorldSearchBar = ({ onSend }: $Props) => {
       setName("");
       setOpen(false);
     });
-    onSend([]);
+    history.push(`/world-overview}`);
   };
 
   const createNewWorld = () => {

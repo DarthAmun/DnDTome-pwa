@@ -11,11 +11,7 @@ import Selection from "../../../data/Selection";
 import StringSearchField from "../../form_elements/StringSearchField";
 import { FixedBar, SearchBar, CreateButton, ExportButton, LeftTooltip } from "../../SearchbarStyle";
 
-interface $Props {
-  onSend: (filters: Filter[]) => void;
-}
-
-const SelectionSearchBar = ({ onSend }: $Props) => {
+const SelectionSearchBar = () => {
   const [open, setOpen] = useState(false);
   const [filters, setFilters] = useState<Filter[]>([]);
   let history = useHistory();
@@ -46,7 +42,7 @@ const SelectionSearchBar = ({ onSend }: $Props) => {
     });
     setFilters(newFilters);
     setOpen(false);
-    onSend(newFilters);
+    history.push(`/selection-overview?filter=${JSON.stringify(newFilters)}`);
   };
 
   const reset = () => {
@@ -59,7 +55,7 @@ const SelectionSearchBar = ({ onSend }: $Props) => {
         sort: 0,
       });
     });
-    onSend([]);
+    history.push(`/selection-overview}`);
   };
 
   const createNewSelection = () => {

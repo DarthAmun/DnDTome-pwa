@@ -18,11 +18,7 @@ import Location from "../../../data/world/Location";
 import StringSearchField from "../../form_elements/StringSearchField";
 import { FixedBar, SearchBar, CreateButton, ExportButton, LeftTooltip } from "../../SearchbarStyle";
 
-interface $Props {
-  onSend: (filters: Filter[]) => void;
-}
-
-const LocationSearchBar = ({ onSend }: $Props) => {
+const LocationSearchBar = () => {
   const [open, setOpen] = useState(false);
   const [filters, setFilters] = useState<Filter[]>([]);
   let history = useHistory();
@@ -61,7 +57,7 @@ const LocationSearchBar = ({ onSend }: $Props) => {
     });
     setFilters(newFilters);
     setOpen(false);
-    onSend(newFilters);
+    history.push(`/location-overview?filter=${JSON.stringify(newFilters)}`);
   };
 
   const reset = () => {
@@ -75,7 +71,7 @@ const LocationSearchBar = ({ onSend }: $Props) => {
         sort: 0,
       });
     });
-    onSend([]);
+    history.push(`/location-overview}`);
   };
 
   const createNewLocation = () => {

@@ -165,7 +165,7 @@ const CharGeneral = ({ buildChar, onChange }: $Props) => {
           <PropWithProf>
             <PropText>
               <PropTitle>Acrobatics:</PropTitle>
-              {calcSkill(buildChar.character.skills.acrobaticsProf, buildChar.character.str)}
+              {calcSkill(buildChar.character.skills.acrobaticsProf, buildChar.character.dex)}
             </PropText>
             <PropProf>
               <Icon icon={formatProf(buildChar.character.skills.acrobaticsProf)} />
@@ -192,7 +192,7 @@ const CharGeneral = ({ buildChar, onChange }: $Props) => {
           <PropWithProf>
             <PropText>
               <PropTitle>Athletics:</PropTitle>
-              {calcSkill(buildChar.character.skills.athleticsProf, buildChar.character.dex)}
+              {calcSkill(buildChar.character.skills.athleticsProf, buildChar.character.str)}
             </PropText>
             <PropProf>
               <Icon icon={formatProf(buildChar.character.skills.athleticsProf)} />
