@@ -1270,6 +1270,7 @@ export const makeSelection = (
         prequisite += key + ": " + value + ", ";
       } else if (Array.isArray(value)) {
         prequisite += key + ": ";
+        // eslint-disable-next-line
         value.forEach((val) => {
           prequisite += val + ", ";
         });
