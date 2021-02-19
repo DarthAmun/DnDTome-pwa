@@ -94,7 +94,7 @@ const fillTemplate = async (template: string | ArrayBuffer, char: Char) => {
 
   form
     .getTextField("Acrobatics")
-    .setText(calcSkill(char.skills.acrobaticsProf, completeChar.prof, char.str));
+    .setText(calcSkill(char.skills.acrobaticsProf, completeChar.prof, char.dex));
   if (char.skills.acrobaticsProf > 0) form.getCheckBox("Check Box 23").check();
   form
     .getTextField("Animal")
@@ -106,7 +106,7 @@ const fillTemplate = async (template: string | ArrayBuffer, char: Char) => {
   if (char.skills.arcanaProf > 0) form.getCheckBox("Check Box 25").check();
   form
     .getTextField("Athletics")
-    .setText(calcSkill(char.skills.athleticsProf, completeChar.prof, char.dex));
+    .setText(calcSkill(char.skills.athleticsProf, completeChar.prof, char.str));
   if (char.skills.athleticsProf > 0) form.getCheckBox("Check Box 26").check();
   form
     .getTextField("Deception")
@@ -147,23 +147,23 @@ const fillTemplate = async (template: string | ArrayBuffer, char: Char) => {
   form
     .getTextField("Persuasion")
     .setText(calcSkill(char.skills.persuasionProf, completeChar.prof, char.cha));
-  if (char.skills.persuasionProf > 0) form.getCheckBox("Check Box 35").check();
+  if (char.skills.persuasionProf > 0) form.getCheckBox("Check Box 36").check();
   form
     .getTextField("Religion")
     .setText(calcSkill(char.skills.religionProf, completeChar.prof, char.int));
-  if (char.skills.religionProf > 0) form.getCheckBox("Check Box 36").check();
+  if (char.skills.religionProf > 0) form.getCheckBox("Check Box 37").check();
   form
     .getTextField("SleightofHand")
     .setText(calcSkill(char.skills.sleightOfHandProf, completeChar.prof, char.dex));
-  if (char.skills.sleightOfHandProf > 0) form.getCheckBox("Check Box 37").check();
+  if (char.skills.sleightOfHandProf > 0) form.getCheckBox("Check Box 38").check();
   form
     .getTextField("Stealth")
     .setText(calcSkill(char.skills.stealthProf, completeChar.prof, char.dex));
-  if (char.skills.stealthProf > 0) form.getCheckBox("Check Box 38").check();
+  if (char.skills.stealthProf > 0) form.getCheckBox("Check Box 39").check();
   form
     .getTextField("Survival")
     .setText(calcSkill(char.skills.survivalProf, completeChar.prof, char.wis));
-  if (char.skills.survivalProf > 0) form.getCheckBox("Check Box 38").check();
+  if (char.skills.survivalProf > 0) form.getCheckBox("Check Box 40").check();
 
   form.getTextField("Treasure");
 

@@ -230,16 +230,17 @@ export const scanImportFileTest = async (
 
 export const exportAllFromTable = (tableName: string, filename: string) => {
   reciveAll(tableName, (all: IndexableType[]) => {
+    let entity = {[tableName]: all};
     let contentType = "application/json;charset=utf-8;";
     if (window.navigator && window.navigator.msSaveOrOpenBlob) {
-      var blob = new Blob([decodeURIComponent(encodeURI(JSON.stringify(all)))], {
+      var blob = new Blob([decodeURIComponent(encodeURI(JSON.stringify(entity)))], {
         type: contentType,
       });
       navigator.msSaveOrOpenBlob(blob, filename);
     } else {
       var a = document.createElement("a");
       a.download = filename;
-      a.href = "data:" + contentType + "," + encodeURIComponent(JSON.stringify(all));
+      a.href = "data:" + contentType + "," + encodeURIComponent(JSON.stringify(entity));
       a.target = "_blank";
       document.body.appendChild(a);
       a.click();

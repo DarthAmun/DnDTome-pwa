@@ -670,7 +670,7 @@ const CharEditView = ({ character, onEdit }: $Props) => {
                       <PropTitle>Acrobatics:</PropTitle>
                       {calcSkill(
                         buildChar.character.skills.acrobaticsProf,
-                        buildChar.character.str
+                        buildChar.character.dex
                       )}
                     </PropText>
                     <PropProf onClick={(e) => changeProf("acrobaticsProf")}>
@@ -701,7 +701,7 @@ const CharEditView = ({ character, onEdit }: $Props) => {
                   <PropWithProf>
                     <PropText>
                       <PropTitle>Athletics:</PropTitle>
-                      {calcSkill(buildChar.character.skills.athleticsProf, buildChar.character.dex)}
+                      {calcSkill(buildChar.character.skills.athleticsProf, buildChar.character.str)}
                     </PropText>
                     <PropProf onClick={(e) => changeProf("athleticsProf")}>
                       <Icon icon={formatProf(buildChar.character.skills.athleticsProf)} />
