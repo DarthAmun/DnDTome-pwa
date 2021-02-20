@@ -5,6 +5,11 @@ import BuildChar from "../../../../../data/chars/BuildChar";
 
 import FormatedText from "../../../../general_elements/FormatedText";
 import Feature from "../../../../../data/classes/Feature";
+import { faDiscord } from "@fortawesome/free-brands-svg-icons";
+import { useWebhook } from "../../../../../hooks/webhookHook";
+import { rollCommand } from "../../../../../services/DiceService";
+import { sendEmbedMessage } from "../../../../../services/DiscordService";
+import IconButton from "../../../../form_elements/IconButton";
 
 interface $Props {
   buildChar: BuildChar;
@@ -12,9 +17,70 @@ interface $Props {
 
 const CharCombat = ({ buildChar }: $Props) => {
   let history = useHistory();
+  let webhook = useWebhook();
   const [actions, setActions] = useState<Feature[]>([]);
   const [bonusActions, setBonusActions] = useState<Feature[]>([]);
   const [reactions, setReactions] = useState<Feature[]>([]);
+
+  const rollDiscord = (title: string, value: number, damage: string) => {
+    let rollString: string = "";
+    let roll: number = 0;
+
+    if (value >= 0) {
+      roll = rollCommand("d20+" + value);
+      rollString = "d20(`" + (roll - value) + "`)+" + value;
+    } else {
+      roll = rollCommand("d20" + value);
+      rollString = "d20(`" + (roll - value) + "`)" + value;
+    }
+
+    let krit = false;
+    if (roll - value === 20) krit = true;
+    let fail = false;
+    if (roll - value === 1) fail = true;
+
+    let newDamage = "";
+    damage
+      .split(" ")
+      .filter((command) => /\d+/g.test(command))
+      .forEach((command) => {
+        newDamage += command;
+      });
+    newDamage = newDamage.trim();
+    let damageRoll = rollCommand(newDamage, krit);
+
+    if (webhook !== undefined) {
+      const newName = value >= 0 ? title + "(+" + value + ")" : title + "(" + value + ")";
+      let newJson = {
+        username: webhook.name + " (DnDTome)",
+        embeds: [
+          {
+            author: {
+              name: buildChar.character.name,
+              icon_url: buildChar.character.pic,
+            },
+            fields: [
+              {
+                name: newName + " to hit",
+                value:
+                  roll +
+                  (fail ? " :red_circle:" : "") +
+                  (krit ? " :green_circle:" : "") +
+                  " ||" +
+                  rollString +
+                  "||",
+              },
+              {
+                name: "Damage",
+                value: damageRoll + " ||" + newDamage + "||",
+              },
+            ],
+          },
+        ],
+      };
+      sendEmbedMessage(webhook, JSON.stringify(newJson));
+    }
+  };
 
   useEffect(() => {
     if (buildChar.classFeatures && buildChar.classFeatures.length > 0) {
@@ -56,10 +122,38 @@ const CharCombat = ({ buildChar }: $Props) => {
                     </MainLink>
                   </Prop>
                   <Prop>
-                    +{bonus + (baseitem.prof ? buildChar.prof : 0) + baseitem.item.magicBonus}
+                    {bonus + (baseitem.prof ? buildChar.prof : 0) + baseitem.item.magicBonus >= 0
+                      ? "+"
+                      : ""}
+                    {bonus + (baseitem.prof ? buildChar.prof : 0) + baseitem.item.magicBonus}
                   </Prop>
-                  <Prop>{`${baseitem.base?.damage} +${baseitem.item.magicBonus + bonus}`}</Prop>
+                  <Prop>{`${baseitem.base?.damage} ${
+                    (baseitem.item.magicBonus + bonus >= 0 ? "+" : "") +
+                    (baseitem.item.magicBonus + bonus)
+                  }`}</Prop>
                   <Prop>{baseitem.base?.properties}</Prop>
+                  {webhook !== undefined && (
+                    <IconButton
+                      style={{
+                        backgroundColor: "#7289da",
+                        float: "right",
+                        padding: "5px",
+                        height: "18px",
+                        lineHeight: "18px",
+                        fontSize: "18px",
+                      }}
+                      icon={faDiscord}
+                      onClick={() =>
+                        rollDiscord(
+                          baseitem.item.name,
+                          bonus + (baseitem.prof ? buildChar.prof : 0) + baseitem.item.magicBonus,
+                          baseitem.base !== undefined
+                            ? baseitem.base.damage + " " + (baseitem.item.magicBonus + bonus)
+                            : ""
+                        )
+                      }
+                    />
+                  )}
                 </PropWrapper>
               );
             } else {
@@ -77,20 +171,81 @@ const CharCombat = ({ buildChar }: $Props) => {
                   <PropWrapper key={index}>
                     <Prop>{baseGear.gear.name}</Prop>
                     <Prop>
-                      {strBonus > dexBonus ? <>+{strBonus + buildChar.prof}</> : ""}
-                      {dexBonus > strBonus ? <>+{dexBonus + buildChar.prof}</> : ""}
+                      {strBonus > dexBonus ? (
+                        <>
+                          {strBonus + buildChar.prof >= 0 ? "+" : ""}
+                          {strBonus + buildChar.prof}
+                        </>
+                      ) : (
+                        ""
+                      )}
+                      {dexBonus > strBonus ? (
+                        <>
+                          {dexBonus + buildChar.prof >= 0 ? "+" : ""}
+                          {dexBonus + buildChar.prof}
+                        </>
+                      ) : (
+                        ""
+                      )}
                     </Prop>
                     <Prop>{baseGear.gear.damage}</Prop>
                     <Prop>{baseGear.gear.properties}</Prop>
+                    {webhook !== undefined && (
+                      <IconButton
+                        style={{
+                          backgroundColor: "#7289da",
+                          float: "right",
+                          padding: "5px",
+                          height: "18px",
+                          lineHeight: "18px",
+                          fontSize: "18px",
+                        }}
+                        icon={faDiscord}
+                        onClick={() =>
+                          rollDiscord(
+                            baseGear.gear.name,
+                            strBonus > dexBonus
+                              ? strBonus + buildChar.prof
+                              : dexBonus + buildChar.prof,
+                            baseGear.gear.damage
+                          )
+                        }
+                      />
+                    )}
                   </PropWrapper>
                 );
               } else {
                 return (
                   <PropWrapper key={index}>
                     <Prop>{baseGear.gear.name}</Prop>
-                    <Prop>+{strBonus + buildChar.prof}</Prop>
+                    <Prop>
+                      {strBonus + buildChar.prof >= 0 ? "+" : ""}
+                      {strBonus + buildChar.prof}
+                    </Prop>
                     <Prop>{baseGear.gear.damage}</Prop>
                     <Prop>{baseGear.gear.properties}</Prop>
+                    {webhook !== undefined && (
+                      <IconButton
+                        style={{
+                          backgroundColor: "#7289da",
+                          float: "right",
+                          padding: "5px",
+                          height: "18px",
+                          lineHeight: "18px",
+                          fontSize: "18px",
+                        }}
+                        icon={faDiscord}
+                        onClick={() =>
+                          rollDiscord(
+                            baseGear.gear.name,
+                            strBonus > dexBonus
+                              ? strBonus + buildChar.prof
+                              : dexBonus + buildChar.prof,
+                            baseGear.gear.damage
+                          )
+                        }
+                      />
+                    )}
                   </PropWrapper>
                 );
               }
@@ -174,6 +329,7 @@ const View = styled.div`
 
 const MinView = styled(View)`
   max-width: max-content;
+  flex-direction: column;
 `;
 
 const PropWrapper = styled.div`
