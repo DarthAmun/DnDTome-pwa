@@ -10,19 +10,20 @@ interface $Props {
   floatLeft?: boolean;
   disabled?: boolean;
   transform?: string | Transform;
+  style?: any;
   onClick: (() => void) | ((e: any) => void);
 }
 
-const IconButton = ({ icon, floatLeft, disabled, transform, onClick }: $Props) => {
+const IconButton = ({ icon, floatLeft, disabled, transform, style, onClick }: $Props) => {
   return (
     <>
       {!disabled && (
-        <SimpleButton left={floatLeft} onClick={onClick}>
+        <SimpleButton left={floatLeft} onClick={onClick} style={style}>
           <Icon icon={icon} transform={transform} />
         </SimpleButton>
       )}
       {disabled && (
-        <DisabledSimpleButton>
+        <DisabledSimpleButton style={style}>
           <Icon icon={icon} transform={transform} />
         </DisabledSimpleButton>
       )}

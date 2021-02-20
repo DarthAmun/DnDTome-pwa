@@ -9,14 +9,73 @@ import { faLink, faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import FormatedText from "../../../general_elements/FormatedText";
 import TextButton from "../../../form_elements/TextButton";
 import P2PSender from "../../../p2p/P2PSender";
+import { useWebhook } from "../../../../hooks/webhookHook";
+import { faDiscord } from "@fortawesome/free-brands-svg-icons";
+import { formatDiscordText, sendEmbedMessage } from "../../../../services/DiscordService";
 
 interface $Props {
   item: Item;
 }
 
 const ItemView = ({ item }: $Props) => {
+  let webhook = useWebhook();
+  const [json, setJson] = useState<string>("");
   const [send, setSend] = useState<boolean>(false);
   const [itemBase, setItemBase] = useState<Gear>();
+
+  useEffect(() => {
+    if (webhook !== undefined) {
+      let newJson = {
+        username: webhook.name + " (DnDTome)",
+        embeds: [
+          {
+            author: {
+              name: item.name,
+              icon_url: item.pic,
+            },
+            fields: [
+              {
+                name: "Bonus",
+                value: item.magicBonus ? item.magicBonus : "-",
+                inline: true,
+              },
+              {
+                name: "Rarity",
+                value: item.rarity ? item.rarity : "-",
+                inline: true,
+              },
+              {
+                name: "Type",
+                value: item.type ? item.type : "-",
+                inline: true,
+              },
+              {
+                name: "Base",
+                value: item.base ? item.base : "-",
+                inline: true,
+              },
+              {
+                name: "Damage",
+                value: itemBase && itemBase.damage ? itemBase.damage : "-",
+                inline: true,
+              },
+              {
+                name: "Properties",
+                value: itemBase && itemBase.properties ? itemBase.properties : "-",
+                inline: true,
+              },
+              {
+                name: "Text",
+                value: formatDiscordText(item.description),
+              },
+            ],
+          },
+        ],
+      };
+
+      setJson(JSON.stringify(newJson));
+    }
+  }, [item, webhook, itemBase]);
 
   useEffect(() => {
     reciveAllFiltered(
@@ -85,6 +144,18 @@ const ItemView = ({ item }: $Props) => {
             <FormatedText text={item.description} />
           </Text>
         </PropWrapper>
+        {webhook !== undefined && (
+          <PropWrapper>
+            <TextButton
+              style={{
+                backgroundColor: "#7289da",
+              }}
+              text={`Show ${item.name}`}
+              icon={faDiscord}
+              onClick={() => sendEmbedMessage(webhook, json)}
+            />
+          </PropWrapper>
+        )}
         <PropWrapper>
           {!send && (
             <TextButton

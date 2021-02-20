@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -8,13 +8,45 @@ import FormatedText from "../../../general_elements/FormatedText";
 import P2PSender from "../../../p2p/P2PSender";
 import TextButton from "../../../form_elements/TextButton";
 import { faCalendarAlt } from "@fortawesome/free-regular-svg-icons";
+import { faDiscord } from "@fortawesome/free-brands-svg-icons";
+import { useWebhook } from "../../../../hooks/webhookHook";
+import { formatDiscordText, sendEmbedMessage } from "../../../../services/DiscordService";
 
 interface $Props {
   event: Event;
 }
 
 const EventView = ({ event }: $Props) => {
+  let webhook = useWebhook();
+  const [json, setJson] = useState<string>("");
   const [send, setSend] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (webhook !== undefined) {
+      let newJson = {
+        username: webhook.name + " (DnDTome)",
+        embeds: [
+          {
+            author: {
+              name: event.name,
+            },
+            fields: [
+              {
+                name: "Date",
+                value: event.date ? event.date : "-",
+                inline: true,
+              },
+              {
+                name: "Text",
+                value: event.description ? formatDiscordText(event.description) : "-",
+              },
+            ],
+          },
+        ],
+      };
+      setJson(JSON.stringify(newJson));
+    }
+  }, [event, webhook]);
 
   return (
     <CenterWrapper>
@@ -38,6 +70,16 @@ const EventView = ({ event }: $Props) => {
           <FormatedText text={event.description} />
         </Text>
         <PropWrapper>
+          {webhook !== undefined && (
+            <TextButton
+              style={{
+                backgroundColor: "#7289da",
+              }}
+              text={`Show ${event.name}`}
+              icon={faDiscord}
+              onClick={() => sendEmbedMessage(webhook, json)}
+            />
+          )}
           {!send && (
             <TextButton
               text={`Send ${event.name}`}

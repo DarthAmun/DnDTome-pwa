@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Quest from "../../../../data/campaign/Quest";
 import styled from "styled-components";
 
@@ -6,13 +6,45 @@ import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import FormatedText from "../../../general_elements/FormatedText";
 import TextButton from "../../../form_elements/TextButton";
 import P2PSender from "../../../p2p/P2PSender";
+import { faDiscord } from "@fortawesome/free-brands-svg-icons";
+import { useWebhook } from "../../../../hooks/webhookHook";
+import { formatDiscordText, sendEmbedMessage } from "../../../../services/DiscordService";
 
 interface $Props {
   quest: Quest;
 }
 
 const QuestView = ({ quest }: $Props) => {
+  let webhook = useWebhook();
+  const [json, setJson] = useState<string>("");
   const [send, setSend] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (webhook !== undefined) {
+      let newJson = {
+        username: webhook.name + " (DnDTome)",
+        embeds: [
+          {
+            author: {
+              name: quest.name,
+              icon_url: quest.pic,
+            },
+            fields: [
+              {
+                name: "Descritption",
+                value: quest.description ? formatDiscordText(quest.description) : "-",
+              },
+              {
+                name: "Reward",
+                value: quest.rewards ? formatDiscordText(quest.rewards) : "-",
+              },
+            ],
+          },
+        ],
+      };
+      setJson(JSON.stringify(newJson));
+    }
+  }, [quest, webhook]);
 
   const getPicture = useCallback(() => {
     if (quest !== undefined) {
@@ -50,6 +82,16 @@ const QuestView = ({ quest }: $Props) => {
           </Prop>
         </PropWrapper>
         <PropWrapper>
+          {webhook !== undefined && (
+            <TextButton
+              style={{
+                backgroundColor: "#7289da",
+              }}
+              text={`Show ${quest.name}`}
+              icon={faDiscord}
+              onClick={() => sendEmbedMessage(webhook, json)}
+            />
+          )}
           {!send && (
             <TextButton
               text={`Send ${quest.name}`}

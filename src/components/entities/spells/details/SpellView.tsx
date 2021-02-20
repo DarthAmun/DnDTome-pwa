@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -15,13 +15,66 @@ import Spell from "../../../../data/Spell";
 import FormatedText from "../../../general_elements/FormatedText";
 import P2PSender from "../../../p2p/P2PSender";
 import TextButton from "../../../form_elements/TextButton";
+import { useWebhook } from "../../../../hooks/webhookHook";
+import { formatDiscordText, sendEmbedMessage } from "../../../../services/DiscordService";
+import { faDiscord } from "@fortawesome/free-brands-svg-icons";
 
 interface $Props {
   spell: Spell;
 }
 
 const SpellView = ({ spell }: $Props) => {
+  let webhook = useWebhook();
+  const [json, setJson] = useState<string>("");
   const [send, setSend] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (webhook !== undefined) {
+      let newJson = {
+        username: webhook.name + " (DnDTome)",
+        embeds: [
+          {
+            author: {
+              name: spell.name,
+              icon_url: spell.pic,
+            },
+            fields: [
+              {
+                name: "Level",
+                value: spell.level ? spell.level : "-",
+                inline: true,
+              },
+              {
+                name: "School",
+                value: spell.school ? spell.school : "-",
+                inline: true,
+              },
+              {
+                name: "Range",
+                value: spell.range ? spell.range : "-",
+                inline: true,
+              },
+              {
+                name: "Duration",
+                value: spell.duration ? spell.duration : "-",
+                inline: true,
+              },
+              {
+                name: "Time",
+                value: spell.time ? spell.time : "-",
+                inline: true,
+              },
+              {
+                name: "Text",
+                value: formatDiscordText(spell.text),
+              },
+            ],
+          },
+        ],
+      };
+      setJson(JSON.stringify(newJson));
+    }
+  }, [spell, webhook]);
 
   const formatLevel = useCallback(() => {
     if (spell !== undefined) {
@@ -119,14 +172,24 @@ const SpellView = ({ spell }: $Props) => {
           <FormatedText text={spell.text} />
         </Text>
         <PropWrapper>
-            {!send && (
-              <TextButton
-                text={`Send ${spell.name}`}
-                icon={faPaperPlane}
-                onClick={() => setSend(true)}
-              />
-            )}
-            {!!send && <P2PSender data={spell} mode={"THIS"} />}
+          {webhook !== undefined && (
+            <TextButton
+              style={{
+                backgroundColor: "#7289da",
+              }}
+              text={`Cast ${spell.name}`}
+              icon={faDiscord}
+              onClick={() => sendEmbedMessage(webhook, json)}
+            />
+          )}
+          {!send && (
+            <TextButton
+              text={`Send ${spell.name}`}
+              icon={faPaperPlane}
+              onClick={() => setSend(true)}
+            />
+          )}
+          {!!send && <P2PSender data={spell} mode={"THIS"} />}
         </PropWrapper>
       </View>
     </CenterWrapper>

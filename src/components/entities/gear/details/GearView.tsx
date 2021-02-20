@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Gear from "../../../../data/Gear";
 import styled from "styled-components";
 
@@ -13,13 +13,66 @@ import {
 import FormatedText from "../../../general_elements/FormatedText";
 import TextButton from "../../../form_elements/TextButton";
 import P2PSender from "../../../p2p/P2PSender";
+import { faDiscord } from "@fortawesome/free-brands-svg-icons";
+import { useWebhook } from "../../../../hooks/webhookHook";
+import { formatDiscordText, sendEmbedMessage } from "../../../../services/DiscordService";
 
 interface $Props {
   gear: Gear;
 }
 
 const GearView = ({ gear }: $Props) => {
+  let webhook = useWebhook();
+  const [json, setJson] = useState<string>("");
   const [send, setSend] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (webhook !== undefined) {
+      let newJson = {
+        username: webhook.name + " (DnDTome)",
+        embeds: [
+          {
+            author: {
+              name: gear.name,
+              icon_url: gear.pic,
+            },
+            fields: [
+              {
+                name: "Weight",
+                value: gear.weight ? gear.weight : "-",
+                inline: true,
+              },
+              {
+                name: "Cost",
+                value: gear.cost ? gear.cost : "-",
+                inline: true,
+              },
+              {
+                name: "Properties",
+                value: gear.properties ? gear.properties : "-",
+                inline: true,
+              },
+              {
+                name: "Damgae",
+                value: gear.damage ? gear.damage : "-",
+                inline: true,
+              },
+              {
+                name: "Type",
+                value: gear.type ? gear.type : "-",
+                inline: true,
+              },
+              {
+                name: "Text",
+                value: gear.description ? formatDiscordText(gear.description) : "-",
+              },
+            ],
+          },
+        ],
+      };
+      setJson(JSON.stringify(newJson));
+    }
+  }, [gear, webhook]);
 
   const getPicture = useCallback(() => {
     if (gear !== undefined) {
@@ -70,6 +123,18 @@ const GearView = ({ gear }: $Props) => {
             <FormatedText text={gear.description} />
           </Text>
         </PropWrapper>
+        {webhook !== undefined && (
+          <PropWrapper>
+            <TextButton
+              style={{
+                backgroundColor: "#7289da",
+              }}
+              text={`Show ${gear.name}`}
+              icon={faDiscord}
+              onClick={() => sendEmbedMessage(webhook, json)}
+            />
+          </PropWrapper>
+        )}
         <PropWrapper>
           {!send && (
             <TextButton

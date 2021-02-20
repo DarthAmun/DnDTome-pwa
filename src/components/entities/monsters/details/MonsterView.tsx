@@ -1,27 +1,47 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import Monster from "../../../../data/Monster";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faLink,
-  faPaperPlane,
-  faRunning,
-  faShieldAlt,
-} from "@fortawesome/free-solid-svg-icons";
+import { faLink, faPaperPlane, faRunning, faShieldAlt } from "@fortawesome/free-solid-svg-icons";
 import { GiResize, GiAngelOutfit, GiLifeBar } from "react-icons/gi";
 import { MdRecordVoiceOver, MdRemoveRedEye } from "react-icons/md";
 import FormatedText from "../../../general_elements/FormatedText";
 import TextButton from "../../../form_elements/TextButton";
 import P2PSender from "../../../p2p/P2PSender";
+import { faDiscord } from "@fortawesome/free-brands-svg-icons";
+import { useWebhook } from "../../../../hooks/webhookHook";
+import { sendEmbedMessage } from "../../../../services/DiscordService";
 
 interface $Props {
   monster: Monster;
 }
 
 const MonsterView = ({ monster }: $Props) => {
+  let webhook = useWebhook();
+  const [json, setJson] = useState<string>("");
   const [send, setSend] = useState<boolean>(false);
-  
+
+  useEffect(() => {
+    if (webhook !== undefined) {
+      let newJson = {
+        username: webhook.name + " (DnDTome)",
+        embeds: [
+          {
+            author: {
+              name: monster.name,
+              icon_url: monster.pic,
+            },
+            image: {
+              url: monster.pic,
+            },
+          },
+        ],
+      };
+      setJson(JSON.stringify(newJson));
+    }
+  }, [monster, webhook]);
+
   const isLegendary = useCallback(() => {
     if (monster !== undefined) {
       if (monster.lAblt.trim() !== "" || monster.sAblt.includes("Legendary")) {
@@ -67,8 +87,7 @@ const MonsterView = ({ monster }: $Props) => {
       )}
       <View>
         <Type>
-          {monster.type}{" "}
-          {monster.subtype.trim() !== "" ? "(" + monster.subtype + ")" : ""}
+          {monster.type} {monster.subtype.trim() !== "" ? "(" + monster.subtype + ")" : ""}
         </Type>
 
         <Flag>
@@ -142,9 +161,7 @@ const MonsterView = ({ monster }: $Props) => {
               {monster.skills}
             </Prop>
           )}
-          {monster.dmgVulnerabilitie && (
-            <Prop>{monster.dmgVulnerabilitie}</Prop>
-          )}
+          {monster.dmgVulnerabilitie && <Prop>{monster.dmgVulnerabilitie}</Prop>}
           {monster.dmgResistance && (
             <Prop>
               <PropTitle>Resistance:</PropTitle>
@@ -168,16 +185,28 @@ const MonsterView = ({ monster }: $Props) => {
             {monster.sources}
           </Prop>
         </PropWrapper>
-        <PropWrapper>
-        {!send && (
-          <TextButton
-            text={`Send ${monster.name}`}
-            icon={faPaperPlane}
-            onClick={() => setSend(true)}
-          />
+        {webhook !== undefined && monster.pic !== "" && (
+          <PropWrapper>
+            <TextButton
+              style={{
+                backgroundColor: "#7289da",
+              }}
+              text={`Show ${monster.name} image`}
+              icon={faDiscord}
+              onClick={() => sendEmbedMessage(webhook, json)}
+            />
+          </PropWrapper>
         )}
-        {!!send && <P2PSender data={monster} mode={"THIS"} />}
-      </PropWrapper>
+        <PropWrapper>
+          {!send && (
+            <TextButton
+              text={`Send ${monster.name}`}
+              icon={faPaperPlane}
+              onClick={() => setSend(true)}
+            />
+          )}
+          {!!send && <P2PSender data={monster} mode={"THIS"} />}
+        </PropWrapper>
       </View>
       {monster.ablt && (
         <View>

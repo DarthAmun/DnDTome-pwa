@@ -10,12 +10,13 @@ interface $Props {
   disabled?: boolean;
   icon?: IconDefinition;
   transform?: string | Transform;
+  style?: any;
   onClick: () => void;
 }
 
-const TextButton = ({ text, icon, transform, disabled, onClick }: $Props) => {
+const TextButton = ({ text, icon, transform, disabled, style, onClick }: $Props) => {
   return (
-    <SimpleButton onClick={onClick} disabled={disabled}>
+    <SimpleButton onClick={onClick} disabled={disabled} style={style}>
       {icon ? <Icon icon={icon} transform={transform} /> : ""} {text}
     </SimpleButton>
   );

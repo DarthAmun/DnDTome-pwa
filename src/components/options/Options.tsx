@@ -59,6 +59,7 @@ import WorldsOptions from "./WorldsOptions";
 import ImportField, { ImportModus } from "../form_elements/ImportField";
 import GroupTile from "../entities/groups/GroupTile";
 import GroupsOptions from "./GroupsOptions";
+import DiscordOptions from "./DiscordOptions";
 
 const Options = () => {
   const [activeTab, setTab] = useState<string>("General");
@@ -226,6 +227,7 @@ const Options = () => {
           "Events",
           "Locations",
           "Other Imports",
+          "Discord",
           "Recive",
         ]}
         onChange={(tab: string) => setTab(tab)}
@@ -284,6 +286,7 @@ const Options = () => {
         <LocationsOptions amount={locationAmount} triggerDeleteAll={triggerDeleteAll} />
       )}
       {activeTab === "Other Imports" && <OtherImportOptions />}
+      {activeTab === "Discord" && <DiscordOptions />}
       {activeTab === "Recive" && (
         <OptionTab>
           <OptionSectionLarge>

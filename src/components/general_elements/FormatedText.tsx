@@ -1,6 +1,10 @@
+import { faDiscord } from "@fortawesome/free-brands-svg-icons";
 import React, { useEffect, useState, useCallback } from "react";
 import { useHistory } from "react-router";
 import styled from "styled-components";
+import { useWebhook } from "../../hooks/webhookHook";
+import { formatDiscordText, sendEmbedMessage } from "../../services/DiscordService";
+import IconButton from "../form_elements/IconButton";
 import LinkCheck from "./LinkCheck";
 
 interface $Props {
@@ -8,8 +12,29 @@ interface $Props {
 }
 
 const FormatedText = ({ text }: $Props) => {
+  let webhook = useWebhook();
+  const [json, setJson] = useState<string>("");
   const [formatedText, setFormatedText] = useState<JSX.Element>();
   let history = useHistory();
+
+  useEffect(() => {
+    if (webhook !== undefined) {
+      let newJson = {
+        username: webhook.name + " (DnDTome)",
+        embeds: [
+          {
+            fields: [
+              {
+                name: "Text",
+                value: formatDiscordText(text),
+              },
+            ],
+          },
+        ],
+      };
+      setJson(JSON.stringify(newJson));
+    }
+  }, [text, webhook]);
 
   const cut = (str: string, cutStart: number, cutEnd: number) => {
     return str.substr(0, cutStart) + str.substr(cutEnd + 1);
@@ -117,10 +142,27 @@ const FormatedText = ({ text }: $Props) => {
     }
   }, [text, history, formatText]);
 
-  return <>{formatedText}</>;
+  return (
+    <FormatedTextContainer>
+      {webhook !== undefined && text !== "" && (
+        <IconButton
+          style={{
+            backgroundColor: "#7289da",
+            float: "right",
+            padding: "5px",
+          }}
+          icon={faDiscord}
+          onClick={() => sendEmbedMessage(webhook, json)}
+        />
+      )}
+      {formatedText}
+    </FormatedTextContainer>
+  );
 };
 
 export default FormatedText;
+
+const FormatedTextContainer = styled.div``;
 
 const Link = styled.span`
   display: inline-block;
