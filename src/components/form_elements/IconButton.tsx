@@ -11,7 +11,7 @@ interface $Props {
   disabled?: boolean;
   transform?: string | Transform;
   style?: any;
-  onClick: (() => void) | ((e: any) => void);
+  onClick?: (() => void) | ((e: any) => void);
 }
 
 const IconButton = ({ icon, floatLeft, disabled, transform, style, onClick }: $Props) => {

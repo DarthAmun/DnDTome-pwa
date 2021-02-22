@@ -18,11 +18,7 @@ import Location, { isLocation } from "../data/world/Location";
 import Event, { isEvent } from "../data/world/Event";
 import World, { isWorld } from "../data/world/World";
 
-export const scanImportFileTest = async (
-  json: any,
-  fileName: string,
-  callback: (failed: number, failedObj: string[], max: number) => void
-) => {
+export const scanImportFileTest = async (json: any, fileName: string, callback: () => void) => {
   let promList: Promise<any>[] = [];
 
   if (!Array.isArray(json)) {
@@ -67,6 +63,7 @@ export const scanImportFileTest = async (
     }
   });
   await Promise.all(promList);
+  callback();
 };
 
 // const scanForFormatErrors = (obj: any) => {
@@ -230,7 +227,7 @@ export const scanImportFileTest = async (
 
 export const exportAllFromTable = (tableName: string, filename: string) => {
   reciveAll(tableName, (all: IndexableType[]) => {
-    let entity = {[tableName]: all};
+    let entity = { [tableName]: all };
     let contentType = "application/json;charset=utf-8;";
     if (window.navigator && window.navigator.msSaveOrOpenBlob) {
       var blob = new Blob([decodeURIComponent(encodeURI(JSON.stringify(entity)))], {

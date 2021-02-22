@@ -228,7 +228,7 @@ const Options = () => {
           "Locations",
           "Other Imports",
           "Discord",
-          "Recive",
+          "Receive",
         ]}
         onChange={(tab: string) => setTab(tab)}
         activeTab={activeTab}
@@ -287,7 +287,7 @@ const Options = () => {
       )}
       {activeTab === "Other Imports" && <OtherImportOptions />}
       {activeTab === "Discord" && <DiscordOptions />}
-      {activeTab === "Recive" && (
+      {activeTab === "Receive" && (
         <OptionTab>
           <OptionSectionLarge>
             <P2PReciver reload={isReload} changeData={setData} />

@@ -3,7 +3,8 @@ import React, { useEffect, useState, useCallback } from "react";
 import { useHistory } from "react-router";
 import styled from "styled-components";
 import { useWebhook } from "../../hooks/webhookHook";
-import { formatDiscordText, sendEmbedMessage } from "../../services/DiscordService";
+import { rollCommand } from "../../services/DiceService";
+import { formatDiscordText, sendEmbedMessage, sendMessage } from "../../services/DiscordService";
 import IconButton from "../form_elements/IconButton";
 import LinkCheck from "./LinkCheck";
 
@@ -40,6 +41,27 @@ const FormatedText = ({ text }: $Props) => {
     return str.substr(0, cutStart) + str.substr(cutEnd + 1);
   };
 
+  const rollDiscord = useCallback(
+    (command: string) => {
+      let rollString: string = "";
+      let roll: number = 0;
+
+      if (!command.includes("d")) {
+        let newCommand = "d20" + command;
+        command = command.replaceAll("+", "");
+        roll = rollCommand(newCommand);
+        rollString = "d20(`" + (roll - parseInt(command)) + "`)" + parseInt(command);
+      } else {
+        roll = rollCommand(command);
+        rollString = command;
+      }
+      if (roll !== undefined && webhook !== undefined) {
+        sendMessage(webhook, roll + " ||" + rollString + "||");
+      }
+    },
+    [webhook]
+  );
+
   const formatLink = useCallback(
     (text: string) => {
       if (text !== undefined) {
@@ -51,16 +73,27 @@ const FormatedText = ({ text }: $Props) => {
               const codePart: string[] = part.split("]]");
               const linkParts: string[] = codePart[0].split(".");
               let linkEntity = linkParts[0];
-              if (linkEntity === "class" || linkEntity === "subclass") linkEntity += "e";
-              const link: string = "/" + linkEntity + "-detail/name/" + linkParts[1];
-              formattedParts.push(
-                <TextPart key={index}>
-                  <Link onClick={() => history.push(link)}>
-                    <LinkCheck type={linkParts[0]} name={linkParts[1]} /> {linkParts[1]}
-                  </Link>
-                  <TextPart>{codePart[1]}</TextPart>
-                </TextPart>
-              );
+              if (linkEntity === "dice") {
+                formattedParts.push(
+                  <TextPart key={index}>
+                    <DiscordPart onClick={() => rollDiscord(linkParts[1])}>
+                      <LinkCheck type={linkParts[0]} name={linkParts[1]} /> {linkParts[1]}
+                    </DiscordPart>
+                    <TextPart>{codePart[1]}</TextPart>
+                  </TextPart>
+                );
+              } else {
+                if (linkEntity === "class" || linkEntity === "subclass") linkEntity += "e";
+                const link: string = "/" + linkEntity + "-detail/name/" + linkParts[1];
+                formattedParts.push(
+                  <TextPart key={index}>
+                    <Link onClick={() => history.push(link)}>
+                      <LinkCheck type={linkParts[0]} name={linkParts[1]} /> {linkParts[1]}
+                    </Link>
+                    <TextPart>{codePart[1]}</TextPart>
+                  </TextPart>
+                );
+              }
             } else {
               if (part !== "") formattedParts.push(<TextPart key={index}>{part}</TextPart>);
             }
@@ -174,6 +207,11 @@ const Link = styled.span`
   padding: 0px 5px 0px 5px;
   cursor: pointer;
   white-space: pre;
+`;
+
+const DiscordPart = styled(Link)`
+  background-color: #7289da;
+  color: white;
 `;
 
 const TextPart = styled.span`

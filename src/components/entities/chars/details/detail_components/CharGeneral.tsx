@@ -581,7 +581,6 @@ const RollableProp = ({ char, title, value }: $RollableProps) => {
             margin: "0px",
           }}
           icon={faDiscord}
-          onClick={() => rollDiscord()}
         />
       )}  
     </PropText>

@@ -11,6 +11,7 @@ import {
   GiSolarSystem,
   GiDjinn,
   GiBookshelf,
+  GiDiceTwentyFacesTwenty,
 } from "react-icons/gi";
 import {
   faMeteor,
@@ -34,12 +35,17 @@ const LinkCheck = ({ type, name }: $Props) => {
   const [entitiyFound, setEntity] = useState<boolean>(false);
 
   useEffect(() => {
-    let newType = type + "s";
-    if (type === "class" || type === "subclass") newType = type + "es";
-    recivePromiseByAttributeCount(newType, "name", name).then((count: number) => {
-      setEntity(count > 0);
+    if (type === "dice") {
+      setEntity(true);
       setLoading(false);
-    });
+    } else {
+      let newType = type + "s";
+      if (type === "class" || type === "subclass") newType = type + "es";
+      recivePromiseByAttributeCount(newType, "name", name).then((count: number) => {
+        setEntity(count > 0);
+        setLoading(false);
+      });
+    }
   }, [type, name]);
 
   const formatIcon = (type: string) => {
@@ -82,6 +88,8 @@ const LinkCheck = ({ type, name }: $Props) => {
         return <GiBookshelf />;
       case "group":
         return <HiUserGroup />;
+      case "dice":
+        return <GiDiceTwentyFacesTwenty />;
       default:
         return "";
     }
