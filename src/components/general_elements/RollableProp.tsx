@@ -38,13 +38,18 @@ const RollableProp = ({ char, title, value, rolledValue }: $RollableProps) => {
 
     if (rollString !== "" && webhook !== undefined) {
       const newName =
-        rolledValue >= 0 ? title + "(+" + rolledValue + ")" : title + "(" + rolledValue + ")";
+        char !== undefined
+          ? rolledValue >= 0
+            ? title + "(+" + rolledValue + ")"
+            : title + "(" + rolledValue + ")"
+          : title;
+      rollString = char !== undefined ? rollString : "";
       let newJson = {
         username: webhook.name + " (DnDTome)",
         embeds: [
           {
             author: {
-              name: char !== undefined ? char.name : "",
+              name: char !== undefined ? char.name : "???",
               icon_url: char !== undefined ? char.pic : "",
             },
             fields: [
@@ -54,9 +59,7 @@ const RollableProp = ({ char, title, value, rolledValue }: $RollableProps) => {
                   roll +
                   (fail ? " :red_circle:" : "") +
                   (krit ? " :green_circle:" : "") +
-                  " ||" +
-                  rollString +
-                  "||",
+                  (rollString !== "" ? " ||" + rollString + "||" : ""),
               },
             ],
           },
