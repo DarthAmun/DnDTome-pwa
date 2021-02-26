@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { Link, useLocation } from "react-router-dom";
 
@@ -24,11 +24,13 @@ import {
   GiSolarSystem,
   GiScrollUnfurled,
   GiDjinn,
+  GiRollingDices,
 } from "react-icons/gi";
 import { BiSelectMultiple } from "react-icons/bi";
 import { HiUserGroup } from "react-icons/hi";
 import { RightTooltip } from "../SearchbarStyle";
 import { MdEvent } from "react-icons/md";
+import DiceRoller from "../DiceRoller";
 
 interface $Props {
   open: boolean;
@@ -36,169 +38,184 @@ interface $Props {
 
 const NavMenu = ({ open }: $Props) => {
   const location = useLocation();
+  const [showDiceRoller, setDiceRoller] = useState<boolean>(false);
 
   return (
-    <Menu open={open}>
-      <TopSide>
-        <Link
-          to="/home"
-          className={
-            location.pathname === "/home" || location.pathname === "/" ? "menuItemActiv" : ""
-          }
-        >
-          <FontAwesomeIcon icon={faHome} />
-          <RightTooltip>Home</RightTooltip>
-        </Link>
-        <Seperator />
-      </TopSide>
-      <MiddleSide>
-        <LeftSide>
+    <>
+      {showDiceRoller && <DiceRoller />}
+      <Menu open={open}>
+        <TopSide>
           <Link
-            to="/campaign-overview"
-            className={location.pathname === "/campaign-overview" ? "menuItemActiv" : ""}
+            to="/home"
+            className={
+              location.pathname === "/home" || location.pathname === "/" ? "menuItemActiv" : ""
+            }
           >
-            <GiBookmarklet />
-            <RightTooltip>Campaigns</RightTooltip>
-          </Link>
-          <Link
-            to="/quest-overview"
-            className={location.pathname === "/quest-overview" ? "menuItemActiv" : ""}
-          >
-            <GiScrollUnfurled />
-            <RightTooltip>Quests</RightTooltip>
-          </Link>
-           <Link
-            to="/group-overview"
-            className={location.pathname === "/group-overview" ? "menuItemActiv" : ""}
-          >
-            <HiUserGroup />
-            <RightTooltip>Groups</RightTooltip>
-          </Link>
-          <Link
-            to="/npc-overview"
-            className={location.pathname === "/npc-overview" ? "menuItemActiv" : ""}
-          >
-            <GiDjinn />
-            <RightTooltip>Npc's</RightTooltip>
+            <FontAwesomeIcon icon={faHome} />
+            <RightTooltip>Home</RightTooltip>
           </Link>
           <Seperator />
-          <Link
-            to="/world-overview"
-            className={location.pathname === "/world-overview" ? "menuItemActiv" : ""}
+        </TopSide>
+        <MiddleSide>
+          <LeftSide>
+            <Link
+              to="/campaign-overview"
+              className={location.pathname === "/campaign-overview" ? "menuItemActiv" : ""}
+            >
+              <GiBookmarklet />
+              <RightTooltip>Campaigns</RightTooltip>
+            </Link>
+            <Link
+              to="/quest-overview"
+              className={location.pathname === "/quest-overview" ? "menuItemActiv" : ""}
+            >
+              <GiScrollUnfurled />
+              <RightTooltip>Quests</RightTooltip>
+            </Link>
+            <Link
+              to="/group-overview"
+              className={location.pathname === "/group-overview" ? "menuItemActiv" : ""}
+            >
+              <HiUserGroup />
+              <RightTooltip>Groups</RightTooltip>
+            </Link>
+            <Link
+              to="/npc-overview"
+              className={location.pathname === "/npc-overview" ? "menuItemActiv" : ""}
+            >
+              <GiDjinn />
+              <RightTooltip>Npc's</RightTooltip>
+            </Link>
+            <Seperator />
+            <Link
+              to="/world-overview"
+              className={location.pathname === "/world-overview" ? "menuItemActiv" : ""}
+            >
+              <GiSolarSystem />
+              <RightTooltip>Worlds</RightTooltip>
+            </Link>
+            <Link
+              to="/location-overview"
+              className={location.pathname === "/location-overview" ? "menuItemActiv" : ""}
+            >
+              <FontAwesomeIcon icon={faMapMarkedAlt} />
+              <RightTooltip>Locations</RightTooltip>
+            </Link>
+            <Link
+              to="/event-overview"
+              className={location.pathname === "/event-overview" ? "menuItemActiv" : ""}
+            >
+              <MdEvent />
+              <RightTooltip>Events</RightTooltip>
+            </Link>
+            <Seperator />
+            <Link
+              to="/randomTable-overview"
+              className={location.pathname === "/randomTable-overview" ? "menuItemActiv" : ""}
+            >
+              <FontAwesomeIcon icon={faTable} />
+              <RightTooltip>Random Tables</RightTooltip>
+            </Link>
+            <Seperator />
+            <Link
+              to="/book-overview"
+              className={location.pathname === "/book-overview" ? "menuItemActiv" : ""}
+            >
+              <GiBookshelf />
+              <RightTooltip>Library</RightTooltip>
+            </Link>
+          </LeftSide>
+          <RightSide>
+            <Link
+              to="/spell-overview"
+              className={location.pathname === "/spell-overview" ? "menuItemActiv" : ""}
+            >
+              <FontAwesomeIcon icon={faMeteor} />
+              <RightTooltip>Spells</RightTooltip>
+            </Link>
+            <Link
+              to="/item-overview"
+              className={location.pathname === "/item-overview" ? "menuItemActiv" : ""}
+            >
+              <GiCrystalWand />
+              <RightTooltip>Magic Items</RightTooltip>
+            </Link>
+            <Link
+              to="/gear-overview"
+              className={location.pathname === "/gear-overview" ? "menuItemActiv" : ""}
+            >
+              <GiBackpack />
+              <RightTooltip>Gear</RightTooltip>
+            </Link>
+            <Link
+              to="/race-overview"
+              className={location.pathname === "/race-overview" ? "menuItemActiv" : ""}
+            >
+              <GiWomanElfFace />
+              <RightTooltip>Races</RightTooltip>
+            </Link>
+            <Link
+              to="/classe-overview"
+              className={location.pathname === "/classe-overview" ? "menuItemActiv" : ""}
+            >
+              <GiPlagueDoctorProfile />
+              <RightTooltip>Classes</RightTooltip>
+            </Link>
+            <Link
+              to="/selection-overview"
+              className={location.pathname === "/selection-overview" ? "menuItemActiv" : ""}
+            >
+              <BiSelectMultiple />
+              <RightTooltip>Selections</RightTooltip>
+            </Link>
+            <Link
+              to="/char-overview"
+              className={location.pathname === "/char-overview" ? "menuItemActiv" : ""}
+            >
+              <FontAwesomeIcon icon={faIdCard} />
+              <RightTooltip>Chars</RightTooltip>
+            </Link>
+            <Seperator />
+            <Link
+              to="/monster-overview"
+              className={location.pathname === "/monster-overview" ? "menuItemActiv" : ""}
+            >
+              <FontAwesomeIcon icon={faDragon} />
+              <RightTooltip>Monsters</RightTooltip>
+            </Link>
+            <Link
+              to="/encounter-overview"
+              className={location.pathname === "/encounter-overview" ? "menuItemActiv" : ""}
+            >
+              <GiSwordClash />
+              <RightTooltip>Encounters</RightTooltip>
+            </Link>
+          </RightSide>
+        </MiddleSide>
+        <BottomSide>
+          <Seperator />
+          <Roller
+            className={showDiceRoller ? "menuItemActiv" : ""}
+            onClick={() => setDiceRoller((val) => !val)}
           >
-            <GiSolarSystem />
-            <RightTooltip>Worlds</RightTooltip>
-          </Link>
-          <Link
-            to="/location-overview"
-            className={location.pathname === "/location-overview" ? "menuItemActiv" : ""}
-          >
-            <FontAwesomeIcon icon={faMapMarkedAlt} />
-            <RightTooltip>Locations</RightTooltip>
-          </Link>
-          <Link
-            to="/event-overview"
-            className={location.pathname === "/event-overview" ? "menuItemActiv" : ""}
-          >
-            <MdEvent />
-            <RightTooltip>Events</RightTooltip>
-          </Link>
+            <GiRollingDices />
+            <RightTooltip>Dice Roller</RightTooltip>
+          </Roller>
           <Seperator />
           <Link
-            to="/randomTable-overview"
-            className={location.pathname === "/randomTable-overview" ? "menuItemActiv" : ""}
+            to="/statistics"
+            className={location.pathname === "/statistics" ? "menuItemActiv" : ""}
           >
-            <FontAwesomeIcon icon={faTable} />
-            <RightTooltip>Random Tables</RightTooltip>
+            <FontAwesomeIcon icon={faChartPie} />
+            <RightTooltip>Statistics</RightTooltip>
           </Link>
-          <Seperator />
-          <Link to="/book-overview" className={location.pathname === "/book-overview" ? "menuItemActiv" : ""}>
-            <GiBookshelf />
-            <RightTooltip>Library</RightTooltip>
+          <Link to="/options" className={location.pathname === "/options" ? "menuItemActiv" : ""}>
+            <FontAwesomeIcon icon={faCog} />
+            <RightTooltip>Options</RightTooltip>
           </Link>
-        </LeftSide>
-        <RightSide>
-          <Link
-            to="/spell-overview"
-            className={location.pathname === "/spell-overview" ? "menuItemActiv" : ""}
-          >
-            <FontAwesomeIcon icon={faMeteor} />
-            <RightTooltip>Spells</RightTooltip>
-          </Link>
-          <Link
-            to="/item-overview"
-            className={location.pathname === "/item-overview" ? "menuItemActiv" : ""}
-          >
-            <GiCrystalWand />
-            <RightTooltip>Magic Items</RightTooltip>
-          </Link>
-          <Link
-            to="/gear-overview"
-            className={location.pathname === "/gear-overview" ? "menuItemActiv" : ""}
-          >
-            <GiBackpack />
-            <RightTooltip>Gear</RightTooltip>
-          </Link>
-          <Link
-            to="/race-overview"
-            className={location.pathname === "/race-overview" ? "menuItemActiv" : ""}
-          >
-            <GiWomanElfFace />
-            <RightTooltip>Races</RightTooltip>
-          </Link>
-          <Link
-            to="/classe-overview"
-            className={location.pathname === "/classe-overview" ? "menuItemActiv" : ""}
-          >
-            <GiPlagueDoctorProfile />
-            <RightTooltip>Classes</RightTooltip>
-          </Link>
-          <Link
-            to="/selection-overview"
-            className={location.pathname === "/selection-overview" ? "menuItemActiv" : ""}
-          >
-            <BiSelectMultiple />
-            <RightTooltip>Selections</RightTooltip>
-          </Link>
-          <Link
-            to="/char-overview"
-            className={location.pathname === "/char-overview" ? "menuItemActiv" : ""}
-          >
-            <FontAwesomeIcon icon={faIdCard} />
-            <RightTooltip>Chars</RightTooltip>
-          </Link>
-          <Seperator />
-          <Link
-            to="/monster-overview"
-            className={location.pathname === "/monster-overview" ? "menuItemActiv" : ""}
-          >
-            <FontAwesomeIcon icon={faDragon} />
-            <RightTooltip>Monsters</RightTooltip>
-          </Link>
-          <Link
-            to="/encounter-overview"
-            className={location.pathname === "/encounter-overview" ? "menuItemActiv" : ""}
-          >
-            <GiSwordClash />
-            <RightTooltip>Encounters</RightTooltip>
-          </Link>
-        </RightSide>
-      </MiddleSide>
-      <BottomSide>
-        <Seperator />
-        <Link
-          to="/statistics"
-          className={location.pathname === "/statistics" ? "menuItemActiv" : ""}
-        >
-          <FontAwesomeIcon icon={faChartPie} />
-          <RightTooltip>Statistics</RightTooltip>
-        </Link>
-        <Link to="/options" className={location.pathname === "/options" ? "menuItemActiv" : ""}>
-          <FontAwesomeIcon icon={faCog} />
-          <RightTooltip>Options</RightTooltip>
-        </Link>
-      </BottomSide>
-    </Menu>
+        </BottomSide>
+      </Menu>
+    </>
   );
 };
 
@@ -229,6 +246,38 @@ export const Menu = styled.div<MenuType>`
   @media (max-width: 576px) {
     transition: transform 0.3s ease-in-out;
     transform: ${({ open }) => (open ? "translateX(0)" : "translateX(-100%)")};
+  }
+`;
+
+const Roller = styled.div`
+  flex: 1 1 auto;
+  max-height: 20px;
+  font-size: 20px;
+  text-align: center;
+  padding: 0.75rem 0;
+  cursor: pointer;
+  color: ${({ theme }) => theme.tile.color};
+  text-decoration: none;
+  transition: color 0.3s linear;
+
+  position: relative;
+  display: inline-block;
+
+  svg {
+    padding: 0px;
+    margin: 0px;
+  }
+
+  &:hover {
+    color: ${({ theme }) => theme.tile.color};
+    ${RightTooltip} {
+      opacity: 1;
+      visibility: visible;
+    }
+  }
+
+  &.menuItemActiv {
+    color: ${({ theme }) => theme.main.highlight};
   }
 `;
 
