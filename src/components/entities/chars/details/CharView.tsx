@@ -196,12 +196,11 @@ const CharView = ({ character, modifications }: $Props) => {
               <PropWrapper>
                 {buildChar.modifiers.map((mod: Modifier, index: number) => {
                   return (
-                    <Text>
+                    <Text key={index}>
                       <PropTitle>
                         {mod.origin}
-                        {" | "}
                       </PropTitle>
-                      <FormatedText text={mod.makeString()} />
+                      {mod.makeString()}
                     </Text>
                   );
                 })}

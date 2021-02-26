@@ -132,7 +132,7 @@ const ItemSearchBar = () => {
         sort: 0,
       });
     });
-    history.push(`/item-overview}`);
+    history.push(`/item-overview`);
   };
 
   const createNewItem = () => {
