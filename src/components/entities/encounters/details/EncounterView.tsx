@@ -8,6 +8,7 @@ import { rollDie } from "../../../../services/DiceService";
 import { buildEncounter } from "../../../../services/EncounterService";
 
 import {
+  faHandHoldingHeart,
   faPlayCircle,
   faSkullCrossbones,
   faStepForward,
@@ -60,8 +61,12 @@ const EncounterView = ({ encounter, dmView, onEdit }: $Props) => {
     }
   };
 
-  const killEnemy = (enemy: Player) => {
+  const killPlayer = (enemy: Player) => {
     onChangePlayerField("currentHp", 0, enemy);
+  };
+
+  const revicePlayer = (enemy: Player) => {
+    onChangePlayerField("currentHp", 1, enemy);
   };
 
   const startEncounter = () => {
@@ -169,7 +174,7 @@ const EncounterView = ({ encounter, dmView, onEdit }: $Props) => {
 
   return (
     <CenterWrapper>
-      <View>
+      <View mode={dmView}>
         <Name>
           <b>{encounter.name}</b>
         </Name>
@@ -274,7 +279,13 @@ const EncounterView = ({ encounter, dmView, onEdit }: $Props) => {
                       {buildPlayer.player.currentHp > 0 && (
                         <IconButton
                           icon={faSkullCrossbones}
-                          onClick={() => killEnemy(buildPlayer.player)}
+                          onClick={() => killPlayer(buildPlayer.player)}
+                        />
+                      )}
+                      {buildPlayer.player.currentHp <= 0 && (
+                        <IconButton
+                          icon={faHandHoldingHeart}
+                          onClick={() => revicePlayer(buildPlayer.player)}
                         />
                       )}
                     </td>
@@ -327,12 +338,22 @@ const CenterWrapper = styled.div`
   justify-content: space-around;
 `;
 
-const View = styled.div`
+type viewType = {
+  mode?: boolean;
+}
+
+const View = styled.div<viewType>`
   flex: 1 1;
   color: ${({ theme }) => theme.tile.color};
   font-size: 16px;
   max-width: 800px;
-  min-width: 500px;
+  ${(props) => {
+    if(!props.mode){
+      return "min-width: 300px;";
+    } else {
+      return "min-width: 500px;";
+    }
+  }}
   padding: 5px;
 
   @media (max-width: 576px) {

@@ -12,6 +12,7 @@ import P2PSender from "../../../p2p/P2PSender";
 import { faDiscord } from "@fortawesome/free-brands-svg-icons";
 import { useWebhook } from "../../../../hooks/webhookHook";
 import { sendEmbedMessage } from "../../../../services/DiscordService";
+import RollableProp from "../../../general_elements/RollableProp";
 
 interface $Props {
   monster: Monster;
@@ -76,6 +77,26 @@ const MonsterView = ({ monster }: $Props) => {
     return "";
   }, [monster]);
 
+  const formatScore = useCallback((score: number) => {
+    let mod = Math.floor((score - 10) / 2);
+    return mod;
+  }, []);
+
+  const makeSave = (attr: string): number => {
+    let boni = formatScore(monster[attr]);
+    if (monster.savingThrows !== "") {
+      monster.savingThrows
+        .replaceAll(" ", "")
+        .split(",")
+        .forEach((save: string) => {
+          if (save.includes(attr)) {
+            boni = parseInt(save.replaceAll(attr, "").replaceAll("+", "").trim());
+          }
+        });
+    }
+    return boni;
+  };
+
   return (
     <CenterWrapper>
       {getPicture() !== "" ? (
@@ -102,30 +123,12 @@ const MonsterView = ({ monster }: $Props) => {
         </Name>
 
         <PropWrapper>
-          <Prop>
-            <PropTitle>Str:</PropTitle>
-            {monster.str}
-          </Prop>
-          <Prop>
-            <PropTitle>Dex:</PropTitle>
-            {monster.dex}
-          </Prop>
-          <Prop>
-            <PropTitle>Con:</PropTitle>
-            {monster.con}
-          </Prop>
-          <Prop>
-            <PropTitle>Int:</PropTitle>
-            {monster.int}
-          </Prop>
-          <Prop>
-            <PropTitle>Wis:</PropTitle>
-            {monster.wis}
-          </Prop>
-          <Prop>
-            <PropTitle>Cha:</PropTitle>
-            {monster.cha}
-          </Prop>
+          <RollableProp title={"Str"} value={monster.str} rolledValue={makeSave("str")} />
+          <RollableProp title={"Dex"} value={monster.dex} rolledValue={makeSave("dex")} />
+          <RollableProp title={"Con"} value={monster.con} rolledValue={makeSave("con")} />
+          <RollableProp title={"Int"} value={monster.int} rolledValue={makeSave("int")} />
+          <RollableProp title={"Wis"} value={monster.wis} rolledValue={makeSave("wis")} />
+          <RollableProp title={"Cha"} value={monster.cha} rolledValue={makeSave("cha")} />
           <Prop>
             <Icon icon={faShieldAlt} />
             {monster.ac}

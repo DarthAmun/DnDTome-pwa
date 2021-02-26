@@ -5,12 +5,7 @@ import BuildChar from "../../../../../data/chars/BuildChar";
 import SmallNumberArrayField from "../../../../form_elements/SmallNumberArrayField";
 import SpellTile from "../../../spells/SpellTile";
 import SmallNumberField from "../../../../form_elements/SmallNumberField";
-import { useWebhook } from "../../../../../hooks/webhookHook";
-import Char from "../../../../../data/chars/Char";
-import { rollCommand } from "../../../../../services/DiceService";
-import { sendEmbedMessage } from "../../../../../services/DiscordService";
-import { faDiscord } from "@fortawesome/free-brands-svg-icons";
-import IconButton from "../../../../form_elements/IconButton";
+import RollableProp from "../../../../general_elements/RollableProp";
 
 interface $Props {
   buildChar: BuildChar;
@@ -67,7 +62,7 @@ const CharSpell = ({ buildChar, saveChar }: $Props) => {
           <RollableProp
             char={buildChar.character}
             title={"Casting Hit"}
-            value={buildChar.character.castingHit}
+            rolledValue={buildChar.character.castingHit}
           />
           <Prop>
             <PropTitle>Casting Dc:</PropTitle>
@@ -123,89 +118,6 @@ const CharSpell = ({ buildChar, saveChar }: $Props) => {
 
 export default CharSpell;
 
-interface $RollableProps {
-  char: Char;
-  title: string;
-  value: number;
-}
-
-const RollableProp = ({ char, title, value }: $RollableProps) => {
-  let webhook = useWebhook();
-
-  const rollDiscord = () => {
-    let rollString: string = "";
-    let roll: number = 0;
-
-    if (value >= 0) {
-      const { result, text } = rollCommand("d20+" + value);
-      roll = result;
-      rollString = "d20(`" + (result - value) + "`)+" + value + text;
-    } else {
-      const { result, text } = rollCommand("d20" + value);
-      roll = result;
-      rollString = "d20(`" + (result - value) + "`)" + value + text;
-    }
-
-    let krit = false;
-    if (roll - value === 20) krit = true;
-    let fail = false;
-    if (roll - value === 1) fail = true;
-
-    if (rollString !== "" && webhook !== undefined) {
-      const newName = value >= 0 ? title + "(+" + value + ")" : title + "(" + value + ")";
-      let newJson = {
-        username: webhook.name + " (DnDTome)",
-        embeds: [
-          {
-            author: {
-              name: char.name,
-              icon_url: char.pic,
-            },
-            fields: [
-              {
-                name: newName,
-                value:
-                  roll +
-                  (fail ? " :red_circle:" : "") +
-                  (krit ? " :green_circle:" : "") +
-                  " ||" +
-                  rollString +
-                  "||",
-              },
-            ],
-          },
-        ],
-      };
-      sendEmbedMessage(webhook, JSON.stringify(newJson));
-    }
-  };
-
-  return (
-    <PropText
-      onClick={() => rollDiscord()}
-      style={{ cursor: webhook !== undefined ? "pointer" : "default" }}
-    >
-      <PropTitle>{title}:</PropTitle>
-      {value}
-      {webhook !== undefined && (
-        <IconButton
-          style={{
-            backgroundColor: "#7289da",
-            float: "right",
-            padding: "5px",
-            height: "10px",
-            lineHeight: "10px",
-            fontSize: "10px",
-            margin: "0px",
-            marginLeft: "5px",
-          }}
-          icon={faDiscord}
-        />
-      )}
-    </PropText>
-  );
-};
-
 const View = styled.div`
   color: ${({ theme }) => theme.tile.color};
   font-size: 16px;
@@ -234,15 +146,6 @@ const PropWrapper = styled.div`
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
-`;
-
-const PropText = styled.div`
-  flex: 2 2 auto;
-  height: auto;
-  margin: 2px;
-  padding: 10px;
-  border-radius: 5px;
-  background-color: ${({ theme }) => theme.tile.backgroundColor};
 `;
 
 const Prop = styled.div`
