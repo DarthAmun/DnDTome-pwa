@@ -43,20 +43,35 @@ const FormatedText = ({ text }: $Props) => {
 
   const rollDiscord = useCallback(
     (command: string) => {
-      let rollString: string = "";
-      let roll: number = 0;
-
       if (!command.includes("d")) {
         let newCommand = "d20" + command;
-        command = command.replaceAll("+", "");
-        roll = rollCommand(newCommand);
-        rollString = "d20(`" + (roll - parseInt(command)) + "`)" + parseInt(command);
+        let value = parseInt(command.replaceAll("+", ""));
+        const { result, text } = rollCommand(newCommand);
+
+        let krit = false;
+        if (result - value === 20) krit = true;
+        let fail = false;
+        if (result - value === 1) fail = true;
+
+        let rollString = "d20(`" + (result - value) + "`)" + command;
+        if (result !== undefined && webhook !== undefined) {
+          sendMessage(
+            webhook,
+            result +
+              " " +
+              text +
+              (fail ? " :red_circle:" : "") +
+              (krit ? " :green_circle:" : "") +
+              " ||" +
+              rollString +
+              "||"
+          );
+        }
       } else {
-        roll = rollCommand(command);
-        rollString = command;
-      }
-      if (roll !== undefined && webhook !== undefined) {
-        sendMessage(webhook, roll + " ||" + rollString + "||");
+        const { result, text } = rollCommand(command);
+        if (result !== undefined && webhook !== undefined) {
+          sendMessage(webhook, result + " " + text + " ||" + command + "||");
+        }
       }
     },
     [webhook]

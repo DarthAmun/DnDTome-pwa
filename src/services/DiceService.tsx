@@ -1,13 +1,15 @@
-export const rollCommand = (commands: string, krit?: boolean): number => {
+export const rollCommand = (commands: string, krit?: boolean): { result: number; text: string } => {
   let result = 0;
+  let text = "";
 
   let newCommands = "";
-  commands
-    .split(" ")
-    .filter((command) => /\d+/g.test(command))
-    .forEach((command) => {
+  commands.split(" ").forEach((command) => {
+    if (/\d+/g.test(command)) {
       newCommands += command;
-    });
+    } else {
+      text += " " + command;
+    }
+  });
   newCommands = newCommands.trim();
 
   newCommands.split(" ").forEach((command: string) => {
@@ -29,7 +31,7 @@ export const rollCommand = (commands: string, krit?: boolean): number => {
       result += multiplier * rollDie(parseInt(command));
     }
   });
-  return result;
+  return { result: result, text: text };
 };
 
 export const rollDie = (size: number): number => {

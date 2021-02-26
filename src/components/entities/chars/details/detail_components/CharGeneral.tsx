@@ -521,11 +521,13 @@ const RollableProp = ({ char, title, value }: $RollableProps) => {
     let roll: number = 0;
 
     if (value >= 0) {
-      roll = rollCommand("d20+" + value);
-      rollString = "d20(`" + (roll - value) + "`)+" + value;
+      const { result, text } = rollCommand("d20+" + value);
+      roll = result;
+      rollString = "d20(`" + (result - value) + "`)+" + value + text;
     } else {
-      roll = rollCommand("d20" + value);
-      rollString = "d20(`" + (roll - value) + "`)" + value;
+      const { result, text } = rollCommand("d20" + value);
+      roll = result;
+      rollString = "d20(`" + (result - value) + "`)" + value + text;
     }
 
     let krit = false;
@@ -582,7 +584,7 @@ const RollableProp = ({ char, title, value }: $RollableProps) => {
           }}
           icon={faDiscord}
         />
-      )}  
+      )}
     </PropText>
   );
 };

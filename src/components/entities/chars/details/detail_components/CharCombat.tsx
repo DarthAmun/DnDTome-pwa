@@ -27,11 +27,13 @@ const CharCombat = ({ buildChar }: $Props) => {
     let roll: number = 0;
 
     if (value >= 0) {
-      roll = rollCommand("d20+" + value);
-      rollString = "d20(`" + (roll - value) + "`)+" + value;
+      const { result, text } = rollCommand("d20+" + value);
+      roll = result;
+      rollString = "d20(`" + (result - value) + "`)+" + value + text;
     } else {
-      roll = rollCommand("d20" + value);
-      rollString = "d20(`" + (roll - value) + "`)" + value;
+      const { result, text } = rollCommand("d20" + value);
+      roll = result;
+      rollString = "d20(`" + (result - value) + "`)" + value + text;
     }
 
     let krit = false;
@@ -188,7 +190,26 @@ const CharCombat = ({ buildChar }: $Props) => {
                         ""
                       )}
                     </Prop>
-                    <Prop>{baseGear.gear.damage}</Prop>
+                    <Prop>
+                      {strBonus > dexBonus ? (
+                        <>
+                          {baseGear.gear.damage}
+                          {strBonus >= 0 ? " +" : " "}
+                          {strBonus}
+                        </>
+                      ) : (
+                        ""
+                      )}
+                      {dexBonus > strBonus ? (
+                        <>
+                          {baseGear.gear.damage}
+                          {dexBonus >= 0 ? " +" : " "}
+                          {dexBonus}
+                        </>
+                      ) : (
+                        ""
+                      )}
+                    </Prop>
                     <Prop>{baseGear.gear.properties}</Prop>
                     {webhook !== undefined && (
                       <IconButton
@@ -222,7 +243,11 @@ const CharCombat = ({ buildChar }: $Props) => {
                       {strBonus + buildChar.prof >= 0 ? "+" : ""}
                       {strBonus + buildChar.prof}
                     </Prop>
-                    <Prop>{baseGear.gear.damage}</Prop>
+                    <Prop>
+                      {baseGear.gear.damage}
+                      {strBonus >= 0 ? " +" : " "}
+                      {strBonus}
+                    </Prop>
                     <Prop>{baseGear.gear.properties}</Prop>
                     {webhook !== undefined && (
                       <IconButton

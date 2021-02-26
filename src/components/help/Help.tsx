@@ -153,6 +153,18 @@ const Help = () => {
               </SectionText>
             </HelpSection>
             <HelpSection>
+              <SelectionTitle>How to create a discord "Link" to roll dice</SelectionTitle>
+              <SectionText>You can add a discord-link in every textarea.</SectionText>
+              <SectionText>To do so write: [[dice.+2 to hit]] to roll a d20+2 in discord.</SectionText>
+              <SectionText>
+                Result: <FormatedText text={`[[dice.+2 to hit]]`} />
+              </SectionText>
+              <SectionText>Or write: [[dice.2d12+6 radiant damage]] to roll a "2d12+6 radiant damage" in discord.</SectionText>
+              <SectionText>
+                Result: <FormatedText text={`[[dice.2d12+6 radiant damage]]`} />
+              </SectionText>
+            </HelpSection>
+            <HelpSection>
               <SelectionTitle>How to create a table with links in it</SelectionTitle>
               <SectionText>
                 You can add a link to every cell of a table in every textarea.
