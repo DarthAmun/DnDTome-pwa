@@ -1,7 +1,12 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { exportAll } from "../../services/OptionService";
-import { deleteAll, reciveCount, reciveAllPromise } from "../../services/DatabaseService";
+import {
+  deleteAll,
+  reciveCount,
+  reciveAllPromise,
+  deleteAllByAttrs,
+} from "../../services/DatabaseService";
 import IEntity from "../../data/IEntity";
 import P2PReciver from "../p2p/P2PReciver";
 import { isChar } from "../../data/chars/Char";
@@ -154,6 +159,11 @@ const Options = () => {
     isReload(true);
   };
 
+  const triggerDeleteByAttr = (tableName: string, attrs: string[]) => {
+    deleteAllByAttrs(tableName, "sources", attrs);
+    isReload(true);
+  };
+
   const returnTile = (entity: IEntity, index: number) => {
     if (isClass(entity)) {
       return <ClassTile key={index} classe={entity} />;
@@ -235,24 +245,45 @@ const Options = () => {
       />
       {activeTab === "General" && <GeneralOptions />}
       {activeTab === "Spells" && (
-        <SpellsOptions amount={spellAmount} triggerDeleteAll={triggerDeleteAll} />
+        <SpellsOptions
+          amount={spellAmount}
+          triggerDeleteAll={triggerDeleteAll}
+          triggerDeleteByAttr={triggerDeleteByAttr}
+        />
       )}
       {activeTab === "Gears" && (
-        <GearsOptions amount={gearAmount} triggerDeleteAll={triggerDeleteAll} />
+        <GearsOptions
+          amount={gearAmount}
+          triggerDeleteAll={triggerDeleteAll}
+          triggerDeleteByAttr={triggerDeleteByAttr}
+        />
       )}
       {activeTab === "Magic Items" && (
-        <ItemsOptions amount={itemAmount} triggerDeleteAll={triggerDeleteAll} />
+        <ItemsOptions
+          amount={itemAmount}
+          triggerDeleteAll={triggerDeleteAll}
+          triggerDeleteByAttr={triggerDeleteByAttr}
+        />
       )}
       {activeTab === "Monsters" && (
-        <MonstersOptions amount={monsterAmount} triggerDeleteAll={triggerDeleteAll} />
+        <MonstersOptions
+          amount={monsterAmount}
+          triggerDeleteAll={triggerDeleteAll}
+          triggerDeleteByAttr={triggerDeleteByAttr}
+        />
       )}
       {activeTab === "Races" && (
-        <RacesOptions amounts={[raceAmount, subraceAmount]} triggerDeleteAll={triggerDeleteAll} />
+        <RacesOptions
+          amounts={[raceAmount, subraceAmount]}
+          triggerDeleteAll={triggerDeleteAll}
+          triggerDeleteByAttr={triggerDeleteByAttr}
+        />
       )}
       {activeTab === "Classes" && (
         <ClassesOptions
           amounts={[classAmount, subclassAmount]}
           triggerDeleteAll={triggerDeleteAll}
+          triggerDeleteByAttr={triggerDeleteByAttr}
         />
       )}
       {activeTab === "Selections" && (

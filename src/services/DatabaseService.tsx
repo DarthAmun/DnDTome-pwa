@@ -436,6 +436,17 @@ export const deleteAll = (tableName: string) => {
     });
 };
 
+export const deleteAllByAttrs = (tableName: string, attr: string, attrs: string[]) => {
+  const db = new MyAppDatabase();
+  db.open()
+    .then(function () {
+      db.table(tableName).where(attr).anyOf(attrs).delete();
+    })
+    .finally(function () {
+      db.close();
+    });
+};
+
 export const exportFilteredFromTable = (tableName: string, filters: Filter[], filename: string) => {
   reciveAllFiltered(tableName, filters, (all: IndexableType[]) => {
     let contentType = "application/json;charset=utf-8;";

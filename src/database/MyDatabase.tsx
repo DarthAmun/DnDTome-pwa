@@ -438,6 +438,39 @@ export class MyAppDatabase extends Dexie {
           if (char.campaign === undefined) char = { ...char, campaign: "" };
         });
       });
+      this.version(21)
+      .stores({
+        spells:
+          "++id, name, classes, sources, level, school, time, range, components, duration, ritual, text, pic, filename",
+        items:
+          "++id, name, sources, pic, description, type, rarity, attunment, magicBonus, base, filename",
+        gears:
+          "++id, name, sources, pic, description, type, cost, damage, weight, properties, filename",
+        monsters:
+          "++id, name, type, subtype, cr, ac, hp, str, dex, con, int, wis, cha, senses, lang, speed, sources, skills, savingThrows, dmgImmunities, dmgResistance, dmgVulnerabilitie, conImmunities, sAblt, ablt, lAblt, pic, size, alignment",
+        races:
+          "++id, name, abilityScores, age, alignment, size, speed, lang, traits, sources, pic, filename",
+        subraces: "++id, name, type, abilityScores, traits, sources, filename",
+        classes:
+          "++id, name, featureSets, hitDice, proficiencies, equipment, sources, pic, filename",
+        subclasses: "++id, name, type, features, sources, filename",
+        chars:
+          "++id, name, player, campaign, pic, classes, race, background, spells, spellSlots, activeSelections, items, monsters, ac, hp, currentHp, init, speed, str, dex, con, int, wis, cha, saves, actions, bonusActions, reactions, profsLangs, senses, money, skills, spellNotes, alignment, inspiration, castingHit, castingDC",
+        encounters:
+          "++id, name, enemies, players, isPlaying, currentInit, roundCounter, map, dimension",
+        books: "++id, name, cover, data, pages, tags",
+        selections: "++id, name, selectionOptions, filename",
+        randomTables: "++id, name, rows, header, filename",
+        campaigns:
+          "++id, name, pic, description, world, npcs, notes, logs, players, flow, map, sources, filename",
+        quests: "++id, name, pic, description, rewards, followQuest, sources, filename",
+        npcs: "++id, name, pic, char, traits, description, sources, filename",
+        worlds: "++id, name, map, description, locations, events, sources, filename",
+        locations: "++id, name, map, dimension, markers, sources, filename",
+        events: "++id, name, description, date, sources, filename",
+        groups:
+          "++id, name, pic, description, notes, npcs, players, monsters, flow, sources, filename",
+      })
 
     this.spells = this.table("spells");
     this.items = this.table("items");

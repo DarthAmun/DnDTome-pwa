@@ -1,24 +1,49 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 
-import {
-  faFileExport,
-  faPaperPlane,
-  faTrashAlt,
-} from "@fortawesome/free-solid-svg-icons";
+import { faFileExport, faPaperPlane, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import { exportAllFromTable } from "../../services/OptionService";
 import IconButton from "../form_elements/IconButton";
 import P2PSender from "../p2p/P2PSender";
 import TextButton from "../form_elements/TextButton";
+import { reciveAttributeSelection } from "../../services/DatabaseService";
+import MultipleSelectField from "../form_elements/MultipleSelectField";
 
 interface $Props {
   amounts: number[];
   triggerDeleteAll: (tableName: string) => void;
+  triggerDeleteByAttr: (tableName: string, attrs: string[]) => void;
 }
 
-const RacesOptions = ({ amounts, triggerDeleteAll }: $Props) => {
+const RacesOptions = ({ amounts, triggerDeleteAll, triggerDeleteByAttr }: $Props) => {
   const [sendRaces, setSendRaces] = useState<boolean>(false);
   const [sendSubraces, setSendSubraces] = useState<boolean>(false);
+
+  const [races, setRaces] = useState<string[]>([]);
+  const [raceList, setRaceList] = useState<{ value: string; label: string }[]>([]);
+  const [subraces, setSubraces] = useState<string[]>([]);
+  const [subraceList, setSubraceList] = useState<{ value: string; label: string }[]>([]);
+
+  useEffect(() => {
+    reciveAttributeSelection("races", "sources", function (result) {
+      let sources = result.map((source) => {
+        if (source === "") {
+          return { value: source.toString(), label: "Empty" };
+        }
+        return { value: source.toString(), label: source.toString() };
+      });
+      setRaceList(sources);
+    });
+    reciveAttributeSelection("subraces", "sources", function (result) {
+      let sources = result.map((source) => {
+        if (source === "") {
+          return { value: source.toString(), label: "Empty" };
+        }
+        return { value: source.toString(), label: source.toString() };
+      });
+      setSubraceList(sources);
+    });
+  }, []);
 
   return (
     <OptionTab>
@@ -35,9 +60,7 @@ const RacesOptions = ({ amounts, triggerDeleteAll }: $Props) => {
           <SectionText>Export all Subraces?</SectionText>
           <IconButton
             icon={faFileExport}
-            onClick={() =>
-              exportAllFromTable("subraces", "DnDTome_subraces.json")
-            }
+            onClick={() => exportAllFromTable("subraces", "DnDTome_subraces.json")}
           />
         </SectionRow>
       </OptionSection>
@@ -45,17 +68,29 @@ const RacesOptions = ({ amounts, triggerDeleteAll }: $Props) => {
         <SelectionTitle>Delete</SelectionTitle>
         <SectionRow>
           <SectionText>Delete all {amounts[0]} Races?</SectionText>
-          <IconButton
-            icon={faTrashAlt}
-            onClick={() => triggerDeleteAll("races")}
+          <IconButton icon={faTrashAlt} onClick={() => triggerDeleteAll("races")} />
+        </SectionRow>
+        <SectionRow>
+          <SectionText>Delete all Races by</SectionText>
+          <MultipleSelectField
+            options={raceList}
+            label="Source"
+            onChange={(sources: string[]) => setRaces(sources)}
           />
+          <IconButton icon={faTrashAlt} onClick={() => triggerDeleteByAttr("races", races)} />
         </SectionRow>
         <SectionRow>
           <SectionText>Delete all {amounts[1]} Subraces?</SectionText>
-          <IconButton
-            icon={faTrashAlt}
-            onClick={() => triggerDeleteAll("subraces")}
+          <IconButton icon={faTrashAlt} onClick={() => triggerDeleteAll("subraces")} />
+        </SectionRow>
+        <SectionRow>
+          <SectionText>Delete all Subraces by</SectionText>
+          <MultipleSelectField
+            options={subraceList}
+            label="Source"
+            onChange={(sources: string[]) => setSubraces(sources)}
           />
+          <IconButton icon={faTrashAlt} onClick={() => triggerDeleteByAttr("subraces", subraces)} />
         </SectionRow>
       </OptionSection>
       <OptionSection>
@@ -104,8 +139,7 @@ const OptionSection = styled(General)`
   margin: 0.5em;
   border-radius: 10px;
   box-shadow: ${({ theme }) => theme.tile.boxShadow};
-  overflow: hidden;
-
+  
   display: flex;
   flex-wrap: wrap;
   align-items: flex-start;

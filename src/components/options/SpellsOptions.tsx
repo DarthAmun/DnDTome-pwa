@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 
 import { faFileExport, faPaperPlane, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
@@ -6,14 +6,31 @@ import { exportAllFromTable } from "../../services/OptionService";
 import IconButton from "../form_elements/IconButton";
 import P2PSender from "../p2p/P2PSender";
 import TextButton from "../form_elements/TextButton";
+import { reciveAttributeSelection } from "../../services/DatabaseService";
+import MultipleSelectField from "../form_elements/MultipleSelectField";
 
 interface $Props {
   amount: number;
   triggerDeleteAll: (tableName: string) => void;
+  triggerDeleteByAttr: (tableName: string, attrs: string[]) => void;
 }
 
-const SpellsOptions = ({ amount, triggerDeleteAll }: $Props) => {
+const SpellsOptions = ({ amount, triggerDeleteAll, triggerDeleteByAttr }: $Props) => {
   const [send, setSend] = useState<boolean>(false);
+  const [source, setSource] = useState<string[]>([]);
+  const [sourceList, setSourceList] = useState<{ value: string; label: string }[]>([]);
+
+  useEffect(() => {
+    reciveAttributeSelection("spells", "sources", function (result) {
+      let sources = result.map((source) => {
+        if (source === "") {
+          return { value: source.toString(), label: "Empty" };
+        }
+        return { value: source.toString(), label: source.toString() };
+      });
+      setSourceList(sources);
+    });
+  }, []);
 
   return (
     <OptionTab>
@@ -31,19 +48,21 @@ const SpellsOptions = ({ amount, triggerDeleteAll }: $Props) => {
         <SelectionTitle>Delete</SelectionTitle>
         <SectionRow>
           <SectionText>Delete all {amount} Spells?</SectionText>
-          <IconButton
-            icon={faTrashAlt}
-            onClick={() => triggerDeleteAll("spells")}
+          <IconButton icon={faTrashAlt} onClick={() => triggerDeleteAll("spells")} />
+        </SectionRow>
+        <SectionRow>
+          <SectionText>Delete all Spells by</SectionText>
+          <MultipleSelectField
+            options={sourceList}
+            label="Source"
+            onChange={(sources: string[]) => setSource(sources)}
           />
+          <IconButton icon={faTrashAlt} onClick={() => triggerDeleteByAttr("spells", source)} />
         </SectionRow>
       </OptionSection>
       <OptionSection>
         {!send && (
-          <TextButton
-            text={`Send all spells`}
-            icon={faPaperPlane}
-            onClick={() => setSend(true)}
-          />
+          <TextButton text={`Send all spells`} icon={faPaperPlane} onClick={() => setSend(true)} />
         )}
         {!!send && <P2PSender data={"spells"} mode={"ALL"} />}
       </OptionSection>
@@ -73,7 +92,6 @@ const OptionSection = styled(General)`
   margin: 0.5em;
   border-radius: 10px;
   box-shadow: ${({ theme }) => theme.tile.boxShadow};
-  overflow: hidden;
 
   display: flex;
   flex-wrap: wrap;

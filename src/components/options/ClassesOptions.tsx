@@ -1,24 +1,49 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 
-import {
-  faFileExport,
-  faPaperPlane,
-  faTrashAlt,
-} from "@fortawesome/free-solid-svg-icons";
+import { faFileExport, faPaperPlane, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import { exportAllFromTable } from "../../services/OptionService";
 import IconButton from "../form_elements/IconButton";
 import P2PSender from "../p2p/P2PSender";
 import TextButton from "../form_elements/TextButton";
+import { reciveAttributeSelection } from "../../services/DatabaseService";
+import MultipleSelectField from "../form_elements/MultipleSelectField";
 
 interface $Props {
   amounts: number[];
   triggerDeleteAll: (tableName: string) => void;
+  triggerDeleteByAttr: (tableName: string, attrs: string[]) => void;
 }
 
-const ClassesOptions = ({ amounts, triggerDeleteAll }: $Props) => {
+const ClassesOptions = ({ amounts, triggerDeleteAll, triggerDeleteByAttr }: $Props) => {
   const [sendClasses, setSendClasses] = useState<boolean>(false);
   const [sendSubclasses, setSendSubclasses] = useState<boolean>(false);
+
+  const [classes, setClasses] = useState<string[]>([]);
+  const [classList, setClassList] = useState<{ value: string; label: string }[]>([]);
+  const [subclasses, setSubclasses] = useState<string[]>([]);
+  const [subclassList, setSubclassList] = useState<{ value: string; label: string }[]>([]);
+
+  useEffect(() => {
+    reciveAttributeSelection("classes", "sources", function (result) {
+      let sources = result.map((source) => {
+        if (source === "") {
+          return { value: source.toString(), label: "Empty" };
+        }
+        return { value: source.toString(), label: source.toString() };
+      });
+      setClassList(sources);
+    });
+    reciveAttributeSelection("subclasses", "sources", function (result) {
+      let sources = result.map((source) => {
+        if (source === "") {
+          return { value: source.toString(), label: "Empty" };
+        }
+        return { value: source.toString(), label: source.toString() };
+      });
+      setSubclassList(sources);
+    });
+  }, []);
 
   return (
     <OptionTab>
@@ -28,18 +53,14 @@ const ClassesOptions = ({ amounts, triggerDeleteAll }: $Props) => {
           <SectionText>Export all Classes?</SectionText>
           <IconButton
             icon={faFileExport}
-            onClick={() =>
-              exportAllFromTable("classes", "DnDTome_classes.json")
-            }
+            onClick={() => exportAllFromTable("classes", "DnDTome_classes.json")}
           />
         </SectionRow>
         <SectionRow>
           <SectionText>Export all Subclasses?</SectionText>
           <IconButton
             icon={faFileExport}
-            onClick={() =>
-              exportAllFromTable("subclasses", "DnDTome_subclasses.json")
-            }
+            onClick={() => exportAllFromTable("subclasses", "DnDTome_subclasses.json")}
           />
         </SectionRow>
       </OptionSection>
@@ -47,16 +68,31 @@ const ClassesOptions = ({ amounts, triggerDeleteAll }: $Props) => {
         <SelectionTitle>Delete</SelectionTitle>
         <SectionRow>
           <SectionText>Delete all {amounts[0]} Classes?</SectionText>
-          <IconButton
-            icon={faTrashAlt}
-            onClick={() => triggerDeleteAll("classes")}
+          <IconButton icon={faTrashAlt} onClick={() => triggerDeleteAll("classes")} />
+        </SectionRow>
+        <SectionRow>
+          <SectionText>Delete all Classes by</SectionText>
+          <MultipleSelectField
+            options={classList}
+            label="Source"
+            onChange={(sources: string[]) => setClasses(sources)}
           />
+          <IconButton icon={faTrashAlt} onClick={() => triggerDeleteByAttr("classes", classes)} />
         </SectionRow>
         <SectionRow>
           <SectionText>Delete all {amounts[1]} Subclasses?</SectionText>
+          <IconButton icon={faTrashAlt} onClick={() => triggerDeleteAll("subclasses")} />
+        </SectionRow>
+        <SectionRow>
+          <SectionText>Delete all Subclasses by</SectionText>
+          <MultipleSelectField
+            options={subclassList}
+            label="Source"
+            onChange={(sources: string[]) => setSubclasses(sources)}
+          />
           <IconButton
             icon={faTrashAlt}
-            onClick={() => triggerDeleteAll("subclasses")}
+            onClick={() => triggerDeleteByAttr("subclasses", subclasses)}
           />
         </SectionRow>
       </OptionSection>
@@ -106,7 +142,6 @@ const OptionSection = styled(General)`
   margin: 0.5em;
   border-radius: 10px;
   box-shadow: ${({ theme }) => theme.tile.boxShadow};
-  overflow: hidden;
 
   display: flex;
   flex-wrap: wrap;
