@@ -57,6 +57,7 @@ const Name = styled.div`
   text-shadow: none;
   line-height: 30px;
   float: left;
+  margin-left: 5px;
 `;
 
 const HomeCredits = styled.div`

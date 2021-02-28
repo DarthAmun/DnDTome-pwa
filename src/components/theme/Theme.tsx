@@ -48,7 +48,7 @@ interface Theme {
 export const lightTheme: Theme = {
   buttons: {
     color: "white",
-    backgroundColor: "#7033FF",
+    backgroundColor: "#F55C5C",
     disabled: "#E1D0E5",
     hoverColor: "darkgrey",
     height: "20px",
@@ -60,11 +60,11 @@ export const lightTheme: Theme = {
   main: {
     backgroundColor: "#F3F5F8",
     color: "",
-    highlight: "#8000ff",
+    highlight: "#F55C5C",
   },
   header: {
     color: "white",
-    backgroundColor: "#7033FF",
+    backgroundColor: "#F55C5C",
     highlight: "#8000ff",
   },
   tile: {
