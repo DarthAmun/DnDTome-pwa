@@ -13,8 +13,8 @@
     "static/js/5.78874186.chunk.js": "/DnDTome-pwa/static/js/5.78874186.chunk.js",
     "static/js/5.78874186.chunk.js.map": "/DnDTome-pwa/static/js/5.78874186.chunk.js.map",
     "main.css": "/DnDTome-pwa/static/css/main.a4aed14a.chunk.css",
-    "main.js": "/DnDTome-pwa/static/js/main.1a838229.chunk.js",
-    "main.js.map": "/DnDTome-pwa/static/js/main.1a838229.chunk.js.map",
+    "main.js": "/DnDTome-pwa/static/js/main.b7867fe4.chunk.js",
+    "main.js.map": "/DnDTome-pwa/static/js/main.b7867fe4.chunk.js.map",
     "runtime-main.js": "/DnDTome-pwa/static/js/runtime-main.b5e39862.js",
     "runtime-main.js.map": "/DnDTome-pwa/static/js/runtime-main.b5e39862.js.map",
     "static/js/8.e2f4fd93.chunk.js": "/DnDTome-pwa/static/js/8.e2f4fd93.chunk.js",
@@ -47,7 +47,7 @@
     "static/js/21.315560f5.chunk.js": "/DnDTome-pwa/static/js/21.315560f5.chunk.js",
     "static/js/21.315560f5.chunk.js.map": "/DnDTome-pwa/static/js/21.315560f5.chunk.js.map",
     "index.html": "/DnDTome-pwa/index.html",
-    "precache-manifest.12849ee022ae3ff116ef0570e825ce21.js": "/DnDTome-pwa/precache-manifest.12849ee022ae3ff116ef0570e825ce21.js",
+    "precache-manifest.a98d6f3fe1daf1cdfe9492e27ee95d6b.js": "/DnDTome-pwa/precache-manifest.a98d6f3fe1daf1cdfe9492e27ee95d6b.js",
     "service-worker.js": "/DnDTome-pwa/service-worker.js",
     "static/css/10.a4567992.chunk.css.map": "/DnDTome-pwa/static/css/10.a4567992.chunk.css.map",
     "static/css/main.a4aed14a.chunk.css.map": "/DnDTome-pwa/static/css/main.a4aed14a.chunk.css.map",
@@ -56,12 +56,12 @@
     "static/js/16.b41bdbc7.chunk.js.LICENSE.txt": "/DnDTome-pwa/static/js/16.b41bdbc7.chunk.js.LICENSE.txt",
     "static/js/8.e2f4fd93.chunk.js.LICENSE.txt": "/DnDTome-pwa/static/js/8.e2f4fd93.chunk.js.LICENSE.txt",
     "static/js/9.9bf8503b.chunk.js.LICENSE.txt": "/DnDTome-pwa/static/js/9.9bf8503b.chunk.js.LICENSE.txt",
-    "static/media/logo192.png": "/DnDTome-pwa/static/media/logo192.a0b12edf.png"
+    "static/media/logo192.png": "/DnDTome-pwa/static/media/logo192.6b9dec78.png"
   },
   "entrypoints": [
     "static/js/runtime-main.b5e39862.js",
     "static/js/12.b1ec8d1a.chunk.js",
     "static/css/main.a4aed14a.chunk.css",
-    "static/js/main.1a838229.chunk.js"
+    "static/js/main.b7867fe4.chunk.js"
   ]
 }

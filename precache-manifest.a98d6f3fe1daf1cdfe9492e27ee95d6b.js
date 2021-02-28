@@ -1,6 +1,6 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "40ea32949220a369fb82e2b0e0e61dc7",
+    "revision": "d89cd1f052e126c577ccd537ae83ebcf",
     "url": "/DnDTome-pwa/index.html"
   },
   {
@@ -8,7 +8,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/DnDTome-pwa/static/css/10.a4567992.chunk.css"
   },
   {
-    "revision": "df05b056420718458017",
+    "revision": "7e759e3b4597868fa042",
     "url": "/DnDTome-pwa/static/css/main.a4aed14a.chunk.css"
   },
   {
@@ -112,15 +112,15 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/DnDTome-pwa/static/js/9.9bf8503b.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "df05b056420718458017",
-    "url": "/DnDTome-pwa/static/js/main.1a838229.chunk.js"
+    "revision": "7e759e3b4597868fa042",
+    "url": "/DnDTome-pwa/static/js/main.b7867fe4.chunk.js"
   },
   {
     "revision": "dfc8f6830365cb337d82",
     "url": "/DnDTome-pwa/static/js/runtime-main.b5e39862.js"
   },
   {
-    "revision": "a0b12edf02c3f325bdf7975e77ac2194",
-    "url": "/DnDTome-pwa/static/media/logo192.a0b12edf.png"
+    "revision": "6b9dec78cb98ef9ec4d58ca64401c1d2",
+    "url": "/DnDTome-pwa/static/media/logo192.6b9dec78.png"
   }
 ]);
