@@ -197,9 +197,7 @@ const CharView = ({ character, modifications }: $Props) => {
                 {buildChar.modifiers.map((mod: Modifier, index: number) => {
                   return (
                     <Text key={index}>
-                      <PropTitle>
-                        {mod.origin}
-                      </PropTitle>
+                      <PropTitle>{mod.origin}</PropTitle>
                       {mod.makeString()}
                     </Text>
                   );

@@ -263,149 +263,115 @@ const extractModifier = (text: string, origin: string): Modifier[] => {
 export const applyMods = async (char: BuildChar, modifiers: boolean): Promise<BuildChar> => {
   if (modifiers) {
     let newChar = char;
-    let modPromises: Promise<boolean>[] = [];
     char.modifiers
       .sort((a, b) => a.operator - b.operator)
       .forEach((mod: Modifier) => {
         if (typeof mod.target == "string") {
           const target: string = mod.target;
           if (mod.operator === ModifierOperator.EQUAL) {
-            modPromises.push(
-              new Promise((resolve, reject) => {
-                newChar = {
-                  ...newChar,
-                  character: {
-                    ...newChar.character,
-                    [target]: replacePlaceholder(char, mod.value),
-                  },
-                };
-                resolve(true);
-              })
-            );
+            newChar = {
+              ...newChar,
+              character: {
+                ...newChar.character,
+                [target]: replacePlaceholder(newChar, mod.value),
+              },
+            };
           } else if (mod.operator === ModifierOperator.ADD && typeof mod.value == "string") {
-            modPromises.push(
-              new Promise((resolve, reject) => {
-                newChar = {
-                  ...newChar,
-                  character: {
-                    ...newChar.character,
-                    [target]: char.character[target] + mod.value,
-                  },
-                };
-                resolve(true);
-              })
-            );
+            newChar = {
+              ...newChar,
+              character: {
+                ...newChar.character,
+                [target]: newChar.character[target] + mod.value,
+              },
+            };
           } else if (mod.operator === ModifierOperator.ADD && typeof mod.value == "number") {
             const value: number = mod.value;
-            modPromises.push(
-              new Promise((resolve, reject) => {
-                newChar = {
-                  ...newChar,
-                  character: {
-                    ...newChar.character,
-                    [target]: (char.character[target] as number) + value,
-                  },
-                };
-                resolve(true);
-              })
-            );
+            newChar = {
+              ...newChar,
+              character: {
+                ...newChar.character,
+                [target]: (newChar.character[target] as number) + value,
+              },
+            };
           } else if (mod.operator === ModifierOperator.SUBSTRACT && typeof mod.value == "number") {
             const value: number = mod.value;
-            modPromises.push(
-              new Promise((resolve, reject) => {
-                newChar = {
-                  ...newChar,
-                  character: {
-                    ...newChar.character,
-                    [target]: (char.character[target] as number) - value,
-                  },
-                };
-                resolve(true);
-              })
-            );
+            newChar = {
+              ...newChar,
+              character: {
+                ...newChar.character,
+                [target]: (newChar.character[target] as number) - value,
+              },
+            };
           }
-        } else if (Array.isArray(mod.target)) {
-          if (mod.target[1] === "add" && typeof mod.value == "string") {
-            const value: string = mod.value;
-            modPromises.push(
-              new Promise((resolve, reject) => {
-                recivePromiseByAttribute(mod.target[0], "name", value.replaceAll('"', "")).then(
-                  (entity) => {
-                    newChar = { ...newChar, [mod.target[0]]: [...newChar[mod.target[0]], entity] };
-                    resolve(true);
-                  }
-                );
-              })
-            );
-          } else if (mod.operator === ModifierOperator.EQUAL) {
-            modPromises.push(
-              new Promise((resolve, reject) => {
-                newChar = {
-                  ...newChar,
-                  character: {
-                    ...newChar.character,
-                    [mod.target[0]]: {
-                      ...newChar.character[mod.target[0]],
-                      [mod.target[1]]: replacePlaceholder(char, mod.value),
-                    },
-                  },
-                };
-                resolve(true);
-              })
-            );
+        } else if (Array.isArray(mod.target) && mod.target[1] !== "add") {
+          if (mod.operator === ModifierOperator.EQUAL) {
+            newChar = {
+              ...newChar,
+              character: {
+                ...newChar.character,
+                [mod.target[0]]: {
+                  ...newChar.character[mod.target[0]],
+                  [mod.target[1]]: replacePlaceholder(newChar, mod.value),
+                },
+              },
+            };
           } else if (mod.operator === ModifierOperator.ADD && typeof mod.value == "string") {
-            modPromises.push(
-              new Promise((resolve, reject) => {
-                newChar = {
-                  ...newChar,
-                  character: {
-                    ...newChar.character,
-                    [mod.target[0]]: {
-                      ...newChar.character[mod.target[0]],
-                      [mod.target[1]]: char.character[mod.target[0]][mod.target[1]] + mod.value,
-                    },
-                  },
-                };
-                resolve(true);
-              })
-            );
+            newChar = {
+              ...newChar,
+              character: {
+                ...newChar.character,
+                [mod.target[0]]: {
+                  ...newChar.character[mod.target[0]],
+                  [mod.target[1]]: newChar.character[mod.target[0]][mod.target[1]] + mod.value,
+                },
+              },
+            };
           } else if (mod.operator === ModifierOperator.ADD && typeof mod.value == "number") {
             const value: number = mod.value;
-            modPromises.push(
-              new Promise((resolve, reject) => {
-                newChar = {
-                  ...newChar,
-                  character: {
-                    ...newChar.character,
-                    [mod.target[0]]: {
-                      ...newChar.character[mod.target[0]],
-                      [mod.target[1]]:
-                        (char.character[mod.target[0]][mod.target[1]] as number) + value,
-                    },
-                  },
-                };
-                resolve(true);
-              })
-            );
+            newChar = {
+              ...newChar,
+              character: {
+                ...newChar.character,
+                [mod.target[0]]: {
+                  ...newChar.character[mod.target[0]],
+                  [mod.target[1]]:
+                    (newChar.character[mod.target[0]][mod.target[1]] as number) + value,
+                },
+              },
+            };
           } else if (mod.operator === ModifierOperator.SUBSTRACT && typeof mod.value == "number") {
             const value: number = mod.value;
-            modPromises.push(
-              new Promise((resolve, reject) => {
-                newChar = {
-                  ...newChar,
-                  character: {
-                    ...newChar.character,
-                    [mod.target[0]]: {
-                      ...newChar.character[mod.target[0]],
-                      [mod.target[1]]:
-                        (char.character[mod.target[0]][mod.target[1]] as number) - value,
-                    },
-                  },
-                };
-                resolve(true);
-              })
-            );
+            newChar = {
+              ...newChar,
+              character: {
+                ...newChar.character,
+                [mod.target[0]]: {
+                  ...newChar.character[mod.target[0]],
+                  [mod.target[1]]:
+                    (newChar.character[mod.target[0]][mod.target[1]] as number) - value,
+                },
+              },
+            };
           }
+        }
+      });
+
+    let modPromises: Promise<boolean>[] = [];
+    char.modifiers
+      .sort((a, b) => a.operator - b.operator)
+      .forEach((mod: Modifier) => {
+        if (mod.target[1] === "add" && typeof mod.value == "string") {
+          const value: string = mod.value;
+          modPromises.push(
+            new Promise((resolve, reject) => {
+              recivePromiseByAttribute(mod.target[0], "name", value.replaceAll('"', "")).then(
+                (entity) => {
+                  newChar = { ...newChar, [mod.target[0]]: [...newChar[mod.target[0]], entity] };
+                  resolve(true);
+                }
+              );
+            })
+          );
         }
       });
     await Promise.all(modPromises);

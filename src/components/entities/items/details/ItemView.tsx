@@ -25,6 +25,10 @@ const ItemView = ({ item }: $Props) => {
 
   useEffect(() => {
     if (webhook !== undefined) {
+      let newText = formatDiscordText(item.description);
+      if (newText.length >= 1024) {
+        newText = newText.substring(0, 1021) + "...";
+      }
       let newJson = {
         username: webhook.name + " (DnDTome)",
         embeds: [
@@ -66,7 +70,7 @@ const ItemView = ({ item }: $Props) => {
               },
               {
                 name: "Text",
-                value: formatDiscordText(item.description),
+                value: newText,
               },
             ],
           },

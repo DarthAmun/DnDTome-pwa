@@ -6,6 +6,7 @@ import {
   reciveCount,
   reciveAllPromise,
   deleteAllByAttrs,
+  deleteDatabase,
 } from "../../services/DatabaseService";
 import IEntity from "../../data/IEntity";
 import P2PReciver from "../p2p/P2PReciver";
@@ -65,6 +66,7 @@ import ImportField, { ImportModus } from "../form_elements/ImportField";
 import GroupTile from "../entities/groups/GroupTile";
 import GroupsOptions from "./GroupsOptions";
 import DiscordOptions from "./DiscordOptions";
+import { faTrashAlt } from "@fortawesome/free-regular-svg-icons";
 
 const Options = () => {
   const [activeTab, setTab] = useState<string>("General");
@@ -204,6 +206,11 @@ const Options = () => {
     }
   };
 
+  const resetDatabase = () => {
+    deleteDatabase();
+    isReload(true);
+  };
+
   return (
     <>
       <OptionSection>
@@ -216,6 +223,10 @@ const Options = () => {
           <SectionText>Export as one file?</SectionText>
           <IconButton icon={faFileExport} onClick={() => exportAll("DnDTome_all.json")} />
         </SectionRow>
+      </OptionSection>
+      <OptionSection>
+        <SelectionTitle>Reset Database</SelectionTitle>
+        <IconButton icon={faTrashAlt} onClick={() => resetDatabase()} />
       </OptionSection>
       <TabBar
         children={[

@@ -30,6 +30,10 @@ const SpellView = ({ spell }: $Props) => {
 
   useEffect(() => {
     if (webhook !== undefined) {
+      let newText = formatDiscordText(spell.text);
+      if (newText.length >= 1024) {
+        newText = newText.substring(0, 1021) + "...";
+      }
       let newJson = {
         username: webhook.name + " (DnDTome)",
         embeds: [
@@ -66,7 +70,7 @@ const SpellView = ({ spell }: $Props) => {
               },
               {
                 name: "Text",
-                value: formatDiscordText(spell.text),
+                value: newText,
               },
             ],
           },

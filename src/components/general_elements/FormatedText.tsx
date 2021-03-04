@@ -20,18 +20,14 @@ const FormatedText = ({ text }: $Props) => {
 
   useEffect(() => {
     if (webhook !== undefined) {
+      let newText = formatDiscordText(text);
+      if (newText.length >= 2000) {
+        newText = newText.substring(0, 1997) + "...";
+      }
+      console.log(newText);
       let newJson = {
         username: webhook.name + " (DnDTome)",
-        embeds: [
-          {
-            fields: [
-              {
-                name: "Text",
-                value: formatDiscordText(text),
-              },
-            ],
-          },
-        ],
+        content: newText,
       };
       setJson(JSON.stringify(newJson));
     }

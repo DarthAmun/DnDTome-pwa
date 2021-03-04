@@ -4,6 +4,10 @@ export const sendMessage = (
   avatar?: string
 ) => {
   if (webhook !== undefined) {
+    if (content.length >= 2000) {
+      content = content.substring(0, 1997) + "...";
+    }
+
     let request = new XMLHttpRequest();
     request.open("POST", webhook.hook);
     request.setRequestHeader("Content-type", "application/json");

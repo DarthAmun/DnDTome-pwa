@@ -59,9 +59,7 @@ const CharLab = () => {
     let classList: Promise<Class>[] = [];
 
     char.classes?.forEach((classe) => {
-      classList.push(
-        recivePromiseByAttribute("classes", "name", classe.classe)
-      );
+      classList.push(recivePromiseByAttribute("classes", "name", classe.classe));
     });
     const results = await Promise.all(classList);
     results?.forEach((classe: Class) => {
@@ -74,29 +72,31 @@ const CharLab = () => {
 
     fullClassList?.forEach((classe: { class: Class; classSet: ClassSet }) => {
       let featureSet = classe.class.featureSets[classe.classSet.level - 1];
-      if (featureSet.bonis) {
-        featureSet.bonis?.forEach((boni: Boni) => {
-          if (boni.isCurrency) {
-            bonis = [
-              ...bonis,
-              {
-                origin: boni.name,
-                value: +boni.value,
-                max: +boni.value,
-              },
-            ];
-          }
-        });
-      }
-      if (featureSet.spellslots && featureSet.spellslots.length > 0) {
-        spellSlots = [
-          ...spellSlots,
-          {
-            origin: classe.class.name,
-            slots: featureSet.spellslots,
-            max: featureSet.spellslots,
-          },
-        ];
+      if (featureSet !== undefined) {
+        if (featureSet.bonis) {
+          featureSet.bonis?.forEach((boni: Boni) => {
+            if (boni.isCurrency) {
+              bonis = [
+                ...bonis,
+                {
+                  origin: boni.name,
+                  value: +boni.value,
+                  max: +boni.value,
+                },
+              ];
+            }
+          });
+        }
+        if (featureSet.spellslots && featureSet.spellslots.length > 0) {
+          spellSlots = [
+            ...spellSlots,
+            {
+              origin: classe.class.name,
+              slots: featureSet.spellslots,
+              max: featureSet.spellslots,
+            },
+          ];
+        }
       }
     });
 
@@ -174,19 +174,12 @@ const CharLab = () => {
         history.push(`/char-detail/id/${result}`);
       });
     });
-  }
+  };
 
   return (
     <>
       <TabBar
-        children={[
-          "General",
-          "Class",
-          "Race",
-          "Abilities",
-          "Equipment",
-          "Finished",
-        ]}
+        children={["General", "Class", "Race", "Abilities", "Equipment", "Finished"]}
         onChange={(tab: string) => setTab(tab)}
         activeTab={activeTab}
       />
@@ -195,11 +188,7 @@ const CharLab = () => {
           {activeTab === "General" && (
             <>
               {!completedGeneral && (
-                <CharLabGeneral
-                  char={newChar}
-                  onChange={updateChar}
-                  completed={updateGeneral}
-                />
+                <CharLabGeneral char={newChar} onChange={updateChar} completed={updateGeneral} />
               )}
               {completedGeneral && (
                 <PropWrapper>
@@ -212,11 +201,7 @@ const CharLab = () => {
           {activeTab === "Class" && (
             <>
               {!completedClass && (
-                <CharLabClass
-                  char={newChar}
-                  onChange={updateChar}
-                  completed={updateClass}
-                />
+                <CharLabClass char={newChar} onChange={updateChar} completed={updateClass} />
               )}
               {completedClass && (
                 <PropWrapper>
@@ -229,11 +214,7 @@ const CharLab = () => {
           {activeTab === "Race" && (
             <>
               {!completedRace && (
-                <CharLabRace
-                  char={newChar}
-                  onChange={updateChar}
-                  completed={updateRace}
-                />
+                <CharLabRace char={newChar} onChange={updateChar} completed={updateRace} />
               )}
               {completedRace && (
                 <PropWrapper>
@@ -255,10 +236,7 @@ const CharLab = () => {
               {completedAbilities && (
                 <PropWrapper>
                   <Prop>Would you like to edit abilities again? </Prop>
-                  <IconButton
-                    icon={faEdit}
-                    onClick={() => setAbilities(false)}
-                  />
+                  <IconButton icon={faEdit} onClick={() => setAbilities(false)} />
                 </PropWrapper>
               )}
             </>
@@ -275,10 +253,7 @@ const CharLab = () => {
               {completedEquipment && (
                 <PropWrapper>
                   <Prop>Would you like to edit equipment again? </Prop>
-                  <IconButton
-                    icon={faEdit}
-                    onClick={() => setEquipment(false)}
-                  />
+                  <IconButton icon={faEdit} onClick={() => setEquipment(false)} />
                 </PropWrapper>
               )}
             </>
@@ -289,7 +264,7 @@ const CharLab = () => {
                 !completedClass ||
                 !completedRace ||
                 !completedAbilities ||
-                !completedGeneral||
+                !completedGeneral ||
                 !completedEquipment) && (
                 <PropWrapper>
                   <Prop>Somthing is not finished!</Prop>
@@ -303,10 +278,7 @@ const CharLab = () => {
                 completedEquipment && (
                   <PropWrapper>
                     <Prop>Create Char?</Prop>
-                    <IconButton
-                      icon={faCheckCircle}
-                      onClick={() => saveChar()}
-                    />
+                    <IconButton icon={faCheckCircle} onClick={() => saveChar()} />
                   </PropWrapper>
                 )}
             </>

@@ -109,6 +109,7 @@ const EntityDetail = ({ entity, tableName, isNew, view }: $Props) => {
   };
 
   const editAndSaveEntity = (entity: IEntity, msg: string) => {
+    console.log("save")
     editEntity(entity);
     updateEntity(entity, msg);
   };

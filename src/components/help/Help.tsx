@@ -208,7 +208,7 @@ const Help = () => {
                 You can even alter deeper values like: {"{{saves.chaSaveProf=1}}"}
               </SectionText>
               <SectionText>
-                Complex example: {"{{ac=10+(([dex]-10)/2)+(([con]-10)/2)}}"} where{" "}
+                Complex example: {"{{ac=\"10+(([dex]-10)/2)+(([con]-10)/2)\"}}"} where{" "}
                 {"(([dex]-10)/2)"} gives you the bonus for the stat.
               </SectionText>
             </HelpSection>
