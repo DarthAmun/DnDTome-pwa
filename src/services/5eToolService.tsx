@@ -21,7 +21,7 @@ const replaceTag = (text: string) => {
     case clearText.startsWith("hit"):
       return "[[dice.+" + clearText.substring(3, clearText.length).trim() + "]]";
     case clearText.startsWith("recharge"):
-      return "(Recharge [[dice." + clearText.substring(8, clearText.length).trim() + "]]";
+      return "(Recharge " + clearText.substring(8, clearText.length).trim() + " [[dice.d6]])";
     case clearText.startsWith("item"):
       return "[[gear." + clearText.substring(4, clearText.length).trim() + "]]";
     case clearText.startsWith("spell"):
@@ -44,6 +44,7 @@ const replaceTags = (text: string): string => {
       .replaceAll("[", "")
       .replaceAll("]", "");
 
+    console.log(text);
     let newText: string = text;
     while (newText.includes("{@h}")) {
       let textSplit: string[] = newText.split("{@h}");
@@ -57,7 +58,12 @@ const replaceTags = (text: string): string => {
         // eslint-disable-next-line
         hitSplit.splice(2).forEach((s) => (newText += " " + s));
       }
+      if (textSplit.length > 2) {
+        // eslint-disable-next-line
+        textSplit.splice(2).forEach((s) => (newText += "{@h}" + s));
+      }
     }
+    console.log(newText);
     while (newText.includes("{@")) {
       let start = newText.indexOf("{@");
       let end = newText.indexOf("}");
@@ -845,12 +851,7 @@ export const makeMonster = (obj: any): Monster => {
               // eslint-disable-next-line
               spellSlotInfo.spells.forEach((spell: any) => {
                 if (typeof spell == "string") {
-                  let newSpell = spell
-                    .split("|")[0]
-                    .replaceAll("{@", "[[")
-                    .replaceAll("}", "")
-                    .replaceAll("spell ", "spell.");
-                  traits += newSpell + "]] ";
+                  traits += replaceTags(spell);
                 }
               });
             }
