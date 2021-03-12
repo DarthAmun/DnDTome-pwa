@@ -1,24 +1,24 @@
+import { faDiscord } from "@fortawesome/free-brands-svg-icons";
+import { faLink, faPaperPlane, faRunning, faShieldAlt } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useCallback, useEffect, useState } from "react";
+import { GiAngelOutfit, GiLifeBar, GiResize } from "react-icons/gi";
+import { MdRecordVoiceOver, MdRemoveRedEye } from "react-icons/md";
 import styled from "styled-components";
 import Monster from "../../../../data/Monster";
-
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faLink, faPaperPlane, faRunning, faShieldAlt } from "@fortawesome/free-solid-svg-icons";
-import { GiResize, GiAngelOutfit, GiLifeBar } from "react-icons/gi";
-import { MdRecordVoiceOver, MdRemoveRedEye } from "react-icons/md";
-import FormatedText from "../../../general_elements/FormatedText";
-import TextButton from "../../../form_elements/TextButton";
-import P2PSender from "../../../p2p/P2PSender";
-import { faDiscord } from "@fortawesome/free-brands-svg-icons";
 import { useWebhook } from "../../../../hooks/webhookHook";
 import { sendEmbedMessage } from "../../../../services/DiscordService";
+import TextButton from "../../../form_elements/TextButton";
+import FormatedText from "../../../general_elements/FormatedText";
 import RollableProp from "../../../general_elements/RollableProp";
+import P2PSender from "../../../p2p/P2PSender";
 
 interface $Props {
   monster: Monster;
+  isNpc?: boolean;
 }
 
-const MonsterView = ({ monster }: $Props) => {
+const MonsterView = ({ monster, isNpc }: $Props) => {
   let webhook = useWebhook();
   const [json, setJson] = useState<string>("");
   const [send, setSend] = useState<boolean>(false);
@@ -118,9 +118,11 @@ const MonsterView = ({ monster }: $Props) => {
         <CR>
           <b>{formatCr()}</b>
         </CR>
-        <Name>
-          <b>{monster.name}</b>
-        </Name>
+        {!isNpc && (
+          <Name>
+            <b>{monster.name}</b>
+          </Name>
+        )}
 
         <PropWrapper>
           <RollableProp title={"Str"} value={monster.str} rolledValue={makeSave("str")} />
@@ -183,13 +185,15 @@ const MonsterView = ({ monster }: $Props) => {
               {monster.conImmunities}
             </Prop>
           )}
-          <Prop>
-            <Icon icon={faLink} />
-            {monster.sources}
-          </Prop>
+          {!isNpc && (
+            <Prop>
+              <Icon icon={faLink} />
+              {monster.sources}
+            </Prop>
+          )}
         </PropWrapper>
-        {webhook !== undefined && monster.pic !== "" && (
-          <PropWrapper>
+        <PropWrapper>
+          {!isNpc && webhook !== undefined && monster.pic !== "" && (
             <TextButton
               style={{
                 backgroundColor: "#7289da",
@@ -198,17 +202,15 @@ const MonsterView = ({ monster }: $Props) => {
               icon={faDiscord}
               onClick={() => sendEmbedMessage(webhook, json)}
             />
-          </PropWrapper>
-        )}
-        <PropWrapper>
-          {!send && (
+          )}
+          {!isNpc && !send && (
             <TextButton
               text={`Send ${monster.name}`}
               icon={faPaperPlane}
               onClick={() => setSend(true)}
             />
           )}
-          {!!send && <P2PSender data={monster} mode={"THIS"} />}
+          {!isNpc && !!send && <P2PSender data={monster} mode={"THIS"} />}
         </PropWrapper>
       </View>
       {monster.ablt && (

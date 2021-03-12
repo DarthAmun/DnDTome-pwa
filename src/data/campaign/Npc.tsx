@@ -1,5 +1,6 @@
 import Char from "../chars/Char";
 import IEntity from "../IEntity";
+import Monster from "../Monster";
 
 //npcs: "++id, name, pic, char, traits, description, sources, filename",
 export default class Npc implements IEntity {
@@ -7,6 +8,7 @@ export default class Npc implements IEntity {
   name: string;
   pic: string;
   char: Char | undefined;
+  monster: Monster | undefined;
   traits: string;
   description: string;
   sources: string;
@@ -17,6 +19,7 @@ export default class Npc implements IEntity {
     name?: string,
     pic?: string,
     char?: Char | undefined,
+    monster?: Monster | undefined,
     traits?: string,
     description?: string,
     sources?: string,
@@ -25,7 +28,8 @@ export default class Npc implements IEntity {
     this.id = id;
     this.name = name || "";
     this.pic = pic || "";
-    this.char = char;
+    this.char = char || undefined;
+    this.monster = monster || undefined;
     this.traits = traits || "";
     this.description = description || "";
     this.sources = sources || "";

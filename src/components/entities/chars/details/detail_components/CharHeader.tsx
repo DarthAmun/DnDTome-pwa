@@ -1,16 +1,16 @@
 import React, { useCallback } from "react";
 import { useHistory } from "react-router";
+import { PolarAngleAxis, PolarGrid, PolarRadiusAxis, Radar, RadarChart } from "recharts";
 import styled from "styled-components";
 import Char from "../../../../../data/chars/Char";
 import ClassSet from "../../../../../data/chars/ClassSet";
 
-import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis } from "recharts";
-
 interface $Props {
   char: Char;
+  isNpc?: boolean;
 }
 
-const CharHeader = ({ char }: $Props) => {
+const CharHeader = ({ char, isNpc }: $Props) => {
   let history = useHistory();
 
   const formatScore = useCallback((score: number) => {
@@ -50,23 +50,29 @@ const CharHeader = ({ char }: $Props) => {
         ""
       )}
       <View>
-        <Name>
-          <b>{char.name}</b>
-        </Name>
+        {!isNpc && (
+          <Name>
+            <b>{char.name}</b>
+          </Name>
+        )}
 
         <PropWrapper>
           <Prop>
             <PropTitle>Level:</PropTitle>
             {calcLevel()}
           </Prop>
-          <Prop>
-            <PropTitle>Player:</PropTitle>
-            {char.player}
-          </Prop>
-          <Prop>
-            <PropTitle>Campaign:</PropTitle>
-            {char.campaign}
-          </Prop>
+          {!isNpc && (
+            <>
+              <Prop>
+                <PropTitle>Player:</PropTitle>
+                {char.player}
+              </Prop>
+              <Prop>
+                <PropTitle>Campaign:</PropTitle>
+                {char.campaign}
+              </Prop>
+            </>
+          )}
           <Prop>
             <PropTitle>Race:</PropTitle>
             <MainLink onClick={() => history.push(`/race-detail/name/${char.race.race}`)}>
@@ -90,7 +96,9 @@ const CharHeader = ({ char }: $Props) => {
                     {classSet.level}
                   </Prop>
                   <Prop>
-                    <MainLink onClick={() => history.push(`/classe-detail/name/${classSet.classe}`)}>
+                    <MainLink
+                      onClick={() => history.push(`/classe-detail/name/${classSet.classe}`)}
+                    >
                       {classSet.classe}
                     </MainLink>
                   </Prop>

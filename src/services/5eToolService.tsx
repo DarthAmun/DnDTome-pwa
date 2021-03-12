@@ -11,6 +11,77 @@ import Subrace from "../data/races/Subrace";
 import Trait from "../data/races/Trait";
 import Spell from "../data/Spell";
 
+const replaceTag = (text: string) => {
+  let clearText = text.replace("{@", "").replace("}", "").split("|")[0].trim();
+  switch (true) {
+    case clearText.startsWith("damage"):
+      return "[[dice." + clearText.substring(6, clearText.length).trim() + "]]";
+    case clearText.startsWith("dice"):
+      return "[[dice.+" + clearText.substring(4, clearText.length).trim() + "]]";
+    case clearText.startsWith("hit"):
+      return "[[dice.+" + clearText.substring(3, clearText.length).trim() + "]]";
+    case clearText.startsWith("recharge"):
+      return "(Recharge [[dice." + clearText.substring(8, clearText.length).trim() + "]]";
+    case clearText.startsWith("item"):
+      return "[[gear." + clearText.substring(4, clearText.length).trim() + "]]";
+    case clearText.startsWith("spell"):
+      return "[[spell." + clearText.substring(6, clearText.length).trim() + "]]";
+    case clearText.startsWith("filter"):
+      return "" + clearText.substring(6, clearText.length).trim();
+    default:
+      return clearText;
+  }
+};
+
+const replaceTags = (text: string): string => {
+  if (text) {
+    text = text
+      .replaceAll("{@atk mw", "Melee Weapon Attack: ")
+      .replaceAll("{@atk ms", "Melee Spell Attack: ")
+      .replaceAll("{@atk rs", "Ranged Spell Attack: ")
+      .replaceAll("{@atk rw", "Ranged Weapon Attack: ")
+      .replaceAll("{@dc", "DC")
+      .replaceAll("[", "")
+      .replaceAll("]", "");
+
+    let newText: string = text;
+    while (newText.includes("{@h}")) {
+      let textSplit: string[] = newText.split("{@h}");
+      let hitSplit: string[] = textSplit[1].split(" ");
+      if (hitSplit[0].length > 0) {
+        newText = textSplit[0] + "Hit: [[dice.+" + hitSplit[0] + "]] ";
+        // eslint-disable-next-line
+        hitSplit.splice(1).forEach((s) => (newText += " " + s));
+      } else if (hitSplit[1].length > 0) {
+        newText = textSplit[0] + "Hit: [[dice.+" + hitSplit[1] + "]] ";
+        // eslint-disable-next-line
+        hitSplit.splice(2).forEach((s) => (newText += " " + s));
+      }
+    }
+    while (newText.includes("{@")) {
+      let start = newText.indexOf("{@");
+      let end = newText.indexOf("}");
+      if (start > end) {
+        newText = newText.replace("}", "");
+      } else {
+        newText =
+          newText.substring(0, start) +
+          replaceTag(newText.substring(start, end + 1)) +
+          newText.substring(end + 1, newText.length);
+      }
+    }
+
+    newText = newText
+      .replaceAll("}", "")
+      .replaceAll("{", "")
+      .replaceAll(" + ", "+")
+      .replaceAll("+ ", "+")
+      .replaceAll(" +", "+");
+    return newText.trim();
+  }
+  return "";
+};
+
 const parseGear = (obj: any, fileName: string) => {
   let text = "";
   if (obj.entries !== undefined) {
@@ -46,19 +117,12 @@ const parseGear = (obj: any, fileName: string) => {
           text += "||table||\n";
         } else {
           let convertText = JSON.stringify(textPart);
-          convertText = convertText
-            .replaceAll("},", "\n")
-            .replaceAll("[", "")
-            .replaceAll("]", "")
-            .replaceAll("}", "")
-            .replaceAll("{@", "")
-            .replaceAll("{", "");
-          convertText = convertText.trim();
+          convertText = replaceTags(convertText);
           text += convertText;
         }
       }
     });
-    text = text.replaceAll("}", "").replaceAll("{@", "");
+    text = replaceTags(text);
   }
   const description = text.trim();
 
@@ -243,19 +307,12 @@ const parseItem = (obj: any, fileName: string) => {
           text += "||table||\n";
         } else {
           let convertText = JSON.stringify(textPart);
-          convertText = convertText
-            .replaceAll("},", "\n")
-            .replaceAll("[", "")
-            .replaceAll("]", "")
-            .replaceAll("}", "")
-            .replaceAll("{@", "")
-            .replaceAll("{", "");
-          convertText = convertText.trim();
+          convertText = replaceTags(convertText);
           text += convertText;
         }
       }
     });
-    text = text.replaceAll("}", "").replaceAll("{@", "");
+    text = replaceTags(text);
   }
   const description = text.trim();
 
@@ -429,14 +486,7 @@ export const makeRace = (obj: any, fileName: string): Race => {
           lang += entry.entries[0];
         } else if (Array.isArray(entry.entries)) {
           if (typeof entry.entries[0] == "string") {
-            let convertText = entry.entries[0]
-              .replaceAll("},", "\n")
-              .replaceAll("[", "")
-              .replaceAll("]", "")
-              .replaceAll("}", "")
-              .replaceAll("{@", "")
-              .replaceAll("{", "");
-            convertText = convertText.trim();
+            let convertText = replaceTags(entry.entries[0]);
             traits.push(new Trait(entry.name, convertText, 1));
           } else {
             traits.push(new Trait(entry.name, "", 1));
@@ -485,15 +535,8 @@ export const makeSubrace = (obj: any, race: Race, fileName: string): Subrace => 
       if (Array.isArray(entry.entries)) {
         let convertText = "";
         if (typeof entry.entries[0] == "string") {
-          convertText = entry.entries[0]
-            .replaceAll("},", "\n")
-            .replaceAll("[", "")
-            .replaceAll("]", "")
-            .replaceAll("}", "")
-            .replaceAll("{@", "")
-            .replaceAll("{", "");
+          convertText = replaceTags(entry.entries[0]);
         }
-        convertText = convertText.trim();
         subtraits.push(new Trait(entry.name, convertText, 1));
       }
     });
@@ -607,20 +650,12 @@ export const makeSpell = (obj: any, fileName: string): Spell => {
         text += "||table||\n";
       } else {
         let convertText = JSON.stringify(textPart);
-        convertText = convertText
-          .replaceAll("},", "\n")
-          .replaceAll("[", "")
-          .replaceAll("]", "")
-          .replaceAll("}", "")
-          .replaceAll("{@", "")
-          .replaceAll("{", "");
-        convertText = convertText.trim();
+        convertText = replaceTags(convertText);
         text += convertText;
       }
     }
   });
-  text = text.replaceAll("}", "").replaceAll("{@", "");
-  text = text.trim();
+  text = replaceTags(text);
 
   return new Spell(
     obj.name,
@@ -824,19 +859,7 @@ export const makeMonster = (obj: any): Monster => {
           traits += "\n";
         }
       });
-    traits = traits
-      .replaceAll("}", "")
-      .replaceAll("{@damage ", "")
-      .replaceAll("{@recharge", "(Recharge 6)")
-      .replaceAll("{@atk mw", "Melee Weapon Attack: ")
-      .replaceAll("{@atk mw", "Ranged Weapon Attack: ")
-      .replaceAll("{@atk ms", "Melee Spell Attack: ")
-      .replaceAll("{@atk rs", "Ranged Spell Attack: ")
-      .replaceAll("{@h", "Hit: ")
-      .replaceAll("{@dc", "DC")
-      .replaceAll("{@hit", "+")
-      .replaceAll("{@", "");
-    traits = traits.trim();
+    traits = replaceTags(traits);
 
     let actions = "";
     obj.action &&
@@ -849,19 +872,7 @@ export const makeMonster = (obj: any): Monster => {
           actions += " \n";
         }
       });
-    actions = actions
-      .replaceAll("}", "")
-      .replaceAll("{@damage ", "")
-      .replaceAll("{@recharge", "(Recharge 6)")
-      .replaceAll("{@atk mw", "Melee Weapon Attack: ")
-      .replaceAll("{@atk mw", "Ranged Weapon Attack: ")
-      .replaceAll("{@atk ms", "Melee Spell Attack: ")
-      .replaceAll("{@atk rs", "Ranged Spell Attack: ")
-      .replaceAll("{@h", "Hit: ")
-      .replaceAll("{@dc", "DC")
-      .replaceAll("{@hit", "+")
-      .replaceAll("{@", "");
-    actions = actions.trim();
+    actions = replaceTags(actions);
 
     let lactions = "";
     obj.legendary &&
@@ -874,19 +885,7 @@ export const makeMonster = (obj: any): Monster => {
           lactions += " \n";
         }
       });
-    lactions = lactions
-      .replaceAll("}", "")
-      .replaceAll("{@damage ", "")
-      .replaceAll("{@recharge", "(Recharge 6)")
-      .replaceAll("{@atk mw", "Melee Weapon Attack: ")
-      .replaceAll("{@atk mw", "Ranged Weapon Attack: ")
-      .replaceAll("{@atk ms", "Melee Spell Attack: ")
-      .replaceAll("{@atk rs", "Ranged Spell Attack: ")
-      .replaceAll("{@h", "Hit: ")
-      .replaceAll("{@dc", "DC")
-      .replaceAll("{@hit", "+")
-      .replaceAll("{@", "");
-    lactions = lactions.trim();
+    lactions = replaceTags(lactions);
 
     return new Monster(
       0,
@@ -923,6 +922,47 @@ export const makeMonster = (obj: any): Monster => {
   return new Monster();
 };
 
+const addAdditionalClassFeatures = (
+  additional: string[],
+  featureSets: FeatureSet[],
+  json: any,
+  sources: string
+) => {
+  additional.forEach((feature: any) => {
+    const featureParts: string[] = feature.split("|");
+    console.log(featureParts);
+
+    let text = "";
+    json.classFeature.forEach((objFeature: any) => {
+      if (objFeature.name === featureParts[0] && objFeature.source === sources) {
+        text = recursiveTextAdder(objFeature.entries, text).text;
+      }
+    });
+    text = replaceTags(text);
+
+    if (text !== undefined && text !== null && text !== "") {
+      if (featureParts[0].toLocaleLowerCase() === "ability score improvement") {
+        text = "";
+      }
+      if (featureSets[+featureParts[3] - 1] === undefined) {
+        featureSets.push(
+          new FeatureSet(
+            +featureParts[3],
+            getProfForLevel(+featureParts[3]),
+            [new Feature(featureParts[0], text, [], undefined)],
+            [],
+            []
+          )
+        );
+      } else {
+        featureSets[+featureParts[3] - 1].features.push(
+          new Feature(featureParts[0], text, [], undefined)
+        );
+      }
+    }
+  });
+};
+
 export const makeClass = (obj: any, json: any, fileName: string): Class => {
   const name = obj.name;
   const sources = obj.source;
@@ -948,14 +988,7 @@ export const makeClass = (obj: any, json: any, fileName: string): Class => {
         proficiencies += skill + ", ";
       });
     }
-    proficiencies = proficiencies
-      .replaceAll("},", "\n")
-      .replaceAll("[", "")
-      .replaceAll("]", "")
-      .replaceAll("}", "")
-      .replaceAll("{@", "")
-      .replaceAll("{", "")
-      .trim();
+    proficiencies = replaceTags(proficiencies);
   }
 
   let equipment = "";
@@ -963,14 +996,7 @@ export const makeClass = (obj: any, json: any, fileName: string): Class => {
     obj.startingEquipment.default?.forEach((eqp: string) => {
       equipment += eqp + ", ";
     });
-    equipment = equipment
-      .replaceAll("},", "\n")
-      .replaceAll("[", "")
-      .replaceAll("]", "")
-      .replaceAll("}", "")
-      .replaceAll("{@", "")
-      .replaceAll("{", "")
-      .trim();
+    equipment = replaceTags(equipment);
   }
 
   let featureSets: FeatureSet[] = [];
@@ -987,16 +1013,7 @@ export const makeClass = (obj: any, json: any, fileName: string): Class => {
         });
       } else {
         col.colLabels.forEach((label: string, colIndex: number) => {
-          let clearLabel = label
-            .replaceAll("},", "\n")
-            .replaceAll("[", "")
-            .replaceAll("]", "")
-            .replaceAll("}", "")
-            .replaceAll("{@", "")
-            .replaceAll("{", "")
-            .replaceAll("filter", "")
-            .split("|")[0]
-            .trim();
+          let clearLabel = replaceTags(label).split("|")[0].trim();
           col.rows.forEach((row: any, rowIndex: number) => {
             if (featureSets[rowIndex] === undefined) {
               featureSets.push(
@@ -1006,16 +1023,7 @@ export const makeClass = (obj: any, json: any, fileName: string): Class => {
             let bonis: Boni[] | undefined = featureSets[rowIndex].bonis;
             if (bonis === undefined) bonis = [];
             if (typeof row[colIndex] == "string") {
-              let text = row[colIndex]
-                .replaceAll("},", "\n")
-                .replaceAll("[", "")
-                .replaceAll("]", "")
-                .replaceAll("}", "")
-                .replaceAll("{@", "")
-                .replaceAll("{", "")
-                .replaceAll("filter", "")
-                .split("|")[0]
-                .trim();
+              let text = replaceTags(row[colIndex]).split("|")[0].trim();
               bonis.push(new Boni(clearLabel, text, false));
             } else {
               if (row[colIndex].value !== undefined)
@@ -1039,18 +1047,13 @@ export const makeClass = (obj: any, json: any, fileName: string): Class => {
       let text = "";
       json.classFeature.forEach((objFeature: any) => {
         if (objFeature.name === featureParts[0] && objFeature.source === sources) {
-          text = recursiveTextAdder(objFeature.entries, text);
+          const { text: newText, additional } = recursiveTextAdder(objFeature.entries, text);
+          if (additional.length > 0)
+            addAdditionalClassFeatures(additional, featureSets, json, sources);
+          text = newText;
         }
       });
-      text = text
-        .replaceAll("},", "\n")
-        .replaceAll("[", "")
-        .replaceAll("]", "")
-        .replaceAll("}", "")
-        .replaceAll("{@", "")
-        .replaceAll("{", "")
-        .replaceAll("|", " ")
-        .trim();
+      text = replaceTags(text);
 
       if (text !== undefined && text !== null && text !== "") {
         if (featureParts[0].toLocaleLowerCase() === "ability score improvement") {
@@ -1078,6 +1081,36 @@ export const makeClass = (obj: any, json: any, fileName: string): Class => {
   return new Class(0, name, featureSets, hitdice, proficiencies, equipment, fileName, sources, "");
 };
 
+const addAdditionalSubclassFeatures = (additional: string[], features: FeatureSet[], json: any) => {
+  additional.forEach((feature: any) => {
+    const featureParts: string[] = feature.split("|");
+
+    let text = "";
+    json.subclassFeature.forEach((objFeature: any) => {
+      if (objFeature.subclassShortName === featureParts[3] && objFeature.name === featureParts[0]) {
+        text = recursiveTextAdder(objFeature.entries, text).text;
+      }
+    });
+    text = replaceTags(text);
+
+    let filteredFeatures = features.filter((featureSet) => featureSet.level === +featureParts[5]);
+    if (filteredFeatures.length === 0) {
+      features.push(new FeatureSet(+featureParts[5], 0, [], [], []));
+    }
+
+    if (text !== undefined && text !== null && text !== "") {
+      if (featureParts[0].toLocaleLowerCase() === "ability score improvement") {
+        text = "";
+      }
+      features
+        .filter((featureSet) => featureSet.level === +featureParts[5])
+        .forEach((feat) => {
+          feat.features.push(new Feature(featureParts[0], text, [], undefined));
+        });
+    }
+  });
+};
+
 export const makeSubclass = (obj: any, json: any, classe: string, fileName: string): Subclass => {
   let features: FeatureSet[] = [];
   if (obj.subclassFeatures !== undefined) {
@@ -1096,19 +1129,12 @@ export const makeSubclass = (obj: any, json: any, classe: string, fileName: stri
           objFeature.subclassShortName === featureParts[3] &&
           objFeature.name === featureParts[0]
         ) {
-          text = recursiveTextAdder(objFeature.entries, text);
+          const { text: newText, additional } = recursiveTextAdder(objFeature.entries, text);
+          if (additional.length > 0) addAdditionalSubclassFeatures(additional, features, json);
+          text = newText;
         }
       });
-
-      text = text
-        .replaceAll("},", "\n")
-        .replaceAll("[", "")
-        .replaceAll("]", "")
-        .replaceAll("}", "")
-        .replaceAll("{@", "")
-        .replaceAll("{", "")
-        .replaceAll("|", " ")
-        .trim();
+      text = replaceTags(text);
 
       let filteredFeatures = features.filter((featureSet) => featureSet.level === +featureParts[5]);
       if (filteredFeatures.length === 0) {
@@ -1164,7 +1190,11 @@ const getProfForLevel = (level: number): number => {
   }
 };
 
-const recursiveTextAdder = (entries: any[], text: string): string => {
+const recursiveTextAdder = (
+  entries: any[],
+  text: string
+): { text: string; additional: string[] } => {
+  let additional: string[] = [];
   let newText: string = text;
   if (Array.isArray(entries)) {
     entries?.forEach((entry: any) => {
@@ -1172,11 +1202,34 @@ const recursiveTextAdder = (entries: any[], text: string): string => {
         newText += entry + "\n";
       } else if (entry.entries !== undefined) {
         newText += entry.name + "\n";
-        newText = recursiveTextAdder(entry.entries, newText);
+        newText = recursiveTextAdder(entry.entries, newText).text;
       } else if (entry.items !== undefined) {
         entry.items.forEach((item: string) => {
           newText += "• " + item + "\n";
         });
+      } else if (entry.type !== undefined && entry.type === "refClassFeature") {
+        additional.push(entry.classFeature);
+      } else if (entry.type !== undefined && entry.type === "refSubclassFeature") {
+        additional.push(entry.subclassFeature);
+      } else if (entry.type !== undefined && entry.type === "table") {
+        newText += "\n ||table||";
+        if (entry.colLabels) {
+          newText += "||";
+          entry.colLabels.forEach((s: string) => (newText += s + "|"));
+          newText += "|";
+        }
+        if (entry.rows) {
+          newText += "||";
+          entry.rows.forEach((row: string[]) => {
+            newText += "||";
+            row.forEach((s: string) => {
+              newText += s + "|";
+            });
+            newText += "|";
+          });
+          newText += "|";
+        }
+        newText += "||table||\n";
       } else {
         for (const value of Object.entries(entry)) {
           newText += value[1] + "\n";
@@ -1193,7 +1246,7 @@ const recursiveTextAdder = (entries: any[], text: string): string => {
     }
   }
 
-  return newText + "\n";
+  return { text: newText + "\n", additional: additional };
 };
 
 export const makeSelection = (
@@ -1237,20 +1290,11 @@ export const makeSelection = (
         text += "||table||\n";
       } else {
         let convertText = JSON.stringify(textPart);
-        convertText = convertText
-          .replaceAll("},", "\n")
-          .replaceAll("[", "")
-          .replaceAll("]", "")
-          .replaceAll("}", "")
-          .replaceAll("{@", "")
-          .replaceAll("{", "");
-        convertText = convertText.trim();
-        text += convertText;
+        text += replaceTags(convertText);
       }
     }
   });
-  text = text.replaceAll("}", "").replaceAll("{@", "");
-  text = text.trim();
+  text = replaceTags(text);
 
   let level: number = 0;
   let prequisite: string = "";

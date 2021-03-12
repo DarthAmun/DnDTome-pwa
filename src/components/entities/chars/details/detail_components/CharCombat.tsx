@@ -1,15 +1,14 @@
-import React, { useState, useEffect } from "react";
+import { faDiscord } from "@fortawesome/free-brands-svg-icons";
+import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router";
 import styled from "styled-components";
 import BuildChar from "../../../../../data/chars/BuildChar";
-
-import FormatedText from "../../../../general_elements/FormatedText";
 import Feature from "../../../../../data/classes/Feature";
-import { faDiscord } from "@fortawesome/free-brands-svg-icons";
 import { useWebhook } from "../../../../../hooks/webhookHook";
 import { rollCommand } from "../../../../../services/DiceService";
 import { sendEmbedMessage } from "../../../../../services/DiscordService";
 import IconButton from "../../../../form_elements/IconButton";
+import FormatedText from "../../../../general_elements/FormatedText";
 
 interface $Props {
   buildChar: BuildChar;
@@ -45,11 +44,11 @@ const CharCombat = ({ buildChar }: $Props) => {
     damage
       .split(" ")
       .filter((command) => /\d+/g.test(command))
-      .forEach((command) => {
+      .forEach((command: string) => {
         newDamage += command;
       });
     newDamage = newDamage.trim();
-    let damageRoll = rollCommand(newDamage, krit);
+    let damageRoll = rollCommand(damage, krit);
 
     if (webhook !== undefined) {
       const newName = value >= 0 ? title + "(+" + value + ")" : title + "(" + value + ")";
@@ -74,7 +73,15 @@ const CharCombat = ({ buildChar }: $Props) => {
               },
               {
                 name: "Damage",
-                value: damageRoll + " ||" + newDamage + "||",
+                value:
+                  damageRoll.result +
+                  " " +
+                  damageRoll.text +
+                  " ||" +
+                  newDamage +
+                  " " +
+                  damageRoll.rolls +
+                  "||",
               },
             ],
           },
@@ -150,7 +157,9 @@ const CharCombat = ({ buildChar }: $Props) => {
                           baseitem.item.name,
                           bonus + (baseitem.prof ? buildChar.prof : 0) + baseitem.item.magicBonus,
                           baseitem.base !== undefined
-                            ? baseitem.base.damage + " " + (baseitem.item.magicBonus + bonus)
+                            ? baseitem.base.damage +
+                                (baseitem.item.magicBonus + bonus >= 0 ? " +" : " -") +
+                                (baseitem.item.magicBonus + bonus)
                             : ""
                         )
                       }

@@ -1,17 +1,16 @@
-import React, { useCallback, useState, useEffect } from "react";
+import { faLink, faPaperPlane, faPlusCircle } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React, { useCallback, useEffect, useState } from "react";
+import { GiDiceEightFacesEight } from "react-icons/gi";
 import { useHistory } from "react-router";
-import { reciveAllFiltered, createNewWithId } from "../../../../services/DatabaseService";
+import styled from "styled-components";
 import Class from "../../../../data/classes/Class";
 import Subclass from "../../../../data/classes/Subclass";
-import styled from "styled-components";
-
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faLink, faPaperPlane, faPlusCircle } from "@fortawesome/free-solid-svg-icons";
-import { GiDiceEightFacesEight } from "react-icons/gi";
-import FormatedText from "../../../general_elements/FormatedText";
-import TextButton from "../../../form_elements/TextButton";
-import P2PSender from "../../../p2p/P2PSender";
+import { createNewWithId, reciveAllFiltered } from "../../../../services/DatabaseService";
 import CheckField from "../../../form_elements/CheckField";
+import TextButton from "../../../form_elements/TextButton";
+import FormatedText from "../../../general_elements/FormatedText";
+import P2PSender from "../../../p2p/P2PSender";
 
 interface $Props {
   classe: Class;

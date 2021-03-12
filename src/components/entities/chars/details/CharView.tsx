@@ -1,36 +1,36 @@
-import React, { useState, useEffect } from "react";
+import { faFilePdf, faPaperPlane } from "@fortawesome/free-solid-svg-icons";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import P2PSender from "../../../p2p/P2PSender";
-import { update } from "../../../../services/DatabaseService";
+import BuildChar from "../../../../data/chars/BuildChar";
 import Char from "../../../../data/chars/Char";
 import Class from "../../../../data/classes/Class";
 import Feature from "../../../../data/classes/Feature";
 import FeatureSet from "../../../../data/classes/FeatureSet";
+import Modifier from "../../../../data/Modifier";
 import Trait from "../../../../data/races/Trait";
-
+import { applyMods, buildCharacter } from "../../../../services/CharacterService";
+import { update } from "../../../../services/DatabaseService";
+import { exportPdf } from "../../../../services/PdfService";
+import TextButton from "../../../form_elements/TextButton";
+import FormatedText from "../../../general_elements/FormatedText";
 import TabBar from "../../../general_elements/TabBar";
+import { LoadingSpinner } from "../../../Loading";
+import P2PSender from "../../../p2p/P2PSender";
+import GearTile from "../../gear/GearTile";
+import ItemTile from "../../items/ItemTile";
+import MonsterTile from "../../monsters/MonsterTile";
+import CharCombat from "./detail_components/CharCombat";
 import CharGeneral from "./detail_components/CharGeneral";
 import CharHeader from "./detail_components/CharHeader";
-import ItemTile from "../../items/ItemTile";
-import GearTile from "../../gear/GearTile";
-import CharCombat from "./detail_components/CharCombat";
-import MonsterTile from "../../monsters/MonsterTile";
-import FormatedText from "../../../general_elements/FormatedText";
 import CharSpell from "./detail_components/CharSpells";
-import { faFilePdf, faPaperPlane } from "@fortawesome/free-solid-svg-icons";
-import TextButton from "../../../form_elements/TextButton";
-import { exportPdf } from "../../../../services/PdfService";
-import { buildCharacter, applyMods } from "../../../../services/CharacterService";
-import BuildChar from "../../../../data/chars/BuildChar";
-import { LoadingSpinner } from "../../../Loading";
-import Modifier from "../../../../data/Modifier";
 
 interface $Props {
   character: Char;
   modifications: boolean;
+  isNpc?: boolean;
 }
 
-const CharView = ({ character, modifications }: $Props) => {
+const CharView = ({ character, modifications, isNpc }: $Props) => {
   const [send, setSend] = useState<boolean>(false);
   const [buildChar, setBuildChar] = useState<BuildChar>(new BuildChar());
   const [loading, setLoading] = useState<boolean>(true);
@@ -39,13 +39,14 @@ const CharView = ({ character, modifications }: $Props) => {
 
   useEffect(() => {
     buildCharacter(character).then(async (buildChar) => {
+      const newBuildChar = await applyMods(buildChar, modifications);
       let newTabs = ["General", "Combat", "Classes", "Race"];
-      if (buildChar.items.length > 0) newTabs.push("Items");
-      else if (buildChar.gears.length > 0) newTabs.push("Items");
-      if (buildChar.spells.length > 0) newTabs.push("Spells");
-      if (buildChar.monsters.length > 0) newTabs.push("Monsters");
+      if (newBuildChar.items.length > 0) newTabs.push("Items");
+      else if (newBuildChar.gears.length > 0) newTabs.push("Items");
+      if (newBuildChar.spells.length > 0) newTabs.push("Spells");
+      if (newBuildChar.monsters.length > 0) newTabs.push("Monsters");
       setTabs([...newTabs, "Notes", "Modifications"]);
-      setBuildChar(await applyMods(buildChar, modifications));
+      setBuildChar(newBuildChar);
       setLoading(false);
     });
   }, [character, setBuildChar, modifications]);
@@ -60,7 +61,7 @@ const CharView = ({ character, modifications }: $Props) => {
       {loading && <LoadingSpinner />}
       {!loading && buildChar && (
         <CenterWrapper>
-          <CharHeader char={buildChar.character} />
+          <CharHeader char={buildChar.character} isNpc/>
           <TabBar children={tabs} onChange={(tab: string) => setTab(tab)} activeTab={activeTab} />
           {activeTab === "General" && (
             <>

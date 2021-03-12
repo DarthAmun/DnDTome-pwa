@@ -1,5 +1,5 @@
 import { faDiscord } from "@fortawesome/free-brands-svg-icons";
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useHistory } from "react-router";
 import styled from "styled-components";
 import { useWebhook } from "../../hooks/webhookHook";
@@ -24,7 +24,6 @@ const FormatedText = ({ text }: $Props) => {
       if (newText.length >= 2000) {
         newText = newText.substring(0, 1997) + "...";
       }
-      console.log(newText);
       let newJson = {
         username: webhook.name + " (DnDTome)",
         content: newText,
@@ -42,14 +41,14 @@ const FormatedText = ({ text }: $Props) => {
       if (!command.includes("d")) {
         let newCommand = "d20" + command;
         let value = parseInt(command.replaceAll("+", ""));
-        const { result, text } = rollCommand(newCommand);
+        const { result, text, rolls } = rollCommand(newCommand);
 
         let krit = false;
         if (result - value === 20) krit = true;
         let fail = false;
         if (result - value === 1) fail = true;
 
-        let rollString = "d20(`" + (result - value) + "`)" + command;
+        let rollString = "d20" + rolls + command;
         if (result !== undefined && webhook !== undefined) {
           sendMessage(
             webhook,
@@ -64,9 +63,9 @@ const FormatedText = ({ text }: $Props) => {
           );
         }
       } else {
-        const { result, text } = rollCommand(command);
+        const { result, text, rolls } = rollCommand(command);
         if (result !== undefined && webhook !== undefined) {
-          sendMessage(webhook, result + " " + text + " ||" + command + "||");
+          sendMessage(webhook, result + " " + text + " ||" + command + " " + rolls + "||");
         }
       }
     },
@@ -206,7 +205,9 @@ const FormatedText = ({ text }: $Props) => {
 
 export default FormatedText;
 
-const FormatedTextContainer = styled.div``;
+const FormatedTextContainer = styled.div`
+  line-height: 20px;
+`;
 
 const Link = styled.span`
   display: inline-block;
@@ -216,6 +217,7 @@ const Link = styled.span`
   color: ${({ theme }) => theme.tile.backgroundColor};
   font-size: 14px;
   padding: 0px 5px 0px 5px;
+  margin: 1px;
   cursor: pointer;
   white-space: pre;
 `;

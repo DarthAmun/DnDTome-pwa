@@ -155,7 +155,6 @@ const Markers = ({
 
   const editMarker = (index: number) => {
     if (editable && onEdit !== undefined) {
-      console.log(index);
       setActive(index);
       setEditDialaog(true);
     }

@@ -1,17 +1,16 @@
-import React, { useCallback, useState, useEffect } from "react";
+import {
+  faAngleDoubleUp,
+  faAngleUp,
+  faHeartbeat,
+  faHeartBroken,
+  faMinus
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import BuildChar from "../../../../../data/chars/BuildChar";
-
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faMinus,
-  faAngleUp,
-  faAngleDoubleUp,
-  faHeartBroken,
-  faHeartbeat,
-} from "@fortawesome/free-solid-svg-icons";
-import SmallNumberField from "../../../../form_elements/SmallNumberField";
 import FeatureSet from "../../../../../data/classes/FeatureSet";
+import SmallNumberField from "../../../../form_elements/SmallNumberField";
 import FormatedText from "../../../../general_elements/FormatedText";
 import RollableProp from "../../../../general_elements/RollableProp";
 
@@ -109,7 +108,10 @@ const CharGeneral = ({ buildChar, onChange }: $Props) => {
             <RollableProp
               char={buildChar.character}
               title={"Str Save"}
-              rolledValue={calcSkill(buildChar.character.saves.strSaveProf, buildChar.character.str)}
+              rolledValue={calcSkill(
+                buildChar.character.saves.strSaveProf,
+                buildChar.character.str
+              )}
             />
             <PropProf>
               <Icon icon={formatProf(buildChar.character.saves.strSaveProf)} />
@@ -119,7 +121,10 @@ const CharGeneral = ({ buildChar, onChange }: $Props) => {
             <RollableProp
               char={buildChar.character}
               title={"Dex Save"}
-              rolledValue={calcSkill(buildChar.character.saves.dexSaveProf, buildChar.character.dex)}
+              rolledValue={calcSkill(
+                buildChar.character.saves.dexSaveProf,
+                buildChar.character.dex
+              )}
             />
             <PropProf>
               <Icon icon={formatProf(buildChar.character.saves.dexSaveProf)} />
@@ -129,7 +134,10 @@ const CharGeneral = ({ buildChar, onChange }: $Props) => {
             <RollableProp
               char={buildChar.character}
               title={"Con Save"}
-              rolledValue={calcSkill(buildChar.character.saves.conSaveProf, buildChar.character.con)}
+              rolledValue={calcSkill(
+                buildChar.character.saves.conSaveProf,
+                buildChar.character.con
+              )}
             />
             <PropProf>
               <Icon icon={formatProf(buildChar.character.saves.conSaveProf)} />
@@ -139,7 +147,10 @@ const CharGeneral = ({ buildChar, onChange }: $Props) => {
             <RollableProp
               char={buildChar.character}
               title={"Int Save"}
-              rolledValue={calcSkill(buildChar.character.saves.intSaveProf, buildChar.character.int)}
+              rolledValue={calcSkill(
+                buildChar.character.saves.intSaveProf,
+                buildChar.character.int
+              )}
             />
             <PropProf>
               <Icon icon={formatProf(buildChar.character.saves.intSaveProf)} />
@@ -149,7 +160,10 @@ const CharGeneral = ({ buildChar, onChange }: $Props) => {
             <RollableProp
               char={buildChar.character}
               title={"Wis Save"}
-              rolledValue={calcSkill(buildChar.character.saves.wisSaveProf, buildChar.character.wis)}
+              rolledValue={calcSkill(
+                buildChar.character.saves.wisSaveProf,
+                buildChar.character.wis
+              )}
             />
             <PropProf>
               <Icon icon={formatProf(buildChar.character.saves.wisSaveProf)} />
@@ -159,7 +173,10 @@ const CharGeneral = ({ buildChar, onChange }: $Props) => {
             <RollableProp
               char={buildChar.character}
               title={"Cha Save"}
-              rolledValue={calcSkill(buildChar.character.saves.chaSaveProf, buildChar.character.cha)}
+              rolledValue={calcSkill(
+                buildChar.character.saves.chaSaveProf,
+                buildChar.character.cha
+              )}
             />
             <PropProf>
               <Icon icon={formatProf(buildChar.character.saves.chaSaveProf)} />
@@ -173,7 +190,10 @@ const CharGeneral = ({ buildChar, onChange }: $Props) => {
             <RollableProp
               char={buildChar.character}
               title={"Acrobatics"}
-              rolledValue={calcSkill(buildChar.character.skills.acrobaticsProf, buildChar.character.dex)}
+              rolledValue={calcSkill(
+                buildChar.character.skills.acrobaticsProf,
+                buildChar.character.dex
+              )}
             />
             <PropProf>
               <Icon icon={formatProf(buildChar.character.skills.acrobaticsProf)} />
@@ -196,7 +216,10 @@ const CharGeneral = ({ buildChar, onChange }: $Props) => {
             <RollableProp
               char={buildChar.character}
               title={"Arcana"}
-              rolledValue={calcSkill(buildChar.character.skills.arcanaProf, buildChar.character.int)}
+              rolledValue={calcSkill(
+                buildChar.character.skills.arcanaProf,
+                buildChar.character.int
+              )}
             />
             <PropProf>
               <Icon icon={formatProf(buildChar.character.skills.arcanaProf)} />
@@ -206,7 +229,10 @@ const CharGeneral = ({ buildChar, onChange }: $Props) => {
             <RollableProp
               char={buildChar.character}
               title={"Athletics"}
-              rolledValue={calcSkill(buildChar.character.skills.athleticsProf, buildChar.character.str)}
+              rolledValue={calcSkill(
+                buildChar.character.skills.athleticsProf,
+                buildChar.character.str
+              )}
             />
             <PropProf>
               <Icon icon={formatProf(buildChar.character.skills.athleticsProf)} />
@@ -216,7 +242,10 @@ const CharGeneral = ({ buildChar, onChange }: $Props) => {
             <RollableProp
               char={buildChar.character}
               title={"Deception"}
-              rolledValue={calcSkill(buildChar.character.skills.deceptionProf, buildChar.character.cha)}
+              rolledValue={calcSkill(
+                buildChar.character.skills.deceptionProf,
+                buildChar.character.cha
+              )}
             />
             <PropProf>
               <Icon icon={formatProf(buildChar.character.skills.deceptionProf)} />
@@ -226,7 +255,10 @@ const CharGeneral = ({ buildChar, onChange }: $Props) => {
             <RollableProp
               char={buildChar.character}
               title={"History"}
-              rolledValue={calcSkill(buildChar.character.skills.historyProf, buildChar.character.int)}
+              rolledValue={calcSkill(
+                buildChar.character.skills.historyProf,
+                buildChar.character.int
+              )}
             />
             <PropProf>
               <Icon icon={formatProf(buildChar.character.skills.historyProf)} />
@@ -240,7 +272,10 @@ const CharGeneral = ({ buildChar, onChange }: $Props) => {
             <RollableProp
               char={buildChar.character}
               title={"Insight"}
-              rolledValue={calcSkill(buildChar.character.skills.insightProf, buildChar.character.wis)}
+              rolledValue={calcSkill(
+                buildChar.character.skills.insightProf,
+                buildChar.character.wis
+              )}
             />
             <PropProf>
               <Icon icon={formatProf(buildChar.character.skills.insightProf)} />
@@ -276,7 +311,10 @@ const CharGeneral = ({ buildChar, onChange }: $Props) => {
             <RollableProp
               char={buildChar.character}
               title={"Medicine"}
-              rolledValue={calcSkill(buildChar.character.skills.medicineProf, buildChar.character.wis)}
+              rolledValue={calcSkill(
+                buildChar.character.skills.medicineProf,
+                buildChar.character.wis
+              )}
             />
             <PropProf>
               <Icon icon={formatProf(buildChar.character.skills.medicineProf)} />
@@ -286,7 +324,10 @@ const CharGeneral = ({ buildChar, onChange }: $Props) => {
             <RollableProp
               char={buildChar.character}
               title={"Nature"}
-              rolledValue={calcSkill(buildChar.character.skills.natureProf, buildChar.character.int)}
+              rolledValue={calcSkill(
+                buildChar.character.skills.natureProf,
+                buildChar.character.int
+              )}
             />
             <PropProf>
               <Icon icon={formatProf(buildChar.character.skills.natureProf)} />
@@ -296,7 +337,10 @@ const CharGeneral = ({ buildChar, onChange }: $Props) => {
             <RollableProp
               char={buildChar.character}
               title={"Perception"}
-              rolledValue={calcSkill(buildChar.character.skills.perceptionProf, buildChar.character.wis)}
+              rolledValue={calcSkill(
+                buildChar.character.skills.perceptionProf,
+                buildChar.character.wis
+              )}
             />
             <PropProf>
               <Icon icon={formatProf(buildChar.character.skills.perceptionProf)} />
@@ -310,7 +354,10 @@ const CharGeneral = ({ buildChar, onChange }: $Props) => {
             <RollableProp
               char={buildChar.character}
               title={"Performance"}
-              rolledValue={calcSkill(buildChar.character.skills.performanceProf, buildChar.character.cha)}
+              rolledValue={calcSkill(
+                buildChar.character.skills.performanceProf,
+                buildChar.character.cha
+              )}
             />
             <PropProf>
               <Icon icon={formatProf(buildChar.character.skills.performanceProf)} />
@@ -320,7 +367,10 @@ const CharGeneral = ({ buildChar, onChange }: $Props) => {
             <RollableProp
               char={buildChar.character}
               title={"Persuasion"}
-              rolledValue={calcSkill(buildChar.character.skills.persuasionProf, buildChar.character.cha)}
+              rolledValue={calcSkill(
+                buildChar.character.skills.persuasionProf,
+                buildChar.character.cha
+              )}
             />
             <PropProf>
               <Icon icon={formatProf(buildChar.character.skills.persuasionProf)} />
@@ -330,7 +380,10 @@ const CharGeneral = ({ buildChar, onChange }: $Props) => {
             <RollableProp
               char={buildChar.character}
               title={"Religion"}
-              rolledValue={calcSkill(buildChar.character.skills.religionProf, buildChar.character.int)}
+              rolledValue={calcSkill(
+                buildChar.character.skills.religionProf,
+                buildChar.character.int
+              )}
             />
             <PropProf>
               <Icon icon={formatProf(buildChar.character.skills.religionProf)} />
@@ -353,7 +406,10 @@ const CharGeneral = ({ buildChar, onChange }: $Props) => {
             <RollableProp
               char={buildChar.character}
               title={"Stealth"}
-              rolledValue={calcSkill(buildChar.character.skills.stealthProf, buildChar.character.dex)}
+              rolledValue={calcSkill(
+                buildChar.character.skills.stealthProf,
+                buildChar.character.dex
+              )}
             />
             <PropProf>
               <Icon icon={formatProf(buildChar.character.skills.stealthProf)} />
@@ -363,7 +419,10 @@ const CharGeneral = ({ buildChar, onChange }: $Props) => {
             <RollableProp
               char={buildChar.character}
               title={"Survival"}
-              rolledValue={calcSkill(buildChar.character.skills.survivalProf, buildChar.character.wis)}
+              rolledValue={calcSkill(
+                buildChar.character.skills.survivalProf,
+                buildChar.character.wis
+              )}
             />
             <PropProf>
               <Icon icon={formatProf(buildChar.character.skills.survivalProf)} />

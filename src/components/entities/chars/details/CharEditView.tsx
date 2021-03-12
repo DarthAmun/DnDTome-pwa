@@ -1,43 +1,43 @@
-import React, { useState, useCallback, useEffect } from "react";
-import styled from "styled-components";
-import Char from "../../../../data/chars/Char";
-import Class from "../../../../data/classes/Class";
-import FeatureSet from "../../../../data/classes/FeatureSet";
-import Skills from "../../../../data/chars/Skills";
-import Saves from "../../../../data/chars/Saves";
-import ClassSet from "../../../../data/chars/ClassSet";
-import Selection from "../../../../data/Selection";
-import Feature from "../../../../data/classes/Feature";
-import Subclass from "../../../../data/classes/Subclass";
-import { buildCharacter } from "../../../../services/CharacterService";
-import BuildChar from "../../../../data/chars/BuildChar";
-import { reciveAll } from "../../../../services/DatabaseService";
-
 import {
-  faTrash,
-  faPlus,
-  faMinus,
-  faAngleUp,
   faAngleDoubleUp,
+  faAngleUp,
+  faMinus,
+  faPlus,
+  faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React, { useCallback, useEffect, useState } from "react";
+import styled from "styled-components";
+import BuildChar from "../../../../data/chars/BuildChar";
+import Char from "../../../../data/chars/Char";
+import ClassSet from "../../../../data/chars/ClassSet";
+import Saves from "../../../../data/chars/Saves";
+import Skills from "../../../../data/chars/Skills";
+import Class from "../../../../data/classes/Class";
+import Feature from "../../../../data/classes/Feature";
+import FeatureSet from "../../../../data/classes/FeatureSet";
+import Subclass from "../../../../data/classes/Subclass";
+import Selection from "../../../../data/Selection";
+import { buildCharacter } from "../../../../services/CharacterService";
+import { reciveAll } from "../../../../services/DatabaseService";
 import AutoStringField from "../../../form_elements/AutoStringField";
 import CheckField from "../../../form_elements/CheckField";
 import EnumField from "../../../form_elements/EnumField";
-import StringField from "../../../form_elements/StringField";
-import TabBar from "../../../general_elements/TabBar";
-import NumberField from "../../../form_elements/NumberField";
-import TextField from "../../../form_elements/TextField";
 import IconButton from "../../../form_elements/IconButton";
+import NumberField from "../../../form_elements/NumberField";
+import StringField from "../../../form_elements/StringField";
 import TextButton from "../../../form_elements/TextButton";
+import TextField from "../../../form_elements/TextField";
+import TabBar from "../../../general_elements/TabBar";
 import { LoadingSpinner } from "../../../Loading";
 
 interface $Props {
   character: Char;
   onEdit: (value: Char) => void;
+  isNpc?: boolean;
 }
 
-const CharEditView = ({ character, onEdit }: $Props) => {
+const CharEditView = ({ character, onEdit, isNpc }: $Props) => {
   const [activeTab, setTab] = useState<string>("General");
   const [buildChar, setBuildChar] = useState<BuildChar>();
   const [loading, setLoading] = useState<boolean>(true);
@@ -402,22 +402,26 @@ const CharEditView = ({ character, onEdit }: $Props) => {
       {!loading && buildChar && (
         <CenterWrapper>
           <CharView>
-            <StringField
-              value={buildChar.character.name}
-              label="Name"
-              onChange={(name) => onEdit({ ...buildChar.character, name: name })}
-            />
-            <StringField
-              value={buildChar.character.player}
-              label="Player"
-              onChange={(player) => onEdit({ ...buildChar.character, player: player })}
-            />
-            <AutoStringField
-              optionTable={"campaigns"}
-              value={buildChar.character.campaign}
-              label="Campaign"
-              onChange={(campaign) => onEdit({ ...buildChar.character, campaign: campaign })}
-            />
+            {!isNpc && (
+              <>
+                <StringField
+                  value={buildChar.character.name}
+                  label="Name"
+                  onChange={(name) => onEdit({ ...buildChar.character, name: name })}
+                />
+                <StringField
+                  value={buildChar.character.player}
+                  label="Player"
+                  onChange={(player) => onEdit({ ...buildChar.character, player: player })}
+                />
+                <AutoStringField
+                  optionTable={"campaigns"}
+                  value={buildChar.character.campaign}
+                  label="Campaign"
+                  onChange={(campaign) => onEdit({ ...buildChar.character, campaign: campaign })}
+                />
+              </>
+            )}
             <StringField
               value={buildChar.character.pic}
               label="Picture"

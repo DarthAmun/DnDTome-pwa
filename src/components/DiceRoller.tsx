@@ -1,6 +1,6 @@
 import { faDiscord } from "@fortawesome/free-brands-svg-icons";
 import { faDice } from "@fortawesome/free-solid-svg-icons";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { useWebhook } from "../hooks/webhookHook";
 import { rollCommand } from "../services/DiceService";
@@ -14,15 +14,10 @@ const DiceRoller = () => {
   const [field, setField] = useState<string>("");
   const [results, setResults] = useState<string[]>([]);
 
-  useEffect(() => {
-    console.log(results);
-  }, [results]);
-
   const roll = () => {
     if (field !== "") {
-      const { text, result } = rollCommand(field);
-      const resultText = field + ": " + result + " " + text;
-      console.log(text, result);
+      const { text, result, rolls } = rollCommand(field);
+      const resultText = field + ": " + result + rolls.replaceAll("`", "") + " " + text;
       setResults((r) => [resultText, ...r]);
     }
   };
@@ -36,7 +31,7 @@ const DiceRoller = () => {
             fields: [
               {
                 name: "Roll",
-                value: result,
+                value: result.replaceAll("(", "||(`").replaceAll(")", "`)||"),
               },
             ],
           },

@@ -1,11 +1,14 @@
+import { faBookOpen, faImage, faLink, faPlus } from "@fortawesome/free-solid-svg-icons";
 import React from "react";
 import styled from "styled-components";
 import Npc from "../../../../data/campaign/Npc";
-
+import Char from "../../../../data/chars/Char";
+import Monster from "../../../../data/Monster";
 import StringField from "../../../form_elements/StringField";
+import TextButton from "../../../form_elements/TextButton";
 import TextField from "../../../form_elements/TextField";
-
-import { faLink, faBookOpen, faImage } from "@fortawesome/free-solid-svg-icons";
+import CharEditView from "../../chars/details/CharEditView";
+import MonsterEditView from "../../monsters/details/MonsterEditView";
 
 interface $Props {
   npc: Npc;
@@ -13,6 +16,14 @@ interface $Props {
 }
 
 const NpcEditView = ({ npc, onEdit }: $Props) => {
+  const makeMonster = () => {
+    onEdit({ ...npc, monster: new Monster(0, npc.name, npc.sources, npc.pic), char: undefined });
+  };
+
+  const makeChar = () => {
+    onEdit({ ...npc, char: new Char(0, npc.name, "", "", npc.pic), monster: undefined });
+  };
+
   return (
     <CenterWrapper>
       <View>
@@ -45,7 +56,29 @@ const NpcEditView = ({ npc, onEdit }: $Props) => {
           icon={faBookOpen}
           onChange={(traits) => onEdit({ ...npc, traits: traits })}
         />
+        {!npc.monster && (
+          <TextButton text={"Make Monster"} icon={faPlus} onClick={() => makeMonster()} />
+        )}
+        {!npc.char && <TextButton text={"Make Char"} icon={faPlus} onClick={() => makeChar()} />}
       </View>
+      {npc.monster && (
+        <View>
+          <MonsterEditView
+            monster={npc.monster}
+            onEdit={(value: Monster) => onEdit({ ...npc, monster: value })}
+            isNpc
+          />
+        </View>
+      )}
+      {npc.char && (
+        <View>
+          <CharEditView
+            character={npc.char}
+            onEdit={(value: Char) => onEdit({ ...npc, char: value })}
+            isNpc
+          />
+        </View>
+      )}
     </CenterWrapper>
   );
 };
@@ -56,9 +89,16 @@ const CenterWrapper = styled.div`
   overflow: hidden;
   width: 100%;
   height: 100%;
+
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  flex-start: center;
+  align-items: flex-start;
 `;
 
 const View = styled.div`
+  flex: 1 1 auto;
   color: ${({ theme }) => theme.tile.color};
   font-size: 16px;
   padding: 5px;

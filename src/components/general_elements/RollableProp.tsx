@@ -22,14 +22,16 @@ const RollableProp = ({ char, title, value, rolledValue }: $RollableProps) => {
     let roll: number = 0;
 
     if (rolledValue >= 0) {
-      const { result, text } = rollCommand("d20+" + rolledValue);
+      const { result, text, rolls } = rollCommand("1d20+" + rolledValue);
       roll = result;
-      rollString = "d20(`" + (result - rolledValue) + "`)+" + rolledValue + text;
+      rollString = "d20" + rolls + "+" + rolledValue + text;
     } else {
-      const { result, text } = rollCommand("d20" + rolledValue);
+      const { result, text, rolls } = rollCommand("1d20" + rolledValue);
       roll = result;
-      rollString = "d20(`" + (result - rolledValue) + "`)" + rolledValue + text;
+      rollString = "d20" + rolls + rolledValue + text;
     }
+
+    console.log(roll, rollString);
 
     let krit = false;
     if (roll - rolledValue === 20) krit = true;

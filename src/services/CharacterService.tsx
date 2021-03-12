@@ -388,7 +388,7 @@ export const replacePlaceholder = (char: BuildChar, text: string | number) => {
       const cutStart = text.indexOf("[");
       const cutEnd = text.indexOf("]");
       const rawPlaceholder = text.substring(cutStart + 1, cutEnd);
-      text = text.replace(text.substring(cutStart, cutEnd + 1), char.oldCharacter[rawPlaceholder]);
+      text = text.replace(text.substring(cutStart, cutEnd + 1), char.character[rawPlaceholder]);
     }
     // eslint-disable-next-line
     return Math.floor(eval(text));

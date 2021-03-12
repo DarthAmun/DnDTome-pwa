@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from "react";
+import { faLink, faPaperPlane } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React, { useState } from "react";
 import styled from "styled-components";
 import Subclass from "../../../../data/classes/Subclass";
-
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faLink, faPaperPlane } from "@fortawesome/free-solid-svg-icons";
-import FormatedText from "../../../general_elements/FormatedText";
 import TextButton from "../../../form_elements/TextButton";
+import FormatedText from "../../../general_elements/FormatedText";
 import P2PSender from "../../../p2p/P2PSender";
 
 interface $Props {
@@ -14,10 +13,6 @@ interface $Props {
 
 const SubclasseView = ({ subclasse }: $Props) => {
   const [send, setSend] = useState<boolean>(false);
-
-  useEffect(() => {
-    console.log(subclasse);
-  }, [subclasse]);
 
   const printSpellslots = (length: number) => {
     let count = length - 3;

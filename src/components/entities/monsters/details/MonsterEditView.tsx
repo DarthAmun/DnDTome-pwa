@@ -1,27 +1,28 @@
+import { faBookOpen, faImage, faLink } from "@fortawesome/free-solid-svg-icons";
 import React from "react";
 import styled from "styled-components";
 import Monster from "../../../../data/Monster";
-
-import StringField from "../../../form_elements/StringField";
 import NumberField from "../../../form_elements/NumberField";
+import StringField from "../../../form_elements/StringField";
 import TextField from "../../../form_elements/TextField";
-
-import { faLink, faBookOpen, faImage } from "@fortawesome/free-solid-svg-icons";
 
 interface $Props {
   monster: Monster;
   onEdit: (value: Monster) => void;
+  isNpc?: boolean;
 }
 
-const MonsterEditView = ({ monster, onEdit }: $Props) => {
+const MonsterEditView = ({ monster, onEdit, isNpc }: $Props) => {
   return (
     <CenterWrapper>
       <View>
-        <StringField
-          value={monster.name}
-          label="Name"
-          onChange={(name) => onEdit({ ...monster, name: name })}
-        />
+        {!isNpc && (
+          <StringField
+            value={monster.name}
+            label="Name"
+            onChange={(name) => onEdit({ ...monster, name: name })}
+          />
+        )}
         <StringField
           value={monster.type}
           label="Type"
@@ -113,9 +114,7 @@ const MonsterEditView = ({ monster, onEdit }: $Props) => {
         <StringField
           value={monster.savingThrows}
           label="Saving Throws"
-          onChange={(savingThrows) =>
-            onEdit({ ...monster, savingThrows: savingThrows })
-          }
+          onChange={(savingThrows) => onEdit({ ...monster, savingThrows: savingThrows })}
         />
         <StringField
           value={monster.skills}
@@ -132,23 +131,17 @@ const MonsterEditView = ({ monster, onEdit }: $Props) => {
         <StringField
           value={monster.dmgResistance}
           label="Resistances"
-          onChange={(dmgResistance) =>
-            onEdit({ ...monster, dmgResistance: dmgResistance })
-          }
+          onChange={(dmgResistance) => onEdit({ ...monster, dmgResistance: dmgResistance })}
         />
         <StringField
           value={monster.dmgImmunities}
           label="Immunities"
-          onChange={(dmgImmunities) =>
-            onEdit({ ...monster, dmgImmunities: dmgImmunities })
-          }
+          onChange={(dmgImmunities) => onEdit({ ...monster, dmgImmunities: dmgImmunities })}
         />
         <StringField
           value={monster.conImmunities}
           label="Condition Immunities"
-          onChange={(conImmunities) =>
-            onEdit({ ...monster, conImmunities: conImmunities })
-          }
+          onChange={(conImmunities) => onEdit({ ...monster, conImmunities: conImmunities })}
         />
         <StringField
           value={monster.sources}
@@ -156,12 +149,14 @@ const MonsterEditView = ({ monster, onEdit }: $Props) => {
           icon={faLink}
           onChange={(sources) => onEdit({ ...monster, sources: sources })}
         />
-        <StringField
-          value={monster.pic}
-          label="Picture"
-          icon={faImage}
-          onChange={(pic) => onEdit({ ...monster, pic: pic })}
-        />
+        {!isNpc && (
+          <StringField
+            value={monster.pic}
+            label="Picture"
+            icon={faImage}
+            onChange={(pic) => onEdit({ ...monster, pic: pic })}
+          />
+        )}
         <TextField
           value={monster.ablt}
           label="Abilites"
