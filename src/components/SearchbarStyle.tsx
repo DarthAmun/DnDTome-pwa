@@ -14,6 +14,10 @@ const Tooltip = styled.span`
   z-index: 1;
   opacity: 0.6;
   transition: 0.3s;
+
+  &:hover {
+    display: none;
+  }
 `;
 
 export const LeftTooltip = styled(Tooltip)`

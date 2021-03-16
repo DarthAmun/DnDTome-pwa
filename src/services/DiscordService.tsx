@@ -25,7 +25,6 @@ export const sendEmbedMessage = (
   params: string
 ) => {
   if (webhook !== undefined) {
-    console.log(params);
     let request = new XMLHttpRequest();
     request.open("POST", webhook.hook);
     request.setRequestHeader("Content-type", "application/json");

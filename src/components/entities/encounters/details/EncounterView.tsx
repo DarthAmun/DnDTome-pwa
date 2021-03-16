@@ -1,12 +1,3 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { useHistory } from "react-router";
-import styled from "styled-components";
-import Encounter from "../../../../data/encounter/Encounter";
-import BuildPlayer from "../../../../data/encounter/BuildPlayer";
-import Player from "../../../../data/encounter/Player";
-import { rollDie } from "../../../../services/DiceService";
-import { buildEncounter } from "../../../../services/EncounterService";
-
 import {
   faHandHoldingHeart,
   faPlayCircle,
@@ -14,12 +5,20 @@ import {
   faStepForward,
   faStopCircle,
 } from "@fortawesome/free-solid-svg-icons";
-import { LoadingSpinner } from "../../../Loading";
+import React, { useCallback, useEffect, useState } from "react";
+import { useHistory } from "react-router";
+import styled from "styled-components";
+import BuildEncounter from "../../../../data/encounter/BuildEncounter";
+import BuildPlayer from "../../../../data/encounter/BuildPlayer";
+import Encounter from "../../../../data/encounter/Encounter";
+import Player from "../../../../data/encounter/Player";
+import { rollDie } from "../../../../services/DiceService";
+import { buildEncounter } from "../../../../services/EncounterService";
 import IconButton from "../../../form_elements/IconButton";
 import TextButton from "../../../form_elements/TextButton";
 import TinyNumberField from "../../../form_elements/TinyNumberField";
 import Board from "../../../general_elements/board/Board";
-import BuildEncounter from "../../../../data/encounter/BuildEncounter";
+import { LoadingSpinner } from "../../../Loading";
 
 interface $Props {
   encounter: Encounter;
@@ -144,37 +143,38 @@ const EncounterView = ({ encounter, dmView, onEdit }: $Props) => {
     }
   };
 
-  const onChangeDimension = useCallback((dimension: {
-    width: number;
-    height: number;
-    size: number;
-    zoom: number;
-  }) => {
-    onEdit({ ...loadedEncounter.encounter, dimension: dimension });
-  },[loadedEncounter.encounter, onEdit]);
+  const onChangeDimension = useCallback(
+    (dimension: { width: number; height: number; size: number; zoom: number }) => {
+      onEdit({ ...loadedEncounter.encounter, dimension: dimension });
+    },
+    [loadedEncounter.encounter, onEdit]
+  );
 
-  const onChangePlayers = useCallback((players: BuildPlayer[]) => {
-    if (players !== loadedEncounter.players) {
-      let newPlayers: Player[] = [];
-      players.forEach((player: BuildPlayer) => {
-        if (!player.player.isMonster) {
-          newPlayers.push(player.player);
-        }
-      });
-      let newEnemies: Player[] = [];
-      players.forEach((player: BuildPlayer) => {
-        if (player.player.isMonster) {
-          newEnemies.push(player.player);
-        }
-      });
+  const onChangePlayers = useCallback(
+    (players: BuildPlayer[]) => {
+      if (players !== loadedEncounter.players) {
+        let newPlayers: Player[] = [];
+        players.forEach((player: BuildPlayer) => {
+          if (!player.player.isMonster) {
+            newPlayers.push(player.player);
+          }
+        });
+        let newEnemies: Player[] = [];
+        players.forEach((player: BuildPlayer) => {
+          if (player.player.isMonster) {
+            newEnemies.push(player.player);
+          }
+        });
 
-      onEdit({ ...loadedEncounter.encounter, players: newPlayers, enemies: newEnemies });
-    }
-  },[loadedEncounter.encounter, loadedEncounter.players, onEdit]);
+        onEdit({ ...loadedEncounter.encounter, players: newPlayers, enemies: newEnemies });
+      }
+    },
+    [loadedEncounter.encounter, loadedEncounter.players, onEdit]
+  );
 
   return (
     <CenterWrapper>
-      <View mode={dmView}>
+      <View mode={dmView ? 1 : 0}>
         <Name>
           <b>{encounter.name}</b>
         </Name>
@@ -339,8 +339,8 @@ const CenterWrapper = styled.div`
 `;
 
 type viewType = {
-  mode?: boolean;
-}
+  mode?: number;
+};
 
 const View = styled.div<viewType>`
   flex: 1 1;
@@ -348,7 +348,7 @@ const View = styled.div<viewType>`
   font-size: 16px;
   max-width: 800px;
   ${(props) => {
-    if(!props.mode){
+    if (!props.mode) {
       return "min-width: 300px;";
     } else {
       return "min-width: 500px;";

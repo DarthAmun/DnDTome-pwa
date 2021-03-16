@@ -198,18 +198,18 @@ const School = styled.div<SchoolType>`
 `;
 
 const Level = styled.div`
-  height: auto;
-  float: left;
+  float: right;
+
   padding: 10px;
+  margin: 5px;
   width: 20px;
   height: 20px;
+
   line-height: 20px;
-  float: right;
   text-align: center;
-  border-top-right-radius: 3px;
+
   border-radius: 30px;
   border-bottom: solid 1px ${({ theme }) => theme.main.highlight};
-  margin: 5px;
 `;
 
 const Name = styled.div`

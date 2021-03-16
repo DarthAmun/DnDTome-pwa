@@ -67,6 +67,9 @@ import GroupTile from "../entities/groups/GroupTile";
 import GroupsOptions from "./GroupsOptions";
 import DiscordOptions from "./DiscordOptions";
 import { faTrashAlt } from "@fortawesome/free-regular-svg-icons";
+import RandomTableTile from "../entities/random_tables/RandomTableTile";
+import { isRandomTable } from "../../data/RandomTable";
+import RandomTablesOptions from "./RandomTablesOptions";
 
 const Options = () => {
   const [activeTab, setTab] = useState<string>("General");
@@ -89,6 +92,7 @@ const Options = () => {
   const [npcAmount, setNpcAmount] = useState<number>(0);
   const [groupAmount, setGroupAmount] = useState<number>(0);
   const [selectionAmount, setSelectionAmount] = useState<number>(0);
+  const [randomTableAmount, setRandomTableAmount] = useState<number>(0);
 
   const [reload, isReload] = useState<boolean>(true);
   const [data, setData] = useState<IEntity[] | IEntity>();
@@ -149,6 +153,9 @@ const Options = () => {
       reciveCount("selections", (result: number) => {
         setSelectionAmount(result);
       });
+      reciveCount("randomTables", (result: number) => {
+        setRandomTableAmount(result);
+      });
       reciveAllPromise("chars").then((result: any[]) => {
         return result;
       });
@@ -199,6 +206,8 @@ const Options = () => {
       return <GroupTile key={index} group={entity} />;
     } else if (isEvent(entity)) {
       return <EventTile key={index} event={entity} />;
+    } else if (isRandomTable(entity)) {
+      return <RandomTableTile key={index} randomTable={entity} />;
     } else if (isChar(entity)) {
       return <CharTile key={index} char={entity} />;
     } else {
@@ -247,6 +256,7 @@ const Options = () => {
           "Worlds",
           "Events",
           "Locations",
+          "Random Table",
           "Other Imports",
           "Discord",
           "Receive",
@@ -326,6 +336,9 @@ const Options = () => {
       )}
       {activeTab === "Locations" && (
         <LocationsOptions amount={locationAmount} triggerDeleteAll={triggerDeleteAll} />
+      )}
+      {activeTab === "Random Table" && (
+        <RandomTablesOptions amount={randomTableAmount} triggerDeleteAll={triggerDeleteAll} />
       )}
       {activeTab === "Other Imports" && <OtherImportOptions />}
       {activeTab === "Discord" && <DiscordOptions />}

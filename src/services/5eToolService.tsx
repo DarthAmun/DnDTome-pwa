@@ -13,7 +13,12 @@ import Spell from "../data/Spell";
 
 const replaceTag = (text: string) => {
   let clearText = text.replace("{@", "").replace("}", "").split("|")[0].trim();
+
   switch (true) {
+    case clearText.startsWith("scaledamage"):
+      let scaleTextSplit = text.replace("{@", "").replace("}", "").split("|");
+      let scaleText = scaleTextSplit[scaleTextSplit.length - 1].trim();
+      return scaleText;
     case clearText.startsWith("damage"):
       return "[[dice." + clearText.substring(6, clearText.length).trim() + "]]";
     case clearText.startsWith("dice"):
@@ -42,28 +47,10 @@ const replaceTags = (text: string): string => {
       .replaceAll("{@atk rw", "Ranged Weapon Attack: ")
       .replaceAll("{@dc", "DC")
       .replaceAll("[", "")
-      .replaceAll("]", "");
+      .replaceAll("]", "")
+      .replaceAll("{@h}", "Hit: ");
 
-    console.log(text);
     let newText: string = text;
-    while (newText.includes("{@h}")) {
-      let textSplit: string[] = newText.split("{@h}");
-      let hitSplit: string[] = textSplit[1].split(" ");
-      if (hitSplit[0].length > 0) {
-        newText = textSplit[0] + "Hit: [[dice.+" + hitSplit[0] + "]] ";
-        // eslint-disable-next-line
-        hitSplit.splice(1).forEach((s) => (newText += " " + s));
-      } else if (hitSplit[1].length > 0) {
-        newText = textSplit[0] + "Hit: [[dice.+" + hitSplit[1] + "]] ";
-        // eslint-disable-next-line
-        hitSplit.splice(2).forEach((s) => (newText += " " + s));
-      }
-      if (textSplit.length > 2) {
-        // eslint-disable-next-line
-        textSplit.splice(2).forEach((s) => (newText += "{@h}" + s));
-      }
-    }
-    console.log(newText);
     while (newText.includes("{@")) {
       let start = newText.indexOf("{@");
       let end = newText.indexOf("}");
@@ -661,6 +648,20 @@ export const makeSpell = (obj: any, fileName: string): Spell => {
       }
     }
   });
+
+  if (obj.entriesHigherLevel !== undefined && obj.entriesHigherLevel.entries !== undefined) {
+    obj.entriesHigherLevel.forEach((entry: any) => {
+      text += "At Higher Levels: ";
+      if (Array.isArray(entry.entries)) {
+        entry.entries.forEach((textPart: string | any) => {
+          text += textPart + "\n";
+        });
+      } else {
+        text += entry.entries + "\n";
+      }
+    });
+  }
+
   text = replaceTags(text);
 
   return new Spell(
@@ -851,7 +852,52 @@ export const makeMonster = (obj: any): Monster => {
               // eslint-disable-next-line
               spellSlotInfo.spells.forEach((spell: any) => {
                 if (typeof spell == "string") {
-                  traits += replaceTags(spell);
+                  traits += spell + ", ";
+                }
+              });
+            }
+            traits += "\n";
+          }
+          traits += "\n";
+        }
+        if (spellcast.will !== undefined) {
+          traits += "At will: ";
+          // eslint-disable-next-line
+          spellcast.will.forEach((spell: any) => {
+            if (typeof spell == "string") {
+              traits += spell + ", ";
+            }
+          });
+          traits += "\n";
+        }
+        if (spellcast.daily !== undefined) {
+          for (const [key, value] of Object.entries(spellcast.daily)) {
+            const spellTime: any = value;
+            switch (key) {
+              case "1e":
+                traits += "1/day each: ";
+                break;
+              case "2e":
+                traits += "2/day each: ";
+                break;
+              case "3e":
+                traits += "3/day each: ";
+                break;
+              case "1":
+                traits += "1/day: ";
+                break;
+              case "2":
+                traits += "2/day: ";
+                break;
+              case "3":
+                traits += "3/day: ";
+                break;
+            }
+            if (spellTime !== undefined && Array.isArray(value)) {
+              // eslint-disable-next-line
+              value.forEach((spell: any) => {
+                if (typeof spell == "string") {
+                  traits += spell + ", ";
                 }
               });
             }
@@ -931,7 +977,6 @@ const addAdditionalClassFeatures = (
 ) => {
   additional.forEach((feature: any) => {
     const featureParts: string[] = feature.split("|");
-    console.log(featureParts);
 
     let text = "";
     json.classFeature.forEach((objFeature: any) => {

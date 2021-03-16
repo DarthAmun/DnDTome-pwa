@@ -1,23 +1,21 @@
-import React, { useState, useEffect } from "react";
-import { useHistory } from "react-router";
-import styled from "styled-components";
-
 import {
   faArrowLeft,
+  faClone,
+  faExclamationTriangle,
   faSave,
   faTrash,
-  faExclamationTriangle,
-  faClone,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React, { useEffect, useState } from "react";
+import { useHistory } from "react-router";
+import styled from "styled-components";
 import Encounter from "../../../../data/encounter/Encounter";
 import { createNewWithId, remove, updateWithCallback } from "../../../../services/DatabaseService";
-
 import BackButton from "../../../form_elements/BackButton";
 import IconButton from "../../../form_elements/IconButton";
+import { EditToggle, ToggleLeft, ToggleRight } from "../../../general_elements/ToggleStyle";
 import EncounterEditView from "./EncounterEditView";
 import EncounterView from "./EncounterView";
-import { EditToggle, ToggleLeft, ToggleRight } from "../../../general_elements/ToggleStyle";
 
 interface $Props {
   encounter: Encounter;

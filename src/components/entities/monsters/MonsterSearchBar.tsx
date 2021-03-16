@@ -1,27 +1,26 @@
-import React, { useState, useEffect } from "react";
-import { useHistory } from "react-router";
-import Filter from "../../../data/Filter";
-import ReactDOM from "react-dom";
 import {
-  reciveAttributeSelection,
-  createNewWithId,
-  exportFilteredFromTable,
-} from "../../../services/DatabaseService";
-
-import {
-  faSearch,
-  faRedoAlt,
+  faFileExport,
   faLink,
   faPlusCircle,
-  faFileExport,
+  faRedoAlt,
+  faSearch,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import MultipleSelectField from "../../form_elements/MultipleSelectField";
-import StringSearchField from "../../form_elements/StringSearchField";
-import IconButton from "../../form_elements/IconButton";
+import React, { useEffect, useState } from "react";
+import ReactDOM from "react-dom";
+import { useHistory } from "react-router";
+import Filter from "../../../data/Filter";
 import Monster from "../../../data/Monster";
+import {
+  createNewWithId,
+  exportFilteredFromTable,
+  reciveAttributeSelection,
+} from "../../../services/DatabaseService";
+import IconButton from "../../form_elements/IconButton";
+import MultipleSelectField from "../../form_elements/MultipleSelectField";
 import NumberField from "../../form_elements/NumberField";
-import { FixedBar, SearchBar, CreateButton, ExportButton, LeftTooltip } from "../../SearchbarStyle";
+import StringSearchField from "../../form_elements/StringSearchField";
+import { CreateButton, ExportButton, FixedBar, LeftTooltip, SearchBar } from "../../SearchbarStyle";
 
 const MonsterSearchBar = () => {
   const [open, setOpen] = useState(false);
@@ -171,7 +170,7 @@ const MonsterSearchBar = () => {
         sort: 0,
       });
     });
-    history.push(`/monster-overview}`);
+    history.push(`/monster-overview`);
   };
 
   const createNewMonster = () => {

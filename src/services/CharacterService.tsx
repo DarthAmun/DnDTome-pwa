@@ -1,5 +1,7 @@
 import BuildChar from "../data/chars/BuildChar";
 import Char from "../data/chars/Char";
+import ClassSet from "../data/chars/ClassSet";
+import Boni from "../data/classes/Boni";
 import Class from "../data/classes/Class";
 import FeatureSet from "../data/classes/FeatureSet";
 import Subclass from "../data/classes/Subclass";
@@ -12,6 +14,122 @@ import Subrace from "../data/races/Subrace";
 import Trait from "../data/races/Trait";
 import Spell from "../data/Spell";
 import { recivePromiseByAttribute } from "./DatabaseService";
+
+export const recalcClasses = async (char: Char) => {
+  let bonis: { origin: string; value: number; max: number }[] = [];
+  let spellSlots: {
+    origin: string;
+    slots: number[];
+    max: number[];
+  }[] = [];
+  let fullClassList: { class: Class; classSet: ClassSet }[] = [];
+  let classList: Promise<Class>[] = [];
+
+  char.classes.forEach((classe) => {
+    classList.push(recivePromiseByAttribute("classes", "name", classe.classe));
+  });
+  const results = await Promise.all(classList);
+  results.forEach((classe: Class) => {
+    char.classes.forEach((classSet) => {
+      if (classe.name === classSet.classe) {
+        fullClassList.push({ class: classe, classSet: classSet });
+      }
+    });
+  });
+
+  fullClassList.forEach((classe: { class: Class; classSet: ClassSet }) => {
+    let featureSet = classe.class.featureSets[classe.classSet.level - 1];
+    if (featureSet.bonis) {
+      featureSet.bonis.forEach((boni: Boni) => {
+        if (boni.isCurrency) {
+          bonis = [
+            ...bonis,
+            {
+              origin: boni.name,
+              value: +boni.value,
+              max: +boni.value,
+            },
+          ];
+        }
+      });
+    }
+    if (featureSet.spellslots && featureSet.spellslots.length > 0) {
+      spellSlots = [
+        ...spellSlots,
+        {
+          origin: classe.class.name,
+          slots: featureSet.spellslots,
+          max: featureSet.spellslots,
+        },
+      ];
+    }
+  });
+
+  if (char.currencyBonis && char.currencyBonis.length > 0) {
+    let updatedBonis = bonis.map((newBoni) => {
+      let updatedOldBonis = char.currencyBonis.map((old) => {
+        if (newBoni.origin === old.origin) {
+          return {
+            origin: newBoni.origin,
+            value: old.value,
+            max: newBoni.max,
+          };
+        } else {
+          return null;
+        }
+      });
+      if (
+        updatedOldBonis &&
+        updatedOldBonis.length > 0 &&
+        updatedOldBonis[0] !== undefined &&
+        updatedOldBonis[0] !== null
+      ) {
+        return updatedOldBonis[0];
+      } else {
+        return newBoni;
+      }
+    });
+    if (updatedBonis && updatedBonis.length > 0) {
+      bonis = Array.from(updatedBonis);
+    }
+  }
+
+  if (char.spellSlots && char.spellSlots.length > 0) {
+    let updatedSpellSlots = spellSlots.map((newSpellSlots) => {
+      let updatedOldSlots = char.spellSlots.map((old) => {
+        if (newSpellSlots.origin === old.origin) {
+          return {
+            origin: newSpellSlots.origin,
+            slots: old.slots,
+            max: newSpellSlots.max,
+          };
+        } else {
+          return null;
+        }
+      });
+      if (
+        updatedOldSlots &&
+        updatedOldSlots.length > 0 &&
+        updatedOldSlots[0] !== undefined &&
+        updatedOldSlots[0] !== null
+      ) {
+        return updatedOldSlots[0];
+      } else {
+        return newSpellSlots;
+      }
+    });
+    if (updatedSpellSlots && updatedSpellSlots.length > 0) {
+      spellSlots = Array.from(updatedSpellSlots);
+    }
+  }
+
+  let updatedChar = {
+    ...char,
+    spellSlots: spellSlots,
+    currencyBonis: bonis,
+  };
+  return updatedChar;
+};
 
 const calcLevel = (char: Char): number => {
   let level = 0;

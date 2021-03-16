@@ -4,7 +4,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import Npc from "../../../../data/campaign/Npc";
+import Char from "../../../../data/chars/Char";
 import { useWebhook } from "../../../../hooks/webhookHook";
+import { recalcClasses } from "../../../../services/CharacterService";
 import { sendEmbedMessage } from "../../../../services/DiscordService";
 import TextButton from "../../../form_elements/TextButton";
 import FormatedText from "../../../general_elements/FormatedText";
@@ -20,6 +22,11 @@ const NpcView = ({ npc }: $Props) => {
   let webhook = useWebhook();
   const [json, setJson] = useState<string>("");
   const [send, setSend] = useState<boolean>(false);
+  const [updatedChar, setCharacter] = useState<Char>();
+
+  useEffect(() => {
+    if (npc.char !== undefined) recalcClasses(npc.char).then(setCharacter);
+  }, [npc]);
 
   useEffect(() => {
     if (webhook !== undefined) {
@@ -104,9 +111,9 @@ const NpcView = ({ npc }: $Props) => {
           <MonsterView monster={npc.monster} isNpc />
         </View>
       )}
-      {npc.char && (
+      {npc.char && updatedChar && (
         <View>
-          <CharView character={npc.char} modifications={true} isNpc />
+          <CharView character={updatedChar} modifications={true} isNpc />
         </View>
       )}
     </CenterWrapper>

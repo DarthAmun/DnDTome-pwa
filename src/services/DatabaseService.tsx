@@ -470,4 +470,4 @@ export const exportFilteredFromTable = (tableName: string, filters: Filter[], fi
 export const deleteDatabase = () => {
   const db = new MyAppDatabase();
   db.delete();
-}
+};

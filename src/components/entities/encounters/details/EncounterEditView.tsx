@@ -1,15 +1,14 @@
-import { faTrash, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
+import { isNpc } from "../../../../data/campaign/Npc";
 import { isChar } from "../../../../data/chars/Char";
 import ClassSet from "../../../../data/chars/ClassSet";
 import Encounter from "../../../../data/encounter/Encounter";
 import Player from "../../../../data/encounter/Player";
-import IEntity from "../../../../data/IEntity";
 import { isMonster } from "../../../../data/Monster";
-import { reciveByAttribute } from "../../../../services/DatabaseService";
+import { recivePromiseByAttribute } from "../../../../services/DatabaseService";
 import { calcDifficulty } from "../../../../services/EncounterService";
-
 import AutoStringField from "../../../form_elements/AutoStringField";
 import IconButton from "../../../form_elements/IconButton";
 import NumberField from "../../../form_elements/NumberField";
@@ -41,12 +40,12 @@ const EncounterEditView = ({ encounter, onEdit }: $Props) => {
   }, [encounter]);
 
   const removeEnemy = (i: number) => {
-    let newEnemyList = encounter.enemies;
+    let newEnemyList = [...encounter.enemies];
     newEnemyList.splice(i, 1);
     onEdit({ ...encounter, enemies: newEnemyList });
   };
   const addNewEnemy = () => {
-    let newEnemyList = encounter.enemies;
+    let newEnemyList = [...encounter.enemies];
     newEnemyList.push(new Player());
     onEdit({ ...encounter, enemies: newEnemyList });
   };
@@ -60,35 +59,88 @@ const EncounterEditView = ({ encounter, onEdit }: $Props) => {
     enemies[i] = { ...oldEnemy, [field]: newEnemy };
     onEdit({ ...encounter, enemies: enemies });
   };
-  const onChangeEnemy = (newEnemy: string, oldEnemy: Player, i: number) => {
-    let enemies = encounter.enemies;
+  const onChangeEnemy = async (newEnemy: string, oldEnemy: Player, i: number) => {
+    let enemies = [...encounter.enemies];
 
-    reciveByAttribute("monsters", "name", newEnemy, (result: IEntity) => {
-      if (result && isMonster(result)) {
+    let found: any[] = [];
+    found.push(recivePromiseByAttribute("monsters", "name", newEnemy));
+    found.push(recivePromiseByAttribute("npcs", "name", newEnemy));
+    found.push(recivePromiseByAttribute("chars", "name", newEnemy));
+    let results = await Promise.all(found);
+    results = results.filter((e) => e !== undefined);
+
+    if (results[0] && isMonster(results[0])) {
+      enemies[i] = {
+        ...oldEnemy,
+        name: newEnemy,
+        hp: results[0].hp,
+        currentHp: results[0].hp,
+        ac: results[0].ac,
+        isMonster: true,
+        isNpc: false,
+        level: results[0].cr,
+      };
+      onEdit({ ...encounter, enemies: enemies });
+    } else if (results[0] && isChar(results[0])) {
+      let level = 0;
+      results[0].classes.forEach((classSet: ClassSet) => {
+        level += classSet.level;
+      });
+      enemies[i] = {
+        ...oldEnemy,
+        name: newEnemy,
+        hp: results[0].hp,
+        currentHp: results[0].hp,
+        ac: results[0].ac,
+        isMonster: true,
+        isNpc: false,
+        level: level,
+      };
+      onEdit({ ...encounter, enemies: enemies });
+    } else if (results[0] && isNpc(results[0])) {
+      if (results[0].monster !== undefined) {
         enemies[i] = {
           ...oldEnemy,
           name: newEnemy,
-          hp: result.hp,
-          currentHp: result.hp,
-          ac: result.ac,
+          hp: results[0].monster.hp,
+          currentHp: results[0].monster.hp,
+          ac: results[0].monster.ac,
           isMonster: true,
-          level: result.cr,
+          isNpc: true,
+          level: results[0].monster.cr,
         };
-        onEdit({ ...encounter, enemies: enemies });
+      } else if (results[0].char !== undefined) {
+        let level = 0;
+        results[0].char.classes.forEach((classSet: ClassSet) => {
+          level += classSet.level;
+        });
+        enemies[i] = {
+          ...oldEnemy,
+          name: newEnemy,
+          hp: results[0].char.hp,
+          currentHp: results[0].char.hp,
+          ac: results[0].char.ac,
+          isMonster: false,
+          isNpc: true,
+          level: level,
+        };
       } else {
-        enemies[i] = { ...oldEnemy, name: newEnemy };
-        onEdit({ ...encounter, enemies: enemies });
+        enemies[i] = { ...oldEnemy, name: newEnemy, isNpc: true };
       }
-    });
+      onEdit({ ...encounter, enemies: enemies });
+    } else {
+      enemies[i] = { ...oldEnemy, name: newEnemy };
+      onEdit({ ...encounter, enemies: enemies });
+    }
   };
 
   const removePlayer = (i: number) => {
-    let newPlayerList = encounter.players;
+    let newPlayerList = [...encounter.players];
     newPlayerList.splice(i, 1);
     onEdit({ ...encounter, players: newPlayerList });
   };
   const addNewPlayer = () => {
-    let newPlayerList = encounter.players;
+    let newPlayerList = [...encounter.players];
     newPlayerList.push(new Player());
     onEdit({ ...encounter, players: newPlayerList });
   };
@@ -102,31 +154,79 @@ const EncounterEditView = ({ encounter, onEdit }: $Props) => {
     players[i] = { ...oldPlayer, [field]: newPlayer };
     onEdit({ ...encounter, players: players });
   };
-  const onChangePlayer = (newPlayer: string, oldPlayer: Player, i: number) => {
-    let players = encounter.players;
+  const onChangePlayer = async (newPlayer: string, oldPlayer: Player, i: number) => {
+    let players = [...encounter.players];
 
-    reciveByAttribute("chars", "name", newPlayer, (result: IEntity) => {
-      if (result && isChar(result)) {
+    let found: any[] = [];
+    found.push(recivePromiseByAttribute("monsters", "name", newPlayer));
+    found.push(recivePromiseByAttribute("npcs", "name", newPlayer));
+    found.push(recivePromiseByAttribute("chars", "name", newPlayer));
+    let results = await Promise.all(found);
+    results = results.filter((e) => e !== undefined);
+
+    if (results[0] && isMonster(results[0])) {
+      players[i] = {
+        ...oldPlayer,
+        name: newPlayer,
+        hp: results[0].hp,
+        currentHp: results[0].hp,
+        ac: results[0].ac,
+        isMonster: true,
+        isNpc: false,
+        level: results[0].cr,
+      };
+      onEdit({ ...encounter, players: players });
+    } else if (results[0] && isChar(results[0])) {
+      let level = 0;
+      results[0].classes.forEach((classSet: ClassSet) => {
+        level += classSet.level;
+      });
+      players[i] = {
+        ...oldPlayer,
+        name: newPlayer,
+        hp: results[0].hp,
+        currentHp: results[0].hp,
+        ac: results[0].ac,
+        isMonster: true,
+        isNpc: false,
+        level: level,
+      };
+      onEdit({ ...encounter, players: players });
+    } else if (results[0] && isNpc(results[0])) {
+      if (results[0].monster !== undefined) {
+        players[i] = {
+          ...oldPlayer,
+          name: newPlayer,
+          hp: results[0].monster.hp,
+          currentHp: results[0].monster.hp,
+          ac: results[0].monster.ac,
+          isMonster: true,
+          isNpc: true,
+          level: results[0].monster.cr,
+        };
+      } else if (results[0].char !== undefined) {
         let level = 0;
-        result.classes.forEach((classSet: ClassSet) => {
+        results[0].char.classes.forEach((classSet: ClassSet) => {
           level += classSet.level;
         });
         players[i] = {
           ...oldPlayer,
           name: newPlayer,
-          hp: result.hp,
-          currentHp: result.currentHp,
-          initBonus: result.init,
-          ac: result.ac,
+          hp: results[0].char.hp,
+          currentHp: results[0].char.hp,
+          ac: results[0].char.ac,
           isMonster: false,
+          isNpc: true,
           level: level,
         };
-        onEdit({ ...encounter, players: players });
       } else {
-        players[i] = { ...oldPlayer, name: newPlayer };
-        onEdit({ ...encounter, players: players });
+        players[i] = { ...oldPlayer, name: newPlayer, isNpc: true };
       }
-    });
+      onEdit({ ...encounter, players: players });
+    } else {
+      players[i] = { ...oldPlayer, name: newPlayer };
+      onEdit({ ...encounter, players: players });
+    }
   };
 
   return (
@@ -161,7 +261,7 @@ const EncounterEditView = ({ encounter, onEdit }: $Props) => {
           return (
             <Container key={index}>
               <AutoStringField
-                optionTable={["monsters", "chars"]}
+                optionTable={["monsters", "chars", "npcs"]}
                 value={enemy.name}
                 label="Monster"
                 onChange={(newMonster) => onChangeEnemy(newMonster, enemy, index)}
@@ -204,7 +304,7 @@ const EncounterEditView = ({ encounter, onEdit }: $Props) => {
           return (
             <Container key={index}>
               <AutoStringField
-                optionTable={"chars"}
+                optionTable={["monsters", "chars", "npcs"]}
                 value={player.name}
                 label="Character"
                 onChange={(newPlayer) => onChangePlayer(newPlayer, player, index)}

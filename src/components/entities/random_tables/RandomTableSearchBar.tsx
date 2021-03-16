@@ -1,15 +1,14 @@
+import { faFileExport, faPlusCircle, faRedoAlt, faSearch } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useState } from "react";
-import { useHistory } from "react-router";
 import ReactDOM from "react-dom";
-import { createNewWithId, exportFilteredFromTable } from "../../../services/DatabaseService";
+import { useHistory } from "react-router";
 import Filter from "../../../data/Filter";
 import RandomTable from "../../../data/RandomTable";
-
-import { faSearch, faRedoAlt, faPlusCircle, faFileExport } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { createNewWithId, exportFilteredFromTable } from "../../../services/DatabaseService";
 import IconButton from "../../form_elements/IconButton";
 import StringSearchField from "../../form_elements/StringSearchField";
-import { FixedBar, SearchBar, CreateButton, ExportButton, LeftTooltip } from "../../SearchbarStyle";
+import { CreateButton, ExportButton, FixedBar, LeftTooltip, SearchBar } from "../../SearchbarStyle";
 
 const RandomTableSearchBar = () => {
   const [open, setOpen] = useState(false);
@@ -56,12 +55,13 @@ const RandomTableSearchBar = () => {
         sort: 0,
       });
     });
-    history.push(`/eandomTable-overview}`);
+    history.push(`/randomTable-overview}`);
   };
 
   const createNewRandomTable = () => {
-    let newRandomTable = new RandomTable();
+    let newRandomTable = new RandomTable(0, "NEw");
     delete newRandomTable.id;
+    console.log(newRandomTable);
     createNewWithId("randomTables", newRandomTable, (id) => {
       history.push(`/randomTable-detail/id/${id}`);
     });

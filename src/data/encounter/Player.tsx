@@ -7,6 +7,7 @@ export default class Player {
   ac: number;
   tag: string;
   isMonster: boolean;
+  isNpc: boolean;
   level: number;
   cord: number[];
 
@@ -19,6 +20,7 @@ export default class Player {
     ac?: number,
     tag?: string,
     isMonster?: boolean,
+    isNpc?: boolean,
     level?: number,
     cord?: number[]
   ) {
@@ -30,8 +32,9 @@ export default class Player {
     this.ac = ac || 0;
     this.tag = tag || "";
     this.isMonster = isMonster || false;
+    this.isNpc = isNpc || false;
     this.level = level || 0;
-    this.cord = cord || [0,0];
+    this.cord = cord || [0, 0];
   }
 }
 

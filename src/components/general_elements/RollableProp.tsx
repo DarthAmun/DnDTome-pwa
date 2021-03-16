@@ -31,8 +31,6 @@ const RollableProp = ({ char, title, value, rolledValue }: $RollableProps) => {
       rollString = "d20" + rolls + rolledValue + text;
     }
 
-    console.log(roll, rollString);
-
     let krit = false;
     if (roll - rolledValue === 20) krit = true;
     let fail = false;

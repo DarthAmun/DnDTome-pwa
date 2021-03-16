@@ -79,6 +79,10 @@ const EntityDetail = ({ entity, tableName, isNew, view }: $Props) => {
   };
 
   useEffect(() => {
+    console.log(tableName);
+  }, [tableName]);
+
+  useEffect(() => {
     if (entityObj !== entity) {
       setUnsavedChanges(true);
     }
@@ -109,7 +113,7 @@ const EntityDetail = ({ entity, tableName, isNew, view }: $Props) => {
   };
 
   const editAndSaveEntity = (entity: IEntity, msg: string) => {
-    console.log("save")
+    console.log("save");
     editEntity(entity);
     updateEntity(entity, msg);
   };

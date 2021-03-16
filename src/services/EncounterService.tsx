@@ -1,7 +1,10 @@
+import { isNpc } from "../data/campaign/Npc";
+import { isChar } from "../data/chars/Char";
 import BuildEncounter from "../data/encounter/BuildEncounter";
 import BuildPlayer from "../data/encounter/BuildPlayer";
 import Encounter from "../data/encounter/Encounter";
 import Player from "../data/encounter/Player";
+import { isMonster } from "../data/Monster";
 import { recivePromiseByAttribute } from "./DatabaseService";
 
 export const buildEncounter = async (encounter: Encounter): Promise<BuildEncounter> => {
@@ -27,9 +30,22 @@ export const buildEncounter = async (encounter: Encounter): Promise<BuildEncount
   enemies = enemies.filter((enemy) => enemy !== undefined);
   let players = [...characters, ...enemies];
   if (encounter.isPlaying) {
-    players = players.sort((a: BuildPlayer, b: BuildPlayer) =>
-      a.player.init < b.player.init ? 1 : -1
-    );
+    players = players.sort((a: BuildPlayer, b: BuildPlayer) => {
+      if (a.player.init === b.player.init) {
+        let aDex: number = 0;
+        let bDex: number = 0;
+        if (isNpc(a.entity) && a.entity.char !== undefined) aDex = a.entity.char.dex;
+        else if (isNpc(a.entity) && a.entity.monster !== undefined) aDex = a.entity.monster.dex;
+        else if (isMonster(a.entity) || isChar(a.entity)) aDex = a.entity.dex;
+        if (isNpc(b.entity) && b.entity.char !== undefined) bDex = b.entity.char.dex;
+        else if (isNpc(b.entity) && b.entity.monster !== undefined) bDex = b.entity.monster.dex;
+        else if (isMonster(b.entity) || isChar(b.entity)) bDex = b.entity.dex;
+
+        if (bDex === aDex) return a.player.name.localeCompare(b.player.name);
+        return bDex - aDex;
+      }
+      return b.player.init - a.player.init;
+    });
   }
 
   const difficulty = calcDifficulty(encounter);
@@ -41,7 +57,9 @@ export const buildEncounter = async (encounter: Encounter): Promise<BuildEncount
 export const buildPlayer = async (player: Player): Promise<BuildPlayer> => {
   let newPlayer: any;
 
-  if (player.isMonster) newPlayer = await recivePromiseByAttribute("monsters", "name", player.name);
+  if (player.isNpc) newPlayer = await recivePromiseByAttribute("npcs", "name", player.name);
+  else if (player.isMonster)
+    newPlayer = await recivePromiseByAttribute("monsters", "name", player.name);
   else newPlayer = await recivePromiseByAttribute("chars", "name", player.name);
 
   return new BuildPlayer(player, newPlayer);

@@ -7,11 +7,11 @@ import IconButton from "../../../form_elements/IconButton";
 import StringField from "../../../form_elements/StringField";
 
 interface $Props {
-  randomTable: RandomTable;
+  randomtable: RandomTable;
   onEdit: (value: RandomTable) => void;
 }
 
-const RandomTableEditView = ({ randomTable, onEdit }: $Props) => {
+const RandomTableEditView = ({ randomtable: randomTable, onEdit }: $Props) => {
   const onRowChange = (field: string, value: string, index: number) => {
     let rows = randomTable.rows;
     rows[index] = { ...rows[index], [field]: value };
@@ -49,28 +49,26 @@ const RandomTableEditView = ({ randomTable, onEdit }: $Props) => {
         />
       </RandomTableView>
       <RandomTableView>
-        {randomTable.rows.map(
-          (row: { value: string; cells: string }, index: number) => {
-            return (
-              <RowWrapper key={index}>
-                <RowCount>{index}</RowCount>
-                <StringField
-                  value={row.value}
-                  label={"Row values " + index}
-                  onChange={(text) => onRowChange("value", text, index)}
-                  placeholder={`${index + 1} or 0-5`}
-                />
-                <StringField
-                  value={row.cells}
-                  label={"Row " + index}
-                  onChange={(text) => onRowChange("cells", text, index)}
-                  placeholder={`Item ${index}| Description ${index}|...`}
-                />
-                <IconButton icon={faTrash} onClick={() => removeRow(index)} />
-              </RowWrapper>
-            );
-          }
-        )}
+        {randomTable.rows.map((row: { value: string; cells: string }, index: number) => {
+          return (
+            <RowWrapper key={index}>
+              <RowCount>{index}</RowCount>
+              <StringField
+                value={row.value}
+                label={"Row values " + index}
+                onChange={(text) => onRowChange("value", text, index)}
+                placeholder={`${index + 1} or 0-5`}
+              />
+              <StringField
+                value={row.cells}
+                label={"Row " + index}
+                onChange={(text) => onRowChange("cells", text, index)}
+                placeholder={`Item ${index}| Description ${index}|...`}
+              />
+              <IconButton icon={faTrash} onClick={() => removeRow(index)} />
+            </RowWrapper>
+          );
+        })}
         <RowWrapper>
           <IconButton icon={faPlus} onClick={() => addNewRow()} />
         </RowWrapper>

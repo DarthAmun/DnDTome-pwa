@@ -5,7 +5,7 @@ import styled from "styled-components";
 import Npc from "../../../data/campaign/Npc";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faLink } from "@fortawesome/free-solid-svg-icons";
+import { faDragon, faIdCard, faLink } from "@fortawesome/free-solid-svg-icons";
 
 interface $Props {
   npc: Npc;
@@ -24,6 +24,16 @@ const NpcTile = ({ npc }: $Props) => {
 
   return (
     <Tile to={"/npc-detail/id/" + npc.id}>
+      {npc.monster !== undefined && (
+        <Level>
+          <FontAwesomeIcon icon={faDragon} />
+        </Level>
+      )}
+      {npc.char !== undefined && (
+        <Level>
+          <FontAwesomeIcon icon={faIdCard} />
+        </Level>
+      )}
       {getPicture() !== "" ? <Image pic={getPicture()}></Image> : ""}
       <PropWrapper>
         <Name>
@@ -51,12 +61,30 @@ const Tile = styled(Link)`
   overflow: hidden;
   cursor: pointer;
   text-decoration: none;
+  position: relative;
 
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
   align-content: center;
+`;
+
+const Level = styled.div`
+  width: 20px;
+  height: 20px;
+  padding: 10px;
+  margin: 5px;
+
+  position: absolute;
+  top: 0px;
+  right: 0px;
+
+  line-height: 20px;
+  text-align: center;
+
+  border-radius: 30px;
+  border-bottom: solid 1px ${({ theme }) => theme.main.highlight};
 `;
 
 const Name = styled.div`

@@ -1,11 +1,10 @@
 import React, { useCallback } from "react";
 import styled from "styled-components";
 import BuildChar from "../../../../../data/chars/BuildChar";
-
 import SmallNumberArrayField from "../../../../form_elements/SmallNumberArrayField";
-import SpellTile from "../../../spells/SpellTile";
 import SmallNumberField from "../../../../form_elements/SmallNumberField";
 import RollableProp from "../../../../general_elements/RollableProp";
+import CharSpellView from "./CharSpellView";
 
 interface $Props {
   buildChar: BuildChar;
@@ -105,12 +104,14 @@ const CharSpell = ({ buildChar, saveChar }: $Props) => {
               }
             )}
         </PropWrapper>
-        <PropWrapper>
+        <SpellWrapper>
           {buildChar.spells &&
             buildChar.spells.map((spell, index: number) => {
-              return <SpellTile key={index} spell={spell} />;
+              return (
+                <CharSpellView key={index} char={buildChar} saveChar={saveChar} spell={spell} />
+              );
             })}
-        </PropWrapper>
+        </SpellWrapper>
       </MinView>
     </>
   );
@@ -146,6 +147,10 @@ const PropWrapper = styled.div`
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
+`;
+
+const SpellWrapper = styled(PropWrapper)`
+  align-items: flex-start;
 `;
 
 const Prop = styled.div`

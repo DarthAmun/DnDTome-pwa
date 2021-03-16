@@ -8,10 +8,10 @@ import TextButton from "../../../form_elements/TextButton";
 import FormatedText from "../../../general_elements/FormatedText";
 
 interface $Props {
-  randomTable: RandomTable;
+  randomtable: RandomTable;
 }
 
-const RandomTableView = ({ randomTable }: $Props) => {
+const RandomTableView = ({ randomtable: randomTable }: $Props) => {
   const [rand, setRand] = useState<number>(-1);
 
   const rollForRandom = () => {
@@ -37,31 +37,26 @@ const RandomTableView = ({ randomTable }: $Props) => {
         <b>{randomTable.name}</b>
       </Name>
       <View>
-        <TextButton
-          text={"Roll"}
-          icon={faDice}
-          onClick={() => rollForRandom()}
-        />
+        <TextButton text={"Roll"} icon={faDice} onClick={() => rollForRandom()} />
         {rand >= 0 && (
           <Prop>
             {rand} <Icon icon={faArrowRight} />
             {randomTable.rows.map((row: { value: string; cells: string }) => {
-              if (row.value.includes("-")) { // normal -
+              if (row.value.includes("-")) {
+                // normal -
                 let range = row.value.trim().split("-");
                 const min: number = +range[0];
                 const max: number = +range[1];
-                if (min <= rand && rand <= max)
-                  return <FormatedText text={row.cells} />;
-              } else if (row.value.includes("–")) { // – used by DnDBeyond 
+                if (min <= rand && rand <= max) return <FormatedText text={row.cells} />;
+              } else if (row.value.includes("–")) {
+                // – used by DnDBeyond
                 let range = row.value.trim().split("–");
                 const min: number = +range[0];
                 const max: number = +range[1];
-                if (min <= rand && rand <= max)
-                  return <FormatedText text={row.cells} />;
+                if (min <= rand && rand <= max) return <FormatedText text={row.cells} />;
               } else {
                 const valueNumber = +row.value;
-                if (valueNumber === rand)
-                  return <FormatedText text={row.cells} />;
+                if (valueNumber === rand) return <FormatedText text={row.cells} />;
               }
               return <></>;
             })}
@@ -74,31 +69,25 @@ const RandomTableView = ({ randomTable }: $Props) => {
             <tr>
               <TableHeadProp>Number</TableHeadProp>
               {randomTable.header &&
-                randomTable.header
-                  .split("|")
-                  .map((cell: string, index: number) => {
-                    return <TableHeadProp key={index}>{cell}</TableHeadProp>;
-                  })}
+                randomTable.header.split("|").map((cell: string, index: number) => {
+                  return <TableHeadProp key={index}>{cell}</TableHeadProp>;
+                })}
             </tr>
             {randomTable.rows &&
-              randomTable.rows.map(
-                (row: { value: string; cells: string }, index: number) => {
-                  return (
-                    <tr key={index}>
-                      <TableProp key={index}>{row.value}</TableProp>
-                      {row.cells
-                        .split("|")
-                        .map((cell: string, index: number) => {
-                          return (
-                            <TableProp key={index}>
-                              <FormatedText text={cell} />
-                            </TableProp>
-                          );
-                        })}
-                    </tr>
-                  );
-                }
-              )}
+              randomTable.rows.map((row: { value: string; cells: string }, index: number) => {
+                return (
+                  <tr key={index}>
+                    <TableProp key={index}>{row.value}</TableProp>
+                    {row.cells.split("|").map((cell: string, index: number) => {
+                      return (
+                        <TableProp key={index}>
+                          <FormatedText text={cell} />
+                        </TableProp>
+                      );
+                    })}
+                  </tr>
+                );
+              })}
           </tbody>
         </table>
       </View>

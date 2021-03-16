@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { RouteComponentProps, useHistory } from "react-router";
 import Details from "./EntityDetail";
 
@@ -11,7 +11,6 @@ import {
   recivePromiseByAttribute,
 } from "../../../services/DatabaseService";
 import IEntity from "../../../data/IEntity";
-import { useCallback } from "react";
 import Book from "../../../data/Book";
 import Group from "../../../data/campaign/Group";
 import Npc from "../../../data/campaign/Npc";
@@ -29,17 +28,20 @@ import Subclass from "../../../data/classes/Subclass";
 import Event from "../../../data/world/Event";
 import Selection from "../../../data/Selection";
 import Location from "../../../data/world/Location";
+import { useQuery } from "../../../hooks/QueryHook";
 
 type TParams = { id?: string; name?: string };
 
 const ToEntity = ({ match }: RouteComponentProps<TParams>) => {
   let history = useHistory();
+  const editmode = useQuery().get("editMode");
   const [entityName, setEntityName] = useState<string>("");
   const [entity, setEntity] = useState<IEntity>();
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<boolean>(false);
 
   useEffect(() => {
+    console.log(editmode);
     if (entity !== undefined || error) {
       setLoading(true);
       setError(false);
@@ -123,15 +125,13 @@ const ToEntity = ({ match }: RouteComponentProps<TParams>) => {
           onButton={() => createNewEntity()}
         />
       )}
-      {!error && !loading && entity !== undefined ? (
+      {!error && !loading && entity !== undefined && (
         <Details
           entity={entity}
           tableName={entityName + "s"}
-          isNew={entity.name === "" ? true : false}
+          isNew={entity.name === "" || editmode !== null ? true : false}
           view={capitalize(entityName)}
         />
-      ) : (
-        <></>
       )}
     </>
   );
