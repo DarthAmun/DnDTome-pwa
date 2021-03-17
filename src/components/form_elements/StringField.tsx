@@ -10,12 +10,13 @@ interface $Props {
   label: string;
   placeholder?: string;
   icon?: IconDefinition;
+  style?: any;
   transform?: string | Transform;
   onChange: (value: string) => void;
 }
 
-const StringField = ({ value, label, placeholder, icon, transform, onChange }: $Props) => (
-  <Field>
+const StringField = ({ value, label, placeholder, icon, transform, style, onChange }: $Props) => (
+  <Field style={style}>
     <LabelText>
       {icon ? <Icon icon={icon} transform={transform} /> : ""} {label}
     </LabelText>

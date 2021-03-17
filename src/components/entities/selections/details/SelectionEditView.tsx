@@ -68,7 +68,8 @@ const SelectionEditView = ({ selection, onEdit }: $Props) => {
       <View>
         <StringField
           value={selection.name}
-          label="Name"
+          label="Selections Name"
+          style={{ width: "100%" }}
           onChange={(name) => onEdit({ ...selection, name: name })}
         />
         {selection.selectionOptions.map(

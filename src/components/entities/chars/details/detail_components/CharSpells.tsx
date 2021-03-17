@@ -1,10 +1,11 @@
 import React, { useCallback } from "react";
 import styled from "styled-components";
 import BuildChar from "../../../../../data/chars/BuildChar";
-import SmallNumberArrayField from "../../../../form_elements/SmallNumberArrayField";
+import Spell from "../../../../../data/Spell";
 import SmallNumberField from "../../../../form_elements/SmallNumberField";
 import RollableProp from "../../../../general_elements/RollableProp";
 import CharSpellView from "./CharSpellView";
+import SpellSlotCounter from "./SpellSlotCounter";
 
 interface $Props {
   buildChar: BuildChar;
@@ -12,32 +13,6 @@ interface $Props {
 }
 
 const CharSpell = ({ buildChar, saveChar }: $Props) => {
-  const onSpellslotChange = useCallback(
-    (
-      oldSlots: { origin: string; slots: number[]; max: number[] },
-      index: number,
-      value: number
-    ) => {
-      let newSpellSlots = buildChar.character.spellSlots.map(
-        (slots: { origin: string; slots: number[]; max: number[] }) => {
-          if (slots.origin === oldSlots.origin) {
-            let oldSlotValues = Array.from(oldSlots.slots);
-            oldSlotValues[index] = value;
-            return {
-              origin: oldSlots.origin,
-              slots: oldSlotValues,
-              max: oldSlots.max,
-            };
-          } else {
-            return slots;
-          }
-        }
-      );
-      saveChar({ ...buildChar, character: { ...buildChar.character, spellSlots: newSpellSlots } });
-    },
-    [buildChar, saveChar]
-  );
-
   const onCurrencyBoniChange = useCallback(
     (oldBoni: { origin: string; value: number; max: number }, value: number) => {
       let newBonis = buildChar.character.currencyBonis.map(
@@ -82,35 +57,25 @@ const CharSpell = ({ buildChar, saveChar }: $Props) => {
                 );
               }
             )}
-          {buildChar.character.spellSlots &&
-            buildChar.character.spellSlots.map(
-              (
-                classSlots: {
-                  origin: string;
-                  slots: number[];
-                  max: number[];
-                },
-                index: number
-              ) => {
-                return (
-                  <SmallNumberArrayField
-                    key={index}
-                    values={classSlots.slots}
-                    max={classSlots.max}
-                    label={classSlots.origin}
-                    onChange={(i, value) => onSpellslotChange(classSlots, i, value)}
-                  />
-                );
-              }
-            )}
+        </PropWrapper>
+        <PropWrapper>
+          {buildChar.character.spellSlots && (
+            <SpellSlotCounter char={buildChar} saveChar={saveChar} />
+          )}
         </PropWrapper>
         <SpellWrapper>
           {buildChar.spells &&
-            buildChar.spells.map((spell, index: number) => {
-              return (
-                <CharSpellView key={index} char={buildChar} saveChar={saveChar} spell={spell} />
-              );
-            })}
+            buildChar.spells
+              .sort((a: Spell, b: Spell) => {
+                const leveldif = a.level - b.level;
+                if (leveldif === 0) return a.name.localeCompare(b.name);
+                return leveldif;
+              })
+              .map((spell, index: number) => {
+                return (
+                  <CharSpellView key={index} char={buildChar} saveChar={saveChar} spell={spell} />
+                );
+              })}
         </SpellWrapper>
       </MinView>
     </>

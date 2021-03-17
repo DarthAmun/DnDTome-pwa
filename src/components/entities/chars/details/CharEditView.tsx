@@ -1,6 +1,7 @@
 import {
   faAngleDoubleUp,
   faAngleUp,
+  faCalculator,
   faMinus,
   faPlus,
   faTrash,
@@ -42,6 +43,7 @@ const CharEditView = ({ character, onEdit, isNpc }: $Props) => {
   const [buildChar, setBuildChar] = useState<BuildChar>();
   const [loading, setLoading] = useState<boolean>(true);
   const [selections, setSelections] = useState<Selection[]>([]);
+  const [spellAttr, setSpellAttr] = useState<string>("str");
 
   useEffect(() => {
     buildCharacter(character).then((buildChar) => {
@@ -183,7 +185,7 @@ const CharEditView = ({ character, onEdit, isNpc }: $Props) => {
     }[] = [];
     if (buildChar !== undefined) {
       buildChar.classes.forEach((classe: Class) => {
-        classe.featureSets.forEach((featureSet: FeatureSet) => {
+        classe?.featureSets.forEach((featureSet: FeatureSet) => {
           featureSet.features.forEach((feature: Feature) => {
             if (feature.selections !== undefined && feature.selections.length > 0) {
               let count = 1;
@@ -206,7 +208,7 @@ const CharEditView = ({ character, onEdit, isNpc }: $Props) => {
         });
         buildChar.subclasses.forEach((subclass: Subclass) => {
           if (subclass !== undefined) {
-            if (classe.name === subclass.type) {
+            if (classe?.name === subclass.type) {
               subclass.features.forEach((featureSet: FeatureSet) => {
                 featureSet.features.forEach((feature: Feature) => {
                   if (feature.selections !== undefined && feature.selections.length > 0) {
@@ -395,6 +397,16 @@ const CharEditView = ({ character, onEdit, isNpc }: $Props) => {
     },
     [buildChar, selections, onEdit]
   );
+
+  const calcSpellValues = () => {
+    if (buildChar !== undefined) {
+      console.log(formatScore(buildChar.character[spellAttr]), buildChar.prof);
+      let newCastingHit = formatScore(buildChar.character[spellAttr]) + buildChar.prof;
+      let newCastingDC = newCastingHit + 10;
+
+      onEdit({ ...buildChar.character, castingHit: newCastingHit, castingDC: newCastingDC });
+    }
+  };
 
   return (
     <>
@@ -876,6 +888,27 @@ const CharEditView = ({ character, onEdit, isNpc }: $Props) => {
                   value={buildChar.character.castingDC}
                   label="Casting DC"
                   onChange={(castingDC) => onEdit({ ...buildChar.character, castingDC: castingDC })}
+                />
+                <EnumField
+                  options={[
+                    { value: "str", label: "Str" },
+                    { value: "dex", label: "Dex" },
+                    { value: "con", label: "Con" },
+                    { value: "int", label: "Int" },
+                    { value: "wis", label: "Wis" },
+                    { value: "cha", label: "Cha" },
+                  ]}
+                  value={{
+                    value: spellAttr,
+                    label: spellAttr.charAt(0).toUpperCase() + spellAttr.slice(1),
+                  }}
+                  label="Attribute"
+                  onChange={(type) => setSpellAttr(type)}
+                />
+                <TextButton
+                  text={"Autocalc"}
+                  icon={faCalculator}
+                  onClick={() => calcSpellValues()}
                 />
                 {buildChar.character.spells.map((spell: string, index: number) => {
                   return (
