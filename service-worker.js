@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/DnDTome-pwa/precache-manifest.ae57c62c978ce1369a9838aa69b790b9.js"
+  "/DnDTome-pwa/precache-manifest.76498419e1ae7f81010d10943ee798f2.js"
 );
 
 self.addEventListener('message', (event) => {
