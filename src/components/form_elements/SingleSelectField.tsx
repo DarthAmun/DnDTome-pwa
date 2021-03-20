@@ -8,26 +8,21 @@ import { Transform } from "@fortawesome/fontawesome-svg-core";
 import Select from "react-select";
 
 interface $Props {
-  options: { value: string; label: string }[];
+  options: {
+    value: string;
+    label: string;
+  }[];
+  value: string;
   label: string;
   icon?: IconDefinition;
-  isMulti?: boolean;
   transform?: string | Transform;
-  onChange: (value: string[]) => void;
+  onChange: (value: string) => void;
 }
 
-const MultipleSelectField = ({ options, label, icon, isMulti, transform, onChange }: $Props) => {
-  const handleChange = (
-    options: {
-      value: string;
-      label: string;
-    }[]
-  ) => {
-    if (options !== null && options !== undefined) {
-      let result: string[] = options.map((opt: { value: string; label: string }) => {
-        return opt.value;
-      });
-      onChange(result);
+const SingleSelectField = ({ options, value, label, icon, transform, onChange }: $Props) => {
+  const handleChange = (option: { value: string; label: string }) => {
+    if (option !== null && option !== undefined) {
+      onChange(option.value);
     }
   };
 
@@ -37,21 +32,20 @@ const MultipleSelectField = ({ options, label, icon, isMulti, transform, onChang
         {icon ? <Icon icon={icon} transform={transform} /> : ""} {label}
       </LabelText>
       <StyledSelect
-        isMulti={isMulti !== undefined ? isMulti : true}
+        isMulti={false}
         classNamePrefix="react-select"
+        value={{
+          value: value,
+          label: value,
+        }}
         options={options}
-        onChange={(
-          options: {
-            value: string;
-            label: string;
-          }[]
-        ) => handleChange(options)}
+        onChange={(option: { value: string; label: string }) => handleChange(option)}
       />
     </Field>
   );
 };
 
-export default MultipleSelectField;
+export default SingleSelectField;
 
 const Field = styled.label`
   color: ${({ theme }) => theme.tile.color};
@@ -90,6 +84,9 @@ const StyledSelect = styled(Select)`
   color: ${({ theme }) => theme.input.color};
   margin-left: 5px;
 
+  .react-select__single-value {
+    color: ${({ theme }) => theme.input.color};
+  }
   .react-select__control {
     background-color: ${({ theme }) => theme.input.backgroundColor};
     border: none;

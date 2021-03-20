@@ -16,7 +16,7 @@ import { recalcClasses } from "../../../../services/CharacterService";
 import { createNewWithId, remove, updateWithCallback } from "../../../../services/DatabaseService";
 import BackButton from "../../../form_elements/BackButton";
 import IconButton from "../../../form_elements/IconButton";
-import Dialog from "../../../general_elements/Dialog";
+import { Dialog } from "../../../general_elements/Dialog";
 import { EditToggle, ToggleLeft, ToggleRight } from "../../../general_elements/ToggleStyle";
 import CharEditView from "./CharEditView";
 import CharView from "./CharView";

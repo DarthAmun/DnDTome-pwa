@@ -179,7 +179,6 @@ const ClasseView = ({ classe }: $Props) => {
                 <thead>
                   <FeatureRow>
                     <FeatureHeadProp>Level</FeatureHeadProp>
-                    <FeatureHeadProp>Prof. Bonus</FeatureHeadProp>
                     <FeatureHeadProp>Features</FeatureHeadProp>
                     {classe.featureSets[0].bonis &&
                       classe.featureSets[0].bonis.length > 0 &&
@@ -193,7 +192,6 @@ const ClasseView = ({ classe }: $Props) => {
                     return (
                       <FeatureRow key={index}>
                         <FeatureProp>{featureSet.level}</FeatureProp>
-                        <FeatureProp>{featureSet.profBonus}</FeatureProp>
                         <FeatureProp>
                           {featureSet.features.map((feature) => {
                             return feature.name + ", ";

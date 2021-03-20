@@ -181,6 +181,19 @@ export const recivePromiseByAttribute = (tableName: string, name: string, value:
     });
 };
 
+export const reciveAllPromiseByAttribute = (tableName: string, name: string, value: string) => {
+  const db = new MyAppDatabase();
+  return db
+    .open()
+    .then(async function () {
+      const array = await db.table(tableName).where(name).equalsIgnoreCase(value).toArray();
+      return array;
+    })
+    .finally(function () {
+      db.close();
+    });
+};
+
 export const recivePromise = (tableName: string, value: number) => {
   const db = new MyAppDatabase();
   return db

@@ -6,6 +6,7 @@ import {
   faStopCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import React, { useCallback, useEffect, useState } from "react";
+import { GiBroadsword, GiHeartBottle } from "react-icons/gi";
 import { useHistory } from "react-router";
 import styled from "styled-components";
 import BuildEncounter from "../../../../data/encounter/BuildEncounter";
@@ -18,6 +19,7 @@ import IconButton from "../../../form_elements/IconButton";
 import TextButton from "../../../form_elements/TextButton";
 import TinyNumberField from "../../../form_elements/TinyNumberField";
 import Board from "../../../general_elements/board/Board";
+import { DamageDialog } from "../../../general_elements/Dialog";
 import { LoadingSpinner } from "../../../Loading";
 
 interface $Props {
@@ -28,6 +30,8 @@ interface $Props {
 
 const EncounterView = ({ encounter, dmView, onEdit }: $Props) => {
   let history = useHistory();
+  const [damageDialog, setDamageDialog] = useState<boolean>(false);
+  const [damageDialogIndex, setDamageDialogIndex] = useState<number>(0);
   const [loadedEncounter, setLoadedEncounter] = useState<BuildEncounter>(new BuildEncounter());
   const [loading, isLoading] = useState<boolean>(true);
 
@@ -172,8 +176,43 @@ const EncounterView = ({ encounter, dmView, onEdit }: $Props) => {
     [loadedEncounter.encounter, loadedEncounter.players, onEdit]
   );
 
+  const showDamageDialog = (i: number) => {
+    setDamageDialogIndex(i);
+    setDamageDialog(true);
+  };
+
   return (
     <CenterWrapper>
+      {damageDialog && (
+        <DamageDialog
+          name={loadedEncounter.players[damageDialogIndex].player.name}
+          damageText={"Damage"}
+          damageClick={(currentHp) => {
+            onChangePlayerField(
+              "currentHp",
+              loadedEncounter.players[damageDialogIndex].player.currentHp - currentHp,
+              loadedEncounter.players[damageDialogIndex].player
+            );
+            setDamageDialog(false);
+          }}
+          healText={"Heal"}
+          healClick={(currentHp) => {
+            onChangePlayerField(
+              "currentHp",
+              loadedEncounter.players[damageDialogIndex].player.currentHp + currentHp >
+                loadedEncounter.players[damageDialogIndex].player.hp
+                ? loadedEncounter.players[damageDialogIndex].player.hp
+                : loadedEncounter.players[damageDialogIndex].player.currentHp + currentHp,
+              loadedEncounter.players[damageDialogIndex].player
+            );
+            setDamageDialog(false);
+          }}
+          abortText={"Back"}
+          abortClick={() => {
+            setDamageDialog(false);
+          }}
+        />
+      )}
       <View mode={dmView ? 1 : 0}>
         <Name>
           <b>{encounter.name}</b>
@@ -215,7 +254,6 @@ const EncounterView = ({ encounter, dmView, onEdit }: $Props) => {
                 <th>Init</th>
                 <th>Name</th>
                 {dmView && <th>Current Hp</th>}
-                {dmView && <th>Hp</th>}
                 {dmView && <th>AC</th>}
                 <th></th>
               </tr>
@@ -259,21 +297,14 @@ const EncounterView = ({ encounter, dmView, onEdit }: $Props) => {
                         </MainLink>
                       )}
                     </Prop>
-                    {dmView && (
-                      <>
-                        <PropField>
-                          <TinyNumberField
-                            value={buildPlayer.player.currentHp}
-                            max={buildPlayer.player.hp}
-                            onChange={(currentHp) =>
-                              onChangePlayerField("currentHp", currentHp, buildPlayer.player)
-                            }
-                          />
-                        </PropField>
-                        <Prop>{buildPlayer.player.hp}</Prop>
-                        <Prop>{buildPlayer.player.ac}</Prop>
-                      </>
-                    )}
+                    <PropRight>
+                      <DamageButton onClick={() => showDamageDialog(index)}>
+                        <GiBroadsword />
+                        <GiHeartBottle />
+                      </DamageButton>
+                      {dmView && `${buildPlayer.player.currentHp} / ${buildPlayer.player.hp}`}
+                    </PropRight>
+                    {dmView && <Prop>{buildPlayer.player.ac}</Prop>}
                     {/* <Prop>{player.tag}</Prop> */}
                     <td>
                       {buildPlayer.player.currentHp > 0 && (
@@ -316,6 +347,30 @@ const EncounterView = ({ encounter, dmView, onEdit }: $Props) => {
 
 export default EncounterView;
 
+const DamageButton = styled.button`
+  svg {
+    color: ${({ theme }) => theme.buttons.color};
+  }
+  font-size: 16px;
+  float: left;
+  padding: 5px;
+  cursor: pointer;
+  box-shadow: inset -2px -2px 5px 0px rgba(0, 0, 0, 0.3);
+  box-sizing: content-box;
+  border-radius: 10px;
+  border: none;
+
+  transition: color 0.2s;
+  background: ${({ theme }) => theme.buttons.backgroundColor};
+  &:hover {
+    color: ${({ theme }) => theme.buttons.hoverColor};
+  }
+
+  &:disabled {
+    background-color: ${({ theme }) => theme.buttons.disabled};
+  }
+`;
+
 interface $PlayerImageProps {
   player: BuildPlayer;
 }
@@ -349,7 +404,7 @@ const View = styled.div<viewType>`
   max-width: 800px;
   ${(props) => {
     if (!props.mode) {
-      return "min-width: 300px;";
+      return "min-width: 400px;";
     } else {
       return "min-width: 500px;";
     }
@@ -397,14 +452,10 @@ const Prop = styled.td`
   border-radius: 5px;
   background-color: ${({ theme }) => theme.tile.backgroundColor};
   line-height: 34px;
+`;
 
-  svg {
-    margin-right: 5px;
-    height: auto;
-    border-radius: 150px;
-    transition: color 0.2s;
-    color: ${({ theme }) => theme.main.highlight};
-  }
+const PropRight = styled(Prop)`
+  text-align: right;
 `;
 
 const PropElm = styled.div`

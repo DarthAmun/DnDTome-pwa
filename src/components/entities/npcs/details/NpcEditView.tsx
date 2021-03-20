@@ -86,7 +86,6 @@ const NpcEditView = ({ npc, onEdit }: $Props) => {
 export default NpcEditView;
 
 const CenterWrapper = styled.div`
-  overflow: hidden;
   width: 100%;
   height: 100%;
 

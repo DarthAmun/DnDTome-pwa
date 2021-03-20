@@ -15,7 +15,7 @@ interface $Props {
 const FormatedText = ({ text }: $Props) => {
   let webhook = useWebhook();
   const [json, setJson] = useState<string>("");
-  const [formatedText, setFormatedText] = useState<JSX.Element>();
+  const [formatedText, setFormatedText] = useState<JSX.Element[]>();
   let history = useHistory();
 
   useEffect(() => {
@@ -73,7 +73,7 @@ const FormatedText = ({ text }: $Props) => {
   );
 
   const formatLink = useCallback(
-    (text: string) => {
+    (text: string, index: number): JSX.Element => {
       if (text !== undefined) {
         if (text.includes("[[") && text.includes("]]")) {
           const parts = text.split("[[");
@@ -85,7 +85,7 @@ const FormatedText = ({ text }: $Props) => {
               let linkEntity = linkParts[0];
               if (linkEntity === "dice") {
                 formattedParts.push(
-                  <TextPart key={index}>
+                  <TextPart key={"TextPart" + index}>
                     <DiscordPart onClick={() => rollDiscord(linkParts[1])}>
                       <LinkCheck type={linkParts[0]} name={linkParts[1]} /> {linkParts[1]}
                     </DiscordPart>
@@ -94,74 +94,101 @@ const FormatedText = ({ text }: $Props) => {
                 );
               } else {
                 if (linkEntity === "class" || linkEntity === "subclass") linkEntity += "e";
-                const link: string = "/" + linkEntity + "-detail/name/" + linkParts[1];
-                formattedParts.push(
-                  <TextPart key={index}>
-                    <Link onClick={() => history.push(link)}>
-                      <LinkCheck type={linkParts[0]} name={linkParts[1]} /> {linkParts[1]}
-                    </Link>
-                    <TextPart>{codePart[1]}</TextPart>
-                  </TextPart>
-                );
+                if (linkParts[1].includes("|")) {
+                  const entityParts = linkParts[1].split("|");
+                  const link: string =
+                    "/" +
+                    linkEntity +
+                    "-detail/name/" +
+                    entityParts[0] +
+                    "?source=" +
+                    entityParts[1];
+                  formattedParts.push(
+                    <TextPart key={"TextPart" + index}>
+                      <Link onClick={() => history.push(link)}>
+                        <LinkCheck type={linkParts[0]} name={entityParts[0]} /> {entityParts[0]} (
+                        {entityParts[1]})
+                      </Link>
+                      <TextPart>{codePart[1]}</TextPart>
+                    </TextPart>
+                  );
+                } else {
+                  const link: string = "/" + linkEntity + "-detail/name/" + linkParts[1];
+                  formattedParts.push(
+                    <TextPart key={"TextPart" + index}>
+                      <Link onClick={() => history.push(link)}>
+                        <LinkCheck type={linkParts[0]} name={linkParts[1]} /> {linkParts[1]}
+                      </Link>
+                      <TextPart>{codePart[1]}</TextPart>
+                    </TextPart>
+                  );
+                }
               }
             } else {
               if (part !== "") formattedParts.push(<TextPart key={index}>{part}</TextPart>);
             }
           });
           return <>{formattedParts}</>;
-        } else {
-          return <TextPart>{text}</TextPart>;
+        } else if (text.length > 0) {
+          return <TextPart key={"TextPart" + index}>{text}</TextPart>;
         }
       }
+      return <></>;
     },
     [history]
   );
 
   const formatTable = useCallback(
-    (textPart: string) => {
-      if (textPart.includes("||table||")) {
-        const table: string[] = text.split("||table||");
-        const tableRows: string[] = table[1].split("||");
-        let isHead = true;
-        return (
-          <>
-            {formatLink(table[0])}
-            <table>
-              <tbody>
-                {tableRows.map((row: string, index: number) => {
-                  if (row.includes("|")) {
-                    if (isHead) {
-                      isHead = false;
-                      const cells = row.split("|");
-                      return (
-                        <tr key={index}>
-                          {cells.map((cell: string, index: number) => {
-                            return <TableHeadProp key={index}>{cell}</TableHeadProp>;
-                          })}
-                        </tr>
-                      );
+    (textPart: string): JSX.Element[] => {
+      if (textPart.includes("||tableStart||")) {
+        let newTable: JSX.Element[] = [];
+        const table: string[] = text.split("||tableStart||");
+
+        table.forEach((textPart: string, index: number) => {
+          if (textPart.includes("||tableEnd||")) {
+            const tableEnd = textPart.split("||tableEnd||");
+            const tableRows: string[] = tableEnd[0].split("||");
+            let isHead = true;
+            newTable.push(
+              <table key={"table" + index}>
+                <tbody key={"tbody" + index}>
+                  {tableRows.map((row: string, index: number) => {
+                    if (row.includes("|")) {
+                      if (isHead) {
+                        isHead = false;
+                        const cells = row.split("|");
+                        return (
+                          <tr key={index}>
+                            {cells.map((cell: string, index: number) => {
+                              return <TableHeadProp key={index}>{cell}</TableHeadProp>;
+                            })}
+                          </tr>
+                        );
+                      } else {
+                        const cells = row.split("|");
+                        return (
+                          <tr key={index}>
+                            {cells.map((cell: string, index: number) => {
+                              return <TableProp key={index}>{formatLink(cell, index)}</TableProp>;
+                            })}
+                          </tr>
+                        );
+                      }
                     } else {
-                      const cells = row.split("|");
-                      return (
-                        <tr key={index}>
-                          {cells.map((cell: string, index: number) => {
-                            return <TableProp key={index}>{formatLink(cell)}</TableProp>;
-                          })}
-                        </tr>
-                      );
+                      return <></>;
                     }
-                  } else {
-                    return <></>;
-                  }
-                })}
-              </tbody>
-            </table>
-            {formatLink(table[2])}
-          </>
-        );
-      } else {
-        return formatLink(textPart);
+                  })}
+                </tbody>
+              </table>
+            );
+            newTable.push(formatLink(tableEnd[1], index));
+          } else {
+            newTable.push(formatLink(table[0], index));
+          }
+        });
+        return newTable;
       }
+      return [formatLink(textPart, 0)];
     },
     [text, formatLink]
   );

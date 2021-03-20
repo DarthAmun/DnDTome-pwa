@@ -5,13 +5,7 @@ import FeatureSet from "../../../../data/classes/FeatureSet";
 import Boni from "../../../../data/classes/Boni";
 import Selection from "../../../../data/Selection";
 
-import {
-  faLink,
-  faImage,
-  faPlus,
-  faTrash,
-  faMinus,
-} from "@fortawesome/free-solid-svg-icons";
+import { faLink, faImage, faPlus, faTrash, faMinus } from "@fortawesome/free-solid-svg-icons";
 import Feature, {
   FeatureType,
   featureTypeArray,
@@ -34,9 +28,7 @@ interface $Props {
 }
 
 const ClasseEditView = ({ classe, onEdit }: $Props) => {
-  const [selections, setSelections] = useState<
-    { value: string; label: string }[]
-  >([]);
+  const [selections, setSelections] = useState<{ value: string; label: string }[]>([]);
 
   useEffect(() => {
     reciveAll("selections", (data: any[]) => {
@@ -143,7 +135,7 @@ const ClasseEditView = ({ classe, onEdit }: $Props) => {
                 return select;
               }
             });
-            return {...feature, selections: selections};
+            return { ...feature, selections: selections };
           } else {
             return feature;
           }
@@ -200,7 +192,7 @@ const ClasseEditView = ({ classe, onEdit }: $Props) => {
           }
         }
         return { ...feature, selections: selections };
-      })
+      });
       return { ...featureSet, features: features };
     });
     onEdit({ ...classe, featureSets: featureSets });
@@ -210,10 +202,7 @@ const ClasseEditView = ({ classe, onEdit }: $Props) => {
       if (featureSet.spellslots !== undefined && featureSet === oldFeatureSet) {
         return {
           ...featureSet,
-          spellslots: [...featureSet.spellslots].slice(
-            0,
-            featureSet.spellslots.length - 1
-          ),
+          spellslots: [...featureSet.spellslots].slice(0, featureSet.spellslots.length - 1),
         };
       }
       return featureSet;
@@ -252,7 +241,7 @@ const ClasseEditView = ({ classe, onEdit }: $Props) => {
           name: "",
           text: "",
           type: FeatureType.normal,
-          selections: []
+          selections: [],
         });
         return { ...featureSet, features: features };
       }
@@ -272,7 +261,7 @@ const ClasseEditView = ({ classe, onEdit }: $Props) => {
           return { ...feature, selections: selections };
         }
         return feature;
-      })
+      });
       return { ...featureSet, features: features };
     });
     onEdit({ ...classe, featureSets: featureSets });
@@ -285,12 +274,9 @@ const ClasseEditView = ({ classe, onEdit }: $Props) => {
           ...classe.featureSets,
           {
             level: classe.featureSets.length + 1,
-            profBonus:
-              classe.featureSets[classe.featureSets.length - 1].profBonus,
             features: [],
             bonis: classe.featureSets[classe.featureSets.length - 1].bonis,
-            spellslots:
-              classe.featureSets[classe.featureSets.length - 1].spellslots,
+            spellslots: classe.featureSets[classe.featureSets.length - 1].spellslots,
           },
         ],
       });
@@ -301,7 +287,6 @@ const ClasseEditView = ({ classe, onEdit }: $Props) => {
           ...classe.featureSets,
           {
             level: classe.featureSets.length + 1,
-            profBonus: 0,
             features: [],
             bonis: [],
             spellslots: [],
@@ -339,9 +324,7 @@ const ClasseEditView = ({ classe, onEdit }: $Props) => {
         <TextField
           value={classe.proficiencies}
           label="Proficiencies"
-          onChange={(proficiencies) =>
-            onEdit({ ...classe, proficiencies: proficiencies })
-          }
+          onChange={(proficiencies) => onEdit({ ...classe, proficiencies: proficiencies })}
         />
         <TextField
           value={classe.equipment}
@@ -356,36 +339,16 @@ const ClasseEditView = ({ classe, onEdit }: $Props) => {
               <FeatureNumber
                 value={featureSet.level}
                 label="Level"
-                onChange={(level) =>
-                  onFeatureSetChange(featureSet, "level", level)
-                }
+                onChange={(level) => onFeatureSetChange(featureSet, "level", level)}
               />
-              <FeatureNumber
-                value={featureSet.profBonus}
-                label="Prof. Bonus"
-                onChange={(profBonus) =>
-                  onFeatureSetChange(featureSet, "profBonus", profBonus)
-                }
-              />
-              <IconButton
-                icon={faTrash}
-                onClick={() => removeFeatureSet(featureSet)}
-              />
+              <IconButton icon={faTrash} onClick={() => removeFeatureSet(featureSet)} />
               <FeatureNumberArray
                 values={featureSet.spellslots ? featureSet.spellslots : []}
                 label="Spellslots"
-                onChange={(spellslots) =>
-                  onSpellslotChange(featureSet, spellslots)
-                }
+                onChange={(spellslots) => onSpellslotChange(featureSet, spellslots)}
               />
-              <IconButton
-                icon={faMinus}
-                onClick={() => removeSpellslot(featureSet)}
-              />
-              <IconButton
-                icon={faPlus}
-                onClick={() => addNewSpellslot(featureSet)}
-              />
+              <IconButton icon={faMinus} onClick={() => removeSpellslot(featureSet)} />
+              <IconButton icon={faPlus} onClick={() => addNewSpellslot(featureSet)} />
               {featureSet.bonis &&
                 featureSet.bonis.map((boni: Boni, index: number) => {
                   return (
@@ -393,27 +356,18 @@ const ClasseEditView = ({ classe, onEdit }: $Props) => {
                       <BoniName
                         value={boni.name}
                         label="Boni"
-                        onChange={(name) =>
-                          onBoniChange(featureSet, boni, "name", name)
-                        }
+                        onChange={(name) => onBoniChange(featureSet, boni, "name", name)}
                       />
-                      <IconButton
-                        icon={faTrash}
-                        onClick={() => removeBoni(boni)}
-                      />
+                      <IconButton icon={faTrash} onClick={() => removeBoni(boni)} />
                       <FeatureString
                         value={boni.value}
                         label="Boni Value"
-                        onChange={(value) =>
-                          onBoniChange(featureSet, boni, "value", value)
-                        }
+                        onChange={(value) => onBoniChange(featureSet, boni, "value", value)}
                       />
                       <CheckField
                         value={boni.isCurrency}
                         label="is Currency?"
-                        onChange={(value) =>
-                          onBoniChange(featureSet, boni, "isCurrency", value)
-                        }
+                        onChange={(value) => onBoniChange(featureSet, boni, "isCurrency", value)}
                       />
                     </BoniContainer>
                   );
@@ -434,55 +388,39 @@ const ClasseEditView = ({ classe, onEdit }: $Props) => {
                       <FeatureName
                         value={feature.name}
                         label="Feature"
-                        onChange={(name) =>
-                          onFeatureChange(featureSet, feature, "name", name)
-                        }
+                        onChange={(name) => onFeatureChange(featureSet, feature, "name", name)}
                       />
                       <EnumField
                         options={featureTypeArray}
                         value={getOptionFromEnum(feature.type)}
                         label="Types"
-                        onChange={(type) =>
-                          onFeatureChange(featureSet, feature, "type", type)
-                        }
+                        onChange={(type) => onFeatureChange(featureSet, feature, "type", type)}
                       />
-                      <IconButton
-                        icon={faTrash}
-                        onClick={() => removeFeature(feature)}
-                      />
+                      <IconButton icon={faTrash} onClick={() => removeFeature(feature)} />
                       <FeatureText
                         value={feature.text}
                         label="Feature Text"
-                        onChange={(text) =>
-                          onFeatureChange(featureSet, feature, "text", text)
-                        }
+                        onChange={(text) => onFeatureChange(featureSet, feature, "text", text)}
                       />
                       {feature.selections &&
-                        feature.selections.map(
-                          (selection: string, index: number) => {
-                            return (
-                              <FeatureContainer key={index}>
-                                <EnumField
-                                  options={selections}
-                                  value={{ value: selection, label: selection }}
-                                  label="Name"
-                                  onChange={(name) =>
-                                    onSelectionChange(
-                                      featureSet,
-                                      feature,
-                                      selection,
-                                      name
-                                    )
-                                  }
-                                />
-                                <IconButton
-                                  icon={faTrash}
-                                  onClick={() => removeSelection(selection)}
-                                />
-                              </FeatureContainer>
-                            );
-                          }
-                        )}
+                        feature.selections.map((selection: string, index: number) => {
+                          return (
+                            <FeatureContainer key={index}>
+                              <EnumField
+                                options={selections}
+                                value={{ value: selection, label: selection }}
+                                label="Name"
+                                onChange={(name) =>
+                                  onSelectionChange(featureSet, feature, selection, name)
+                                }
+                              />
+                              <IconButton
+                                icon={faTrash}
+                                onClick={() => removeSelection(selection)}
+                              />
+                            </FeatureContainer>
+                          );
+                        })}
                       <TextButton
                         text={"Add Selection"}
                         icon={faPlus}
@@ -503,11 +441,7 @@ const ClasseEditView = ({ classe, onEdit }: $Props) => {
         );
       })}
       <FeatureView>
-        <TextButton
-          text={"Add new Level"}
-          icon={faPlus}
-          onClick={() => addNewFeatureSet()}
-        />
+        <TextButton text={"Add new Level"} icon={faPlus} onClick={() => addNewFeatureSet()} />
       </FeatureView>
     </CenterWrapper>
   );

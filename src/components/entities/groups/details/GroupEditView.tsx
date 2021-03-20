@@ -7,11 +7,11 @@ import { faBookOpen, faLink, faPlus, faTrash } from "@fortawesome/free-solid-svg
 import TabBar from "../../../general_elements/TabBar";
 import StringField from "../../../form_elements/StringField";
 import TextField from "../../../form_elements/TextField";
-import AutoStringField from "../../../form_elements/AutoStringField";
 import IconButton from "../../../form_elements/IconButton";
 import TextButton from "../../../form_elements/TextButton";
 import FlowChart from "../../../general_elements/flow/FlowChart";
 import Note from "../../../../data/campaign/Note";
+import DataSelectField from "../../../form_elements/DataSelectField";
 
 interface $Props {
   group: Group;
@@ -216,8 +216,8 @@ const GroupEditView = ({ group, onEdit }: $Props) => {
           {group.players.map((player: string, index: number) => {
             return (
               <Container key={index}>
-                <AutoStringField
-                  optionTable={"chars"}
+                <DataSelectField
+                  optionTable={["chars"]}
                   value={player}
                   label="Player"
                   onChange={(newPlayer) => onChangePlayer(newPlayer, player)}
@@ -234,8 +234,8 @@ const GroupEditView = ({ group, onEdit }: $Props) => {
           {group.npcs.map((npc: string, index: number) => {
             return (
               <Container key={index}>
-                <AutoStringField
-                  optionTable={"npcs"}
+                <DataSelectField
+                  optionTable={["npcs"]}
                   value={npc}
                   label="Npc"
                   onChange={(newPlayer) => onChangeNpc(newPlayer, npc)}
@@ -252,8 +252,8 @@ const GroupEditView = ({ group, onEdit }: $Props) => {
           {group.monsters.map((monster: string, index: number) => {
             return (
               <Container key={index}>
-                <AutoStringField
-                  optionTable={"monsters"}
+                <DataSelectField
+                  optionTable={["monsters"]}
                   value={monster}
                   label="Monster"
                   onChange={(newMonster) => onChangeMonster(newMonster, monster)}

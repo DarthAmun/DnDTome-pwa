@@ -1,7 +1,6 @@
 import { faCheckSquare, faSquare } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
-import { GiSpellBook, GiSecretBook } from "react-icons/gi";
 import styled from "styled-components";
 import BuildChar from "../../../../../data/chars/BuildChar";
 
@@ -22,18 +21,11 @@ const SpellSlotCounter = ({ char, saveChar }: $Props) => {
     saveChar({ ...char, character: { ...char.character, spellSlots: newSlots } });
   };
 
-  //   const changeSlotIcon = (aviable: number, i: number) => {
-  //     if (aviable > i) {
-  //       return faCheckSquare;
-  //     } else {
-  //       return faSquare;
-  //     }
-  //   };
   const changeSlotIcon = (aviable: number, i: number) => {
     if (aviable > i) {
-      return <GiSpellBook />;
+      return faCheckSquare;
     } else {
-      return <GiSecretBook />;
+      return faSquare;
     }
   };
 
@@ -63,13 +55,12 @@ const SpellSlotCounter = ({ char, saveChar }: $Props) => {
                             key={index + "" + slotIndex + "" + i}
                             onClick={(e) => burnSpellSlot(index, slotIndex, i)}
                           >
-                            {/* <FontAwesomeIcon
+                            <FontAwesomeIcon
                               icon={changeSlotIcon(
                                 char.character.spellSlots[index].slots[slotIndex],
                                 i
                               )}
-                            /> */}
-                            {changeSlotIcon(char.character.spellSlots[index].slots[slotIndex], i)}
+                            />
                           </SlotIcon>
                         );
                       }

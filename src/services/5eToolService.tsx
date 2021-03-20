@@ -994,7 +994,6 @@ const addAdditionalClassFeatures = (
         featureSets.push(
           new FeatureSet(
             +featureParts[3],
-            getProfForLevel(+featureParts[3]),
             [new Feature(featureParts[0], text, [], undefined)],
             [],
             []
@@ -1051,9 +1050,7 @@ export const makeClass = (obj: any, json: any, fileName: string): Class => {
       if (col.title !== undefined && col.title.includes("Slots")) {
         col.rows.forEach((row: number[], rowIndex: number) => {
           if (featureSets[rowIndex] === undefined) {
-            featureSets.push(
-              new FeatureSet(rowIndex + 1, getProfForLevel(rowIndex + 1), [], [], [])
-            );
+            featureSets.push(new FeatureSet(rowIndex + 1, [], [], []));
           }
           featureSets[rowIndex].spellslots = row;
         });
@@ -1062,9 +1059,7 @@ export const makeClass = (obj: any, json: any, fileName: string): Class => {
           let clearLabel = replaceTags(label).split("|")[0].trim();
           col.rows.forEach((row: any, rowIndex: number) => {
             if (featureSets[rowIndex] === undefined) {
-              featureSets.push(
-                new FeatureSet(rowIndex + 1, getProfForLevel(rowIndex + 1), [], [], [])
-              );
+              featureSets.push(new FeatureSet(rowIndex + 1, [], [], []));
             }
             let bonis: Boni[] | undefined = featureSets[rowIndex].bonis;
             if (bonis === undefined) bonis = [];
@@ -1109,7 +1104,6 @@ export const makeClass = (obj: any, json: any, fileName: string): Class => {
           featureSets.push(
             new FeatureSet(
               +featureParts[3],
-              getProfForLevel(+featureParts[3]),
               [new Feature(featureParts[0], text, [], undefined)],
               [],
               []
@@ -1141,7 +1135,7 @@ const addAdditionalSubclassFeatures = (additional: string[], features: FeatureSe
 
     let filteredFeatures = features.filter((featureSet) => featureSet.level === +featureParts[5]);
     if (filteredFeatures.length === 0) {
-      features.push(new FeatureSet(+featureParts[5], 0, [], [], []));
+      features.push(new FeatureSet(+featureParts[5], [], [], []));
     }
 
     if (text !== undefined && text !== null && text !== "") {
@@ -1184,7 +1178,7 @@ export const makeSubclass = (obj: any, json: any, classe: string, fileName: stri
 
       let filteredFeatures = features.filter((featureSet) => featureSet.level === +featureParts[5]);
       if (filteredFeatures.length === 0) {
-        features.push(new FeatureSet(+featureParts[5], 0, [], [], []));
+        features.push(new FeatureSet(+featureParts[5], [], [], []));
       }
 
       if (text !== undefined && text !== null && text !== "") {
@@ -1201,39 +1195,6 @@ export const makeSubclass = (obj: any, json: any, classe: string, fileName: stri
   }
 
   return new Subclass(0, obj.name, classe, features, fileName, obj.source);
-};
-
-const getProfForLevel = (level: number): number => {
-  switch (level) {
-    case 0:
-    case 1:
-    case 2:
-    case 3:
-    case 4:
-      return 2;
-    case 5:
-    case 6:
-    case 7:
-    case 8:
-      return 3;
-    case 9:
-    case 10:
-    case 11:
-    case 12:
-      return 4;
-    case 13:
-    case 14:
-    case 15:
-    case 16:
-      return 5;
-    case 17:
-    case 18:
-    case 19:
-    case 20:
-      return 6;
-    default:
-      return 0;
-  }
 };
 
 const recursiveTextAdder = (

@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { IconDefinition } from "@fortawesome/free-solid-svg-icons";
 import TextButton from "../form_elements/TextButton";
+import NumberField from "../form_elements/NumberField";
 
 interface $Props {
   message: string;
@@ -14,7 +15,7 @@ interface $Props {
   abortClick: () => void;
 }
 
-const Dialog = ({
+export const Dialog = ({
   message,
   icon,
   confirmeText,
@@ -35,14 +36,48 @@ const Dialog = ({
   );
 };
 
-export default Dialog;
+interface $DamageProps {
+  name: string;
+  damageText: string;
+  damageClick: (value: number) => void;
+  healText: string;
+  healClick: (value: number) => void;
+  abortText: string;
+  abortClick: () => void;
+}
+
+export const DamageDialog = ({
+  name,
+  damageText,
+  damageClick,
+  healText,
+  healClick,
+  abortText,
+  abortClick,
+}: $DamageProps) => {
+  const [dmg, setDmg] = useState<number>(0);
+  return (
+    <DialogWrapper>
+      <NumberField value={dmg} label={name} onChange={setDmg} />
+      <ButtonBar>
+        <TextButton text={abortText} onClick={abortClick} />
+        <TextButton text={damageText} onClick={() => damageClick(dmg)} style={{ float: "left" }} />
+        <TextButton
+          text={healText}
+          onClick={() => healClick(dmg)}
+          style={{ backgroundColor: "lightgreen", float: "left" }}
+        />
+      </ButtonBar>
+    </DialogWrapper>
+  );
+};
 
 const DialogWrapper = styled.div`
-  width: 180px;
-  position: absolute;
+  width: 280px;
+  position: fixed;
   z-index: 1010;
-  top: 10px;
-  left: calc(50% - 100px);
+  top: 100px;
+  left: calc(50% - 150px);
   padding: 10px;
   background-color: ${({ theme }) => theme.tile.backgroundColor};
   color: ${({ theme }) => theme.tile.color};

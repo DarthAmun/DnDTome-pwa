@@ -6,9 +6,9 @@ import { faBookOpen, faLink, faPlus, faTrash } from "@fortawesome/free-solid-svg
 import TabBar from "../../../general_elements/TabBar";
 import StringField from "../../../form_elements/StringField";
 import TextField from "../../../form_elements/TextField";
-import AutoStringField from "../../../form_elements/AutoStringField";
 import IconButton from "../../../form_elements/IconButton";
 import TextButton from "../../../form_elements/TextButton";
+import DataSelectField from "../../../form_elements/DataSelectField";
 
 interface $Props {
   world: World;
@@ -115,8 +115,8 @@ const WorldEditView = ({ world, onEdit }: $Props) => {
           {world.locations.map((location: string, index: number) => {
             return (
               <Container key={index}>
-                <AutoStringField
-                  optionTable={"locations"}
+                <DataSelectField
+                  optionTable={["locations"]}
                   value={location}
                   label="Location"
                   onChange={(newLocation) => onChangeLocation(newLocation, location)}
@@ -133,8 +133,8 @@ const WorldEditView = ({ world, onEdit }: $Props) => {
           {world.events.map((event: string, index: number) => {
             return (
               <Container key={index}>
-                <AutoStringField
-                  optionTable={"events"}
+                <DataSelectField
+                  optionTable={["events"]}
                   value={event}
                   label="Event"
                   onChange={(newEvent) => onChangeEvent(newEvent, event)}
@@ -148,8 +148,8 @@ const WorldEditView = ({ world, onEdit }: $Props) => {
       )}
       {activeTab === "World Map" && (
         <Container>
-          <AutoStringField
-            optionTable={"locations"}
+          <DataSelectField
+            optionTable={["locations"]}
             value={world.map}
             label="Map"
             onChange={(newMap) => onEdit({ ...world, map: newMap })}

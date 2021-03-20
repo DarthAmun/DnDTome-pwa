@@ -229,7 +229,7 @@ export const exportAllFromTable = (tableName: string, filename: string) => {
   reciveAll(tableName, (all: IndexableType[]) => {
     let entity = { [tableName]: all };
     let contentType = "application/json;charset=utf-8;";
-    if (window.navigator) {
+    if (window.navigator && window.navigator.msSaveOrOpenBlob) {
       var blob = new Blob([decodeURIComponent(encodeURI(JSON.stringify(entity)))], {
         type: contentType,
       });
@@ -290,7 +290,7 @@ export const exportAll = async (filename: string) => {
   };
 
   let contentType = "application/json;charset=utf-8;";
-  if (window.navigator) {
+  if (window.navigator && window.navigator.msSaveOrOpenBlob) {
     var blob = new Blob([decodeURIComponent(encodeURI(JSON.stringify(all)))], {
       type: contentType,
     });

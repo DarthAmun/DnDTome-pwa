@@ -8,10 +8,10 @@ import { faBookOpen, faLink, faPlus, faTrash } from "@fortawesome/free-solid-svg
 import TabBar from "../../../general_elements/TabBar";
 import StringField from "../../../form_elements/StringField";
 import TextField from "../../../form_elements/TextField";
-import AutoStringField from "../../../form_elements/AutoStringField";
 import IconButton from "../../../form_elements/IconButton";
 import TextButton from "../../../form_elements/TextButton";
 import FlowChart from "../../../general_elements/flow/FlowChart";
+import DataSelectField from "../../../form_elements/DataSelectField";
 
 interface $Props {
   campaign: Campaign;
@@ -188,11 +188,11 @@ const CampaignEditView = ({ campaign, onEdit }: $Props) => {
           {campaign.players.map((player: string, index: number) => {
             return (
               <Container key={index}>
-                <AutoStringField
-                  optionTable={"chars"}
+                <DataSelectField
+                  optionTable={["chars"]}
                   value={player}
                   label="Player"
-                  onChange={(newPlayer) => onChangePlayer(newPlayer, player)}
+                  onChange={(newPlayer: string) => onChangePlayer(newPlayer, player)}
                 />
                 <IconButton icon={faTrash} onClick={() => removePlayer(player)} />
               </Container>
@@ -206,11 +206,11 @@ const CampaignEditView = ({ campaign, onEdit }: $Props) => {
           {campaign.npcs.map((npc: string, index: number) => {
             return (
               <Container key={index}>
-                <AutoStringField
-                  optionTable={"npcs"}
+                <DataSelectField
+                  optionTable={["npcs"]}
                   value={npc}
                   label="Player"
-                  onChange={(newPlayer) => onChangeNpc(newPlayer, npc)}
+                  onChange={(newPlayer: string) => onChangeNpc(newPlayer, npc)}
                 />
                 <IconButton icon={faTrash} onClick={() => removeNpc(npc)} />
               </Container>
@@ -280,8 +280,8 @@ const CampaignEditView = ({ campaign, onEdit }: $Props) => {
       )}
       {activeTab === "Map" && (
         <Container>
-          <AutoStringField
-            optionTable={"locations"}
+          <DataSelectField
+            optionTable={["locations"]}
             value={campaign.map}
             label="Map"
             onChange={(newMap) => onEdit({ ...campaign, map: newMap })}

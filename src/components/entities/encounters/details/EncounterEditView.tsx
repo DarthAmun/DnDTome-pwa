@@ -55,7 +55,7 @@ const EncounterEditView = ({ encounter, onEdit }: $Props) => {
     oldEnemy: Player,
     i: number
   ) => {
-    let enemies = encounter.enemies;
+    let enemies = [...encounter.enemies];
     enemies[i] = { ...oldEnemy, [field]: newEnemy };
     onEdit({ ...encounter, enemies: enemies });
   };
@@ -150,7 +150,7 @@ const EncounterEditView = ({ encounter, onEdit }: $Props) => {
     oldPlayer: Player,
     i: number
   ) => {
-    let players = encounter.players;
+    let players = [...encounter.players];
     players[i] = { ...oldPlayer, [field]: newPlayer };
     onEdit({ ...encounter, players: players });
   };

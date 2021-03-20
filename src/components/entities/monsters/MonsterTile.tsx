@@ -51,7 +51,8 @@ const MonsterTile = ({ monster }: $Props) => {
   return (
     <Tile to={"/monster-detail/id/" + monster.id}>
       <Type>
-        {monster.type} {monster.subtype.trim() !== "" ? "(" + monster.subtype + ")" : ""}
+        {monster.type}{" "}
+        {monster.subtype && monster.subtype.trim() !== "" ? "(" + monster.subtype + ")" : ""}
       </Type>
 
       <Flag>

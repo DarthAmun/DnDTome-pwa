@@ -28,7 +28,7 @@ import { isGroup } from "../../data/campaign/Group";
 import { isWorld } from "../../data/world/World";
 import { isEvent } from "../../data/world/Event";
 
-import { faFileExport } from "@fortawesome/free-solid-svg-icons";
+import { faExclamationTriangle, faFileExport } from "@fortawesome/free-solid-svg-icons";
 import TabBar from "../general_elements/TabBar";
 import IconButton from "../form_elements/IconButton";
 import ClassTile from "../entities/classes/ClassTile";
@@ -70,9 +70,11 @@ import { faTrashAlt } from "@fortawesome/free-regular-svg-icons";
 import RandomTableTile from "../entities/random_tables/RandomTableTile";
 import { isRandomTable } from "../../data/RandomTable";
 import RandomTablesOptions from "./RandomTablesOptions";
+import { Dialog } from "../general_elements/Dialog";
 
 const Options = () => {
   const [activeTab, setTab] = useState<string>("General");
+  const [showResetDialog, setResetDialog] = useState<boolean>(false);
 
   const [spellAmount, setSpellAmount] = useState<number>(0);
   const [gearAmount, setGearAmount] = useState<number>(0);
@@ -222,6 +224,20 @@ const Options = () => {
 
   return (
     <>
+      {showResetDialog && (
+        <Dialog
+          message={`Reset Database?`}
+          icon={faExclamationTriangle}
+          confirmeText={"Delete"}
+          confirmeClick={() => {
+            resetDatabase();
+          }}
+          abortText={"Back"}
+          abortClick={() => {
+            setResetDialog(false);
+          }}
+        />
+      )}
       <OptionSection>
         <SelectionTitle>Import</SelectionTitle>
         <ImportField modus={ImportModus.NORMAL} />
@@ -235,7 +251,7 @@ const Options = () => {
       </OptionSection>
       <OptionSection>
         <SelectionTitle>Reset Database</SelectionTitle>
-        <IconButton icon={faTrashAlt} onClick={() => resetDatabase()} />
+        <IconButton icon={faTrashAlt} onClick={() => setResetDialog(true)} />
       </OptionSection>
       <TabBar
         children={[

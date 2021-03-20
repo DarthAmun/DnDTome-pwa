@@ -3,13 +3,13 @@ import {
   faAngleUp,
   faHeartbeat,
   faHeartBroken,
-  faMinus
+  faMinus,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 import styled from "styled-components";
 import BuildChar from "../../../../../data/chars/BuildChar";
-import FeatureSet from "../../../../../data/classes/FeatureSet";
+import { calcProf } from "../../../../../services/CharacterService";
 import SmallNumberField from "../../../../form_elements/SmallNumberField";
 import FormatedText from "../../../../general_elements/FormatedText";
 import RollableProp from "../../../../general_elements/RollableProp";
@@ -21,26 +21,6 @@ interface $Props {
 
 const CharGeneral = ({ buildChar, onChange }: $Props) => {
   const [deathSaves, setDeathSaves] = useState<number[]>([0, 0, 0, 0, 0, 0]);
-  const [prof, setProf] = useState<number>(0);
-
-  const calcLevel = useCallback(() => {
-    let level = 0;
-    buildChar.character.classes.forEach((classe) => {
-      level += classe.level;
-    });
-    return level;
-  }, [buildChar]);
-
-  useEffect(() => {
-    if (buildChar.classes && buildChar.classes.length > 0) {
-      const level = calcLevel();
-      buildChar.classes[0].featureSets.forEach((featureSet: FeatureSet) => {
-        if (featureSet.level === level) {
-          setProf(featureSet.profBonus);
-        }
-      });
-    }
-  }, [buildChar, calcLevel]);
 
   const formatProf = useCallback((prof: number) => {
     if (prof === undefined || prof === 0) {
@@ -59,9 +39,9 @@ const CharGeneral = ({ buildChar, onChange }: $Props) => {
 
   const calcSkill = useCallback(
     (skillProf: number, stat: number) => {
-      return skillProf * prof + formatScore(stat);
+      return skillProf * calcProf(buildChar.character) + formatScore(stat);
     },
-    [formatScore, prof]
+    [formatScore, buildChar.character]
   );
 
   const changeMoney = (field: string, value: number) => {
@@ -433,7 +413,7 @@ const CharGeneral = ({ buildChar, onChange }: $Props) => {
       <MinView>
         <PropColumnWrapper>
           <Prop>
-            <PropTitle>Proficiencies Bonus:</PropTitle>+{prof}
+            <PropTitle>Proficiencies Bonus:</PropTitle>+{calcProf(buildChar.character)}
           </Prop>
           <RollableProp
             char={buildChar.character}

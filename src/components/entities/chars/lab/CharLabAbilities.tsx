@@ -4,7 +4,6 @@ import Char from "../../../../data/chars/Char";
 import Saves from "../../../../data/chars/Saves";
 import Skills from "../../../../data/chars/Skills";
 import Class from "../../../../data/classes/Class";
-import FeatureSet from "../../../../data/classes/FeatureSet";
 import Race from "../../../../data/races/Race";
 import Subrace from "../../../../data/races/Subrace";
 import { reciveAllFiltered } from "../../../../services/DatabaseService";
@@ -19,6 +18,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import NumberField from "../../../form_elements/NumberField";
 import FormatedText from "../../../general_elements/FormatedText";
+import { calcProf } from "../../../../services/CharacterService";
 
 interface $Props {
   char: Char;
@@ -27,29 +27,9 @@ interface $Props {
 }
 
 const CharLabAbilities = ({ char, onChange, completed }: $Props) => {
-  const [prof, setProf] = useState<number>(0);
   const [classes, setClasses] = useState<Class[]>([]);
   const [race, setRace] = useState<Race>();
   const [subrace, setSubrace] = useState<Subrace>();
-
-  const calcLevel = useCallback(() => {
-    let level = 0;
-    char.classes.forEach((classe) => {
-      level += classe.level;
-    });
-    return level;
-  }, [char]);
-
-  useEffect(() => {
-    if (classes && classes.length > 0) {
-      const level = calcLevel();
-      classes[0].featureSets.forEach((featureSet: FeatureSet) => {
-        if (featureSet.level === level) {
-          setProf(featureSet.profBonus);
-        }
-      });
-    }
-  }, [classes, calcLevel]);
 
   useEffect(() => {
     reciveAllFiltered(
@@ -67,7 +47,7 @@ const CharLabAbilities = ({ char, onChange, completed }: $Props) => {
         setClasses(results);
       }
     );
-  }, [char.classes, calcLevel]);
+  }, [char.classes]);
 
   useEffect(() => {
     if (char.race && char.race.race.length > 1) {
@@ -110,9 +90,9 @@ const CharLabAbilities = ({ char, onChange, completed }: $Props) => {
 
   const calcSkill = useCallback(
     (skillProf: number, stat: number) => {
-      return skillProf * prof + formatScore(stat);
+      return skillProf * calcProf(char) + formatScore(stat);
     },
-    [formatScore, prof]
+    [formatScore, char]
   );
 
   const changeProf = useCallback(

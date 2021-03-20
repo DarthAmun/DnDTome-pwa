@@ -131,7 +131,7 @@ export const recalcClasses = async (char: Char) => {
   return updatedChar;
 };
 
-const calcLevel = (char: Char): number => {
+export const calcLevel = (char: Char): number => {
   let level = 0;
   char.classes.forEach((classe) => {
     level += classe.level;
@@ -139,10 +139,15 @@ const calcLevel = (char: Char): number => {
   return level;
 };
 
+export const calcProf = (char: Char): number => {
+  let level = calcLevel(char);
+  return Math.ceil(level / 4) + 1;
+};
+
 export const buildCharacter = async (character: Char): Promise<BuildChar> => {
-  console.time("t");
+  console.time("build Character");
   let level: number = calcLevel(character);
-  let prof: number = 0;
+  let prof: number = calcProf(character);
   let classes: Class[] = [];
   let subclasses: Subclass[] = [];
   let classFeatures: FeatureSet[] = [];
@@ -219,9 +224,6 @@ export const buildCharacter = async (character: Char): Promise<BuildChar> => {
         if (featureSet !== undefined) {
           if (featureSet.level <= classLevel) {
             classFeatures.push(featureSet);
-          }
-          if (featureSet.level === level) {
-            prof = featureSet.profBonus;
           }
         }
       });
@@ -303,7 +305,7 @@ export const buildCharacter = async (character: Char): Promise<BuildChar> => {
   spells = spells.filter((spell) => spell !== undefined);
   monsters = monsters.filter((monster) => monster !== undefined);
 
-  console.timeEnd("t");
+  console.timeEnd("build Character");
   return new BuildChar(
     character,
     level,

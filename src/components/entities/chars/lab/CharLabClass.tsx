@@ -7,10 +7,10 @@ import ClassSet from "../../../../data/chars/ClassSet";
 
 import IconButton from "../../../form_elements/IconButton";
 import { faCheckCircle, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
-import AutoStringField from "../../../form_elements/AutoStringField";
 import NumberField from "../../../form_elements/NumberField";
 import TextButton from "../../../form_elements/TextButton";
 import FormatedText from "../../../general_elements/FormatedText";
+import DataSelectField from "../../../form_elements/DataSelectField";
 
 interface $Props {
   char: Char;
@@ -102,14 +102,14 @@ const CharLabClass = ({ char, onChange, completed }: $Props) => {
                 onChange={(level) => changeClassLevel(classSet, level)}
               />
               <IconButton icon={faTrash} onClick={() => removeClass(classSet)} />
-              <AutoStringField
-                optionTable={"classes"}
+              <DataSelectField
+                optionTable={["classes"]}
                 value={classSet.classe}
                 label="Class *"
                 onChange={(classe) => changeClass(classSet, classe)}
               />
-              <AutoStringField
-                optionTable={"subclasses"}
+              <DataSelectField
+                optionTable={["subclasses"]}
                 filters={[{ fieldName: "type", value: classSet.classe, sort: 0 }]}
                 value={classSet.subclasse}
                 label="Subclass"

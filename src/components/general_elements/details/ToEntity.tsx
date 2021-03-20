@@ -7,6 +7,7 @@ import ErrorTile from "../ErrorTile";
 import Campaign from "../../../data/campaign/Campaign";
 import {
   createNewWithId,
+  reciveAllPromiseByAttribute,
   recivePromise,
   recivePromiseByAttribute,
 } from "../../../services/DatabaseService";
@@ -35,6 +36,7 @@ type TParams = { id?: string; name?: string };
 const ToEntity = ({ match }: RouteComponentProps<TParams>) => {
   let history = useHistory();
   const editmode = useQuery().get("editMode");
+  const source: string | null = useQuery().get("source");
   const [entityName, setEntityName] = useState<string>("");
   const [entity, setEntity] = useState<IEntity>();
   const [loading, setLoading] = useState<boolean>(true);
@@ -54,8 +56,18 @@ const ToEntity = ({ match }: RouteComponentProps<TParams>) => {
   const makeEntity = useCallback(
     async (name: string) => {
       let newEntity: IEntity | undefined = undefined;
+      console.log(source);
       if (match.params.name !== undefined)
-        newEntity = await recivePromiseByAttribute(name + "s", "name", match.params.name);
+        if (source !== null) {
+          const newEntities = await reciveAllPromiseByAttribute(
+            name + "s",
+            "name",
+            match.params.name
+          );
+          newEntity = newEntities.filter((a: any) => a.sources === source)[0];
+        } else {
+          newEntity = await recivePromiseByAttribute(name + "s", "name", match.params.name);
+        }
       if (match.params.id !== undefined)
         newEntity = await recivePromise(name + "s", +match.params.id);
       setLoading(false);
@@ -67,7 +79,7 @@ const ToEntity = ({ match }: RouteComponentProps<TParams>) => {
         setEntity(newEntity);
       }
     },
-    [match]
+    [match, source]
   );
 
   useEffect(() => {

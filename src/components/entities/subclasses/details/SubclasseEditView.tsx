@@ -267,7 +267,6 @@ const SubclasseEditView = ({ subclasse, onEdit }: $Props) => {
           ...subclasse.features,
           {
             level: subclasse.features.length + 1,
-            profBonus: 0,
             features: [],
             bonis: subclasse.features[subclasse.features.length - 1].bonis,
             spellslots: subclasse.features[subclasse.features.length - 1].spellslots,
@@ -281,7 +280,6 @@ const SubclasseEditView = ({ subclasse, onEdit }: $Props) => {
           ...subclasse.features,
           {
             level: subclasse.features.length + 1,
-            profBonus: 0,
             features: [],
             bonis: [],
             spellslots: [],

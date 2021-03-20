@@ -9,8 +9,8 @@ import { reciveAllFiltered } from "../../../../services/DatabaseService";
 
 import IconButton from "../../../form_elements/IconButton";
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
-import AutoStringField from "../../../form_elements/AutoStringField";
 import FormatedText from "../../../general_elements/FormatedText";
+import DataSelectField from "../../../form_elements/DataSelectField";
 
 interface $Props {
   char: Char;
@@ -85,21 +85,18 @@ const CharLabRace = ({ char, onChange, completed }: $Props) => {
       </CenterWrapper>
       <CenterWrapper>
         <CharView>
-          <AutoStringField
-            optionTable={"races"}
+          <DataSelectField
+            optionTable={["races"]}
             value={char.race.race}
             label="Race *"
-            onChange={(race) =>
-              onChange({ ...char, race: { ...char.race, race: race } })
-            }
+            onChange={(race) => onChange({ ...char, race: { ...char.race, race: race } })}
           />
-          <AutoStringField
-            optionTable={"subraces"}
+          <DataSelectField
+            optionTable={["subraces"]}
+            filters={[{ fieldName: "type", value: char.race.race, sort: 0 }]}
             value={char.race.subrace}
             label="Subrace"
-            onChange={(subrace) =>
-              onChange({ ...char, race: { ...char.race, subrace: subrace } })
-            }
+            onChange={(subrace) => onChange({ ...char, race: { ...char.race, subrace: subrace } })}
           />
           <IconButton
             icon={faCheckCircle}

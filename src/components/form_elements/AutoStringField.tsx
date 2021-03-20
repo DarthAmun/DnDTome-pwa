@@ -59,10 +59,16 @@ const AutoStringField = ({
   const onSearch = useCallback(
     (searchTerm: string) => {
       onChange(searchTerm);
-      let newOptions = options.filter((option) => {
-        return option.name.includes(searchTerm);
-      });
-      setFilteredOptions(newOptions);
+      if (searchTerm.length > 2) {
+        let newOptions = options
+          .filter((option) => {
+            return option.name.includes(searchTerm);
+          })
+          .slice(0, 5);
+        setFilteredOptions(newOptions);
+      } else {
+        setFilteredOptions([]);
+      }
     },
     [options, onChange]
   );

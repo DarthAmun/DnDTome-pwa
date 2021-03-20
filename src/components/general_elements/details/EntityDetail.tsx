@@ -16,7 +16,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import BackButton from "../../form_elements/BackButton";
 import IconButton from "../../form_elements/IconButton";
 import { EditToggle, ToggleLeft, ToggleRight } from "../ToggleStyle";
-import Dialog from "../Dialog";
+import { Dialog } from "../Dialog";
 
 import CampaignEditView from "../../entities/campaigns/details/CampaignEditView";
 import CampaignView from "../../entities/campaigns/details/CampaignView";

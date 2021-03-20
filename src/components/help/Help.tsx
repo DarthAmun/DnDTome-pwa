@@ -130,6 +130,13 @@ const Help = () => {
               <SectionText>
                 Result: <FormatedText text={"[[spell.Heal Me]]"} />
               </SectionText>
+              <SectionText>
+                You can also write: [[spell.Heal Me|ABC]] to link to the spell with the name "Heal
+                Me" from the source "ABC".
+              </SectionText>
+              <SectionText>
+                Result: <FormatedText text={"[[spell.Heal Me|ABC]]"} />
+              </SectionText>
               <SectionText>This works for all entities.</SectionText>
             </HelpSection>
             <HelpSection>
@@ -137,29 +144,36 @@ const Help = () => {
               <SectionText>You can add a table in every textarea.</SectionText>
               <SectionText>
                 To do so write: <br />
-                ||table||
+                ||tableStart||
                 <br />
                 ||"Header1"|"Header2"|"Header3"|...||
                 <br />
                 ||"Cell1"|"Cell2"|"Cell3"|...||
                 <br />
                 ||...||
+                <br />
+                ||tableEnd||
               </SectionText>
               <SectionText>
                 Result:{" "}
                 <FormatedText
-                  text={`||table||||Header1|Header2|Header3|...||||Cell1|Cell2|Cell3|...||`}
+                  text={`||tableStart||||Header1|Header2|Header3|...||||Cell1|Cell2|Cell3|...||||tableEnd||`}
                 />
               </SectionText>
             </HelpSection>
             <HelpSection>
               <SelectionTitle>How to create a discord "Link" to roll dice</SelectionTitle>
               <SectionText>You can add a discord-link in every textarea.</SectionText>
-              <SectionText>To do so write: [[dice.+2 to hit]] to roll a d20+2 in discord.</SectionText>
+              <SectionText>
+                To do so write: [[dice.+2 to hit]] to roll a d20+2 in discord.
+              </SectionText>
               <SectionText>
                 Result: <FormatedText text={`[[dice.+2 to hit]]`} />
               </SectionText>
-              <SectionText>Or write: [[dice.2d12+6 radiant damage]] to roll a "2d12+6 radiant damage" in discord.</SectionText>
+              <SectionText>
+                Or write: [[dice.2d12+6 radiant damage]] to roll a "2d12+6 radiant damage" in
+                discord.
+              </SectionText>
               <SectionText>
                 Result: <FormatedText text={`[[dice.2d12+6 radiant damage]]`} />
               </SectionText>
@@ -171,18 +185,20 @@ const Help = () => {
               </SectionText>
               <SectionText>
                 To do so write: <br />
-                ||table||
+                ||tableStart||
                 <br />
                 ||"Header1"|"Header2"|"Header3"|...||
                 <br />
                 ||"[[spell.Heal Me]]"|"Cell2"|"Cell3"|...||
                 <br />
                 ||...||
+                <br />
+                ||tableEnd||
               </SectionText>
               <SectionText>
                 Result:{" "}
                 <FormatedText
-                  text={`||table||||Header1|Header2|Header|...||||[[spell.Heal Me]]|Cell2|Cell3|...||`}
+                  text={`||tableStart||||Header1|Header2|Header|...||||[[spell.Heal Me]]|Cell2|Cell3|...||||tableEnd||`}
                 />
               </SectionText>
             </HelpSection>
@@ -208,7 +224,7 @@ const Help = () => {
                 You can even alter deeper values like: {"{{saves.chaSaveProf=1}}"}
               </SectionText>
               <SectionText>
-                Complex example: {"{{ac=\"10+(([dex]-10)/2)+(([con]-10)/2)\"}}"} where{" "}
+                Complex example: {'{{ac="10+(([dex]-10)/2)+(([con]-10)/2)"}}'} where{" "}
                 {"(([dex]-10)/2)"} gives you the bonus for the stat.
               </SectionText>
             </HelpSection>

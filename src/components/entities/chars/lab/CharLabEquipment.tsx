@@ -5,11 +5,7 @@ import Class from "../../../../data/classes/Class";
 import { reciveAllFiltered } from "../../../../services/DatabaseService";
 
 import IconButton from "../../../form_elements/IconButton";
-import {
-  faCheckCircle,
-  faPlus,
-  faTrash,
-} from "@fortawesome/free-solid-svg-icons";
+import { faCheckCircle, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
 import AutoStringField from "../../../form_elements/AutoStringField";
 import FormatedText from "../../../general_elements/FormatedText";
 import CheckField from "../../../form_elements/CheckField";
@@ -49,9 +45,7 @@ const CharLabEquipment = ({ char, onChange, completed }: $Props) => {
     prof: boolean;
     attribute: string;
   }) => {
-    let newItemList = char.items.filter(
-      (item) => item.origin !== oldItem.origin
-    );
+    let newItemList = char.items.filter((item) => item.origin !== oldItem.origin);
     onChange({ ...char, items: newItemList });
   };
   const addNewItem = () => {
@@ -138,9 +132,7 @@ const CharLabEquipment = ({ char, onChange, completed }: $Props) => {
                   <CheckField
                     value={!!item.prof}
                     label="Prof"
-                    onChange={(prof) =>
-                      onChangeItemAttribute({ ...item, prof: prof }, index)
-                    }
+                    onChange={(prof) => onChangeItemAttribute({ ...item, prof: prof }, index)}
                   />
                   <EnumField
                     options={[
@@ -153,25 +145,17 @@ const CharLabEquipment = ({ char, onChange, completed }: $Props) => {
                     ]}
                     value={{
                       value: item.attribute,
-                      label:
-                        item.attribute.charAt(0).toUpperCase() +
-                        item.attribute.slice(1),
+                      label: item.attribute.charAt(0).toUpperCase() + item.attribute.slice(1),
                     }}
                     label="Attribute"
-                    onChange={(type) =>
-                      onChangeItemAttribute({ ...item, attribute: type }, index)
-                    }
+                    onChange={(type) => onChangeItemAttribute({ ...item, attribute: type }, index)}
                   />
                   <IconButton icon={faTrash} onClick={() => removeItem(item)} />
                 </Container>
               );
             }
           )}
-          <TextButton
-            text={"Add new Item"}
-            icon={faPlus}
-            onClick={() => addNewItem()}
-          />
+          <TextButton text={"Add new Item"} icon={faPlus} onClick={() => addNewItem()} />
           <IconButton
             icon={faCheckCircle}
             disabled={!(char && char.race && char.race.race.length > 1)}

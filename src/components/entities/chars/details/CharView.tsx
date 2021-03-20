@@ -38,18 +38,19 @@ const CharView = ({ character, modifications, isNpc }: $Props) => {
   const [tabs, setTabs] = useState<string[]>(["General"]);
 
   useEffect(() => {
-    buildCharacter(character).then(async (buildChar) => {
-      const newBuildChar = await applyMods(buildChar, modifications);
-      let newTabs = ["General", "Combat", "Classes", "Race"];
-      if (newBuildChar.items.length > 0) newTabs.push("Items");
-      else if (newBuildChar.gears.length > 0) newTabs.push("Items");
-      if (newBuildChar.spells.length > 0) newTabs.push("Spells");
-      if (newBuildChar.monsters.length > 0) newTabs.push("Monsters");
-      setTabs([...newTabs, "Notes", "Modifications"]);
-      setBuildChar(newBuildChar);
-      setLoading(false);
-    });
-  }, [character, setBuildChar, modifications]);
+    if (character !== buildChar.oldCharacter)
+      buildCharacter(character).then(async (buildChar) => {
+        const newBuildChar = await applyMods(buildChar, modifications);
+        let newTabs = ["General", "Combat", "Classes", "Race"];
+        if (newBuildChar.items.length > 0) newTabs.push("Items");
+        else if (newBuildChar.gears.length > 0) newTabs.push("Items");
+        if (newBuildChar.spells.length > 0) newTabs.push("Spells");
+        if (newBuildChar.monsters.length > 0) newTabs.push("Monsters");
+        setTabs([...newTabs, "Notes", "Modifications"]);
+        setBuildChar(newBuildChar);
+        setLoading(false);
+      });
+  }, [character, setBuildChar, modifications, buildChar.oldCharacter]);
 
   const saveChar = (char: BuildChar) => {
     setBuildChar(char);
@@ -61,7 +62,7 @@ const CharView = ({ character, modifications, isNpc }: $Props) => {
       {loading && <LoadingSpinner />}
       {!loading && buildChar && (
         <CenterWrapper>
-          <CharHeader char={buildChar.character} isNpc/>
+          <CharHeader char={buildChar.character} isNpc={isNpc} />
           <TabBar children={tabs} onChange={(tab: string) => setTab(tab)} activeTab={activeTab} />
           {activeTab === "General" && (
             <>

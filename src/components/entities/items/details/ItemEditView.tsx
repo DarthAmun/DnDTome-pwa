@@ -7,12 +7,8 @@ import TextField from "../../../form_elements/TextField";
 import CheckField from "../../../form_elements/CheckField";
 import NumberField from "../../../form_elements/NumberField";
 
-import {
-  faLink,
-  faBookOpen,
-  faImage,
-} from "@fortawesome/free-solid-svg-icons";
-import AutoStringField from "../../../form_elements/AutoStringField";
+import { faLink, faBookOpen, faImage } from "@fortawesome/free-solid-svg-icons";
+import DataSelectField from "../../../form_elements/DataSelectField";
 
 interface $Props {
   item: Item;
@@ -28,8 +24,8 @@ const ItemEditView = ({ item, onEdit }: $Props) => {
           label="Name"
           onChange={(name) => onEdit({ ...item, name: name })}
         />
-        <AutoStringField
-          optionTable={"gears"}
+        <DataSelectField
+          optionTable={["gears"]}
           value={item.base}
           label="Base Gear"
           onChange={(base) => onEdit({ ...item, base: base })}
@@ -70,9 +66,7 @@ const ItemEditView = ({ item, onEdit }: $Props) => {
           value={item.description}
           label="Text"
           icon={faBookOpen}
-          onChange={(description) =>
-            onEdit({ ...item, description: description })
-          }
+          onChange={(description) => onEdit({ ...item, description: description })}
         />
       </View>
     </CenterWrapper>
