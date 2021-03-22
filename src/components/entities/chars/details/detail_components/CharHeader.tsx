@@ -24,10 +24,11 @@ const CharHeader = ({ char, isNpc }: $Props) => {
 
   const getPicture = useCallback(() => {
     if (char !== undefined) {
-      if (char.pic === "" || char.pic === null) {
-        return "";
+      if (char.picBase64 !== "" && char.picBase64 !== null && char.picBase64 !== undefined) {
+        return char.picBase64;
+      } else if (char.pic !== "" && char.pic !== null && char.pic !== undefined) {
+        return char.pic;
       }
-      return char.pic;
     }
     return "";
   }, [char]);

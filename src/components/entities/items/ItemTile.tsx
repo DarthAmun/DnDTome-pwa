@@ -23,10 +23,11 @@ const ItemTile = ({ item }: $Props) => {
 
   const getPicture = useCallback(() => {
     if (item !== undefined) {
-      if (item.pic === "" || item.pic === null) {
-        return "";
+      if (item.picBase64 !== "" && item.picBase64 !== null && item.picBase64 !== undefined) {
+        return item.picBase64;
+      } else if (item.pic !== "" && item.pic !== null && item.pic !== undefined) {
+        return item.pic;
       }
-      return item.pic;
     }
     return "";
   }, [item]);
@@ -194,7 +195,7 @@ interface $ImageProps {
 
 const Image = ({ pic }: $ImageProps) => {
   const style = {
-    backgroundImage: `url(${pic})`,
+    backgroundImage: `url('${pic}')`,
     backgroundPosition: "center",
     backgroundSize: "cover",
     backgroundRepeat: "no-repeat",

@@ -16,7 +16,10 @@ import {
   faLink,
   faBookOpen,
   faImage,
+  faTrash,
 } from "@fortawesome/free-solid-svg-icons";
+import ImageImportField from "../../../form_elements/ImageField";
+import IconButton from "../../../form_elements/IconButton";
 
 interface $Props {
   spell: Spell;
@@ -72,9 +75,7 @@ const SpellEditView = ({ spell, onEdit }: $Props) => {
           value={spell.components}
           label="Comp."
           icon={faMortarPestle}
-          onChange={(components) =>
-            onEdit({ ...spell, components: components })
-          }
+          onChange={(components) => onEdit({ ...spell, components: components })}
         />
         <StringField
           value={spell.classes}
@@ -90,10 +91,17 @@ const SpellEditView = ({ spell, onEdit }: $Props) => {
         />
         <StringField
           value={spell.pic}
-          label="Picture"
+          label="Picture Link"
           icon={faImage}
           onChange={(pic) => onEdit({ ...spell, pic: pic })}
         />
+        <FieldGroup>
+          <ImageImportField
+            label="Picture"
+            onFinished={(base64) => onEdit({ ...spell, picBase64: base64 })}
+          />
+          <IconButton icon={faTrash} onClick={() => onEdit({ ...spell, picBase64: "" })} />
+        </FieldGroup>
         <TextField
           value={spell.text}
           label="Text"
@@ -114,10 +122,14 @@ const CenterWrapper = styled.div`
 `;
 
 const FieldGroup = styled.div`
-  flex: 2 1 auto;
+  flex: 2 2 auto;
   display: flex;
   flex-wrap: nowrap;
   justify-content: space-around;
+
+  @media (max-width: 576px) {
+    flex-wrap: wrap;
+  }
 `;
 
 const View = styled.div`

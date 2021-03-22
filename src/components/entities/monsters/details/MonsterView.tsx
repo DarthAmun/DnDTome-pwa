@@ -54,10 +54,15 @@ const MonsterView = ({ monster, isNpc }: $Props) => {
 
   const getPicture = useCallback(() => {
     if (monster !== undefined) {
-      if (monster.pic === "" || monster.pic === null) {
-        return "";
+      if (
+        monster.picBase64 !== "" &&
+        monster.picBase64 !== null &&
+        monster.picBase64 !== undefined
+      ) {
+        return monster.picBase64;
+      } else if (monster.pic !== "" && monster.pic !== null && monster.pic !== undefined) {
+        return monster.pic;
       }
-      return monster.pic;
     }
     return "";
   }, [monster]);

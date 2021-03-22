@@ -15,10 +15,11 @@ interface $Props {
 const RaceTile = ({ race }: $Props) => {
   const getPicture = useCallback(() => {
     if (race !== undefined) {
-      if (race.pic === "" || race.pic === null) {
-        return "";
+      if (race.picBase64 !== "" && race.picBase64 !== null && race.picBase64 !== undefined) {
+        return race.picBase64;
+      } else if (race.pic !== "" && race.pic !== null && race.pic !== undefined) {
+        return race.pic;
       }
-      return race.pic;
     }
     return "";
   }, [race]);

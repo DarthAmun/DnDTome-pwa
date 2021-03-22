@@ -111,10 +111,11 @@ const SpellView = ({ spell }: $Props) => {
 
   const getPicture = useCallback(() => {
     if (spell !== undefined) {
-      if (spell.pic === "" || spell.pic === null) {
-        return "";
+      if (spell.picBase64 !== "" && spell.picBase64 !== null && spell.picBase64 !== undefined) {
+        return spell.picBase64;
+      } else if (spell.pic !== "" && spell.pic !== null && spell.pic !== undefined) {
+        return spell.pic;
       }
-      return spell.pic;
     }
     return "";
   }, [spell]);
@@ -347,7 +348,7 @@ interface $ImageProps {
 
 const Image = ({ pic }: $ImageProps) => {
   const style = {
-    backgroundImage: `url(${pic})`,
+    backgroundImage: `url('${pic}')`,
     backgroundPosition: "center",
     backgroundSize: "cover",
     backgroundRepeat: "no-repeat",

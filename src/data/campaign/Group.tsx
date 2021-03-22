@@ -6,6 +6,7 @@ export default class Group implements IEntity {
   id?: number;
   name: string;
   pic: string;
+  picBase64: string;
   description: string;
   notes: Note[];
   players: string[];
@@ -19,6 +20,7 @@ export default class Group implements IEntity {
     id?: number,
     name?: string,
     pic?: string,
+    picBase64?: string,
     description?: string,
     notes?: Note[],
     players?: string[],
@@ -31,6 +33,7 @@ export default class Group implements IEntity {
     this.id = id;
     this.name = name || "";
     this.pic = pic || "";
+    this.picBase64 = picBase64 || "";
     this.description = description || "";
     this.notes = notes || [];
     this.players = players || [];
@@ -44,6 +47,7 @@ export default class Group implements IEntity {
 
 export function isGroup(arg: any): arg is Group {
   const nameCheck = arg.name !== undefined && typeof arg.name == "string";
+  const picBase64Check = arg.picBase64 !== undefined && typeof arg.picBase64 == "string";
   const picCheck = arg.pic !== undefined && typeof arg.pic == "string";
   const descriptionCheck = arg.description !== undefined && typeof arg.description == "string";
   const notesCheck = arg.notes !== undefined && Array.isArray(arg.notes);
@@ -57,6 +61,7 @@ export function isGroup(arg: any): arg is Group {
     arg &&
     nameCheck &&
     picCheck &&
+    picBase64Check &&
     descriptionCheck &&
     notesCheck &&
     playersCheck &&

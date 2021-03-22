@@ -15,6 +15,7 @@ export default class Spell implements IEntity {
   text: string;
   filename: string;
   pic: string;
+  picBase64: string;
 
   constructor(
     name?: string,
@@ -30,7 +31,8 @@ export default class Spell implements IEntity {
     text?: string,
     id?: number,
     filename?: string,
-    pic?: string
+    pic?: string,
+    picBase64?: string
   ) {
     this.name = name || "";
     this.classes = classes || "";
@@ -46,26 +48,24 @@ export default class Spell implements IEntity {
     this.id = id;
     this.filename = filename || "";
     this.pic = pic || "";
+    this.picBase64 = picBase64 || "";
   }
 }
 
 export function isSpell(arg: any): arg is Spell {
   const nameCheck = arg.name !== undefined && typeof arg.name == "string";
-  const classesCheck =
-    arg.classes !== undefined && typeof arg.classes == "string";
-  const sourcesCheck =
-    arg.sources !== undefined && typeof arg.sources == "string";
+  const classesCheck = arg.classes !== undefined && typeof arg.classes == "string";
+  const sourcesCheck = arg.sources !== undefined && typeof arg.sources == "string";
   const levelCheck = arg.level !== undefined && typeof arg.level == "number";
   const schoolCheck = arg.school !== undefined && typeof arg.school == "string";
   const timeCheck = arg.time !== undefined && typeof arg.time == "string";
   const rangeCheck = arg.range !== undefined && typeof arg.range == "string";
-  const compCheck =
-    arg.components !== undefined && typeof arg.components == "string";
-  const durationCheck =
-    arg.duration !== undefined && typeof arg.duration == "string";
+  const compCheck = arg.components !== undefined && typeof arg.components == "string";
+  const durationCheck = arg.duration !== undefined && typeof arg.duration == "string";
   const ritualCheck = arg.ritual !== undefined && typeof arg.ritual == "number";
   const textCheck = arg.text !== undefined && typeof arg.text == "string";
   const picCheck = arg.pic !== undefined && typeof arg.pic == "string";
+  const picBase64Check = arg.picBase64 !== undefined && typeof arg.picBase64 == "string";
   return (
     arg &&
     nameCheck &&
@@ -79,7 +79,8 @@ export function isSpell(arg: any): arg is Spell {
     durationCheck &&
     ritualCheck &&
     textCheck &&
-    picCheck
+    picCheck &&
+    picBase64Check
   );
 }
 
@@ -100,18 +101,14 @@ export function findSpellFormattError(
   picCheck: boolean;
 } {
   const nameCheck = arg.name !== undefined && typeof arg.name == "string";
-  const classesCheck =
-    arg.classes !== undefined && typeof arg.classes == "string";
-  const sourcesCheck =
-    arg.sources !== undefined && typeof arg.sources == "string";
+  const classesCheck = arg.classes !== undefined && typeof arg.classes == "string";
+  const sourcesCheck = arg.sources !== undefined && typeof arg.sources == "string";
   const levelCheck = arg.level !== undefined && typeof arg.level == "number";
   const schoolCheck = arg.school !== undefined && typeof arg.school == "string";
   const timeCheck = arg.time !== undefined && typeof arg.time == "string";
   const rangeCheck = arg.range !== undefined && typeof arg.range == "string";
-  const compCheck =
-    arg.components !== undefined && typeof arg.components == "string";
-  const durationCheck =
-    arg.duration !== undefined && typeof arg.duration == "string";
+  const compCheck = arg.components !== undefined && typeof arg.components == "string";
+  const durationCheck = arg.duration !== undefined && typeof arg.duration == "string";
   const ritualCheck = arg.ritual !== undefined && typeof arg.ritual == "number";
   const textCheck = arg.text !== undefined && typeof arg.text == "string";
   const picCheck = arg.pic !== undefined && typeof arg.pic == "string";

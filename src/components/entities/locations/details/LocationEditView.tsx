@@ -5,8 +5,10 @@ import Location from "../../../../data/world/Location";
 import StringField from "../../../form_elements/StringField";
 import Map from "../../../general_elements/map/Map";
 
-import { faLink, faImage } from "@fortawesome/free-solid-svg-icons";
+import { faLink, faImage, faTrash } from "@fortawesome/free-solid-svg-icons";
 import NumberField from "../../../form_elements/NumberField";
+import IconButton from "../../../form_elements/IconButton";
+import ImageImportField from "../../../form_elements/ImageField";
 
 interface $Props {
   location: Location;
@@ -45,13 +47,19 @@ const LocationEditView = ({ location, onEdit }: $Props) => {
           label="Name"
           onChange={(name) => onEdit({ ...location, name: name })}
         />
-
         <StringField
           value={location.map}
-          label="Picture"
+          label="Picture Link"
           icon={faImage}
           onChange={(pic) => onEdit({ ...location, map: pic })}
-        />
+        />{" "}
+        <FieldGroup>
+          <ImageImportField
+            label="Picture"
+            onFinished={(base64) => onEdit({ ...location, mapBase64: base64 })}
+          />
+          <IconButton icon={faTrash} onClick={() => onEdit({ ...location, mapBase64: "" })} />
+        </FieldGroup>
         <NumberField
           value={location.dimension.width}
           label="Map width"
@@ -97,4 +105,15 @@ const View = styled.div`
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
+`;
+
+const FieldGroup = styled.div`
+  flex: 2 2 auto;
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-around;
+
+  @media (max-width: 576px) {
+    flex-wrap: wrap;
+  }
 `;

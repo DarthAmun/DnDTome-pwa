@@ -14,12 +14,14 @@ export default class Race implements IEntity {
   sources: string;
   filename: string;
   pic: string;
+  picBase64: string;
 
   constructor(
     name?: string,
     id?: number,
     filename?: string,
     pic?: string,
+    picBase64?: string,
     abilityScores?: string,
     age?: string,
     alignment?: string,
@@ -33,6 +35,7 @@ export default class Race implements IEntity {
     this.id = id;
     this.filename = filename || "";
     this.pic = pic || "";
+    this.picBase64 = picBase64 || "";
     this.abilityScores = abilityScores || "";
     this.age = age || "";
     this.alignment = alignment || "";
@@ -47,24 +50,22 @@ export default class Race implements IEntity {
 export function isRace(arg: any): arg is Race {
   const nameCheck = arg.name !== undefined && typeof arg.name == "string";
   const picCheck = arg.pic !== undefined && typeof arg.pic == "string";
+  const picBase64Check = arg.picBase64 !== undefined && typeof arg.picBase64 == "string";
   const abilityScoresCheck =
     arg.abilityScores !== undefined && typeof arg.abilityScores == "string";
   const ageCheck = arg.age !== undefined && typeof arg.age == "string";
-  const alignmentCheck =
-    arg.alignment !== undefined && typeof arg.alignment == "string";
+  const alignmentCheck = arg.alignment !== undefined && typeof arg.alignment == "string";
   const sizeCheck = arg.size !== undefined && typeof arg.size == "string";
   const speedCheck = arg.speed !== undefined && typeof arg.speed == "string";
   const langCheck = arg.lang !== undefined && typeof arg.lang == "string";
   const traitsCheck =
-    arg.traits !== undefined &&
-    Array.isArray(arg.traits) &&
-    isTrait(arg.traits[0]);
-  const sourcesCheck =
-    arg.sources !== undefined && typeof arg.sources == "string";
+    arg.traits !== undefined && Array.isArray(arg.traits) && isTrait(arg.traits[0]);
+  const sourcesCheck = arg.sources !== undefined && typeof arg.sources == "string";
   return (
     arg &&
     nameCheck &&
     picCheck &&
+    picBase64Check &&
     abilityScoresCheck &&
     ageCheck &&
     alignmentCheck &&
@@ -95,17 +96,13 @@ export function findRaceFormattError(
   const abilityScoresCheck =
     arg.abilityScores !== undefined && typeof arg.abilityScores == "string";
   const ageCheck = arg.age !== undefined && typeof arg.age == "string";
-  const alignmentCheck =
-    arg.alignment !== undefined && typeof arg.alignment == "string";
+  const alignmentCheck = arg.alignment !== undefined && typeof arg.alignment == "string";
   const sizeCheck = arg.size !== undefined && typeof arg.size == "string";
   const speedCheck = arg.speed !== undefined && typeof arg.speed == "string";
   const langCheck = arg.lang !== undefined && typeof arg.lang == "string";
   const traitsCheck =
-    arg.traits !== undefined &&
-    Array.isArray(arg.traits) &&
-    isTrait(arg.traits[0]);
-  const sourcesCheck =
-    arg.sources !== undefined && typeof arg.sources == "string";
+    arg.traits !== undefined && Array.isArray(arg.traits) && isTrait(arg.traits[0]);
+  const sourcesCheck = arg.sources !== undefined && typeof arg.sources == "string";
   return {
     nameCheck: nameCheck,
     picCheck: picCheck,

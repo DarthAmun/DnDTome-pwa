@@ -11,10 +11,11 @@ interface $Props {
 const CharTile = ({ char }: $Props) => {
   const getPicture = useCallback(() => {
     if (char !== undefined) {
-      if (char.pic === "" || char.pic === null) {
-        return "";
+      if (char.picBase64 !== "" && char.picBase64 !== null && char.picBase64 !== undefined) {
+        return char.picBase64;
+      } else if (char.pic !== "" && char.pic !== null && char.pic !== undefined) {
+        return char.pic;
       }
-      return char.pic;
     }
     return "";
   }, [char]);
@@ -161,7 +162,7 @@ const ImgContainer = styled.div<{ pic: string }>`
     top: -50%;
     left: -50%;
     z-index: -1;
-    background: url(${(props) => props.pic}) 0 0 no-repeat;
+    background: url("${(props) => props.pic}") 0 0 no-repeat;
     background-size: cover;
     transform: rotate(-45deg);
   }

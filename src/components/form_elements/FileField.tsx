@@ -14,14 +14,7 @@ interface $Props {
   onChange: (value: FileList | null) => void;
 }
 
-const FileField = ({
-  label,
-  accept,
-  isMulti,
-  icon,
-  transform,
-  onChange,
-}: $Props) => {
+const FileField = ({ label, accept, isMulti, icon, transform, onChange }: $Props) => {
   return (
     <Field>
       <LabelText>
@@ -36,11 +29,7 @@ const FileField = ({
         ></Input>
       )}
       {!isMulti && (
-        <Input
-          onChange={(e) => onChange(e.target.files)}
-          accept={accept}
-          type="file"
-        ></Input>
+        <Input onChange={(e) => onChange(e.target.files)} accept={accept} type="file"></Input>
       )}
     </Field>
   );

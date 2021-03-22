@@ -35,10 +35,19 @@ const WorldView = ({ world, onEdit }: $Props) => {
 
   const getPicture = useCallback(() => {
     if (loadedWorld !== undefined) {
-      if (loadedWorld.map.map === "" || loadedWorld.map.map === null) {
-        return "";
+      if (
+        loadedWorld.map.mapBase64 !== "" &&
+        loadedWorld.map.mapBase64 !== null &&
+        loadedWorld.map.mapBase64 !== undefined
+      ) {
+        return loadedWorld.map.mapBase64;
+      } else if (
+        loadedWorld.map.map !== "" &&
+        loadedWorld.map.map !== null &&
+        loadedWorld.map.map !== undefined
+      ) {
+        return loadedWorld.map.map;
       }
-      return loadedWorld.map.map;
     }
     return "";
   }, [loadedWorld]);
@@ -209,7 +218,7 @@ interface $ImageProps {
 
 const Image = ({ pic }: $ImageProps) => {
   const style = {
-    backgroundImage: `url(${pic})`,
+    backgroundImage: `url('${pic}')`,
     backgroundPosition: "center",
     backgroundSize: "cover",
     backgroundRepeat: "no-repeat",

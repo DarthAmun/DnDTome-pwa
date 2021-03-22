@@ -46,10 +46,15 @@ const CampaignView = ({ campaign, onEdit }: $Props) => {
 
   const getPicture = useCallback(() => {
     if (campaign !== undefined) {
-      if (campaign.pic === "" || campaign.pic === null) {
-        return "";
+      if (
+        campaign.picBase64 !== "" &&
+        campaign.picBase64 !== null &&
+        campaign.picBase64 !== undefined
+      ) {
+        return campaign.picBase64;
+      } else if (campaign.pic !== "" && campaign.pic !== null && campaign.pic !== undefined) {
+        return campaign.pic;
       }
-      return campaign.pic;
     }
     return "";
   }, [campaign]);

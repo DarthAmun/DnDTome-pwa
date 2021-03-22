@@ -5,6 +5,7 @@ export default class Quest implements IEntity {
   id?: number;
   name: string;
   pic: string;
+  picBase64: string;
   description: string;
   rewards: string;
   followQuest: string;
@@ -15,6 +16,7 @@ export default class Quest implements IEntity {
     id?: number,
     name?: string,
     pic?: string,
+    picBase64?: string,
     description?: string,
     rewards?: string,
     followQuest?: string,
@@ -24,6 +26,7 @@ export default class Quest implements IEntity {
     this.id = id;
     this.name = name || "";
     this.pic = pic || "";
+    this.picBase64 = picBase64 || "";
     this.description = description || "";
     this.rewards = rewards || "";
     this.followQuest = followQuest || "";
@@ -34,6 +37,7 @@ export default class Quest implements IEntity {
 
 export function isQuest(arg: any): arg is Quest {
   const nameCheck = arg.name !== undefined && typeof arg.name == "string";
+  const picBase64Check = arg.picBase64 !== undefined && typeof arg.picBase64 == "string";
   const picCheck = arg.pic !== undefined && typeof arg.pic == "string";
   const descriptionCheck = arg.description !== undefined && typeof arg.description == "string";
   const followQuestCheck = arg.followQuest !== undefined && typeof arg.followQuest == "string";
@@ -44,6 +48,7 @@ export function isQuest(arg: any): arg is Quest {
     arg &&
     nameCheck &&
     picCheck &&
+    picBase64Check &&
     descriptionCheck &&
     followQuestCheck &&
     rewardsCheck &&

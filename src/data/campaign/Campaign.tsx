@@ -16,6 +16,7 @@ export default class Campaign implements IEntity {
   flow: FlowElement[];
   sources: string;
   filename?: string;
+  picBase64: string;
 
   constructor(
     id?: number,
@@ -29,11 +30,13 @@ export default class Campaign implements IEntity {
     notes?: Note[],
     flow?: FlowElement[],
     sources?: string,
-    filename?: string
+    filename?: string,
+    picBase64?: string
   ) {
     this.id = id;
     this.name = name || "";
     this.pic = pic || "";
+    this.picBase64 = picBase64 || "";
     this.description = description || "";
     this.players = players || [];
     this.logs = logs || [];
@@ -49,6 +52,7 @@ export default class Campaign implements IEntity {
 export function isCampaign(arg: any): arg is Campaign {
   const nameCheck = arg.name !== undefined && typeof arg.name == "string";
   const picCheck = arg.pic !== undefined && typeof arg.pic == "string";
+  const picBase64Check = arg.picBase64 !== undefined && typeof arg.picBase64 == "string";
   const mapCheck = arg.map !== undefined && typeof arg.map == "string";
   const descriptionCheck = arg.description !== undefined && typeof arg.description == "string";
   const playersCheck = arg.players !== undefined && Array.isArray(arg.players);
@@ -61,6 +65,7 @@ export function isCampaign(arg: any): arg is Campaign {
     arg &&
     nameCheck &&
     picCheck &&
+    picBase64Check &&
     descriptionCheck &&
     playersCheck &&
     logsCheck &&

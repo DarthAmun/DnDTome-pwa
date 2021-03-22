@@ -11,6 +11,7 @@ export default class Char implements IEntity {
   player: string;
   campaign: string;
   pic: string;
+  picBase64: string;
   classes: ClassSet[];
   race: RaceSet;
   background: string;
@@ -64,6 +65,7 @@ export default class Char implements IEntity {
     player?: string,
     campaign?: string,
     pic?: string,
+    picBase64?: string,
     classes?: ClassSet[],
     race?: RaceSet,
     background?: string,
@@ -116,6 +118,7 @@ export default class Char implements IEntity {
     this.player = player || "";
     this.campaign = campaign || "";
     this.pic = pic || "";
+    this.picBase64 = picBase64 || "";
     this.classes = classes || [];
     this.race = race || new RaceSet();
     this.background = background || "";
@@ -155,6 +158,7 @@ export function isChar(arg: any): arg is Char {
   const playerCheck = arg.player !== undefined && typeof arg.player == "string";
   const campaignCheck = arg.campaign !== undefined && typeof arg.campaign == "string";
   const picCheck = arg.pic !== undefined && typeof arg.pic == "string";
+  const picBase64Check = arg.picBase64 !== undefined && typeof arg.picBase64 == "string";
   const raceCheck = arg.race !== undefined && isRaceSet(arg.race);
   const backgroundCheck = arg.background !== undefined && typeof arg.background == "string";
   const acCheck = arg.ac !== undefined && typeof arg.ac == "number";
@@ -169,6 +173,7 @@ export function isChar(arg: any): arg is Char {
     playerCheck &&
     campaignCheck &&
     picCheck &&
+    picBase64Check &&
     raceCheck &&
     backgroundCheck &&
     acCheck &&

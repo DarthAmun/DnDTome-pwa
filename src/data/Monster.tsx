@@ -5,6 +5,7 @@ export default class Monster implements IEntity {
   filename: string;
   name: string;
   pic: string;
+  picBase64: string;
   sources: string;
   size: string;
   type: string;
@@ -37,6 +38,7 @@ export default class Monster implements IEntity {
     name?: string,
     sources?: string,
     pic?: string,
+    picBase64?: string,
     size?: string,
     type?: string,
     subtype?: string,
@@ -68,6 +70,7 @@ export default class Monster implements IEntity {
     this.sources = sources || "";
     this.id = id;
     this.pic = pic || "";
+    this.picBase64 = picBase64 || "";
     this.size = size || "";
     this.type = type || "";
     this.subtype = subtype || "";
@@ -99,15 +102,13 @@ export default class Monster implements IEntity {
 
 export function isMonster(arg: any): arg is Monster {
   const nameCheck = arg.name !== undefined && typeof arg.name == "string";
+  const picBase64Check = arg.picBase64 !== undefined && typeof arg.picBase64 == "string";
   const picCheck = arg.pic !== undefined && typeof arg.pic == "string";
-  const sourcesCheck =
-    arg.sources !== undefined && typeof arg.sources == "string";
+  const sourcesCheck = arg.sources !== undefined && typeof arg.sources == "string";
   const sizeCheck = arg.size !== undefined && typeof arg.size == "string";
   const typeCheck = arg.type !== undefined && typeof arg.type == "string";
-  const subtypeCheck =
-    arg.subtype !== undefined && typeof arg.subtype == "string";
-  const alignmentCheck =
-    arg.alignment !== undefined && typeof arg.alignment == "string";
+  const subtypeCheck = arg.subtype !== undefined && typeof arg.subtype == "string";
+  const alignmentCheck = arg.alignment !== undefined && typeof arg.alignment == "string";
   const acCheck = arg.ac !== undefined && typeof arg.ac == "number";
   const hpCheck = arg.hp !== undefined && typeof arg.hp == "number";
   const speedCheck = arg.speed !== undefined && typeof arg.speed == "string";
@@ -118,14 +119,12 @@ export function isMonster(arg: any): arg is Monster {
   const intCheck = arg.int !== undefined && typeof arg.int == "number";
   const wisCheck = arg.wis !== undefined && typeof arg.wis == "number";
   const chaCheck = arg.cha !== undefined && typeof arg.cha == "number";
-  const savingThrowsCheck =
-    arg.savingThrows !== undefined && typeof arg.savingThrows == "string";
+  const savingThrowsCheck = arg.savingThrows !== undefined && typeof arg.savingThrows == "string";
   const skillsCheck = arg.skills !== undefined && typeof arg.skills == "string";
   const sensesCheck = arg.senses !== undefined && typeof arg.senses == "string";
   const langCheck = arg.lang !== undefined && typeof arg.lang == "string";
   const dmgVulnerabilitieCheck =
-    arg.dmgVulnerabilitie !== undefined &&
-    typeof arg.dmgVulnerabilitie == "string";
+    arg.dmgVulnerabilitie !== undefined && typeof arg.dmgVulnerabilitie == "string";
   const dmgResistanceCheck =
     arg.dmgResistance !== undefined && typeof arg.dmgResistance == "string";
   const dmgImmunitiesCheck =
@@ -140,6 +139,7 @@ export function isMonster(arg: any): arg is Monster {
     arg &&
     nameCheck &&
     picCheck &&
+    picBase64Check &&
     sourcesCheck &&
     sizeCheck &&
     typeCheck &&
@@ -203,14 +203,11 @@ export function findMonsterFormattError(
 } {
   const nameCheck = arg.name !== undefined && typeof arg.name == "string";
   const picCheck = arg.pic !== undefined && typeof arg.pic == "string";
-  const sourcesCheck =
-    arg.sources !== undefined && typeof arg.sources == "string";
+  const sourcesCheck = arg.sources !== undefined && typeof arg.sources == "string";
   const sizeCheck = arg.size !== undefined && typeof arg.size == "string";
   const typeCheck = arg.type !== undefined && typeof arg.type == "string";
-  const subtypeCheck =
-    arg.subtype !== undefined && typeof arg.subtype == "string";
-  const alignmentCheck =
-    arg.alignment !== undefined && typeof arg.alignment == "string";
+  const subtypeCheck = arg.subtype !== undefined && typeof arg.subtype == "string";
+  const alignmentCheck = arg.alignment !== undefined && typeof arg.alignment == "string";
   const acCheck = arg.ac !== undefined && typeof arg.ac == "number";
   const hpCheck = arg.hp !== undefined && typeof arg.hp == "number";
   const speedCheck = arg.speed !== undefined && typeof arg.speed == "string";
@@ -221,14 +218,12 @@ export function findMonsterFormattError(
   const intCheck = arg.int !== undefined && typeof arg.int == "number";
   const wisCheck = arg.wis !== undefined && typeof arg.wis == "number";
   const chaCheck = arg.cha !== undefined && typeof arg.cha == "number";
-  const savingThrowsCheck =
-    arg.savingThrows !== undefined && typeof arg.savingThrows == "string";
+  const savingThrowsCheck = arg.savingThrows !== undefined && typeof arg.savingThrows == "string";
   const skillsCheck = arg.skills !== undefined && typeof arg.skills == "string";
   const sensesCheck = arg.senses !== undefined && typeof arg.senses == "string";
   const langCheck = arg.lang !== undefined && typeof arg.lang == "string";
   const dmgVulnerabilitieCheck =
-    arg.dmgVulnerabilitie !== undefined &&
-    typeof arg.dmgVulnerabilitie == "string";
+    arg.dmgVulnerabilitie !== undefined && typeof arg.dmgVulnerabilitie == "string";
   const dmgResistanceCheck =
     arg.dmgResistance !== undefined && typeof arg.dmgResistance == "string";
   const dmgImmunitiesCheck =

@@ -18,10 +18,15 @@ const LocationView = ({ location }: $Props) => {
 
   const getPicture = useCallback(() => {
     if (location !== undefined) {
-      if (location.map === "" || location.map === null) {
-        return "";
+      if (
+        location.mapBase64 !== "" &&
+        location.mapBase64 !== null &&
+        location.mapBase64 !== undefined
+      ) {
+        return location.mapBase64;
+      } else if (location.map !== "" && location.map !== null && location.map !== undefined) {
+        return location.map;
       }
-      return location.map;
     }
     return "";
   }, [location]);
@@ -115,7 +120,7 @@ interface $ImageProps {
 
 const Image = ({ pic }: $ImageProps) => {
   const style = {
-    backgroundImage: `url(${pic})`,
+    backgroundImage: `url('${pic}')`,
     backgroundPosition: "center",
     backgroundSize: "cover",
     backgroundRepeat: "no-repeat",

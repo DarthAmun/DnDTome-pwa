@@ -1,7 +1,9 @@
-import { faBookOpen, faImage, faLink } from "@fortawesome/free-solid-svg-icons";
+import { faBookOpen, faImage, faLink, faTrash } from "@fortawesome/free-solid-svg-icons";
 import React from "react";
 import styled from "styled-components";
 import Monster from "../../../../data/Monster";
+import IconButton from "../../../form_elements/IconButton";
+import ImageImportField from "../../../form_elements/ImageField";
 import NumberField from "../../../form_elements/NumberField";
 import StringField from "../../../form_elements/StringField";
 import TextField from "../../../form_elements/TextField";
@@ -150,12 +152,21 @@ const MonsterEditView = ({ monster, onEdit, isNpc }: $Props) => {
           onChange={(sources) => onEdit({ ...monster, sources: sources })}
         />
         {!isNpc && (
-          <StringField
-            value={monster.pic}
-            label="Picture"
-            icon={faImage}
-            onChange={(pic) => onEdit({ ...monster, pic: pic })}
-          />
+          <>
+            <StringField
+              value={monster.pic}
+              label="Picture Link"
+              icon={faImage}
+              onChange={(pic) => onEdit({ ...monster, pic: pic })}
+            />
+            <FieldGroup>
+              <ImageImportField
+                label="Picture"
+                onFinished={(base64) => onEdit({ ...monster, picBase64: base64 })}
+              />
+              <IconButton icon={faTrash} onClick={() => onEdit({ ...monster, picBase64: "" })} />
+            </FieldGroup>
+          </>
         )}
         <TextField
           value={monster.ablt}
@@ -193,6 +204,10 @@ const FieldGroup = styled.div`
   display: flex;
   flex-wrap: nowrap;
   justify-content: space-around;
+
+  @media (max-width: 576px) {
+    flex-wrap: wrap;
+  }
 `;
 
 const View = styled.div`

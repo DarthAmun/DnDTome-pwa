@@ -50,10 +50,11 @@ const ClasseView = ({ classe }: $Props) => {
 
   const getPicture = useCallback(() => {
     if (classe !== undefined) {
-      if (classe.pic === "" || classe.pic === null) {
-        return "";
+      if (classe.picBase64 !== "" && classe.picBase64 !== null && classe.picBase64 !== undefined) {
+        return classe.picBase64;
+      } else if (classe.pic !== "" && classe.pic !== null && classe.pic !== undefined) {
+        return classe.pic;
       }
-      return classe.pic;
     }
     return "";
   }, [classe]);

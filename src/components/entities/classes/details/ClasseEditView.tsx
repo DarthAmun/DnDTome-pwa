@@ -21,6 +21,7 @@ import NumberArrayField from "../../../form_elements/NumberArrayField";
 import StringField from "../../../form_elements/StringField";
 import ShortTextField from "../../../form_elements/ShortTextField";
 import { reciveAll } from "../../../../services/DatabaseService";
+import ImageImportField from "../../../form_elements/ImageField";
 
 interface $Props {
   classe: Class;
@@ -311,10 +312,17 @@ const ClasseEditView = ({ classe, onEdit }: $Props) => {
         />
         <StringField
           value={classe.pic}
-          label="Picture"
+          label="Picture Link"
           icon={faImage}
           onChange={(pic) => onEdit({ ...classe, pic: pic })}
         />
+        <FieldGroup>
+          <ImageImportField
+            label="Picture"
+            onFinished={(base64) => onEdit({ ...classe, picBase64: base64 })}
+          />
+          <IconButton icon={faTrash} onClick={() => onEdit({ ...classe, picBase64: "" })} />
+        </FieldGroup>
         <StringField
           value={classe.sources}
           label="Sources"
@@ -514,3 +522,14 @@ const FeatureName = styled(StringField)``;
 
 const BoniContainer = styled(FeatureContainer)``;
 const BoniName = styled(FeatureString)``;
+
+const FieldGroup = styled.div`
+  flex: 2 2 auto;
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-around;
+
+  @media (max-width: 576px) {
+    flex-wrap: wrap;
+  }
+`;

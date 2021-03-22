@@ -5,7 +5,9 @@ import Quest from "../../../../data/campaign/Quest";
 import StringField from "../../../form_elements/StringField";
 import TextField from "../../../form_elements/TextField";
 
-import { faLink, faBookOpen, faImage } from "@fortawesome/free-solid-svg-icons";
+import { faLink, faBookOpen, faImage, faTrash } from "@fortawesome/free-solid-svg-icons";
+import IconButton from "../../../form_elements/IconButton";
+import ImageImportField from "../../../form_elements/ImageField";
 
 interface $Props {
   quest: Quest;
@@ -24,10 +26,17 @@ const QuestEditView = ({ quest, onEdit }: $Props) => {
 
         <StringField
           value={quest.pic}
-          label="Picture"
+          label="Picture Link"
           icon={faImage}
           onChange={(pic) => onEdit({ ...quest, pic: pic })}
         />
+        <FieldGroup>
+          <ImageImportField
+            label="Picture"
+            onFinished={(base64) => onEdit({ ...quest, picBase64: base64 })}
+          />
+          <IconButton icon={faTrash} onClick={() => onEdit({ ...quest, picBase64: "" })} />
+        </FieldGroup>
         <StringField
           value={quest.sources}
           label="Sources"
@@ -78,4 +87,15 @@ const View = styled.div`
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
+`;
+
+const FieldGroup = styled.div`
+  flex: 2 2 auto;
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-around;
+
+  @media (max-width: 576px) {
+    flex-wrap: wrap;
+  }
 `;

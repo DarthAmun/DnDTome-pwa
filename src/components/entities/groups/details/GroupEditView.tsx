@@ -12,6 +12,7 @@ import TextButton from "../../../form_elements/TextButton";
 import FlowChart from "../../../general_elements/flow/FlowChart";
 import Note from "../../../../data/campaign/Note";
 import DataSelectField from "../../../form_elements/DataSelectField";
+import ImageImportField from "../../../form_elements/ImageField";
 
 interface $Props {
   group: Group;
@@ -165,10 +166,17 @@ const GroupEditView = ({ group, onEdit }: $Props) => {
           />
           <StringField
             value={group.pic}
-            label="Picture"
+            label="Picture Link"
             icon={faImage}
             onChange={(pic) => onEdit({ ...group, pic: pic })}
           />
+          <FieldGroup>
+            <ImageImportField
+              label="Picture"
+              onFinished={(base64) => onEdit({ ...group, picBase64: base64 })}
+            />
+            <IconButton icon={faTrash} onClick={() => onEdit({ ...group, picBase64: "" })} />
+          </FieldGroup>
           <StringField
             value={group.sources}
             label="Sources"
@@ -306,4 +314,15 @@ const Container = styled.div`
   flex-wrap: wrap;
   justify-content: space-around;
   flex: 1 1 100%;
+`;
+
+const FieldGroup = styled.div`
+  flex: 2 2 auto;
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-around;
+
+  @media (max-width: 576px) {
+    flex-wrap: wrap;
+  }
 `;

@@ -5,15 +5,11 @@ import Race from "../../../../data/races/Race";
 import StringField from "../../../form_elements/StringField";
 import ShortTextField from "../../../form_elements/ShortTextField";
 
-import {
-  faLink,
-  faImage,
-  faPlus,
-  faTrash,
-} from "@fortawesome/free-solid-svg-icons";
+import { faLink, faImage, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
 import Trait from "../../../../data/races/Trait";
 import NumberField from "../../../form_elements/NumberField";
 import IconButton from "../../../form_elements/IconButton";
+import ImageImportField from "../../../form_elements/ImageField";
 
 interface $Props {
   race: Race;
@@ -21,11 +17,7 @@ interface $Props {
 }
 
 const RaceEditView = ({ race, onEdit }: $Props) => {
-  const onTraitChange = (
-    oldTrait: Trait,
-    field: string,
-    value: string | number
-  ) => {
+  const onTraitChange = (oldTrait: Trait, field: string, value: string | number) => {
     let traits = race.traits.map((trait: Trait) => {
       if (trait === oldTrait) {
         return {
@@ -66,9 +58,7 @@ const RaceEditView = ({ race, onEdit }: $Props) => {
         <StringField
           value={race.abilityScores}
           label="Ability Scores"
-          onChange={(abilityScores) =>
-            onEdit({ ...race, abilityScores: abilityScores })
-          }
+          onChange={(abilityScores) => onEdit({ ...race, abilityScores: abilityScores })}
         />
         <ShortTextField
           value={race.age}
@@ -97,10 +87,17 @@ const RaceEditView = ({ race, onEdit }: $Props) => {
         />
         <StringField
           value={race.pic}
-          label="Picture"
+          label="Picture Link"
           icon={faImage}
           onChange={(pic) => onEdit({ ...race, pic: pic })}
         />
+        <FieldGroup>
+          <ImageImportField
+            label="Picture"
+            onFinished={(base64) => onEdit({ ...race, picBase64: base64 })}
+          />
+          <IconButton icon={faTrash} onClick={() => onEdit({ ...race, picBase64: "" })} />
+        </FieldGroup>
         <StringField
           value={race.sources}
           label="Sources"
@@ -198,4 +195,15 @@ const TraitText = styled(ShortTextField)`
   border-radius: 5px;
   margin: 2px;
   flex: 4 4 auto;
+`;
+
+const FieldGroup = styled.div`
+  flex: 2 2 auto;
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-around;
+
+  @media (max-width: 576px) {
+    flex-wrap: wrap;
+  }
 `;

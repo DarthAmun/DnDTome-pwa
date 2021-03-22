@@ -181,6 +181,25 @@ const EncounterView = ({ encounter, dmView, onEdit }: $Props) => {
     setDamageDialog(true);
   };
 
+  const getMap = useCallback(() => {
+    if (loadedEncounter.encounter !== undefined) {
+      if (
+        loadedEncounter.encounter.mapBase64 !== "" &&
+        loadedEncounter.encounter.mapBase64 !== null &&
+        loadedEncounter.encounter.mapBase64 !== undefined
+      ) {
+        return loadedEncounter.encounter.mapBase64;
+      } else if (
+        loadedEncounter.encounter.map !== "" &&
+        loadedEncounter.encounter.map !== null &&
+        loadedEncounter.encounter.map !== undefined
+      ) {
+        return loadedEncounter.encounter.map;
+      }
+    }
+    return "";
+  }, [loadedEncounter.encounter]);
+
   return (
     <CenterWrapper>
       {damageDialog && (
@@ -327,7 +346,7 @@ const EncounterView = ({ encounter, dmView, onEdit }: $Props) => {
           </Table>
         )}
       </View>
-      {loadedEncounter && encounter.map !== "" && encounter.map !== undefined && (
+      {loadedEncounter && getMap() !== "" && (
         <Board
           onChangePlayers={onChangePlayers}
           players={loadedEncounter.players}
@@ -338,7 +357,7 @@ const EncounterView = ({ encounter, dmView, onEdit }: $Props) => {
           }
           currentPlayerNumber={loadedEncounter.encounter.currentInit}
           onChangeDimension={onChangeDimension}
-          img={encounter.map}
+          img={getMap()}
         ></Board>
       )}
     </CenterWrapper>

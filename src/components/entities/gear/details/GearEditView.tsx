@@ -12,7 +12,10 @@ import {
   faCrosshairs,
   faBookOpen,
   faImage,
+  faTrash,
 } from "@fortawesome/free-solid-svg-icons";
+import IconButton from "../../../form_elements/IconButton";
+import ImageImportField from "../../../form_elements/ImageField";
 
 interface $Props {
   gear: Gear;
@@ -58,10 +61,17 @@ const GearEditView = ({ gear, onEdit }: $Props) => {
         />
         <StringField
           value={gear.pic}
-          label="Picture"
+          label="Picture Link"
           icon={faImage}
           onChange={(pic) => onEdit({ ...gear, pic: pic })}
         />
+        <FieldGroup>
+          <ImageImportField
+            label="Picture"
+            onFinished={(base64) => onEdit({ ...gear, picBase64: base64 })}
+          />
+          <IconButton icon={faTrash} onClick={() => onEdit({ ...gear, picBase64: "" })} />
+        </FieldGroup>
         <StringField
           value={gear.sources}
           label="Sources"
@@ -72,9 +82,7 @@ const GearEditView = ({ gear, onEdit }: $Props) => {
           value={gear.description}
           label="Text"
           icon={faBookOpen}
-          onChange={(description) =>
-            onEdit({ ...gear, description: description })
-          }
+          onChange={(description) => onEdit({ ...gear, description: description })}
         />
       </View>
     </CenterWrapper>
@@ -100,4 +108,15 @@ const View = styled.div`
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
+`;
+
+const FieldGroup = styled.div`
+  flex: 2 2 auto;
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-around;
+
+  @media (max-width: 576px) {
+    flex-wrap: wrap;
+  }
 `;

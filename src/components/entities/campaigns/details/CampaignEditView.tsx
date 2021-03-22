@@ -12,6 +12,7 @@ import IconButton from "../../../form_elements/IconButton";
 import TextButton from "../../../form_elements/TextButton";
 import FlowChart from "../../../general_elements/flow/FlowChart";
 import DataSelectField from "../../../form_elements/DataSelectField";
+import ImageImportField from "../../../form_elements/ImageField";
 
 interface $Props {
   campaign: Campaign;
@@ -165,10 +166,17 @@ const CampaignEditView = ({ campaign, onEdit }: $Props) => {
           />
           <StringField
             value={campaign.pic}
-            label="Picture"
+            label="Picture Link"
             icon={faImage}
             onChange={(pic) => onEdit({ ...campaign, pic: pic })}
           />
+          <FieldGroup>
+            <ImageImportField
+              label="Picture"
+              onFinished={(base64) => onEdit({ ...campaign, picBase64: base64 })}
+            />
+            <IconButton icon={faTrash} onClick={() => onEdit({ ...campaign, picBase64: "" })} />
+          </FieldGroup>
           <StringField
             value={campaign.sources}
             label="Sources"
@@ -320,4 +328,15 @@ const Container = styled.div`
   flex-wrap: wrap;
   justify-content: space-around;
   flex: 1 1 100%;
+`;
+
+const FieldGroup = styled.div`
+  flex: 2 2 auto;
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-around;
+
+  @media (max-width: 576px) {
+    flex-wrap: wrap;
+  }
 `;

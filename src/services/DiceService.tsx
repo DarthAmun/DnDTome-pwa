@@ -16,41 +16,54 @@ export const rollCommand = (
   newCommands = newCommands.trim();
 
   let rolls: string = "(`";
-  newCommands.split(" ").forEach((command: string) => {
-    let multiplier: number = 1;
-    if (!command.startsWith("d")) {
-      multiplier = parseInt(command.split("d")[0]);
-      command = command.split("d")[1];
-    }
-    command = command.replaceAll("d", "");
-    if (krit) multiplier = multiplier * 2;
+  newCommands.split(" ").forEach((fullCommand: string) => {
+    let commandSplits: string[] = [];
+    fullCommand.split("+").forEach((part) => {
+      let split = part.split("-");
+      commandSplits = commandSplits.concat(split);
+    });
 
-    let lastroll: number = 0;
-    if (command.includes("+")) {
-      const com = command.split("+");
-      for (let i = 0; i < multiplier; i++) {
-        result += rollDie(parseInt(com[0]));
-        lastroll = result - lastroll;
-        rolls += lastroll + ",";
+    commandSplits.forEach((command: string) => {
+      let multiplier: number = 1;
+      if (command.includes("d")) {
+        if (!command.startsWith("d")) {
+          multiplier = parseInt(command.split("d")[0]);
+          command = command.split("d")[1];
+        }
+        command = command.replaceAll("d", "");
+        if (krit) multiplier = multiplier * 2;
+
+        if (command.includes("+")) {
+          const com = command.split("+");
+          for (let i = 0; i < multiplier; i++) {
+            const newRoll = rollDie(parseInt(com[0]));
+            result += newRoll;
+            rolls += newRoll + ",";
+          }
+          result += parseInt(com[1]);
+        } else if (command.includes("-")) {
+          const com = command.split("-");
+          for (let i = 0; i < multiplier; i++) {
+            const newRoll = rollDie(parseInt(com[0]));
+            result += newRoll;
+            rolls += newRoll + ",";
+          }
+          result -= parseInt(com[1]);
+        } else {
+          for (let i = 0; i < multiplier; i++) {
+            const newRoll = rollDie(parseInt(command));
+            result += newRoll;
+            rolls += newRoll + ",";
+          }
+        }
+      } else {
+        result += parseInt(command);
+        rolls += command + ",";
       }
-      result += parseInt(com[1]);
-    } else if (command.includes("-")) {
-      const com = command.split("-");
-      for (let i = 0; i < multiplier; i++) {
-        result += rollDie(parseInt(com[0]));
-        lastroll = result - lastroll;
-        rolls += lastroll + ",";
-      }
-      result -= parseInt(com[1]);
-    } else {
-      for (let i = 0; i < multiplier; i++) {
-        result += rollDie(parseInt(command));
-        lastroll = result - lastroll;
-        rolls += lastroll + ",";
-      }
-    }
+    });
+    rolls = rolls.slice(0, -1) + "`)";
   });
-  rolls = rolls.slice(0, -1) + "`)";
+
   return { result: result, text: text, rolls: rolls };
 };
 

@@ -50,10 +50,11 @@ const NpcView = ({ npc }: $Props) => {
 
   const getPicture = useCallback(() => {
     if (npc !== undefined) {
-      if (npc.pic === "" || npc.pic === null) {
-        return "";
+      if (npc.picBase64 !== "" && npc.picBase64 !== null && npc.picBase64 !== undefined) {
+        return npc.picBase64;
+      } else if (npc.pic !== "" && npc.pic !== null && npc.pic !== undefined) {
+        return npc.pic;
       }
-      return npc.pic;
     }
     return "";
   }, [npc]);
@@ -229,7 +230,7 @@ interface $ImageProps {
 
 const Image = ({ pic }: $ImageProps) => {
   const style = {
-    backgroundImage: `url(${pic})`,
+    backgroundImage: `url('${pic}')`,
     backgroundPosition: "center",
     backgroundSize: "cover",
     backgroundRepeat: "no-repeat",

@@ -13,10 +13,11 @@ interface $Props {
 const GroupTile = ({ group }: $Props) => {
   const getPicture = useCallback(() => {
     if (group !== undefined) {
-      if (group.pic === "" || group.pic === null) {
-        return "";
+      if (group.picBase64 !== "" && group.picBase64 !== null && group.picBase64 !== undefined) {
+        return group.picBase64;
+      } else if (group.pic !== "" && group.pic !== null && group.pic !== undefined) {
+        return group.pic;
       }
-      return group.pic;
     }
     return "";
   }, [group]);
@@ -168,7 +169,7 @@ const ImgContainer = styled.div<{ pic: string }>`
     top: -50%;
     left: -50%;
     z-index: -1;
-    background: url(${(props) => props.pic}) 0 0 no-repeat;
+    background: url("${(props) => props.pic}") 0 0 no-repeat;
     background-size: cover;
     transform: rotate(-45deg);
   }

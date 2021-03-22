@@ -7,8 +7,10 @@ import TextField from "../../../form_elements/TextField";
 import CheckField from "../../../form_elements/CheckField";
 import NumberField from "../../../form_elements/NumberField";
 
-import { faLink, faBookOpen, faImage } from "@fortawesome/free-solid-svg-icons";
+import { faLink, faBookOpen, faImage, faTrash } from "@fortawesome/free-solid-svg-icons";
 import DataSelectField from "../../../form_elements/DataSelectField";
+import IconButton from "../../../form_elements/IconButton";
+import ImageImportField from "../../../form_elements/ImageField";
 
 interface $Props {
   item: Item;
@@ -56,6 +58,13 @@ const ItemEditView = ({ item, onEdit }: $Props) => {
           icon={faImage}
           onChange={(pic) => onEdit({ ...item, pic: pic })}
         />
+        <FieldGroup>
+          <ImageImportField
+            label="Picture"
+            onFinished={(base64) => onEdit({ ...item, picBase64: base64 })}
+          />
+          <IconButton icon={faTrash} onClick={() => onEdit({ ...item, picBase64: "" })} />
+        </FieldGroup>
         <StringField
           value={item.sources}
           label="Sources"
@@ -92,4 +101,15 @@ const View = styled.div`
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
+`;
+
+const FieldGroup = styled.div`
+  flex: 2 2 auto;
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-around;
+
+  @media (max-width: 576px) {
+    flex-wrap: wrap;
+  }
 `;

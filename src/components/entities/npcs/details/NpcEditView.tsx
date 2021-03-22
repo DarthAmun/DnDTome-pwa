@@ -1,9 +1,11 @@
-import { faBookOpen, faImage, faLink, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faBookOpen, faImage, faLink, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
 import React from "react";
 import styled from "styled-components";
 import Npc from "../../../../data/campaign/Npc";
 import Char from "../../../../data/chars/Char";
 import Monster from "../../../../data/Monster";
+import IconButton from "../../../form_elements/IconButton";
+import ImageImportField from "../../../form_elements/ImageField";
 import StringField from "../../../form_elements/StringField";
 import TextButton from "../../../form_elements/TextButton";
 import TextField from "../../../form_elements/TextField";
@@ -34,10 +36,17 @@ const NpcEditView = ({ npc, onEdit }: $Props) => {
         />
         <StringField
           value={npc.pic}
-          label="Picture"
+          label="Picture Link"
           icon={faImage}
           onChange={(pic) => onEdit({ ...npc, pic: pic })}
         />
+        <FieldGroup>
+          <ImageImportField
+            label="Picture"
+            onFinished={(base64) => onEdit({ ...npc, picBase64: base64 })}
+          />
+          <IconButton icon={faTrash} onClick={() => onEdit({ ...npc, picBase64: "" })} />
+        </FieldGroup>
         <StringField
           value={npc.sources}
           label="Sources"
@@ -108,4 +117,15 @@ const View = styled.div`
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
+`;
+
+const FieldGroup = styled.div`
+  flex: 2 2 auto;
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-around;
+
+  @media (max-width: 576px) {
+    flex-wrap: wrap;
+  }
 `;

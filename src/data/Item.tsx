@@ -6,6 +6,7 @@ export default class Item implements IEntity {
   sources: string;
   description: string;
   pic: string;
+  picBase64: string;
   rarity: string;
   magicBonus: number;
   attunment: number;
@@ -19,6 +20,7 @@ export default class Item implements IEntity {
     sources?: string,
     description?: string,
     pic?: string,
+    picBase64?: string,
     rarity?: string,
     magicBonus?: number,
     attunment?: number,
@@ -30,6 +32,7 @@ export default class Item implements IEntity {
     this.sources = sources || "";
     this.description = description || "";
     this.pic = pic || "";
+    this.picBase64 = picBase64 || "";
     this.rarity = rarity || "";
     this.magicBonus = magicBonus || 0;
     this.attunment = attunment || 0;
@@ -42,18 +45,15 @@ export default class Item implements IEntity {
 
 export function isItem(arg: any): arg is Item {
   const nameCheck = arg.name !== undefined && typeof arg.name == "string";
-  const sourcesCheck =
-    arg.sources !== undefined && typeof arg.sources == "string";
-  const descriptionCheck =
-    arg.description !== undefined && typeof arg.description == "string";
-  const magicBonusCheck =
-    arg.magicBonus !== undefined && typeof arg.magicBonus == "number";
-  const attunmentCheck =
-    arg.attunment !== undefined && typeof arg.attunment == "number";
+  const sourcesCheck = arg.sources !== undefined && typeof arg.sources == "string";
+  const descriptionCheck = arg.description !== undefined && typeof arg.description == "string";
+  const magicBonusCheck = arg.magicBonus !== undefined && typeof arg.magicBonus == "number";
+  const attunmentCheck = arg.attunment !== undefined && typeof arg.attunment == "number";
   const rarityCheck = arg.rarity !== undefined && typeof arg.rarity == "string";
   const baseCheck = arg.base !== undefined && typeof arg.base == "string";
   const typeCheck = arg.type !== undefined && typeof arg.type == "string";
   const picCheck = arg.pic !== undefined && typeof arg.pic == "string";
+  const picBase64Check = arg.picBase64 !== undefined && typeof arg.picBase64 == "string";
   return (
     arg &&
     nameCheck &&
@@ -64,7 +64,8 @@ export function isItem(arg: any): arg is Item {
     rarityCheck &&
     baseCheck &&
     typeCheck &&
-    picCheck
+    picCheck &&
+    picBase64Check
   );
 }
 
@@ -82,14 +83,10 @@ export function findItemFromattError(
   picCheck: boolean;
 } {
   const nameCheck = arg.name !== undefined && typeof arg.name == "string";
-  const sourcesCheck =
-    arg.sources !== undefined && typeof arg.sources == "string";
-  const descriptionCheck =
-    arg.description !== undefined && typeof arg.description == "string";
-  const magicBonusCheck =
-    arg.magicBonus !== undefined && typeof arg.magicBonus == "number";
-  const attunmentCheck =
-    arg.attunment !== undefined && typeof arg.attunment == "number";
+  const sourcesCheck = arg.sources !== undefined && typeof arg.sources == "string";
+  const descriptionCheck = arg.description !== undefined && typeof arg.description == "string";
+  const magicBonusCheck = arg.magicBonus !== undefined && typeof arg.magicBonus == "number";
+  const attunmentCheck = arg.attunment !== undefined && typeof arg.attunment == "number";
   const rarityCheck = arg.rarity !== undefined && typeof arg.rarity == "string";
   const baseCheck = arg.base !== undefined && typeof arg.base == "string";
   const typeCheck = arg.type !== undefined && typeof arg.type == "string";

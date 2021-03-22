@@ -49,10 +49,11 @@ const GroupView = ({ group, onEdit }: $Props) => {
 
   const getPicture = useCallback(() => {
     if (group !== undefined) {
-      if (group.pic === "" || group.pic === null) {
-        return "";
+      if (group.picBase64 !== "" && group.picBase64 !== null && group.picBase64 !== undefined) {
+        return group.picBase64;
+      } else if (group.pic !== "" && group.pic !== null && group.pic !== undefined) {
+        return group.pic;
       }
-      return group.pic;
     }
     return "";
   }, [group]);
@@ -268,7 +269,7 @@ interface $ImageProps {
 
 const Image = ({ pic }: $ImageProps) => {
   const style = {
-    backgroundImage: `url(${pic})`,
+    backgroundImage: `url('${pic}')`,
     backgroundPosition: "center",
     backgroundSize: "cover",
     backgroundRepeat: "no-repeat",

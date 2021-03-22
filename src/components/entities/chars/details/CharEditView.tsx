@@ -30,6 +30,7 @@ import StringField from "../../../form_elements/StringField";
 import TextButton from "../../../form_elements/TextButton";
 import TextField from "../../../form_elements/TextField";
 import TabBar from "../../../general_elements/TabBar";
+import ImageImportField from "../../../form_elements/ImageField";
 
 interface $Props {
   character: Char;
@@ -376,7 +377,6 @@ const CharEditView = ({ character, onEdit, isNpc }: $Props) => {
 
   return (
     <>
-      {/* {loading && <LoadingSpinner />} */}
       {character && (
         <CenterWrapper>
           <CharView>
@@ -402,9 +402,16 @@ const CharEditView = ({ character, onEdit, isNpc }: $Props) => {
             )}
             <StringField
               value={character.pic}
-              label="Picture"
+              label="Picture Link"
               onChange={(pic) => onEdit({ ...character, pic: pic })}
             />
+            <FieldGroup>
+              <ImageImportField
+                label="Picture"
+                onFinished={(base64) => onEdit({ ...character, picBase64: base64 })}
+              />
+              <IconButton icon={faTrash} onClick={() => onEdit({ ...character, picBase64: "" })} />
+            </FieldGroup>
             <StringField
               value={character.background}
               label="Background"
@@ -1066,4 +1073,15 @@ const Icon = styled(FontAwesomeIcon)`
   height: auto;
   border-radius: 150px;
   color: ${({ theme }) => theme.main.highlight};
+`;
+
+const FieldGroup = styled.div`
+  flex: 2 2 auto;
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-around;
+
+  @media (max-width: 576px) {
+    flex-wrap: wrap;
+  }
 `;

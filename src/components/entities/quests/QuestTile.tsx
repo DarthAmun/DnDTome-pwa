@@ -14,10 +14,11 @@ interface $Props {
 const QuestTile = ({ quest }: $Props) => {
   const getPicture = useCallback(() => {
     if (quest !== undefined) {
-      if (quest.pic === "" || quest.pic === null) {
-        return "";
+      if (quest.picBase64 !== "" && quest.picBase64 !== null && quest.picBase64 !== undefined) {
+        return quest.picBase64;
+      } else if (quest.pic !== "" && quest.pic !== null && quest.pic !== undefined) {
+        return quest.pic;
       }
-      return quest.pic;
     }
     return "";
   }, [quest]);
@@ -129,7 +130,7 @@ interface $ImageProps {
 
 const Image = ({ pic }: $ImageProps) => {
   const style = {
-    backgroundImage: `url(${pic})`,
+    backgroundImage: `url('${pic}')`,
     backgroundPosition: "center",
     backgroundSize: "cover",
     backgroundRepeat: "no-repeat",

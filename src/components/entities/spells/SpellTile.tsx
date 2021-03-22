@@ -86,10 +86,11 @@ const SpellTile = ({ spell }: $Props) => {
 
   const getPicture = useCallback(() => {
     if (spell !== undefined) {
-      if (spell.pic === "" || spell.pic === null) {
-        return "";
+      if (spell.picBase64 !== "" && spell.picBase64 !== null && spell.picBase64 !== undefined) {
+        return spell.picBase64;
+      } else if (spell.pic !== "" && spell.pic !== null && spell.pic !== undefined) {
+        return spell.pic;
       }
-      return spell.pic;
     }
     return "";
   }, [spell]);

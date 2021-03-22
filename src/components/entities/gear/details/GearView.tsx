@@ -80,10 +80,11 @@ const GearView = ({ gear }: $Props) => {
 
   const getPicture = useCallback(() => {
     if (gear !== undefined) {
-      if (gear.pic === "" || gear.pic === null) {
-        return "";
+      if (gear.picBase64 !== "" && gear.picBase64 !== null && gear.picBase64 !== undefined) {
+        return gear.picBase64;
+      } else if (gear.pic !== "" && gear.pic !== null && gear.pic !== undefined) {
+        return gear.pic;
       }
-      return gear.pic;
     }
     return "";
   }, [gear]);
@@ -242,7 +243,7 @@ interface $ImageProps {
 
 const Image = ({ pic }: $ImageProps) => {
   const style = {
-    backgroundImage: `url(${pic})`,
+    backgroundImage: `url('${pic}')`,
     backgroundPosition: "center",
     backgroundSize: "cover",
     backgroundRepeat: "no-repeat",

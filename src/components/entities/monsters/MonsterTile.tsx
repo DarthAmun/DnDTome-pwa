@@ -40,10 +40,15 @@ const MonsterTile = ({ monster }: $Props) => {
 
   const getPicture = useCallback(() => {
     if (monster !== undefined) {
-      if (monster.pic === "" || monster.pic === null) {
-        return "";
+      if (
+        monster.picBase64 !== "" &&
+        monster.picBase64 !== null &&
+        monster.picBase64 !== undefined
+      ) {
+        return monster.picBase64;
+      } else if (monster.pic !== "" && monster.pic !== null && monster.pic !== undefined) {
+        return monster.pic;
       }
-      return monster.pic;
     }
     return "";
   }, [monster]);
@@ -232,7 +237,7 @@ interface $ImageProps {
 
 const Image = ({ pic }: $ImageProps) => {
   const style = {
-    backgroundImage: `url(${pic})`,
+    backgroundImage: `url('${pic}')`,
     backgroundPosition: "center",
     backgroundSize: "cover",
     backgroundRepeat: "no-repeat",

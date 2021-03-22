@@ -12,10 +12,15 @@ interface $Props {
 const CampaignTile = ({ campaign }: $Props) => {
   const getPicture = useCallback(() => {
     if (campaign !== undefined) {
-      if (campaign.pic === "" || campaign.pic === null) {
-        return "";
+      if (
+        campaign.picBase64 !== "" &&
+        campaign.picBase64 !== null &&
+        campaign.picBase64 !== undefined
+      ) {
+        return campaign.picBase64;
+      } else if (campaign.pic !== "" && campaign.pic !== null && campaign.pic !== undefined) {
+        return campaign.pic;
       }
-      return campaign.pic;
     }
     return "";
   }, [campaign]);
@@ -168,7 +173,7 @@ const ImgContainer = styled.div<{ pic: string }>`
     top: -50%;
     left: -50%;
     z-index: -1;
-    background: url(${(props) => props.pic}) 0 0 no-repeat;
+    background: url("${(props) => props.pic}") 0 0 no-repeat;
     background-size: cover;
     transform: rotate(-45deg);
   }

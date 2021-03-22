@@ -11,6 +11,7 @@ import { recivePromiseByAttribute } from "../../../../services/DatabaseService";
 import { calcDifficulty } from "../../../../services/EncounterService";
 import AutoStringField from "../../../form_elements/AutoStringField";
 import IconButton from "../../../form_elements/IconButton";
+import ImageImportField from "../../../form_elements/ImageField";
 import NumberField from "../../../form_elements/NumberField";
 import StringField from "../../../form_elements/StringField";
 import TextButton from "../../../form_elements/TextButton";
@@ -237,12 +238,18 @@ const EncounterEditView = ({ encounter, onEdit }: $Props) => {
           label="Encounter Name"
           onChange={(name) => onEdit({ ...encounter, name: name })}
         />
-        <AutoStringField
-          optionTable={"locations"}
+        <StringField
           value={encounter.map}
           label="Map"
           onChange={(newMap) => onEdit({ ...encounter, map: newMap })}
         />
+        <FieldGroup>
+          <ImageImportField
+            label="Map"
+            onFinished={(base64) => onEdit({ ...encounter, mapBase64: base64 })}
+          />
+          <IconButton icon={faTrash} onClick={() => onEdit({ ...encounter, mapBase64: "" })} />
+        </FieldGroup>
       </View>
       <View>
         <PropWrapper>
@@ -423,4 +430,15 @@ const PropWrapper = styled.div`
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
+`;
+
+const FieldGroup = styled.div`
+  flex: 2 2 auto;
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-around;
+
+  @media (max-width: 576px) {
+    flex-wrap: wrap;
+  }
 `;
