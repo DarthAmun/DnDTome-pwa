@@ -33,6 +33,8 @@ const replaceTag = (text: string) => {
       return "[[spell." + clearText.substring(6, clearText.length).trim() + "]]";
     case clearText.startsWith("filter"):
       return "" + clearText.substring(6, clearText.length).trim();
+    case clearText.startsWith("bold"):
+      return "" + clearText.substring(4, clearText.length).trim();
     default:
       return clearText;
   }
@@ -52,6 +54,15 @@ const replaceTags = (text: string): string => {
 
     let newText: string = text;
     while (newText.includes("{@")) {
+      if (newText.includes("{@") && !newText.includes("}")) {
+        newText = newText.replace("{@", "");
+        break;
+      }
+      if (!newText.includes("{@") && newText.includes("}")) {
+        newText = newText.replace("}", "");
+        break;
+      }
+
       let start = newText.indexOf("{@");
       let end = newText.indexOf("}");
       if (start > end) {
@@ -246,7 +257,13 @@ const parseGear = (obj: any, fileName: string) => {
 
   let value = obj.value;
   if (typeof value == "number") {
-    value = value + "gp";
+    if (value / 100 > 1) {
+      value = value / 100 + "gp";
+    } else if (value / 10 > 1) {
+      value = value / 10 + "sp";
+    } else {
+      value = value + "cp";
+    }
   }
 
   let newGear = new Gear(
@@ -254,6 +271,7 @@ const parseGear = (obj: any, fileName: string) => {
     obj.name,
     obj.source,
     description,
+    "",
     "",
     value,
     damage,
@@ -722,7 +740,7 @@ export const makeMonster = (obj: any): Monster => {
 
     let alignment = "";
     if (obj.alignment !== undefined) {
-      obj.alignment.forEach((align: string) => {
+      obj.alignment?.forEach((align: string) => {
         if (align === "L") alignment += "lawfull ";
         if (align === "N") alignment += "neutral ";
         if (align === "C") alignment += "chaotic ";
@@ -784,17 +802,27 @@ export const makeMonster = (obj: any): Monster => {
     skills.trim();
 
     let senses = "";
-    obj.senses &&
-      obj.senses.forEach((sense: string) => {
-        senses += sense + ", ";
-      });
+    if (obj.senses !== undefined) {
+      if (Array.isArray(obj.senses)) {
+        obj.senses.forEach((sense: string) => {
+          senses += sense + ", ";
+        });
+      } else {
+        senses = obj.senses;
+      }
+    }
     senses.trim();
 
     let langs = "";
-    obj.languages &&
-      obj.languages.forEach((lang: string) => {
-        langs += lang + ", ";
-      });
+    if (obj.languages !== undefined) {
+      if (Array.isArray(obj.languages)) {
+        obj.languages.forEach((lang: string) => {
+          langs += lang + ", ";
+        });
+      } else {
+        langs = obj.languages;
+      }
+    }
     langs.trim();
 
     let vulnerabilities = "";
@@ -1089,7 +1117,7 @@ export const makeClass = (obj: any, json: any, fileName: string): Class => {
       const featureParts: string[] = featureRaw.split("|");
 
       let text = "";
-      json.classFeature.forEach((objFeature: any) => {
+      json.classFeature?.forEach((objFeature: any) => {
         if (objFeature.name === featureParts[0] && objFeature.source === sources) {
           const { text: newText, additional } = recursiveTextAdder(objFeature.entries, text);
           if (additional.length > 0)
@@ -1160,14 +1188,14 @@ export const makeSubclass = (obj: any, json: any, classe: string, fileName: stri
     obj.subclassFeatures.forEach((feature: any) => {
       let featureRaw: string = "";
       if (typeof feature != "string") {
-        featureRaw = feature.classFeature;
+        featureRaw = feature.classFeature || "";
       } else {
         featureRaw = feature;
       }
       const featureParts: string[] = featureRaw.split("|");
 
       let text = "";
-      json.subclassFeature.forEach((objFeature: any) => {
+      json.subclassFeature?.forEach((objFeature: any) => {
         if (
           objFeature.subclassShortName === featureParts[3] &&
           objFeature.name === featureParts[0]
@@ -1232,9 +1260,10 @@ const recursiveTextAdder = (
           newText += "||";
           entry.rows.forEach((row: string[]) => {
             newText += "||";
-            row.forEach((s: string) => {
-              newText += s + "|";
-            });
+            if (Array.isArray(row))
+              row.forEach((s: string) => {
+                newText += s + "|";
+              });
             newText += "|";
           });
           newText += "|";
@@ -1247,13 +1276,14 @@ const recursiveTextAdder = (
       }
     });
   } else {
-    if (typeof entries == "string") {
-      newText += entries + "\n";
-    } else {
-      for (const value of Object.entries(entries)) {
-        newText += value[1] + "\n";
+    if (entries !== undefined)
+      if (typeof entries == "string" || typeof entries == "number") {
+        newText += entries + "\n";
+      } else {
+        for (const value of Object.entries(entries)) {
+          newText += value[1] + "\n";
+        }
       }
-    }
   }
 
   return { text: newText + "\n", additional: additional };
@@ -1268,7 +1298,7 @@ export const makeSelection = (
   level: number;
 } => {
   let text = "";
-  obj.entries.forEach((textPart: string | any) => {
+  obj.entries?.forEach((textPart: string | any) => {
     if (typeof textPart === "string") {
       text += textPart + "\n";
     } else {
@@ -1308,7 +1338,7 @@ export const makeSelection = (
 
   let level: number = 0;
   let prequisite: string = "";
-  if (obj.prerequisite !== undefined) {
+  if (obj.prerequisite !== undefined && obj.prerequisite !== "") {
     for (const [key, value] of Object.entries(obj.prerequisite[0])) {
       if (key === "level") {
         for (const [key2, value2] of Object.entries(value as Object)) {

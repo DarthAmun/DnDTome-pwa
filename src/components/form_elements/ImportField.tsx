@@ -129,34 +129,38 @@ const FileTile = ({ file, modus }: $FileProps) => {
   };
 
   const convertTypes = (types: string[]): string[] => {
-    let newTypes: string[] = types.map((type: string) => {
-      switch (type.split(":")[0]) {
-        case "OR":
-          return "Onomancy Resonant";
-        case "EI":
-          return "Invocations";
-        case "AF":
-          return "Alchemical Formular";
-        case "MV":
-          return "Maneuver";
-        case "FS":
-          return "Fighting Styles";
-        case "AI":
-          return "Artificer Infusion";
-        case "AS":
-          return "Arcane Shot";
-        case "ED":
-          return "Elemental Disciplin";
-        case "MM":
-          return "Metamagic";
-        case "RN":
-          return "Rune";
-        case "PB":
-          return "Pact Boon";
-        default:
-          return "Unknown";
-      }
-    });
+    let newTypes: string[] = [];
+    if (types !== undefined && Array.isArray(types))
+      newTypes = types.map((type: string) => {
+        if (typeof type == "string")
+          switch (type.split(":")[0]) {
+            case "OR":
+              return "Onomancy Resonant";
+            case "EI":
+              return "Invocations";
+            case "AF":
+              return "Alchemical Formular";
+            case "MV":
+              return "Maneuver";
+            case "FS":
+              return "Fighting Styles";
+            case "AI":
+              return "Artificer Infusion";
+            case "AS":
+              return "Arcane Shot";
+            case "ED":
+              return "Elemental Disciplin";
+            case "MM":
+              return "Metamagic";
+            case "RN":
+              return "Rune";
+            case "PB":
+              return "Pact Boon";
+            default:
+              return "Unknown";
+          }
+        return "Unknown";
+      });
     return newTypes;
   };
 

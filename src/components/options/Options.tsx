@@ -231,6 +231,7 @@ const Options = () => {
           confirmeText={"Delete"}
           confirmeClick={() => {
             resetDatabase();
+            setResetDialog(false);
           }}
           abortText={"Back"}
           abortClick={() => {
