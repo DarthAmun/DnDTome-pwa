@@ -8,6 +8,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLink, faRunning } from "@fortawesome/free-solid-svg-icons";
 import { GiResize, GiAngelOutfit } from "react-icons/gi";
 import { MdRecordVoiceOver } from "react-icons/md";
+import { stringToColour } from "../../../services/ColorService";
 
 interface $Props {
   monster: Monster;
@@ -53,11 +54,17 @@ const MonsterTile = ({ monster }: $Props) => {
     return "";
   }, [monster]);
 
+  const firstToUpper = (str: string) => {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  };
+
   return (
     <Tile to={"/monster-detail/id/" + monster.id}>
-      <Type>
-        {monster.type}{" "}
-        {monster.subtype && monster.subtype.trim() !== "" ? "(" + monster.subtype + ")" : ""}
+      <Type type={firstToUpper(monster.type)}>
+        {firstToUpper(monster.type)}{" "}
+        {monster.subtype && monster.subtype.trim() !== ""
+          ? "(" + firstToUpper(monster.subtype) + ")"
+          : ""}
       </Type>
 
       <Flag>
@@ -132,7 +139,11 @@ const CR = styled.div`
   margin: 5px;
 `;
 
-const Type = styled.div`
+type MonsterType = {
+  type?: string;
+};
+
+const Type = styled.div<MonsterType>`
   height: auto;
   float: left;
   padding: 5px 10px 7px 10px;
@@ -140,6 +151,9 @@ const Type = styled.div`
   line-height: 30px;
   border-radius: 0px 0px 10px 0px;
   background-color: ${({ theme }) => theme.tile.backgroundColor};
+  color: ${(props) => {
+    return stringToColour(props.type);
+  }};
 `;
 
 const Name = styled.div`

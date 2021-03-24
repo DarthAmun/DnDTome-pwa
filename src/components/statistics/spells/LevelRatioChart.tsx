@@ -25,11 +25,7 @@ const LevelRatioChart = () => {
     let promList: { name: string; count: number }[] = [];
     for (const level of levels) {
       if (level !== undefined) {
-        const count = await recivePromiseByAttributeCount(
-          "spells",
-          "level",
-          level as number
-        );
+        const count = await recivePromiseByAttributeCount("spells", "level", level as number);
         promList.push({
           name: "Level " + level.toString(),
           count: count,
@@ -73,9 +69,8 @@ const LevelRatioChart = () => {
 export default LevelRatioChart;
 
 const OptionSection = styled.div`
-  flex: 1 1 15em;
-  width: calc(100% - 1em);
-  max-width: 400px;
+  flex: 1 1 auto;
+  max-width: 30em;
   color: ${({ theme }) => theme.tile.color};
   background-color: ${({ theme }) => theme.tile.backgroundColor};
   margin: 0.5em;

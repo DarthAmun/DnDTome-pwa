@@ -5,6 +5,7 @@ import TabBar from "../general_elements/TabBar";
 import CostRatioChart from "./gear/CostRatioChart";
 import DamageRatioChart from "./gear/DamageRatioChart";
 import GearTypeRatioChart from "./gear/GearTypeRatioChart";
+import WeightVsCostsChart from "./gear/WeightVsCostsChart";
 import WeightRatioChart from "./gear/WeightRatioChart";
 import AmountOfEntitiesChart from "./general/AmountOfEntitiesChart";
 import AttunmentRatioChart from "./items/AttunmentRatioChart";
@@ -17,8 +18,13 @@ import LegendaryRatioChart from "./monsters/LegendaryRatioChart";
 import MonsterTypeRatioChart from "./monsters/MonsterTypeRatioChart";
 import ActionsRatioChart from "./spells/ActionsRatioChart";
 import LevelRatioChart from "./spells/LevelRatioChart";
+import LevelVsSchoolChart from "./spells/LevelVsSchoolChart";
+import LevelVsTimeChart from "./spells/LevelVsTimeChart";
 import RitualRatioChart from "./spells/RitualRatioChart";
 import SchoolsRatioChart from "./spells/SchoolsRatioChart";
+import SchoolVsTimeChart from "./spells/SchoolVsTimeChart";
+import RarityVsAttunmentChart from "./items/RarityVsAttunmentChart";
+import RarityVsMagicBonusChart from "./items/RarityVsMagicBonusChart";
 
 const Statistics = () => {
   const [activeTab, setTab] = useState<string>("General");
@@ -41,6 +47,9 @@ const Statistics = () => {
           <LevelRatioChart />
           <RitualRatioChart />
           <ActionsRatioChart />
+          <SchoolVsTimeChart />
+          <LevelVsSchoolChart />
+          <LevelVsTimeChart />
         </OptionTab>
       )}
       {activeTab === "Gears" && (
@@ -49,6 +58,7 @@ const Statistics = () => {
           <DamageRatioChart />
           <CostRatioChart />
           <WeightRatioChart />
+          <WeightVsCostsChart />
         </OptionTab>
       )}
       {activeTab === "Magic Items" && (
@@ -58,6 +68,8 @@ const Statistics = () => {
           <MagicBonusRatioChart />
           <BaseRatioChart />
           <ItemTypeRatioChart />
+          <RarityVsAttunmentChart />
+          <RarityVsMagicBonusChart />
         </OptionTab>
       )}
       {activeTab === "Monsters" && (

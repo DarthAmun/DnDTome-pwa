@@ -25,11 +25,7 @@ const WeightRatioChart = () => {
     let promList: { name: string; count: number }[] = [];
     for (const weight of weights) {
       if (weight !== "") {
-        const count = await recivePromiseByAttributeCount(
-          "gears",
-          "weight",
-          weight.toString()
-        );
+        const count = await recivePromiseByAttributeCount("gears", "weight", weight.toString());
         promList.push({
           name: weight.toString(),
           count: count,
@@ -40,11 +36,13 @@ const WeightRatioChart = () => {
     let names: string[] = [];
     let counts: number[] = [];
     let colors: string[] = [];
-    promList.forEach((count) => {
-      names.push(count.name);
-      counts.push(count.count);
-      colors.push("#" + Math.floor(Math.random() * 16777215).toString(16));
-    });
+    promList
+      .sort((a, b) => b.count - a.count)
+      .forEach((count) => {
+        names.push(count.name);
+        counts.push(count.count);
+        colors.push("#" + Math.floor(Math.random() * 16777215).toString(16));
+      });
     setGeneralCounts({
       labels: names,
       datasets: [

@@ -25,11 +25,7 @@ const RitualRatioChart = () => {
     let promList: { name: string; count: number }[] = [];
     for (const ritual of rituals) {
       if (ritual !== undefined) {
-        const count = await recivePromiseByAttributeCount(
-          "spells",
-          "ritual",
-          ritual as number
-        );
+        const count = await recivePromiseByAttributeCount("spells", "ritual", ritual as number);
         promList.push({
           name: ritual.toString() === "0" ? "no Ritual" : "Ritual",
           count: count,
@@ -73,9 +69,8 @@ const RitualRatioChart = () => {
 export default RitualRatioChart;
 
 const OptionSection = styled.div`
-  flex: 1 1 15em;
-  width: calc(100% - 1em);
-  max-width: 400px;
+  flex: 1 1 auto;
+  max-width: 30em;
   color: ${({ theme }) => theme.tile.color};
   background-color: ${({ theme }) => theme.tile.backgroundColor};
   margin: 0.5em;

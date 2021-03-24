@@ -22,21 +22,17 @@ const ActionsRatioChart = () => {
   const makeSchoolsData = async () => {
     let times = await reciveAttributeSelectionPromise("spells", "time");
 
-    let newTimes:string[] = [];
+    let newTimes: string[] = [];
     times.forEach((time) => {
-      if(!time.toString().startsWith("1 reaction")) {
+      if (!time.toString().startsWith("1 reaction")) {
         newTimes.push(time.toString());
       }
-    })
+    });
 
     let promList: { name: string; count: number }[] = [];
     for (const time of newTimes) {
       if (time !== "") {
-        const count = await recivePromiseByAttributeCount(
-          "spells",
-          "time",
-          time.toString()
-        );
+        const count = await recivePromiseByAttributeCount("spells", "time", time.toString());
         promList.push({
           name: time.toString(),
           count: count,
@@ -47,11 +43,13 @@ const ActionsRatioChart = () => {
     let names: string[] = [];
     let counts: number[] = [];
     let colors: string[] = [];
-    promList.forEach((count) => {
-      names.push(count.name);
-      counts.push(count.count);
-      colors.push("#" + Math.floor(Math.random() * 16777215).toString(16));
-    });
+    promList
+      .sort((a, b) => b.count - a.count)
+      .forEach((count) => {
+        names.push(count.name);
+        counts.push(count.count);
+        colors.push("#" + Math.floor(Math.random() * 16777215).toString(16));
+      });
     setGeneralCounts({
       labels: names,
       datasets: [
@@ -69,7 +67,7 @@ const ActionsRatioChart = () => {
       <SelectionTitle>Time Ratio</SelectionTitle>
       {!loading && (
         <div style={{ width: "100%", paddingBottom: "10px" }}>
-          <Bar data={generalCounts} />
+          <Bar data={generalCounts} legend={{ display: false }} />
         </div>
       )}
       {loading && <LocalLoadingSpinner />}
@@ -80,7 +78,7 @@ const ActionsRatioChart = () => {
 export default ActionsRatioChart;
 
 const OptionSection = styled.div`
-  flex: 1 1 800em;
+  flex: 1 1 800px;
   width: calc(100% - 1em);
   max-width: 800px;
   color: ${({ theme }) => theme.tile.color};

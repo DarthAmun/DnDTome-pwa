@@ -25,11 +25,7 @@ const BaseRatioChart = () => {
     let promList: { name: string; count: number }[] = [];
     for (const base of bases) {
       if (base !== "") {
-        const count = await recivePromiseByAttributeCount(
-          "items",
-          "base",
-          base.toString()
-        );
+        const count = await recivePromiseByAttributeCount("items", "base", base.toString());
         promList.push({
           name: base.toString(),
           count: count,
@@ -40,11 +36,13 @@ const BaseRatioChart = () => {
     let names: string[] = [];
     let counts: number[] = [];
     let colors: string[] = [];
-    promList.forEach((count) => {
-      names.push(count.name);
-      counts.push(count.count);
-      colors.push("#" + Math.floor(Math.random() * 16777215).toString(16));
-    });
+    promList
+      .sort((a, b) => b.count - a.count)
+      .forEach((count) => {
+        names.push(count.name);
+        counts.push(count.count);
+        colors.push("#" + Math.floor(Math.random() * 16777215).toString(16));
+      });
     setGeneralCounts({
       labels: names,
       datasets: [
@@ -62,7 +60,7 @@ const BaseRatioChart = () => {
       <SelectionTitle>Base Graph</SelectionTitle>
       {!loading && (
         <div style={{ width: "100%", paddingBottom: "10px" }}>
-          <Bar data={generalCounts} />
+          <Bar data={generalCounts} legend={{ display: false }} />
         </div>
       )}
       {loading && <LocalLoadingSpinner />}

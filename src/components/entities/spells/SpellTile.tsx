@@ -13,6 +13,7 @@ import {
   faUser,
   faLink,
 } from "@fortawesome/free-solid-svg-icons";
+import { stringToColour } from "../../../services/ColorService";
 
 interface $Props {
   spell: Spell;
@@ -193,7 +194,7 @@ const School = styled.div<SchoolType>`
     } else if (props.school === "Illusion") {
       return "#8b42f9";
     } else {
-      return "white";
+      return stringToColour(props.school);
     }
   }};
 `;

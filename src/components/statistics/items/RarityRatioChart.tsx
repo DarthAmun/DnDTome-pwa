@@ -25,11 +25,7 @@ const RarityRatioChart = () => {
     let promList: { name: string; count: number }[] = [];
     for (const rarity of rarities) {
       if (rarity !== undefined) {
-        const count = await recivePromiseByAttributeCount(
-          "items",
-          "rarity",
-          rarity.toString()
-        );
+        const count = await recivePromiseByAttributeCount("items", "rarity", rarity.toString());
         promList.push({
           name: rarity.toString(),
           count: count,
@@ -61,8 +57,22 @@ const RarityRatioChart = () => {
     <OptionSection>
       <SelectionTitle>Rarity Ratio</SelectionTitle>
       {!loading && (
-        <div style={{ width: "100%", paddingBottom: "10px" }}>
-          <Doughnut data={generalCounts} />
+        <div
+          style={{
+            position: "relative",
+            width: "100%",
+            paddingBottom: "10px",
+          }}
+        >
+          <Doughnut
+            data={generalCounts}
+            options={{
+              responsive: true,
+              legend: {
+                position: "top",
+              },
+            }}
+          />
         </div>
       )}
       {loading && <LocalLoadingSpinner />}
@@ -73,9 +83,8 @@ const RarityRatioChart = () => {
 export default RarityRatioChart;
 
 const OptionSection = styled.div`
-  flex: 1 1 15em;
-  width: calc(100% - 1em);
-  max-width: 400px;
+  flex: 1 1 auto;
+  max-width: 30em;
   color: ${({ theme }) => theme.tile.color};
   background-color: ${({ theme }) => theme.tile.backgroundColor};
   margin: 0.5em;

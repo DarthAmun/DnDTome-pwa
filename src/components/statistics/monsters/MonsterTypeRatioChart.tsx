@@ -25,11 +25,7 @@ const MonsterTypeRatioChart = () => {
     let promList: { name: string; count: number }[] = [];
     for (const type of types) {
       if (type !== undefined) {
-        const count = await recivePromiseByAttributeCount(
-          "monsters",
-          "type",
-          type.toString()
-        );
+        const count = await recivePromiseByAttributeCount("monsters", "type", type.toString());
         promList.push({
           name: type.toString(),
           count: count,
@@ -40,11 +36,13 @@ const MonsterTypeRatioChart = () => {
     let names: string[] = [];
     let counts: number[] = [];
     let colors: string[] = [];
-    promList.forEach((count) => {
-      names.push(count.name);
-      counts.push(count.count);
-      colors.push("#" + Math.floor(Math.random() * 16777215).toString(16));
-    });
+    promList
+      .sort((a, b) => b.count - a.count)
+      .forEach((count) => {
+        names.push(count.name);
+        counts.push(count.count);
+        colors.push("#" + Math.floor(Math.random() * 16777215).toString(16));
+      });
     setGeneralCounts({
       labels: names,
       datasets: [

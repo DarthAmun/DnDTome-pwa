@@ -25,11 +25,7 @@ const CrRatioChart = () => {
     let promList: { name: string; count: number }[] = [];
     for (const cr of crs) {
       if (cr !== undefined) {
-        const count = await recivePromiseByAttributeCount(
-          "monsters",
-          "cr",
-          cr as number
-        );
+        const count = await recivePromiseByAttributeCount("monsters", "cr", cr as number);
         promList.push({
           name: cr.toString(),
           count: count,

@@ -346,6 +346,7 @@ const parseItem = (obj: any, fileName: string) => {
     let baseParts: string[] = obj.baseItem.split("|");
     base = baseParts[0];
   }
+  base = base.toLowerCase().trim();
 
   let type = "";
   if (obj.type !== undefined) {
@@ -409,6 +410,12 @@ const parseItem = (obj: any, fileName: string) => {
     }
   }
 
+  let rarity: string = "";
+  if (obj.rarity !== undefined) {
+    rarity = obj.rarity;
+  }
+  rarity = rarity.toLowerCase().trim();
+
   let newItem = new Item(
     0,
     obj.name,
@@ -416,7 +423,7 @@ const parseItem = (obj: any, fileName: string) => {
     description,
     "",
     "",
-    obj.rarity,
+    rarity,
     magicBonus,
     attunment,
     base,
@@ -568,13 +575,17 @@ export const makeSpell = (obj: any, fileName: string): Spell => {
 
   let school = "";
   if (obj.school === "V") school = "Evocation";
-  if (obj.school === "D") school = "Divination";
-  if (obj.school === "N") school = "Necromancy";
-  if (obj.school === "T") school = "Transmutation";
-  if (obj.school === "I") school = "Illusion";
-  if (obj.school === "C") school = "Conjuration";
-  if (obj.school === "A") school = "Abjuration";
-  if (obj.school === "E") school = "Enchantment";
+  else if (obj.school === "D") school = "Divination";
+  else if (obj.school === "N") school = "Necromancy";
+  else if (obj.school === "T") school = "Transmutation";
+  else if (obj.school === "I") school = "Illusion";
+  else if (obj.school === "C") school = "Conjuration";
+  else if (obj.school === "A") school = "Abjuration";
+  else if (obj.school === "E") school = "Enchantment";
+  else if (obj.school === "P") school = "Psion";
+  else if (obj.school === "CR") school = "Chronomancy";
+  else school = obj.school !== undefined && obj.school !== null ? obj.school.toString() : "";
+  school = school.trim();
 
   let time = "";
   if (obj.time !== undefined) {
@@ -585,6 +596,7 @@ export const makeSpell = (obj: any, fileName: string): Spell => {
       " " +
       (obj.time[0].condition ? obj.time[0].condition : "");
   }
+  time = time.toLowerCase().trim();
 
   let range = "";
   if (obj.range !== undefined) {
@@ -617,6 +629,7 @@ export const makeSpell = (obj: any, fileName: string): Spell => {
       }
     }
   }
+  components = components.trim();
 
   let duration = "";
   if (obj.duration !== undefined) {
@@ -629,6 +642,7 @@ export const makeSpell = (obj: any, fileName: string): Spell => {
         ? obj.duration[0].duration.type + " " + obj.duration[0].duration.amount
         : "");
   }
+  duration = duration.trim();
 
   let text = "";
   obj.entries.forEach((textPart: string | any) => {

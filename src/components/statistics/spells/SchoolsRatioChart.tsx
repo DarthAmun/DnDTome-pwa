@@ -27,11 +27,7 @@ const SchoolsRatioChart = () => {
       if (school !== "")
         promList.push({
           name: school.toString(),
-          count: await recivePromiseByAttributeCount(
-            "spells",
-            "school",
-            school.toString()
-          ),
+          count: await recivePromiseByAttributeCount("spells", "school", school.toString()),
         });
     }
 
@@ -71,9 +67,8 @@ const SchoolsRatioChart = () => {
 export default SchoolsRatioChart;
 
 const OptionSection = styled.div`
-  flex: 1 1 15em;
-  width: calc(100% - 1em);
-  max-width: 400px;
+  flex: 1 1 auto;
+  max-width: 30em;
   color: ${({ theme }) => theme.tile.color};
   background-color: ${({ theme }) => theme.tile.backgroundColor};
   margin: 0.5em;

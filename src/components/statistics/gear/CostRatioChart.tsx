@@ -25,11 +25,7 @@ const CostRatioChart = () => {
     let promList: { name: string; count: number }[] = [];
     for (const cost of costs) {
       if (cost !== "") {
-        const count = await recivePromiseByAttributeCount(
-          "gears",
-          "cost",
-          cost.toString()
-        );
+        const count = await recivePromiseByAttributeCount("gears", "cost", cost.toString());
         promList.push({
           name: cost.toString(),
           count: count,
@@ -40,11 +36,13 @@ const CostRatioChart = () => {
     let names: string[] = [];
     let counts: number[] = [];
     let colors: string[] = [];
-    promList.forEach((count) => {
-      names.push(count.name);
-      counts.push(count.count);
-      colors.push("#" + Math.floor(Math.random() * 16777215).toString(16));
-    });
+    promList
+      .sort((a, b) => b.count - a.count)
+      .forEach((count) => {
+        names.push(count.name);
+        counts.push(count.count);
+        colors.push("#" + Math.floor(Math.random() * 16777215).toString(16));
+      });
     setGeneralCounts({
       labels: names,
       datasets: [
@@ -79,7 +77,7 @@ const OptionSection = styled.div`
   color: ${({ theme }) => theme.tile.color};
   background-color: ${({ theme }) => theme.tile.backgroundColor};
   margin: 0.5em;
-  border-radius:  10px;
+  border-radius: 10px;
   box-shadow: ${({ theme }) => theme.tile.boxShadow};
   overflow: hidden;
 
