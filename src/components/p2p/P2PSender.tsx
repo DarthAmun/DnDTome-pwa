@@ -23,7 +23,7 @@ const P2PSender = ({ data, mode }: $Props) => {
     if (peer === undefined) {
       const brokerId = generateBrokerId();
       const newPeer = new Peer(brokerId, {
-        host: "peerjs.thedndtome.com",
+        host: "peerjs.thorbenkuck.de",
         secure: true,
       });
       console.log(newPeer);

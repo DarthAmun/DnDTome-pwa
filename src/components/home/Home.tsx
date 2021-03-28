@@ -23,8 +23,8 @@ const Home = () => {
           </SectionText>
           <SectionText>
             You can install this webapp as a app in certain browsers. For more infos on this visit
-            the discord or the help section down below. Additionally this webapp works without an connection to the internet once
-            visited. So no worries playing in the woods.
+            the discord or the help section down below. Additionally this webapp works without an
+            connection to the internet once visited. So no worries playing in the woods.
           </SectionText>
           <SectionText>
             If the webapp does not contain anything please import data via the options. For more

@@ -21,9 +21,10 @@ import TinyNumberField from "../../../form_elements/TinyNumberField";
 import Board from "../../../general_elements/board/Board";
 import { DamageDialog } from "../../../general_elements/Dialog";
 import { LoadingSpinner } from "../../../Loading";
+import P2PEncounter from "../../../p2p/P2PEncounter";
 
 interface $Props {
-  encounter: Encounter;
+  encounter?: Encounter;
   dmView: boolean;
   onEdit: (value: Encounter) => void;
 }
@@ -36,31 +37,33 @@ const EncounterView = ({ encounter, dmView, onEdit }: $Props) => {
   const [loading, isLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    buildEncounter(encounter).then((buildEncounter) => {
+    buildEncounter(encounter || new Encounter()).then((buildEncounter) => {
       setLoadedEncounter(buildEncounter);
       isLoading(false);
     });
   }, [encounter, setLoadedEncounter]);
 
   const onChangePlayerField = (field: string, newField: string | number, oldPlayer: Player) => {
-    if (oldPlayer.isMonster) {
-      let newPlayers = loadedEncounter.encounter.enemies.map((newPlayer: Player) => {
-        if (oldPlayer === newPlayer) {
-          return { ...newPlayer, [field]: newField };
-        } else {
-          return newPlayer;
-        }
-      });
-      onEdit({ ...encounter, enemies: newPlayers });
-    } else {
-      let newPlayers = loadedEncounter.encounter.players.map((newPlayer: Player) => {
-        if (oldPlayer === newPlayer) {
-          return { ...newPlayer, [field]: newField };
-        } else {
-          return newPlayer;
-        }
-      });
-      onEdit({ ...encounter, players: newPlayers });
+    if (encounter !== undefined) {
+      if (oldPlayer.isMonster) {
+        let newPlayers = loadedEncounter.encounter.enemies.map((newPlayer: Player) => {
+          if (oldPlayer === newPlayer) {
+            return { ...newPlayer, [field]: newField };
+          } else {
+            return newPlayer;
+          }
+        });
+        onEdit({ ...encounter, enemies: newPlayers });
+      } else {
+        let newPlayers = loadedEncounter.encounter.players.map((newPlayer: Player) => {
+          if (oldPlayer === newPlayer) {
+            return { ...newPlayer, [field]: newField };
+          } else {
+            return newPlayer;
+          }
+        });
+        onEdit({ ...encounter, players: newPlayers });
+      }
     }
   };
 
@@ -73,77 +76,83 @@ const EncounterView = ({ encounter, dmView, onEdit }: $Props) => {
   };
 
   const startEncounter = () => {
-    let newPlayers = encounter.players.map((player: Player) => {
-      if (player.init < 0) {
-        let roll = rollDie(20);
-        roll += player.initBonus || 0;
-        return { ...player, init: roll };
-      } else {
-        return player;
-      }
-    });
-    let newEnemies = encounter.enemies.map((enemy: Player) => {
-      if (enemy.init < 0) {
-        let roll = rollDie(20);
-        roll += enemy.initBonus || 0;
-        return { ...enemy, init: roll };
-      } else {
-        return enemy;
-      }
-    });
-    onEdit({
-      ...encounter,
-      enemies: newEnemies,
-      players: newPlayers,
-      isPlaying: true,
-      currentInit: 0,
-      roundCounter: 0,
-    });
+    if (encounter !== undefined) {
+      let newPlayers = encounter.players.map((player: Player) => {
+        if (player.init < 0) {
+          let roll = rollDie(20);
+          roll += player.initBonus || 0;
+          return { ...player, init: roll };
+        } else {
+          return player;
+        }
+      });
+      let newEnemies = encounter.enemies.map((enemy: Player) => {
+        if (enemy.init < 0) {
+          let roll = rollDie(20);
+          roll += enemy.initBonus || 0;
+          return { ...enemy, init: roll };
+        } else {
+          return enemy;
+        }
+      });
+      onEdit({
+        ...encounter,
+        enemies: newEnemies,
+        players: newPlayers,
+        isPlaying: true,
+        currentInit: 0,
+        roundCounter: 0,
+      });
+    }
   };
 
   const finishEncounter = () => {
-    let newPlayers = encounter.players.map((player: Player) => {
-      return { ...player, init: -1 };
-    });
-    let newEnemies = encounter.enemies.map((enemy: Player) => {
-      return { ...enemy, init: -1 };
-    });
-    onEdit({
-      ...encounter,
-      enemies: newEnemies,
-      players: newPlayers,
-      isPlaying: false,
-      currentInit: 0,
-      roundCounter: 0,
-    });
+    if (encounter !== undefined) {
+      let newPlayers = encounter.players.map((player: Player) => {
+        return { ...player, init: -1 };
+      });
+      let newEnemies = encounter.enemies.map((enemy: Player) => {
+        return { ...enemy, init: -1 };
+      });
+      onEdit({
+        ...encounter,
+        enemies: newEnemies,
+        players: newPlayers,
+        isPlaying: false,
+        currentInit: 0,
+        roundCounter: 0,
+      });
+    }
   };
 
   const nextPlayer = () => {
-    let nextInit = (encounter.currentInit + 1) % loadedEncounter.players.length;
-    let roundCounter = encounter.roundCounter;
-    if ((encounter.currentInit + 1) % loadedEncounter.players.length === 0) {
-      roundCounter++;
-    }
-
-    let counter = 0;
-    while (loadedEncounter.players[nextInit].player.currentHp <= 0) {
-      if ((nextInit + 1) % loadedEncounter.players.length === 0) {
+    if (encounter !== undefined) {
+      let nextInit = (encounter.currentInit + 1) % loadedEncounter.players.length;
+      let roundCounter = encounter.roundCounter;
+      if ((encounter.currentInit + 1) % loadedEncounter.players.length === 0) {
         roundCounter++;
       }
-      nextInit = (nextInit + 1) % loadedEncounter.players.length;
-      counter++;
-      if (counter > loadedEncounter.players.length) {
-        break;
+
+      let counter = 0;
+      while (loadedEncounter.players[nextInit].player.currentHp <= 0) {
+        if ((nextInit + 1) % loadedEncounter.players.length === 0) {
+          roundCounter++;
+        }
+        nextInit = (nextInit + 1) % loadedEncounter.players.length;
+        counter++;
+        if (counter > loadedEncounter.players.length) {
+          break;
+        }
       }
-    }
-    if (counter > loadedEncounter.players.length) {
-      finishEncounter();
-    } else {
-      onEdit({
-        ...encounter,
-        currentInit: nextInit,
-        roundCounter: roundCounter,
-      });
+      if (counter > loadedEncounter.players.length) {
+        finishEncounter();
+      } else {
+        onEdit({
+          ...encounter,
+          currentInit: nextInit,
+          roundCounter: roundCounter,
+        });
+      }
     }
   };
 
@@ -201,166 +210,177 @@ const EncounterView = ({ encounter, dmView, onEdit }: $Props) => {
   }, [loadedEncounter.encounter]);
 
   return (
-    <CenterWrapper>
-      {damageDialog && (
-        <DamageDialog
-          name={loadedEncounter.players[damageDialogIndex].player.name}
-          damageText={"Damage"}
-          damageClick={(currentHp) => {
-            onChangePlayerField(
-              "currentHp",
-              loadedEncounter.players[damageDialogIndex].player.currentHp - currentHp,
-              loadedEncounter.players[damageDialogIndex].player
-            );
-            setDamageDialog(false);
-          }}
-          healText={"Heal"}
-          healClick={(currentHp) => {
-            onChangePlayerField(
-              "currentHp",
-              loadedEncounter.players[damageDialogIndex].player.currentHp + currentHp >
-                loadedEncounter.players[damageDialogIndex].player.hp
-                ? loadedEncounter.players[damageDialogIndex].player.hp
-                : loadedEncounter.players[damageDialogIndex].player.currentHp + currentHp,
-              loadedEncounter.players[damageDialogIndex].player
-            );
-            setDamageDialog(false);
-          }}
-          abortText={"Back"}
-          abortClick={() => {
-            setDamageDialog(false);
-          }}
-        />
-      )}
-      <View mode={dmView ? 1 : 0}>
-        <Name>
-          <b>{encounter.name}</b>
-        </Name>
-        <PropWrapper>
-          {dmView && (
-            <PropElm>
-              <PropTitle>Difficulty: </PropTitle>
-              {loadedEncounter.difficulty.difficulty}
-            </PropElm>
-          )}
-          <PropElm>
-            <PropTitle>Round: </PropTitle>
-            {encounter.roundCounter}
-          </PropElm>
-          {encounter && !encounter.isPlaying && (
-            <TextButton
-              text={"Start Encounter"}
-              icon={faPlayCircle}
-              onClick={() => startEncounter()}
-            />
-          )}
-          {encounter && encounter.isPlaying && (
-            <>
-              <TextButton text={"Next"} icon={faStepForward} onClick={() => nextPlayer()} />
-              <TextButton
-                text={"End Encounter"}
-                icon={faStopCircle}
-                onClick={() => finishEncounter()}
-              />
-            </>
-          )}
-        </PropWrapper>
-        {loading && <LoadingSpinner />}
-        {!loading && (
-          <Table>
-            <thead>
-              <tr>
-                <th>Init</th>
-                <th>Name</th>
-                {dmView && <th>Current Hp</th>}
-                {dmView && <th>AC</th>}
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {loadedEncounter.players.map((buildPlayer: BuildPlayer, index: number) => {
-                return (
-                  <Row
-                    current={encounter.currentInit === index && encounter.isPlaying}
-                    isDead={buildPlayer.player.currentHp <= 0}
-                    key={index}
-                  >
-                    <PropField>
-                      <TinyNumberField
-                        value={buildPlayer.player.init}
-                        onChange={(init) => onChangePlayerField("init", init, buildPlayer.player)}
-                      />
-                    </PropField>
-                    <Prop>
-                      {buildPlayer.entity.pic !== "" && buildPlayer.entity.pic !== undefined ? (
-                        <PlayerImage player={buildPlayer}></PlayerImage>
-                      ) : (
-                        <></>
-                      )}
-                      {buildPlayer.player.isMonster && (
-                        <MainLink
-                          onClick={() =>
-                            history.push(`/monster-detail/name/${buildPlayer.player.name}`)
-                          }
-                        >
-                          {dmView ? buildPlayer.player.name : "???"}
-                        </MainLink>
-                      )}
-                      {!buildPlayer.player.isMonster && (
-                        <MainLink
-                          onClick={() =>
-                            history.push(`/char-detail/name/${buildPlayer.player.name}`)
-                          }
-                        >
-                          {buildPlayer.player.name}
-                        </MainLink>
-                      )}
-                    </Prop>
-                    <PropRight>
-                      <DamageButton onClick={() => showDamageDialog(index)}>
-                        <GiBroadsword />
-                        <GiHeartBottle />
-                      </DamageButton>
-                      {dmView && `${buildPlayer.player.currentHp} / ${buildPlayer.player.hp}`}
-                    </PropRight>
-                    {dmView && <Prop>{buildPlayer.player.ac}</Prop>}
-                    {/* <Prop>{player.tag}</Prop> */}
-                    <td>
-                      {buildPlayer.player.currentHp > 0 && (
-                        <IconButton
-                          icon={faSkullCrossbones}
-                          onClick={() => killPlayer(buildPlayer.player)}
-                        />
-                      )}
-                      {buildPlayer.player.currentHp <= 0 && (
-                        <IconButton
-                          icon={faHandHoldingHeart}
-                          onClick={() => revicePlayer(buildPlayer.player)}
-                        />
-                      )}
-                    </td>
-                  </Row>
-                );
-              })}
-            </tbody>
-          </Table>
+    <>
+      <P2PEncounter
+        encounter={loadedEncounter}
+        onEdit={(value) => onEdit(value.encounter)}
+        isHost={true}
+      />
+      <CenterWrapper>
+        {damageDialog && (
+          <DamageDialog
+            name={loadedEncounter.players[damageDialogIndex].player.name}
+            damageText={"Damage"}
+            damageClick={(currentHp) => {
+              onChangePlayerField(
+                "currentHp",
+                loadedEncounter.players[damageDialogIndex].player.currentHp - currentHp,
+                loadedEncounter.players[damageDialogIndex].player
+              );
+              setDamageDialog(false);
+            }}
+            healText={"Heal"}
+            healClick={(currentHp) => {
+              onChangePlayerField(
+                "currentHp",
+                loadedEncounter.players[damageDialogIndex].player.currentHp + currentHp >
+                  loadedEncounter.players[damageDialogIndex].player.hp
+                  ? loadedEncounter.players[damageDialogIndex].player.hp
+                  : loadedEncounter.players[damageDialogIndex].player.currentHp + currentHp,
+                loadedEncounter.players[damageDialogIndex].player
+              );
+              setDamageDialog(false);
+            }}
+            abortText={"Back"}
+            abortClick={() => {
+              setDamageDialog(false);
+            }}
+          />
         )}
-      </View>
-      {loadedEncounter && getMap() !== "" && (
-        <Board
-          onChangePlayers={onChangePlayers}
-          players={loadedEncounter.players}
-          dimension={
-            encounter.dimension !== undefined
-              ? encounter.dimension
-              : { width: 20, height: 20, size: 20, zoom: 100 }
-          }
-          currentPlayerNumber={loadedEncounter.encounter.currentInit}
-          onChangeDimension={onChangeDimension}
-          img={getMap()}
-        ></Board>
-      )}
-    </CenterWrapper>
+        <View mode={dmView ? 1 : 0}>
+          <Name>
+            <b>{encounter?.name}</b>
+          </Name>
+          <PropWrapper>
+            {dmView && (
+              <PropElm>
+                <PropTitle>Difficulty: </PropTitle>
+                {loadedEncounter.difficulty.difficulty}
+              </PropElm>
+            )}
+            <PropElm>
+              <PropTitle>Round: </PropTitle>
+              {encounter?.roundCounter}
+            </PropElm>
+            {encounter && !encounter.isPlaying && (
+              <TextButton
+                text={"Start Encounter"}
+                icon={faPlayCircle}
+                onClick={() => startEncounter()}
+              />
+            )}
+            {encounter && encounter.isPlaying && (
+              <>
+                <TextButton text={"Next"} icon={faStepForward} onClick={() => nextPlayer()} />
+                <TextButton
+                  text={"End Encounter"}
+                  icon={faStopCircle}
+                  onClick={() => finishEncounter()}
+                />
+              </>
+            )}
+          </PropWrapper>
+          {loading && <LoadingSpinner />}
+          {!loading && (
+            <Table>
+              <thead>
+                <tr>
+                  <th>Init</th>
+                  <th>Name</th>
+                  {dmView && <th>Current Hp</th>}
+                  {dmView && <th>AC</th>}
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                {encounter &&
+                  loadedEncounter.players.map((buildPlayer: BuildPlayer, index: number) => {
+                    return (
+                      <Row
+                        current={encounter.currentInit === index && encounter.isPlaying}
+                        isDead={buildPlayer.player.currentHp <= 0}
+                        key={index}
+                      >
+                        <PropField>
+                          <TinyNumberField
+                            value={buildPlayer.player.init}
+                            onChange={(init) =>
+                              onChangePlayerField("init", init, buildPlayer.player)
+                            }
+                          />
+                        </PropField>
+                        <Prop>
+                          {buildPlayer.entity.pic !== "" && buildPlayer.entity.pic !== undefined ? (
+                            <PlayerImage player={buildPlayer}></PlayerImage>
+                          ) : (
+                            <></>
+                          )}
+                          {buildPlayer.player.isMonster && (
+                            <MainLink
+                              onClick={() =>
+                                history.push(`/monster-detail/name/${buildPlayer.player.name}`)
+                              }
+                            >
+                              {dmView ? buildPlayer.player.name : "???"}
+                            </MainLink>
+                          )}
+                          {!buildPlayer.player.isMonster && (
+                            <MainLink
+                              onClick={() =>
+                                history.push(`/char-detail/name/${buildPlayer.player.name}`)
+                              }
+                            >
+                              {buildPlayer.player.name}
+                            </MainLink>
+                          )}
+                        </Prop>
+                        <PropRight>
+                          <DamageButton onClick={() => showDamageDialog(index)}>
+                            <GiBroadsword />
+                            <GiHeartBottle />
+                          </DamageButton>
+                          {dmView && `${buildPlayer.player.currentHp} / ${buildPlayer.player.hp}`}
+                        </PropRight>
+                        {dmView && <Prop>{buildPlayer.player.ac}</Prop>}
+                        {/* <Prop>{player.tag}</Prop> */}
+                        <td>
+                          {buildPlayer.player.currentHp > 0 && (
+                            <IconButton
+                              icon={faSkullCrossbones}
+                              onClick={() => killPlayer(buildPlayer.player)}
+                            />
+                          )}
+                          {buildPlayer.player.currentHp <= 0 && (
+                            <IconButton
+                              icon={faHandHoldingHeart}
+                              onClick={() => revicePlayer(buildPlayer.player)}
+                            />
+                          )}
+                        </td>
+                      </Row>
+                    );
+                  })}
+              </tbody>
+            </Table>
+          )}
+        </View>
+        {encounter && loadedEncounter && getMap() !== "" && (
+          <Board
+            onChangePlayers={onChangePlayers}
+            players={loadedEncounter.players}
+            showName={dmView}
+            dimension={
+              encounter.dimension !== undefined
+                ? encounter.dimension
+                : { width: 20, height: 20, size: 20, zoom: 100 }
+            }
+            currentPlayerNumber={loadedEncounter.encounter.currentInit}
+            onChangeDimension={onChangeDimension}
+            img={getMap()}
+          ></Board>
+        )}
+      </CenterWrapper>
+    </>
   );
 };
 

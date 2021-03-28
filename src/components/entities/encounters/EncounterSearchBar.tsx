@@ -9,7 +9,15 @@ import { faSearch, faRedoAlt, faPlusCircle, faFileExport } from "@fortawesome/fr
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import IconButton from "../../form_elements/IconButton";
 import StringField from "../../form_elements/StringField";
-import { FixedBar, SearchBar, CreateButton, ExportButton, LeftTooltip } from "../../SearchbarStyle";
+import {
+  FixedBar,
+  SearchBar,
+  CreateButton,
+  ExportButton,
+  LeftTooltip,
+  JoinButton,
+} from "../../SearchbarStyle";
+import { MdGroupAdd } from "react-icons/md";
 
 const EncounterSearchBar = () => {
   const [open, setOpen] = useState(false);
@@ -44,6 +52,10 @@ const EncounterSearchBar = () => {
     });
   };
 
+  const joinRoom = () => {
+    history.push(`/encounter-room`);
+  };
+
   const exportFiltered = () => {
     exportFilteredFromTable("encounters", filters, "DnDTome_filtered_encounters.json");
   };
@@ -67,6 +79,10 @@ const EncounterSearchBar = () => {
         <FontAwesomeIcon icon={faFileExport} />
         <LeftTooltip>Export filtered</LeftTooltip>
       </ExportButton>
+      <JoinButton onClick={() => joinRoom()}>
+        <MdGroupAdd />
+        <LeftTooltip>Join Encounter</LeftTooltip>
+      </JoinButton>
     </>
   );
 };

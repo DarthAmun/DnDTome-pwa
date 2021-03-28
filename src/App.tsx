@@ -19,6 +19,7 @@ const IdToEncounter = lazy(
 const NameToEncounter = lazy(
   () => import("./components/entities/encounters/details/link_wrapper/NameToEncounter")
 );
+const EncounterRoom = lazy(() => import("./components/entities/encounters/details/EncounterRoom"));
 const Help = lazy(() => import("./components/help/Help"));
 const Home = lazy(() => import("./components/home/Home"));
 const Options = lazy(() => import("./components/options/Options"));
@@ -62,6 +63,7 @@ const App = () => {
               <Route path="/encounter-detail/name/:name" component={NameToEncounter}></Route>
               <Route path="/encounter-detail/id/:id" component={IdToEncounter}></Route>
               <Route path="/encounter-overview" component={EntityOverview}></Route>
+              <Route path="/encounter-room" component={EncounterRoom}></Route>
               <Route path="/book-detail/name/:name" component={ToEntity}></Route>
               <Route path="/book-detail/id/:id" component={ToEntity}></Route>
               <Route path="/book-overview" component={EntityOverview}></Route>

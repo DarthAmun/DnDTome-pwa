@@ -7,6 +7,7 @@ import NumberField from "../../form_elements/NumberField";
 interface $Props {
   img: string;
   players: BuildPlayer[];
+  showName: boolean;
   dimension: { width: number; height: number; size: number; zoom: number };
   currentPlayerNumber: number;
   onChangePlayers: (value: BuildPlayer[]) => void;
@@ -16,6 +17,7 @@ interface $Props {
 const Board = ({
   img,
   players,
+  showName,
   dimension,
   currentPlayerNumber,
   onChangePlayers,
@@ -40,6 +42,7 @@ const Board = ({
           <PlayerSlot
             key={"slot" + row + "" + j}
             cord={[row, j]}
+            showName={showName}
             players={players}
             size={dimension.size}
             zoom={dimension.zoom / 100}
@@ -52,7 +55,7 @@ const Board = ({
       }
       return list;
     },
-    [dimension, players, onChangePlayers, currentPlayerNumber, makeDrop, makeDrag]
+    [dimension, players, showName, onChangePlayers, currentPlayerNumber, makeDrop, makeDrag]
   );
 
   const makeBoard = useCallback(() => {
@@ -108,6 +111,7 @@ interface $PlayerSlotProps {
   size: number;
   zoom: number;
   cord: number[];
+  showName: boolean;
   currentPlayerNumber: number;
   players: BuildPlayer[];
   makeDrop: () => BuildPlayer | undefined;
@@ -118,6 +122,7 @@ const PlayerSlot = ({
   size,
   zoom,
   cord,
+  showName,
   players,
   currentPlayerNumber,
   makeDrop,
@@ -178,6 +183,7 @@ const PlayerSlot = ({
               key={"icon" + index}
               drag={drag}
               player={playerIcon}
+              showName={showName}
               dragOver={dragOver}
               pic={playerIcon.entity.pic}
               size={defineSize(size, playerIcon)}
@@ -272,6 +278,7 @@ const Slot = styled.div<SizeProp>`
 interface $ImageProps {
   pic: string;
   size: number;
+  showName: boolean;
   isDead: boolean;
   isCurrent: boolean;
   player: BuildPlayer;
@@ -279,19 +286,19 @@ interface $ImageProps {
   dragOver: any;
 }
 
-const Image = ({ dragOver, drag, pic, size, player, isDead, isCurrent }: $ImageProps) => {
-  const style = {
-    backgroundImage: `url(${pic})`,
-    backgroundPosition: "center",
-    backgroundSize: "cover",
-    backgroundRepeat: "no-repeat",
-    height: size - 6 + "px",
-    width: size - 6 + "px",
-    opacity: isDead ? "0.5" : "1",
-    border: isCurrent ? "" : "none",
-  };
-
+const Image = ({ dragOver, drag, pic, size, showName, player, isDead, isCurrent }: $ImageProps) => {
   if (pic !== "") {
+    const style = {
+      backgroundImage: `url(${pic})`,
+      backgroundPosition: "center",
+      backgroundSize: "cover",
+      backgroundRepeat: "no-repeat",
+      height: size - 6 + "px",
+      width: size - 6 + "px",
+      opacity: isDead ? "0.5" : "1",
+      border: isCurrent ? "" : "none",
+    };
+
     return (
       <ImageElm
         onDragStart={(e) => drag(e, player)}
@@ -301,7 +308,20 @@ const Image = ({ dragOver, drag, pic, size, player, isDead, isCurrent }: $ImageP
       ></ImageElm>
     );
   } else {
-    return <></>;
+    const style = {
+      height: size - 6 + "px",
+      width: size - 6 + "px",
+      opacity: isDead ? "0.5" : "1",
+      border: isCurrent ? "" : "none",
+      padding: size / 5 + "px",
+      fontSize: size / 6 + "px",
+    };
+
+    return (
+      <ImageElm onDragStart={(e) => drag(e, player)} onDragOver={dragOver} draggable style={style}>
+        {showName ? player.entity.name : "???"}
+      </ImageElm>
+    );
   }
 };
 
@@ -316,6 +336,7 @@ const ImageElm = styled.div`
   box-sizing: border-box;
   cursor: move;
   position: absolute;
+  text-align: center;
 `;
 
 const Empty = styled.div``;

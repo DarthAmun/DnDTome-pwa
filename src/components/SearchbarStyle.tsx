@@ -142,6 +142,11 @@ export const ExportButton = styled(CreateButton)`
   bottom: 70px;
 `;
 
+export const JoinButton = styled(CreateButton)`
+  font-size: 20px;
+  bottom: 130px;
+`;
+
 export const FieldGroup = styled.div`
   flex: 2 1 auto;
   display: flex;

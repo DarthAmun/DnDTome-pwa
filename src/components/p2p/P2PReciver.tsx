@@ -4,10 +4,7 @@ import Peer from "peerjs";
 import { scanImportFileTest } from "../../services/OptionService";
 import IEntity from "../../data/IEntity";
 
-import {
-  faCheck,
-  faExclamationCircle,
-} from "@fortawesome/free-solid-svg-icons";
+import { faCheck, faExclamationCircle } from "@fortawesome/free-solid-svg-icons";
 import StringField from "../form_elements/StringField";
 import TextButton from "../form_elements/TextButton";
 import { LoadingSpinner } from "../Loading";
@@ -25,7 +22,7 @@ const P2PReciver = ({ changeData, reload }: $Props) => {
   const [state, setState] = useState<any>();
   const [peer] = useState<Peer>(
     new Peer(undefined, {
-      host: "peerjs.thedndtome.com",
+      host: "peerjs.thorbenkuck.de",
       secure: true,
     })
   );
@@ -70,24 +67,12 @@ const P2PReciver = ({ changeData, reload }: $Props) => {
   return (
     <>
       {!!loading && <LoadingSpinner />}
-      <StringField
-        value={peerId}
-        label={"ID to recive from"}
-        onChange={(id) => setId(id)}
-      />
+      <StringField value={peerId} label={"ID to recive from"} onChange={(id) => setId(id)} />
       {error && <Icon icon={faExclamationCircle} />}
       {state !== undefined && peerId !== "" && (
         <>
-          <TextButton
-            text={"Accept"}
-            icon={faCheck}
-            onClick={() => acceptData()}
-          />
-          <TextButton
-            text={"Decline"}
-            icon={faCheck}
-            onClick={() => declineData()}
-          />
+          <TextButton text={"Accept"} icon={faCheck} onClick={() => acceptData()} />
+          <TextButton text={"Decline"} icon={faCheck} onClick={() => declineData()} />
         </>
       )}
     </>
