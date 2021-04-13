@@ -1,37 +1,38 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useHistory } from "react-router";
 import styled from "styled-components";
-import BuildEncounter from "../../../../data/encounter/BuildEncounter";
-import BuildPlayer from "../../../../data/encounter/BuildPlayer";
+import Encounter from "../../../../data/encounter/Encounter";
 import Player from "../../../../data/encounter/Player";
+import TinyNumberField from "../../../form_elements/TinyNumberField";
 import Board from "../../../general_elements/board/Board";
 import P2PEncounter from "../../../p2p/P2PEncounter";
 
 const EncounterRoom = () => {
   let history = useHistory();
-  const [encounter, onEdit] = useState<BuildEncounter>();
+  const [encounter, onEdit] = useState<Encounter>();
+  const [players, setPlayers] = useState<Player[]>([]);
+
+  useEffect(() => {
+    if (encounter !== undefined) {
+      setPlayers([...encounter.players, ...encounter.enemies]);
+    }
+  }, [encounter]);
 
   const onChangePlayers = useCallback(
-    (players: BuildPlayer[]) => {
+    (players: Player[]) => {
       if (encounter !== undefined) {
         if (players !== encounter?.players) {
           let newPlayers: Player[] = [];
-          players.forEach((player: BuildPlayer) => {
-            if (!player.player.isMonster) {
-              newPlayers.push(player.player);
+          players.forEach((player: Player) => {
+            if (!player.isEnemy) {
+              newPlayers.push(player);
             }
           });
-          let newEnemies: Player[] = [];
-          players.forEach((player: BuildPlayer) => {
-            if (player.player.isMonster) {
-              newEnemies.push(player.player);
-            }
-          });
-
-          onEdit({
-            ...encounter,
-            encounter: { ...encounter.encounter, players: newPlayers, enemies: newEnemies },
-          });
+          if (JSON.stringify(encounter.players) !== JSON.stringify(newPlayers))
+            onEdit({
+              ...encounter,
+              players: newPlayers,
+            });
         }
       }
     },
@@ -41,17 +42,13 @@ const EncounterRoom = () => {
   const getMap = useCallback(() => {
     if (encounter !== undefined) {
       if (
-        encounter.encounter.mapBase64 !== "" &&
-        encounter.encounter.mapBase64 !== null &&
-        encounter.encounter.mapBase64 !== undefined
+        encounter.mapBase64 !== "" &&
+        encounter.mapBase64 !== null &&
+        encounter.mapBase64 !== undefined
       ) {
-        return encounter.encounter.mapBase64;
-      } else if (
-        encounter.encounter.map !== "" &&
-        encounter.encounter.map !== null &&
-        encounter.encounter.map !== undefined
-      ) {
-        return encounter.encounter.map;
+        return encounter.mapBase64;
+      } else if (encounter.map !== "" && encounter.map !== null && encounter.map !== undefined) {
+        return encounter.map;
       }
     }
     return "";
@@ -63,12 +60,12 @@ const EncounterRoom = () => {
       <CenterWrapper>
         <View mode={0}>
           <Name>
-            <b>{encounter?.encounter?.name}</b>
+            <b>{encounter?.name}</b>
           </Name>
           <PropWrapper>
             <PropElm>
               <PropTitle>Round: </PropTitle>
-              {encounter?.encounter?.roundCounter}
+              {encounter?.roundCounter}
             </PropElm>
           </PropWrapper>
           <Table>
@@ -80,58 +77,57 @@ const EncounterRoom = () => {
             </thead>
             <tbody>
               {encounter &&
-                encounter.players.map((buildPlayer: BuildPlayer, index: number) => {
-                  return (
-                    <Row
-                      current={
-                        encounter.encounter.currentInit === index && encounter.encounter.isPlaying
-                      }
-                      isDead={buildPlayer.player.currentHp <= 0}
-                      key={index}
-                    >
-                      <PropField>{buildPlayer.player.init}</PropField>
-                      <Prop>
-                        {buildPlayer.entity.pic !== "" && buildPlayer.entity.pic !== undefined ? (
-                          <PlayerImage player={buildPlayer}></PlayerImage>
-                        ) : (
-                          <></>
-                        )}
-                        {buildPlayer.player.isMonster && (
-                          <MainLink
-                            onClick={() =>
-                              history.push(`/monster-detail/name/${buildPlayer.player.name}`)
-                            }
-                          >
-                            {"???"}
-                          </MainLink>
-                        )}
-                        {!buildPlayer.player.isMonster && (
-                          <MainLink
-                            onClick={() =>
-                              history.push(`/char-detail/name/${buildPlayer.player.name}`)
-                            }
-                          >
-                            {buildPlayer.player.name}
-                          </MainLink>
-                        )}
-                      </Prop>
-                    </Row>
-                  );
-                })}
+                players
+                  .sort((a: Player, b: Player) => {
+                    if (b.init === a.init || !encounter.isPlaying) {
+                      return a.name.localeCompare(b.name);
+                    }
+                    return b.init - a.init;
+                  })
+                  .filter((a) => !a.isVisible)
+                  .map((player: Player, index: number) => {
+                    return (
+                      <Row
+                        current={encounter.currentInit === index && encounter.isPlaying}
+                        isDead={player.currentHp <= 0}
+                        key={index}
+                      >
+                        <PropField>
+                          <TinyNumberField value={player.init} onChange={() => undefined} />
+                        </PropField>
+                        <Prop>
+                          {player.pic !== "" && player.pic !== undefined ? (
+                            <PlayerImage player={player}></PlayerImage>
+                          ) : (
+                            <></>
+                          )}
+                          {player.isMonster && <MainLink>{"???"}</MainLink>}
+                          {!player.isMonster && (
+                            <MainLink
+                              onClick={() => history.push(`/char-detail/name/${player.name}`)}
+                            >
+                              {player.name}
+                            </MainLink>
+                          )}
+                        </Prop>
+                      </Row>
+                    );
+                  })}
             </tbody>
           </Table>
         </View>
         {encounter && getMap() !== "" && (
           <Board
+            isHost={false}
             onChangePlayers={onChangePlayers}
-            players={encounter.players}
+            players={players}
             showName={false}
             dimension={
-              encounter.encounter.dimension !== undefined
-                ? encounter.encounter.dimension
+              encounter.dimension !== undefined
+                ? encounter.dimension
                 : { width: 20, height: 20, size: 20, zoom: 100 }
             }
-            currentPlayerNumber={encounter.encounter.currentInit}
+            currentPlayerNumber={encounter.currentInit}
             onChangeDimension={() => {}}
             img={getMap()}
           ></Board>
@@ -144,11 +140,11 @@ const EncounterRoom = () => {
 export default EncounterRoom;
 
 interface $PlayerImageProps {
-  player: BuildPlayer;
+  player: Player;
 }
 
 const PlayerImage = ({ player }: $PlayerImageProps) => {
-  return <Image pic={player.entity.pic} />;
+  return <Image pic={player.pic} />;
 };
 
 const Table = styled.table`

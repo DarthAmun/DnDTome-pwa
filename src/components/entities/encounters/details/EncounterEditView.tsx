@@ -13,6 +13,7 @@ import AutoStringField from "../../../form_elements/AutoStringField";
 import IconButton from "../../../form_elements/IconButton";
 import ImageImportField from "../../../form_elements/ImageField";
 import NumberField from "../../../form_elements/NumberField";
+import SingleSelectField from "../../../form_elements/SingleSelectField";
 import StringField from "../../../form_elements/StringField";
 import TextButton from "../../../form_elements/TextButton";
 
@@ -77,9 +78,13 @@ const EncounterEditView = ({ encounter, onEdit }: $Props) => {
         hp: results[0].hp,
         currentHp: results[0].hp,
         ac: results[0].ac,
+        isEnemy: true,
         isMonster: true,
         isNpc: false,
+        isVisible: true,
         level: results[0].cr,
+        pic: results[0].pic,
+        size: results[0].size,
       };
       onEdit({ ...encounter, enemies: enemies });
     } else if (results[0] && isChar(results[0])) {
@@ -93,9 +98,13 @@ const EncounterEditView = ({ encounter, onEdit }: $Props) => {
         hp: results[0].hp,
         currentHp: results[0].hp,
         ac: results[0].ac,
+        isEnemy: true,
         isMonster: true,
         isNpc: false,
+        isVisible: true,
         level: level,
+        pic: results[0].pic,
+        size: "medium",
       };
       onEdit({ ...encounter, enemies: enemies });
     } else if (results[0] && isNpc(results[0])) {
@@ -106,9 +115,13 @@ const EncounterEditView = ({ encounter, onEdit }: $Props) => {
           hp: results[0].monster.hp,
           currentHp: results[0].monster.hp,
           ac: results[0].monster.ac,
+          isEnemy: true,
           isMonster: true,
           isNpc: true,
+          isVisible: true,
           level: results[0].monster.cr,
+          pic: results[0].monster.pic,
+          size: results[0].monster.size,
         };
       } else if (results[0].char !== undefined) {
         let level = 0;
@@ -121,9 +134,13 @@ const EncounterEditView = ({ encounter, onEdit }: $Props) => {
           hp: results[0].char.hp,
           currentHp: results[0].char.hp,
           ac: results[0].char.ac,
+          isEnemy: true,
           isMonster: false,
           isNpc: true,
+          isVisible: true,
           level: level,
+          pic: results[0].char.pic,
+          size: "medium",
         };
       } else {
         enemies[i] = { ...oldEnemy, name: newEnemy, isNpc: true };
@@ -165,6 +182,7 @@ const EncounterEditView = ({ encounter, onEdit }: $Props) => {
     let results = await Promise.all(found);
     results = results.filter((e) => e !== undefined);
 
+    console.log(results[0] && isChar(results[0]));
     if (results[0] && isMonster(results[0])) {
       players[i] = {
         ...oldPlayer,
@@ -172,9 +190,13 @@ const EncounterEditView = ({ encounter, onEdit }: $Props) => {
         hp: results[0].hp,
         currentHp: results[0].hp,
         ac: results[0].ac,
+        isEnemy: false,
         isMonster: true,
         isNpc: false,
+        isVisible: true,
         level: results[0].cr,
+        pic: results[0].pic,
+        size: results[0].size,
       };
       onEdit({ ...encounter, players: players });
     } else if (results[0] && isChar(results[0])) {
@@ -182,15 +204,20 @@ const EncounterEditView = ({ encounter, onEdit }: $Props) => {
       results[0].classes.forEach((classSet: ClassSet) => {
         level += classSet.level;
       });
+      console.log(results[0]);
       players[i] = {
         ...oldPlayer,
         name: newPlayer,
         hp: results[0].hp,
         currentHp: results[0].hp,
         ac: results[0].ac,
-        isMonster: true,
+        isEnemy: false,
+        isMonster: false,
         isNpc: false,
+        isVisible: true,
         level: level,
+        pic: results[0].pic,
+        size: "medium",
       };
       onEdit({ ...encounter, players: players });
     } else if (results[0] && isNpc(results[0])) {
@@ -201,9 +228,13 @@ const EncounterEditView = ({ encounter, onEdit }: $Props) => {
           hp: results[0].monster.hp,
           currentHp: results[0].monster.hp,
           ac: results[0].monster.ac,
+          isEnemy: false,
           isMonster: true,
           isNpc: true,
+          isVisible: true,
           level: results[0].monster.cr,
+          pic: results[0].monster.pic,
+          size: results[0].monster.size,
         };
       } else if (results[0].char !== undefined) {
         let level = 0;
@@ -217,8 +248,12 @@ const EncounterEditView = ({ encounter, onEdit }: $Props) => {
           currentHp: results[0].char.hp,
           ac: results[0].char.ac,
           isMonster: false,
+          isEnemy: false,
           isNpc: true,
+          isVisible: true,
           level: level,
+          pic: results[0].char.pic,
+          size: "medium",
         };
       } else {
         players[i] = { ...oldPlayer, name: newPlayer, isNpc: true };
@@ -296,7 +331,25 @@ const EncounterEditView = ({ encounter, onEdit }: $Props) => {
               <NumberField
                 value={enemy.level}
                 label="Cr"
-                onChange={(level) => onChangePlayerField("level", level, enemy, index)}
+                onChange={(level) => onChangeEnemyField("level", level, enemy, index)}
+              />
+              <StringField
+                value={enemy.pic}
+                label="Pic"
+                onChange={(pic) => onChangeEnemyField("pic", pic, enemy, index)}
+              />
+              <SingleSelectField
+                options={[
+                  { value: "tiny", label: "tiny" },
+                  { value: "small", label: "small" },
+                  { value: "medium", label: "medium" },
+                  { value: "large", label: "large" },
+                  { value: "huge", label: "huge" },
+                  { value: "gargantuan", label: "gargantuan" },
+                ]}
+                value={enemy.size}
+                label={"Size"}
+                onChange={(size) => onChangePlayerField("size", size, enemy, index)}
               />
               <IconButton icon={faTrash} onClick={() => removeEnemy(index)} />
             </Container>
@@ -340,6 +393,24 @@ const EncounterEditView = ({ encounter, onEdit }: $Props) => {
                 value={player.level}
                 label="Level"
                 onChange={(level) => onChangePlayerField("level", level, player, index)}
+              />
+              <StringField
+                value={player.pic}
+                label="Pic"
+                onChange={(pic) => onChangePlayerField("pic", pic, player, index)}
+              />
+              <SingleSelectField
+                options={[
+                  { value: "tiny", label: "tiny" },
+                  { value: "small", label: "small" },
+                  { value: "medium", label: "medium" },
+                  { value: "large", label: "large" },
+                  { value: "huge", label: "huge" },
+                  { value: "gargantuan", label: "gargantuan" },
+                ]}
+                value={player.size}
+                label={"Size"}
+                onChange={(size) => onChangePlayerField("size", size, player, index)}
               />
               <IconButton icon={faTrash} onClick={() => removePlayer(index)} />
             </Container>

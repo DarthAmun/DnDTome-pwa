@@ -2,20 +2,18 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Peer from "peerjs";
 import { generateBrokerId } from "../../services/PeerIdService";
-
 import { faExclamationCircle } from "@fortawesome/free-solid-svg-icons";
 import StringField from "../form_elements/StringField";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import BuildEncounter from "../../data/encounter/BuildEncounter";
+import Encounter from "../../data/encounter/Encounter";
 
 interface $Props {
-  encounter?: BuildEncounter;
+  encounter?: Encounter;
   isHost: boolean;
-  onEdit: (value: BuildEncounter) => void;
+  onEdit: (value: Encounter) => void;
 }
 
 const P2PEncounter = ({ encounter, isHost, onEdit }: $Props) => {
-  const [master, setMaster] = useState<boolean | undefined>();
   const [peerId, setId] = useState<string>("");
   const [peer, setPeer] = useState<Peer>();
   const [error, setError] = useState<any>();
@@ -30,16 +28,16 @@ const P2PEncounter = ({ encounter, isHost, onEdit }: $Props) => {
         secure: true,
       });
       newPeer.on("connection", function (conn) {
-        console.log(conn);
-        setMaster(true);
         setConn((con) => [...con, conn]);
-
+        conn.on("open", function () {
+          conn.send(JSON.stringify(encounter));
+        });
         conn.on("error", function (errorData) {
           setError(errorData);
         });
         conn.on("data", function (data) {
           if (encounter !== data) {
-            onEdit(data);
+            onEdit(JSON.parse(data));
           }
         });
         conn.on("close", function () {
@@ -54,15 +52,13 @@ const P2PEncounter = ({ encounter, isHost, onEdit }: $Props) => {
   useEffect(() => {
     if (peer !== undefined && peerId !== "") {
       let conn = peer.connect(peerId);
-
       conn.on("open", function () {
-        setMaster(false);
         setConn((con) => [...con, conn]);
       });
       conn.on("data", function (data) {
         if (encounter !== data) {
           setChanged(true);
-          onEdit(data);
+          onEdit(JSON.parse(data));
         }
       });
       conn.on("close", function () {
@@ -76,7 +72,7 @@ const P2PEncounter = ({ encounter, isHost, onEdit }: $Props) => {
   useEffect(() => {
     if (encounter && isHost) {
       connections.forEach((conn) => {
-        conn.send(encounter);
+        conn.send(JSON.stringify(encounter));
       });
     }
   }, [encounter, connections, isHost]);
@@ -84,7 +80,7 @@ const P2PEncounter = ({ encounter, isHost, onEdit }: $Props) => {
   useEffect(() => {
     if (encounter && !isHost && !isChanged) {
       connections.forEach((conn) => {
-        conn.send(encounter);
+        conn.send(JSON.stringify(encounter));
       });
     } else if (!isHost && isChanged) {
       setChanged(false);
@@ -95,7 +91,7 @@ const P2PEncounter = ({ encounter, isHost, onEdit }: $Props) => {
 
   return (
     <>
-      {peer !== undefined && (master || master === undefined) && (
+      {peer !== undefined && isHost && (
         <StringField
           value={peer.id}
           label={`Your ID:`}
@@ -103,7 +99,7 @@ const P2PEncounter = ({ encounter, isHost, onEdit }: $Props) => {
           style={{ minWidth: "250px", float: "right" }}
         />
       )}
-      {peer !== undefined && connections.length === 0 && (
+      {peer !== undefined && !isHost && (
         <StringField
           value={peerId}
           label={"ID to recive from"}

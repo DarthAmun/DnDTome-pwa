@@ -3,9 +3,6 @@ import styled from "styled-components";
 import { useTheme } from "../theme/MyThemeProvider";
 import { darkTheme, lightTheme } from "../theme/Theme";
 
-import { faPatreon, faDiscord } from "@fortawesome/free-brands-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
 const GeneralOptions = () => {
   const { theme, setTheme } = useTheme();
 
@@ -21,28 +18,6 @@ const GeneralOptions = () => {
 
   return (
     <General>
-      <OptionSection>
-        <SelectionTitle>Want to support me?</SelectionTitle>
-        <ExternalLink
-          href="https://www.patreon.com/bePatron?u=25310394"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="patreon"
-        >
-          <FontAwesomeIcon icon={faPatreon} /> Become a patron
-        </ExternalLink>
-      </OptionSection>
-      <OptionSection>
-        <SelectionTitle>Found some bugs? Or have some feedback?</SelectionTitle>
-        <ExternalLink
-          href="https://discord.gg/2KB3tzG"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="discord"
-        >
-          <FontAwesomeIcon icon={faDiscord} /> Join the discord
-        </ExternalLink>
-      </OptionSection>
       <OptionSection>
         <SelectionTitle>Theme</SelectionTitle>
         <Button onClick={() => toggleTheme()}>Toggle Style</Button>
@@ -94,32 +69,6 @@ const Button = styled.button`
   color: ${({ theme }) => theme.buttons.color};
   cursor: pointer;
   line-height: 26px;
-`;
-
-const ExternalLink = styled.a`
-  flex: 1 1 auto;
-  display: inline-block;
-  text-decoration: none;
-  background-color: ${({ theme }) => theme.buttons.backgroundColor};
-  height: 38px;
-  border: none;
-  border-radius: 5px;
-  padding-left: 10px;
-  padding-right: 10px;
-  margin: 5px;
-  text-align: center;
-  font-family: inherit;
-  font-size: 14px;
-  color: ${({ theme }) => theme.buttons.color};
-  cursor: pointer;
-  line-height: 36px;
-
-  &.patreon {
-    background-color: rgb(232, 91, 70);
-  }
-  &.discord {
-    background-color: #7289da;
-  }
 `;
 
 const SelectionTitle = styled.div`

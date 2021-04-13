@@ -208,6 +208,10 @@ export const buildCharacter = async (character: Char): Promise<BuildChar> => {
   let currentGears = await Promise.all(gearList);
   let currentBases = await Promise.all(baseList);
 
+  currentBases = currentBases.filter(
+    (q, idx) => currentBases.findIndex((g) => g.name === q.name) === idx
+  );
+
   race = await recivePromiseByAttribute("races", "name", character.race.race);
   subrace = await recivePromiseByAttribute("subraces", "name", character.race.subrace);
 

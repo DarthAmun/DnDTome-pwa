@@ -55,7 +55,7 @@ const CharEditView = ({ character, onEdit, isNpc }: $Props) => {
     onEdit({ ...character, spells: newSpellList });
   };
   const addNewSpell = () => {
-    let newSpellList = character.spells;
+    let newSpellList = [...character.spells];
     newSpellList.push("");
     onEdit({ ...character, spells: newSpellList });
   };
@@ -75,7 +75,7 @@ const CharEditView = ({ character, onEdit, isNpc }: $Props) => {
     onEdit({ ...character, items: newItemList });
   };
   const addNewItem = () => {
-    let newItemList = character.items;
+    let newItemList = [...character.items];
     newItemList.push({
       origin: "",
       attuned: false,
@@ -108,7 +108,7 @@ const CharEditView = ({ character, onEdit, isNpc }: $Props) => {
     onEdit({ ...character, monsters: newMonsterList });
   };
   const addNewMonster = () => {
-    let newMonsterList = character.monsters;
+    let newMonsterList = [...character.monsters];
     newMonsterList.push("");
     onEdit({ ...character, monsters: newMonsterList });
   };
@@ -128,7 +128,7 @@ const CharEditView = ({ character, onEdit, isNpc }: $Props) => {
     onEdit({ ...character, classes: newClassList });
   };
 
-  const recalcSelections = useCallback(async () => {
+  const recalcSelections = useCallback(async (): Promise<Char> => {
     let newActiveSelections: {
       selectionName: string;
       activeOption: {
@@ -203,8 +203,12 @@ const CharEditView = ({ character, onEdit, isNpc }: $Props) => {
         });
       });
     }
-    onEdit({ ...character, activeSelections: newActiveSelections });
-  }, [character, onEdit, selections]);
+    let newChar = { ...character, activeSelections: newActiveSelections };
+    return new Promise((resolve, reject) => {
+      if (newChar !== undefined) resolve(newChar);
+      reject("Error");
+    });
+  }, [character, selections]);
 
   const changeClassLevel = useCallback(
     (oldClassSet: ClassSet, level: number) => {
@@ -216,10 +220,12 @@ const CharEditView = ({ character, onEdit, isNpc }: $Props) => {
             return classSet;
           }
         });
-        recalcSelections();
-        onEdit({
-          ...character,
-          classes: classes,
+
+        recalcSelections().then((char) => {
+          onEdit({
+            ...char,
+            classes: classes,
+          });
         });
       }
     },

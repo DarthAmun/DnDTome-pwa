@@ -14,6 +14,7 @@ import { createNewWithId, remove, updateWithCallback } from "../../../../service
 import BackButton from "../../../form_elements/BackButton";
 import IconButton from "../../../form_elements/IconButton";
 import { EditToggle, ToggleLeft, ToggleRight } from "../../../general_elements/ToggleStyle";
+import P2PEncounter from "../../../p2p/P2PEncounter";
 import EncounterEditView from "./EncounterEditView";
 import EncounterView from "./EncounterView";
 
@@ -104,6 +105,11 @@ const EncounterDetail = ({ encounter, isNew }: $Props) => {
           </>
         )}
       </TopBar>
+      <P2PEncounter
+        encounter={encounterObj}
+        onEdit={(value) => editEncounter(value)}
+        isHost={true}
+      />
       {editMode ? (
         <EncounterEditView encounter={encounterObj} onEdit={(value) => editEncounter(value)} />
       ) : (

@@ -103,7 +103,7 @@ const parseGear = (obj: any, fileName: string) => {
             text += "• " + listItem + "\n";
           });
         } else if (textPart.type !== undefined && textPart.type === "table") {
-          text += "||table||\n";
+          text += "||tableStart||\n";
           if (textPart.colLabels !== undefined) {
             text += "||";
             textPart.colLabels.forEach((listItem: string) => {
@@ -118,7 +118,7 @@ const parseGear = (obj: any, fileName: string) => {
             });
             text += "|\n";
           });
-          text += "||table||\n";
+          text += "||tableEnd||\n";
         } else {
           let convertText = JSON.stringify(textPart);
           convertText = replaceTags(convertText);
@@ -300,7 +300,7 @@ const parseItem = (obj: any, fileName: string) => {
             text += "• " + listItem + "\n";
           });
         } else if (textPart.type !== undefined && textPart.type === "table") {
-          text += "||table||\n";
+          text += "||tableStart||\n";
           if (textPart.colLabels !== undefined) {
             text += "||";
             textPart.colLabels.forEach((listItem: string) => {
@@ -315,7 +315,7 @@ const parseItem = (obj: any, fileName: string) => {
             });
             text += "|\n";
           });
-          text += "||table||\n";
+          text += "||tableEnd||\n";
         } else {
           let convertText = JSON.stringify(textPart);
           convertText = replaceTags(convertText);
@@ -659,7 +659,7 @@ export const makeSpell = (obj: any, fileName: string): Spell => {
           text += "• " + listItem + "\n";
         });
       } else if (textPart.type !== undefined && textPart.type === "table") {
-        text += "||table||\n";
+        text += "||tableStart||\n";
         if (textPart.colLabels !== undefined) {
           text += "||";
           textPart.colLabels.forEach((listItem: string) => {
@@ -674,7 +674,7 @@ export const makeSpell = (obj: any, fileName: string): Spell => {
           });
           text += "|\n";
         });
-        text += "||table||\n";
+        text += "||tableEnd||\n";
       } else {
         let convertText = JSON.stringify(textPart);
         convertText = replaceTags(convertText);
@@ -1264,7 +1264,7 @@ const recursiveTextAdder = (
       } else if (entry.type !== undefined && entry.type === "refSubclassFeature") {
         additional.push(entry.subclassFeature);
       } else if (entry.type !== undefined && entry.type === "table") {
-        newText += "\n ||table||";
+        newText += "\n ||tableStart||";
         if (entry.colLabels) {
           newText += "||";
           entry.colLabels.forEach((s: string) => (newText += s + "|"));
@@ -1282,7 +1282,7 @@ const recursiveTextAdder = (
           });
           newText += "|";
         }
-        newText += "||table||\n";
+        newText += "||tableEnd||\n";
       } else {
         for (const value of Object.entries(entry)) {
           newText += value[1] + "\n";
@@ -1326,7 +1326,7 @@ export const makeSelection = (
           text += "• " + listItem + "\n";
         });
       } else if (textPart.type !== undefined && textPart.type === "table") {
-        text += "||table||\n";
+        text += "||tableStart||\n";
         if (textPart.colLabels !== undefined) {
           text += "||";
           textPart.colLabels.forEach((listItem: string) => {
@@ -1341,7 +1341,7 @@ export const makeSelection = (
           });
           text += "|\n";
         });
-        text += "||table||\n";
+        text += "||tableend||\n";
       } else {
         let convertText = JSON.stringify(textPart);
         text += replaceTags(convertText);

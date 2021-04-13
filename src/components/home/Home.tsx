@@ -6,7 +6,7 @@ import styled from "styled-components";
 import { faCog, faQuestionCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import TextButton from "../form_elements/TextButton";
-import { faDiscord, faReddit } from "@fortawesome/free-brands-svg-icons";
+import { faDiscord, faGithub, faPatreon, faReddit } from "@fortawesome/free-brands-svg-icons";
 
 const Home = () => {
   let history = useHistory();
@@ -33,7 +33,8 @@ const Home = () => {
             import everything.
           </SectionText>
           <SectionText>
-            If you have suggestions or encounter a bug please visit:<br></br>
+            If you have suggestions or encounter a bug or want to stay up to date please visit:
+            <br></br>
             <ExternalLink
               href="https://discord.gg/2KB3tzG"
               target="_blank"
@@ -49,6 +50,22 @@ const Home = () => {
               className="reddit"
             >
               <FontAwesomeIcon icon={faReddit} /> Join the reddit
+            </ExternalLink>
+            <ExternalLink
+              href="https://github.com/DarthAmun/DnDTome-pwa"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="github"
+            >
+              <FontAwesomeIcon icon={faGithub} /> View code on Github
+            </ExternalLink>
+            <ExternalLink
+              href="https://www.patreon.com/bePatron?u=25310394"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="patreon"
+            >
+              <FontAwesomeIcon icon={faPatreon} /> Become a patron
             </ExternalLink>
           </SectionText>
         </WideHomeSection>
@@ -161,5 +178,8 @@ const ExternalLink = styled.a`
   }
   &.reddit {
     background-color: #ff4500;
+  }
+  &.github {
+    background-color: #24292e;
   }
 `;

@@ -34,10 +34,7 @@ const CampaignEditView = ({ campaign, onEdit }: $Props) => {
   };
   const addNewNpc = () => {
     if (campaign !== undefined) {
-      let newNpclList = campaign.npcs.map((npc: string) => {
-        return npc;
-      });
-      newNpclList.push("");
+      let newNpclList = [...campaign.npcs, ""];
       onEdit({ ...campaign, npcs: newNpclList });
     }
   };
@@ -66,10 +63,7 @@ const CampaignEditView = ({ campaign, onEdit }: $Props) => {
   };
   const addNewPlayer = () => {
     if (campaign !== undefined) {
-      let newPlayerlList = campaign.players.map((player: string) => {
-        return player;
-      });
-      newPlayerlList.push("");
+      let newPlayerlList = [...campaign.players, ""];
       onEdit({ ...campaign, players: newPlayerlList });
     }
   };
@@ -98,10 +92,7 @@ const CampaignEditView = ({ campaign, onEdit }: $Props) => {
   };
   const addNewNote = () => {
     if (campaign !== undefined) {
-      let newNotelList = campaign.notes.map((note: Note) => {
-        return note;
-      });
-      newNotelList.push(new Note());
+      let newNotelList = [...campaign.notes, new Note()];
       onEdit({ ...campaign, notes: newNotelList });
     }
   };

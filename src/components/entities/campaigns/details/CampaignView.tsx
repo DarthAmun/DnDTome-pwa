@@ -29,7 +29,7 @@ interface $Props {
 const CampaignView = ({ campaign, onEdit }: $Props) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [loadedCampaign, setLoadedCampaign] = useState<BuildCampaign>(new BuildCampaign());
-  const [activeTab, setTab] = useState<string>("General");
+  const [activeTab, setTab] = useState<string>("Notes");
   const [tabs, setTabs] = useState<string[]>(["General"]);
   const [filters, setFilters] = useState<Filter[]>([]);
 
@@ -117,6 +117,7 @@ const CampaignView = ({ campaign, onEdit }: $Props) => {
               <SearchableNoteView>
                 {loadedCampaign.campaign.notes
                   .filter((note: Note) => applyFilters(note, filters))
+                  .reverse()
                   .map((note: Note, index: number) => {
                     return (
                       <NoteWrapper key={index}>

@@ -1,20 +1,23 @@
+import { faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
-import BuildPlayer from "../../../data/encounter/BuildPlayer";
-import Monster from "../../../data/Monster";
+import Player from "../../../data/encounter/Player";
 import NumberField from "../../form_elements/NumberField";
 
 interface $Props {
+  isHost: boolean;
   img: string;
-  players: BuildPlayer[];
+  players: Player[];
   showName: boolean;
   dimension: { width: number; height: number; size: number; zoom: number };
   currentPlayerNumber: number;
-  onChangePlayers: (value: BuildPlayer[]) => void;
+  onChangePlayers: (value: Player[]) => void;
   onChangeDimension: (value: { width: number; height: number; size: number; zoom: number }) => void;
 }
 
 const Board = ({
+  isHost,
   img,
   players,
   showName,
@@ -24,13 +27,13 @@ const Board = ({
   onChangeDimension,
 }: $Props) => {
   const [board, setBoard] = useState<JSX.Element>();
-  const [dragItem, setDragItem] = useState<BuildPlayer>();
+  const [dragItem, setDragItem] = useState<Player>();
 
-  const makeDrag = useCallback((player: BuildPlayer) => {
+  const makeDrag = useCallback((player: Player) => {
     setDragItem(player);
   }, []);
 
-  const makeDrop = useCallback((): BuildPlayer | undefined => {
+  const makeDrop = useCallback((): Player | undefined => {
     return dragItem;
   }, [dragItem]);
 
@@ -40,6 +43,7 @@ const Board = ({
       for (let j = 0; j < dimension.width; j++) {
         list.push(
           <PlayerSlot
+            isHost={isHost}
             key={"slot" + row + "" + j}
             cord={[row, j]}
             showName={showName}
@@ -55,7 +59,7 @@ const Board = ({
       }
       return list;
     },
-    [dimension, players, showName, onChangePlayers, currentPlayerNumber, makeDrop, makeDrag]
+    [dimension, players, showName, onChangePlayers, currentPlayerNumber, makeDrop, makeDrag, isHost]
   );
 
   const makeBoard = useCallback(() => {
@@ -70,7 +74,7 @@ const Board = ({
     console.log("Redo Board");
     makeBoard();
     // eslint-disable-next-line
-  }, [img, dimension, players, makeDrop]);
+  }, [img, dimension, players, makeDrop, isHost]);
 
   return (
     <BoardWrapper>
@@ -108,17 +112,19 @@ const Board = ({
 export default Board;
 
 interface $PlayerSlotProps {
+  isHost: boolean;
   size: number;
   zoom: number;
   cord: number[];
   showName: boolean;
   currentPlayerNumber: number;
-  players: BuildPlayer[];
-  makeDrop: () => BuildPlayer | undefined;
-  makeDrag: (player: BuildPlayer) => void;
-  updatePlayers: (players: BuildPlayer[]) => void;
+  players: Player[];
+  makeDrop: () => Player | undefined;
+  makeDrag: (player: Player) => void;
+  updatePlayers: (players: Player[]) => void;
 }
 const PlayerSlot = ({
+  isHost,
   size,
   zoom,
   cord,
@@ -132,9 +138,9 @@ const PlayerSlot = ({
   const drop = (e: any, cord: number[]) => {
     e.preventDefault();
     let changedPlayer = makeDrop();
-    let newPlayers: BuildPlayer[] = players.map((player: BuildPlayer) => {
+    let newPlayers: Player[] = players.map((player: Player) => {
       if (player === changedPlayer) {
-        return { ...player, player: { ...player.player, cord: cord } };
+        return { ...player, cord: cord };
       } else {
         return player;
       }
@@ -142,8 +148,8 @@ const PlayerSlot = ({
     updatePlayers(newPlayers);
   };
 
-  const drag = (e: any, player: BuildPlayer) => {
-    console.log("drag", player.player.name, player.player.cord);
+  const drag = (e: any, player: Player) => {
+    console.log("drag", player.name, player.cord);
     makeDrag(player);
   };
 
@@ -152,10 +158,9 @@ const PlayerSlot = ({
   };
 
   const defineSize = useCallback(
-    (size: number, player: BuildPlayer): number => {
-      if (player.player.isMonster) {
-        const monster = player.entity as Monster;
-        switch (monster.size) {
+    (size: number, player: Player): number => {
+      if (player.isMonster) {
+        switch (player.size) {
           case "gargantuan":
             return size * 4 * zoom;
           case "huge":
@@ -171,28 +176,30 @@ const PlayerSlot = ({
 
   return (
     <Slot size={size * zoom} onDrop={(e) => drop(e, cord)} onDragOver={dragOver}>
-      {players.map((playerIcon: BuildPlayer, index: number) => {
-        if (
-          (playerIcon.player.cord === undefined && cord[0] === 0 && cord[1] === 0) ||
-          (playerIcon.player.cord !== undefined &&
-            playerIcon.player.cord[0] === cord[0] &&
-            playerIcon.player.cord[1] === cord[1])
-        )
-          return (
-            <Image
-              key={"icon" + index}
-              drag={drag}
-              player={playerIcon}
-              showName={showName}
-              dragOver={dragOver}
-              pic={playerIcon.entity.pic}
-              size={defineSize(size, playerIcon)}
-              isDead={playerIcon.player.currentHp <= 0}
-              isCurrent={currentPlayerNumber === index}
-            />
-          );
-        return <Empty key={"icon" + index} />;
-      })}
+      {players
+        .filter((a) => !a.isVisible || isHost)
+        .map((playerIcon: Player, index: number) => {
+          if (
+            (playerIcon.cord === undefined && cord[0] === 0 && cord[1] === 0) ||
+            (playerIcon.cord !== undefined &&
+              playerIcon.cord[0] === cord[0] &&
+              playerIcon.cord[1] === cord[1])
+          )
+            return (
+              <Image
+                key={"icon" + index}
+                drag={drag}
+                player={playerIcon}
+                showName={showName}
+                dragOver={dragOver}
+                pic={playerIcon.pic}
+                size={defineSize(size, playerIcon)}
+                isDead={playerIcon.currentHp <= 0}
+                isCurrent={currentPlayerNumber === index}
+              />
+            );
+          return <Empty key={"icon" + index} />;
+        })}
     </Slot>
   );
 };
@@ -281,8 +288,8 @@ interface $ImageProps {
   showName: boolean;
   isDead: boolean;
   isCurrent: boolean;
-  player: BuildPlayer;
-  drag: (e: any, player: BuildPlayer) => void;
+  player: Player;
+  drag: (e: any, player: Player) => void;
   dragOver: any;
 }
 
@@ -300,12 +307,9 @@ const Image = ({ dragOver, drag, pic, size, showName, player, isDead, isCurrent 
     };
 
     return (
-      <ImageElm
-        onDragStart={(e) => drag(e, player)}
-        onDragOver={dragOver}
-        draggable
-        style={style}
-      ></ImageElm>
+      <ImageElm onDragStart={(e) => drag(e, player)} onDragOver={dragOver} draggable style={style}>
+        {player.isVisible && <FontAwesomeIcon icon={faEyeSlash} style={{ color: "white" }} />}
+      </ImageElm>
     );
   } else {
     const style = {
@@ -319,7 +323,8 @@ const Image = ({ dragOver, drag, pic, size, showName, player, isDead, isCurrent 
 
     return (
       <ImageElm onDragStart={(e) => drag(e, player)} onDragOver={dragOver} draggable style={style}>
-        {showName ? player.entity.name : "???"}
+        {player.isVisible && <FontAwesomeIcon icon={faEyeSlash} />}
+        {showName ? player.name : "???"}
       </ImageElm>
     );
   }

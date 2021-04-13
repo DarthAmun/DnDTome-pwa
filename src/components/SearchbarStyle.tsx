@@ -114,6 +114,7 @@ export const CreateButton = styled.button`
     bottom: 10px;
     right: 10px;
     top: auto;
+    z-index: 10;
   
     background-color: ${({ theme }) => theme.buttons.backgroundColor};
     color: ${({ theme }) => theme.buttons.color};
