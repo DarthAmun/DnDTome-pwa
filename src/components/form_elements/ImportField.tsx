@@ -255,7 +255,7 @@ const FileTile = ({ file, modus }: $FileProps) => {
       <ProgressBar
         completed={Math.round((succCount / maxCount) * 100)}
         isLabelVisible={false}
-        bgcolor={"#F55C5C"}
+        bgColor={"#F55C5C"}
         height={"5px"}
         margin={"5px"}
       />

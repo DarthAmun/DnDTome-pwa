@@ -127,8 +127,10 @@ const EncounterRoom = () => {
                 ? encounter.dimension
                 : { width: 20, height: 20, size: 20, zoom: 100 }
             }
+            fogBoard={encounter.board}
             currentPlayerNumber={encounter.currentInit}
             onChangeDimension={() => {}}
+            onChangeBoard={() => {}}
             img={getMap()}
           ></Board>
         )}

@@ -168,7 +168,6 @@ const CharSpellView = ({ spell, char, saveChar }: $Props) => {
 
   const castSpell = useCallback(() => {
     let hasSlot: boolean = false;
-    console.log(char.character.spellSlots);
     let newSpellslots = char.character.spellSlots.map((slots) => {
       if (slots.slots[spellLevel - 1] > 0) {
         hasSlot = true;
@@ -180,7 +179,6 @@ const CharSpellView = ({ spell, char, saveChar }: $Props) => {
     });
 
     if (hasSlot) {
-      console.log(char.character.spellSlots);
       saveChar({ ...char, character: { ...char.character, spellSlots: newSpellslots } });
     }
     if (webhook !== undefined) sendEmbedMessage(webhook, json);

@@ -373,7 +373,6 @@ const CharEditView = ({ character, onEdit, isNpc }: $Props) => {
 
   const calcSpellValues = () => {
     if (character !== undefined) {
-      console.log(formatScore(character[spellAttr]), calcProf(character));
       let newCastingHit = formatScore(character[spellAttr]) + calcProf(character);
       let newCastingDC = newCastingHit + 10;
 

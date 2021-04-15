@@ -1,21 +1,21 @@
-import Dexie from "dexie";
+import Dexie, { DexieError } from "dexie";
 import { useReducer, useEffect, useCallback, useState } from "react";
 import Filter from "../data/Filter";
 import ReactDOM from "react-dom";
 
-type TableState<T> = [T[] | undefined, boolean, Dexie.DexieError | undefined];
+type TableState<T> = [T[] | undefined, boolean, DexieError | undefined];
 type TableAction<T> =
   | { type: "resolved"; data: T[] }
   | { type: "empty" }
   | { type: "reset" }
-  | { type: "error"; error: Dexie.DexieError };
+  | { type: "error"; error: DexieError };
 
-type ItemState<T> = [T | undefined, boolean, Dexie.DexieError | undefined];
+type ItemState<T> = [T | undefined, boolean, DexieError | undefined];
 type ItemAction<T> =
   | { type: "resolved"; data: T }
   | { type: "empty" }
   | { type: "reset" }
-  | { type: "error"; error: Dexie.DexieError };
+  | { type: "error"; error: DexieError };
 
 export const useTable = <T, U>(table: Dexie.Table<T, U>): TableState<T> => {
   const [effect, setEffect] = useState<boolean>(true);

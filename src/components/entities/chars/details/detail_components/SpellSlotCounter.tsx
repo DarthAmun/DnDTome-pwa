@@ -11,7 +11,6 @@ interface $Props {
 
 const SpellSlotCounter = ({ char, saveChar }: $Props) => {
   const burnSpellSlot = (index: number, slot: number, i: number) => {
-    console.log(index, slot, i);
     let newSlots = [...char.character.spellSlots];
     if (newSlots[index].slots[slot] === i + 1) {
       newSlots[index].slots[slot] = i;

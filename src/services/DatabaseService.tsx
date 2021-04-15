@@ -84,8 +84,8 @@ export const saveWithCallback = (
     .then(function () {
       db.table(tableName)
         .add(data)
-        .then((result: number) => {
-          callback(result);
+        .then((result) => {
+          callback(result as number);
         });
     })
     .finally(function () {
@@ -429,8 +429,8 @@ export const createNewWithId = (
     .then(function () {
       db.table(tableName)
         .put(entity)
-        .then((id: number) => {
-          callback(id);
+        .then((id) => {
+          callback(id as number);
         });
     })
     .finally(function () {
@@ -464,20 +464,13 @@ export const exportFilteredFromTable = (tableName: string, filters: Filter[], fi
   reciveAllFiltered(tableName, filters, (all: IndexableType[]) => {
     const data = { [tableName]: all };
     let contentType = "application/json;charset=utf-8;";
-    if (window.navigator && window.navigator.msSaveOrOpenBlob) {
-      var blob = new Blob([decodeURIComponent(encodeURI(JSON.stringify(data)))], {
-        type: contentType,
-      });
-      navigator.msSaveOrOpenBlob(blob, filename);
-    } else {
-      var a = document.createElement("a");
-      a.download = filename;
-      a.href = "data:" + contentType + "," + encodeURIComponent(JSON.stringify(data));
-      a.target = "_blank";
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-    }
+    var a = document.createElement("a");
+    a.download = filename;
+    a.href = "data:" + contentType + "," + encodeURIComponent(JSON.stringify(data));
+    a.target = "_blank";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
   });
 };
 

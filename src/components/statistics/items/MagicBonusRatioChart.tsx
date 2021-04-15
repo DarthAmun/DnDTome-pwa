@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 
-import { Doughnut } from "react-chartjs-2";
+import { Doughnut } from "@iftek/react-chartjs-3";
 import {
   reciveAttributeSelectionPromise,
   recivePromiseByAttributeCount,
@@ -20,10 +20,7 @@ const MagicBonusRatioChart = () => {
   }, []);
 
   const makeSchoolsData = async () => {
-    const magicBoni = await reciveAttributeSelectionPromise(
-      "items",
-      "magicBonus"
-    );
+    const magicBoni = await reciveAttributeSelectionPromise("items", "magicBonus");
 
     let promList: { name: string; count: number }[] = [];
     for (const magicBonus of magicBoni) {
@@ -63,7 +60,7 @@ const MagicBonusRatioChart = () => {
   return (
     <OptionSection>
       <SelectionTitle>Rarity Ratio</SelectionTitle>
-      {!loading && (
+      {!loading && generalCounts !== undefined && (
         <div style={{ width: "100%", paddingBottom: "10px" }}>
           <Doughnut data={generalCounts} />
         </div>

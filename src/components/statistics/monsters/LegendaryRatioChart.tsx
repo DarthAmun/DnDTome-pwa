@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 
-import { Doughnut } from "react-chartjs-2";
+import { Doughnut } from "@iftek/react-chartjs-3";
 import {
   reciveAttributeSelectionPromise,
   recivePromiseByAttributeCount,
@@ -20,10 +20,7 @@ const LegendaryRatioChart = () => {
   }, []);
 
   const makeSchoolsData = async () => {
-    const rarities = await reciveAttributeSelectionPromise(
-      "monsters",
-      "lAblt"
-    );
+    const rarities = await reciveAttributeSelectionPromise("monsters", "lAblt");
 
     let leg = 0;
     let noleg = 0;
@@ -31,18 +28,10 @@ const LegendaryRatioChart = () => {
     let promList: { name: string; count: number }[] = [];
     for (const rarity of rarities) {
       if (rarity !== "") {
-        const count = await recivePromiseByAttributeCount(
-          "monsters",
-          "lAblt",
-          rarity.toString()
-        );
+        const count = await recivePromiseByAttributeCount("monsters", "lAblt", rarity.toString());
         leg += count;
       } else {
-        const count = await recivePromiseByAttributeCount(
-          "monsters",
-          "lAblt",
-          rarity.toString()
-        );
+        const count = await recivePromiseByAttributeCount("monsters", "lAblt", rarity.toString());
         noleg += count;
       }
     }
@@ -79,7 +68,7 @@ const LegendaryRatioChart = () => {
   return (
     <OptionSection>
       <SelectionTitle>Legendary Ratio</SelectionTitle>
-      {!loading && (
+      {!loading && generalCounts !== undefined && (
         <div style={{ width: "100%", paddingBottom: "10px" }}>
           <Doughnut data={generalCounts} />
         </div>

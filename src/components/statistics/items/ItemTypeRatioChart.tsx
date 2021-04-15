@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 
-import { Bar } from "react-chartjs-2";
+import { Bar } from "@iftek/react-chartjs-3";
 import {
   reciveAttributeSelectionPromise,
   recivePromiseByAttributeCount,
@@ -58,9 +58,9 @@ const ItemTypeRatioChart = () => {
   return (
     <OptionSection>
       <SelectionTitle>Type Graph</SelectionTitle>
-      {!loading && (
+      {!loading && generalCounts !== undefined && (
         <div style={{ width: "100%", paddingBottom: "10px" }}>
-          <Bar data={generalCounts} legend={{ display: false }} />
+          <Bar data={generalCounts} options={{}} legend={{ display: false }} />
         </div>
       )}
       {loading && <LocalLoadingSpinner />}

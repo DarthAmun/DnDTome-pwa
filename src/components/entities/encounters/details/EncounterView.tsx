@@ -37,15 +37,14 @@ const EncounterView = ({ encounter, dmView, onEdit }: $Props) => {
 
   useEffect(() => {
     if (encounter !== undefined) {
-      const { difficulty } = calcDifficulty(encounter);
-      setDifficulty(difficulty);
+      setPlayers([...encounter.players, ...encounter.enemies]);
     }
   }, [encounter]);
 
   useEffect(() => {
     if (encounter !== undefined) {
-      console.log([...encounter.players, ...encounter.enemies]);
-      setPlayers([...encounter.players, ...encounter.enemies]);
+      const { difficulty } = calcDifficulty(encounter);
+      setDifficulty(difficulty);
     }
   }, [encounter]);
 
@@ -213,6 +212,24 @@ const EncounterView = ({ encounter, dmView, onEdit }: $Props) => {
     onChangePlayerField("isVisible", !player.isVisible, player);
   };
 
+  const onChangeDimension = (dimension: {
+    width: number;
+    height: number;
+    size: number;
+    zoom: number;
+  }) => {
+    console.time("makeBoard");
+    let newBoard: boolean[][] = [];
+    for (let i = 0; i < dimension.height; i++) {
+      newBoard.push([]);
+      for (let j = 0; j < dimension.width; j++) {
+        newBoard[i].push(true);
+      }
+    }
+    console.timeEnd("makeBoard");
+    onEdit({ ...encounter, dimension: dimension, board: newBoard });
+  };
+
   return (
     <>
       <CenterWrapper>
@@ -313,7 +330,7 @@ const EncounterView = ({ encounter, dmView, onEdit }: $Props) => {
                               onChange={(init) => onChangePlayerField("init", init, player)}
                             />
                           </PropField>
-                          <Prop>
+                          <Prop style={{ minWidth: "100%" }}>
                             {player.pic !== "" && player.pic !== undefined ? (
                               <PlayerImage player={player}></PlayerImage>
                             ) : (
@@ -323,7 +340,7 @@ const EncounterView = ({ encounter, dmView, onEdit }: $Props) => {
                               <MainLink
                                 onClick={() => history.push(`/monster-detail/name/${player.name}`)}
                               >
-                                {dmView ? player.name : "???"}
+                                {dmView ? `${player.name} ${index}` : `??? ${index}`}
                               </MainLink>
                             )}
                             {!player.isMonster && (
@@ -334,7 +351,7 @@ const EncounterView = ({ encounter, dmView, onEdit }: $Props) => {
                               </MainLink>
                             )}
                           </Prop>
-                          <PropRight>
+                          <PropRight style={{ minWidth: "100px" }}>
                             <DamageButton onClick={() => showDamageDialog(index)}>
                               <GiBroadsword />
                               <GiHeartBottle />
@@ -343,7 +360,7 @@ const EncounterView = ({ encounter, dmView, onEdit }: $Props) => {
                           </PropRight>
                           {dmView && <Prop>{player.ac}</Prop>}
                           {/* <Prop>{player.tag}</Prop> */}
-                          <td>
+                          <Prop style={{ minWidth: "100px" }}>
                             {player.currentHp > 0 && (
                               <IconButton
                                 icon={faSkullCrossbones}
@@ -365,7 +382,7 @@ const EncounterView = ({ encounter, dmView, onEdit }: $Props) => {
                             {!player.isVisible && (
                               <IconButton icon={faEye} onClick={() => toggleVisibility(player)} />
                             )}
-                          </td>
+                          </Prop>
                         </Row>
                       );
                     })}
@@ -384,8 +401,10 @@ const EncounterView = ({ encounter, dmView, onEdit }: $Props) => {
                 ? encounter.dimension
                 : { width: 20, height: 20, size: 20, zoom: 100 }
             }
+            fogBoard={encounter.board}
             currentPlayerNumber={encounter.currentInit}
-            onChangeDimension={(dimension) => onEdit({ ...encounter, dimension: dimension })}
+            onChangeDimension={(dimension) => onChangeDimension(dimension)}
+            onChangeBoard={(board) => onEdit({ ...encounter, board: board })}
             img={getMap()}
           ></Board>
         )}
@@ -403,6 +422,7 @@ const DamageButton = styled.button`
   font-size: 16px;
   float: left;
   padding: 5px;
+  margin-right: 5px;
   cursor: pointer;
   box-shadow: inset -2px -2px 5px 0px rgba(0, 0, 0, 0.3);
   box-sizing: content-box;
@@ -453,9 +473,9 @@ const View = styled.div<viewType>`
   max-width: 800px;
   ${(props) => {
     if (!props.mode) {
-      return "min-width: 400px;";
+      return "min-width: 450px;";
     } else {
-      return "min-width: 500px;";
+      return "min-width: 600px;";
     }
   }}
   padding: 5px;
@@ -501,6 +521,8 @@ const Prop = styled.td`
   border-radius: 5px;
   background-color: ${({ theme }) => theme.tile.backgroundColor};
   line-height: 34px;
+  white-space: nowrap;
+  width: 1px;
 `;
 
 const PropRight = styled(Prop)`

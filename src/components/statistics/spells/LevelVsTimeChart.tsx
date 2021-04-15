@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 
-import { Bubble } from "react-chartjs-2";
+import { Bubble } from "@iftek/react-chartjs-3";
 import {
   reciveAllPromise,
   reciveAttributeSelectionPromise,
 } from "../../../services/DatabaseService";
 import { LocalLoadingSpinner } from "../../Loading";
 import Spell from "../../../data/Spell";
+import { Tick } from "chart.js";
 
 const LevelVsTimeChart = () => {
   const [xLabels, setXLabels] = useState<string[]>([]);
@@ -75,37 +76,35 @@ const LevelVsTimeChart = () => {
   return (
     <OptionSection>
       <SelectionTitle>Time x Level Ratio</SelectionTitle>
-      {!loading && (
+      {!loading && generalCounts !== undefined && (
         <div style={{ width: "100%", paddingBottom: "10px" }}>
           <Bubble
             data={generalCounts}
             options={{
               scales: {
-                xAxes: [
-                  {
-                    ticks: {
-                      // Include a dollar sign in the ticks
-                      callback: function (value: number, index: any, values: any) {
-                        return xLabels[value];
-                      },
+                x: {
+                  ticks: {
+                    // Include a dollar sign in the ticks
+                    callback: function (tickValue: number | string, index: number, ticks: Tick[]) {
+                      return xLabels[tickValue];
                     },
                   },
-                ],
-                yAxes: [
-                  {
-                    ticks: {
-                      // Include a dollar sign in the ticks
-                      callback: function (value: number, index: any, values: any) {
-                        return yLabels[value];
-                      },
+                },
+                y: {
+                  ticks: {
+                    // Include a dollar sign in the ticks
+                    callback: function (tickValue: number | string, index: number, ticks: Tick[]) {
+                      return xLabels[tickValue];
                     },
                   },
-                ],
+                },
               },
-              tooltips: {
-                callbacks: {
-                  label: function (tooltipItem: any, data: any) {
-                    return xLabels[tooltipItem.xLabel] + " x " + yLabels[tooltipItem.yLabel];
+              plugins: {
+                tooltip: {
+                  callbacks: {
+                    label: function (tooltipItem: any) {
+                      return xLabels[tooltipItem.xLabel] + " x " + yLabels[tooltipItem.yLabel];
+                    },
                   },
                 },
               },

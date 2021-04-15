@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 
-import { Doughnut } from "react-chartjs-2";
+import { Doughnut } from "@iftek/react-chartjs-3";
 import { reciveCountPromise } from "../../../services/DatabaseService";
 import { LocalLoadingSpinner } from "../../Loading";
 
@@ -65,7 +65,7 @@ const AmountOfEntitiesChart = () => {
   return (
     <OptionSection>
       <SelectionTitle>Amount of Entities</SelectionTitle>
-      {!loading && (
+      {!loading && generalCounts !== undefined && (
         <div style={{ width: "100%", paddingBottom: "10px" }}>
           <Doughnut data={generalCounts} />
         </div>

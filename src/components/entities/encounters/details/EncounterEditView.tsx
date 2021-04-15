@@ -182,7 +182,6 @@ const EncounterEditView = ({ encounter, onEdit }: $Props) => {
     let results = await Promise.all(found);
     results = results.filter((e) => e !== undefined);
 
-    console.log(results[0] && isChar(results[0]));
     if (results[0] && isMonster(results[0])) {
       players[i] = {
         ...oldPlayer,
@@ -204,7 +203,6 @@ const EncounterEditView = ({ encounter, onEdit }: $Props) => {
       results[0].classes.forEach((classSet: ClassSet) => {
         level += classSet.level;
       });
-      console.log(results[0]);
       players[i] = {
         ...oldPlayer,
         name: newPlayer,

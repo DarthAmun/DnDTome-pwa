@@ -36,27 +36,19 @@ const BookView = ({ book }: $Props) => {
   });
 
   const showPdf = () => {
-    if (navigator.appVersion.toString().indexOf(".NET") > 0) {
-      window.navigator.msSaveBlob(book.data, book.name + ".pdf"); // for IE browser
-    } else {
-      const url = URL.createObjectURL(book.data);
-      window.open(url, "_blank");
-    }
+    const url = URL.createObjectURL(book.data);
+    window.open(url, "_blank");
   };
 
   const downloadFile = (filename: string) => {
-    if (window.navigator && window.navigator.msSaveOrOpenBlob) {
-      navigator.msSaveOrOpenBlob(book.data, filename);
-    } else {
-      var pdfURL = window.URL.createObjectURL(book.data);
-      var a = document.createElement("a");
-      a.download = filename;
-      a.href = pdfURL;
-      a.target = "_blank";
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-    }
+    var pdfURL = window.URL.createObjectURL(book.data);
+    var a = document.createElement("a");
+    a.download = filename;
+    a.href = pdfURL;
+    a.target = "_blank";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
   };
 
   const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
@@ -76,11 +68,7 @@ const BookView = ({ book }: $Props) => {
     changePage(1);
   };
 
-  const onItemClick = ({
-    pageNumber: itemPageNumber,
-  }: {
-    pageNumber: string;
-  }) => {
+  const onItemClick = ({ pageNumber: itemPageNumber }: { pageNumber: string }) => {
     setPageNumber(+itemPageNumber);
   };
 
@@ -117,11 +105,7 @@ const BookView = ({ book }: $Props) => {
         <Name>
           <b>{book.name}</b>
         </Name>
-        <TextButton
-          onClick={() => showPdf()}
-          text={"Show PDF"}
-          icon={faExternalLinkAlt}
-        />
+        <TextButton onClick={() => showPdf()} text={"Show PDF"} icon={faExternalLinkAlt} />
         <TextButton
           onClick={() => downloadFile(book.name + ".pdf")}
           text={"Downlaod PDF"}

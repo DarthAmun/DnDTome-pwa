@@ -7,6 +7,7 @@ import { Transform } from "@fortawesome/fontawesome-svg-core";
 
 interface $Props {
   icon: IconDefinition;
+  toggle?: boolean;
   floatLeft?: boolean;
   disabled?: boolean;
   transform?: string | Transform;
@@ -14,11 +15,11 @@ interface $Props {
   onClick?: (() => void) | ((e: any) => void);
 }
 
-const IconButton = ({ icon, floatLeft, disabled, transform, style, onClick }: $Props) => {
+const IconButton = ({ icon, toggle, floatLeft, disabled, transform, style, onClick }: $Props) => {
   return (
     <>
       {!disabled && (
-        <SimpleButton left={floatLeft} onClick={onClick} style={style}>
+        <SimpleButton toggle={toggle} left={floatLeft} onClick={onClick} style={style}>
           <Icon icon={icon} transform={transform} />
         </SimpleButton>
       )}
@@ -35,6 +36,7 @@ export default IconButton;
 
 type FloatMpde = {
   left?: boolean;
+  toggle?: boolean;
 };
 
 const SimpleButton = styled.div<FloatMpde>`
@@ -56,6 +58,18 @@ const SimpleButton = styled.div<FloatMpde>`
 
   &:hover {
     color: white;
+  }
+
+  & {
+    background-color: ${(props) => {
+      if (props.toggle === undefined) {
+        return ({ theme }) => theme.buttons.backgroundColor;
+      } else if (props.toggle) {
+        return ({ theme }) => theme.buttons.backgroundColor;
+      } else {
+        return ({ theme }) => theme.tile.backgroundColor;
+      }
+    }};
   }
 
   display: flex;

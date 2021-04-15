@@ -6,7 +6,6 @@ import FeatureSet from "../data/classes/FeatureSet";
 import Spell from "../data/Spell";
 import { buildCharacter } from "./CharacterService";
 
-
 const formatScore = (score: number) => {
   let mod = Math.floor((score - 10) / 2);
   if (score > 9) {
@@ -257,18 +256,14 @@ const downloadFilledPdf = (pdfBytes: Uint8Array, filename: string) => {
   let contentType = "application/pdf;charset=utf-8;";
   const blob = new Blob([pdfBytes], { type: contentType });
 
-  if (window.navigator && window.navigator.msSaveOrOpenBlob) {
-    navigator.msSaveOrOpenBlob(blob, filename);
-  } else {
-    var pdfURL = window.URL.createObjectURL(blob);
-    var a = document.createElement("a");
-    a.download = filename;
-    a.href = pdfURL;
-    a.target = "_blank";
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-  }
+  var pdfURL = window.URL.createObjectURL(blob);
+  var a = document.createElement("a");
+  a.download = filename;
+  a.href = pdfURL;
+  a.target = "_blank";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
 };
 
 export const exportPdf = async (char: Char) => {

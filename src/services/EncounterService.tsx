@@ -76,10 +76,21 @@ export const calcDifficulty = (encounter: Encounter) => {
   } = { easy: 0, medium: 0, hard: 0, deadly: 0 };
   encounter.players.forEach((player: Player) => {
     if (expTable.length >= player.level) {
-      calcExp.easy += expTable[player.level].easy;
-      calcExp.medium += expTable[player.level].medium;
-      calcExp.hard += expTable[player.level].hard;
-      calcExp.deadly += expTable[player.level].deadly;
+      if (player.isMonster) {
+        crExpTable.forEach((crExp: { cr: number; exp: number }) => {
+          if (player.level === crExp.cr) {
+            calcExp.easy += crExp.exp;
+            calcExp.medium += crExp.exp;
+            calcExp.hard += crExp.exp;
+            calcExp.deadly += crExp.exp;
+          }
+        });
+      } else {
+        calcExp.easy += expTable[player.level].easy;
+        calcExp.medium += expTable[player.level].medium;
+        calcExp.hard += expTable[player.level].hard;
+        calcExp.deadly += expTable[player.level].deadly;
+      }
     }
   });
 

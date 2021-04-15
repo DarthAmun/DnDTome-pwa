@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 
-import { Doughnut } from "react-chartjs-2";
+import { Doughnut } from "@iftek/react-chartjs-3";
 import {
   reciveAttributeSelectionPromise,
   recivePromiseByAttributeCount,
@@ -56,7 +56,7 @@ const RitualRatioChart = () => {
   return (
     <OptionSection>
       <SelectionTitle>Ritual Ratio</SelectionTitle>
-      {!loading && (
+      {!loading && generalCounts !== undefined && (
         <div style={{ width: "100%", paddingBottom: "10px" }}>
           <Doughnut data={generalCounts} />
         </div>

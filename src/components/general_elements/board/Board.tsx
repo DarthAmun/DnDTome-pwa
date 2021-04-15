@@ -1,8 +1,9 @@
-import { faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+import { faEyeSlash, faFill } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import Player from "../../../data/encounter/Player";
+import IconButton from "../../form_elements/IconButton";
 import NumberField from "../../form_elements/NumberField";
 
 interface $Props {
@@ -11,9 +12,11 @@ interface $Props {
   players: Player[];
   showName: boolean;
   dimension: { width: number; height: number; size: number; zoom: number };
+  fogBoard: boolean[][];
   currentPlayerNumber: number;
   onChangePlayers: (value: Player[]) => void;
   onChangeDimension: (value: { width: number; height: number; size: number; zoom: number }) => void;
+  onChangeBoard: (fogBoard: boolean[][]) => void;
 }
 
 const Board = ({
@@ -22,12 +25,16 @@ const Board = ({
   players,
   showName,
   dimension,
+  fogBoard,
   currentPlayerNumber,
   onChangePlayers,
   onChangeDimension,
+  onChangeBoard,
 }: $Props) => {
   const [board, setBoard] = useState<JSX.Element>();
   const [dragItem, setDragItem] = useState<Player>();
+  const [currentFogBoard, setFogBoard] = useState<boolean[][]>(fogBoard);
+  const [fog, setFog] = useState<boolean>(false);
 
   const makeDrag = useCallback((player: Player) => {
     setDragItem(player);
@@ -36,6 +43,18 @@ const Board = ({
   const makeDrop = useCallback((): Player | undefined => {
     return dragItem;
   }, [dragItem]);
+
+  const toggleFog = useCallback(
+    (cord: number[]) => {
+      if (fog) {
+        console.log("toggle fog");
+        let newBoard = [...currentFogBoard];
+        newBoard[cord[0]][cord[1]] = !newBoard[cord[0]][cord[1]];
+        setFogBoard(newBoard);
+      }
+    },
+    [currentFogBoard, setFogBoard, fog]
+  );
 
   const makeRow = useCallback(
     (row: number) => {
@@ -50,8 +69,14 @@ const Board = ({
             players={players}
             size={dimension.size}
             zoom={dimension.zoom / 100}
+            fog={
+              fogBoard && fogBoard.length >= row && fogBoard[row].length >= j
+                ? fogBoard[row][j]
+                : false
+            }
             makeDrop={makeDrop}
             makeDrag={makeDrag}
+            toggleFog={toggleFog}
             updatePlayers={onChangePlayers}
             currentPlayerNumber={currentPlayerNumber}
           ></PlayerSlot>
@@ -59,7 +84,18 @@ const Board = ({
       }
       return list;
     },
-    [dimension, players, showName, onChangePlayers, currentPlayerNumber, makeDrop, makeDrag, isHost]
+    [
+      dimension,
+      players,
+      showName,
+      onChangePlayers,
+      currentPlayerNumber,
+      makeDrop,
+      makeDrag,
+      isHost,
+      fogBoard,
+      toggleFog,
+    ]
   );
 
   const makeBoard = useCallback(() => {
@@ -71,36 +107,48 @@ const Board = ({
   }, [dimension, makeRow]);
 
   useEffect(() => {
-    console.log("Redo Board");
+    console.time("Redo Board");
     makeBoard();
+    console.timeEnd("Redo Board");
     // eslint-disable-next-line
-  }, [img, dimension, players, makeDrop, isHost]);
+  }, [img, dimension, players, makeDrop, isHost, fog, currentFogBoard]);
+
+  const makeFog = useCallback(() => {
+    setFog((f) => !f);
+    if (fog) {
+      console.log("push board");
+      onChangeBoard(fogBoard);
+    }
+  }, [fog, fogBoard, onChangeBoard]);
 
   return (
     <BoardWrapper>
-      <BoardBar>
-        <NumberField
-          value={dimension.zoom}
-          label="Zoom"
-          step={10}
-          onChange={(zoom) => onChangeDimension({ ...dimension, zoom: zoom })}
-        />
-        <NumberField
-          value={dimension.width}
-          label="Horizontal"
-          onChange={(width) => onChangeDimension({ ...dimension, width: width })}
-        />
-        <NumberField
-          value={dimension.height}
-          label="Vertical"
-          onChange={(height) => onChangeDimension({ ...dimension, height: height })}
-        />
-        <NumberField
-          value={dimension.size}
-          label="Size"
-          onChange={(size) => onChangeDimension({ ...dimension, size: size })}
-        />
-      </BoardBar>
+      {isHost && (
+        <BoardBar>
+          <NumberField
+            value={dimension.zoom}
+            label="Zoom"
+            step={10}
+            onChange={(zoom) => onChangeDimension({ ...dimension, zoom: zoom })}
+          />
+          <NumberField
+            value={dimension.width}
+            label="Horizontal"
+            onChange={(width) => onChangeDimension({ ...dimension, width: width })}
+          />
+          <NumberField
+            value={dimension.height}
+            label="Vertical"
+            onChange={(height) => onChangeDimension({ ...dimension, height: height })}
+          />
+          <NumberField
+            value={dimension.size}
+            label="Size"
+            onChange={(size) => onChangeDimension({ ...dimension, size: size })}
+          />
+          <IconButton onClick={makeFog} toggle={fog} icon={faFill} />
+        </BoardBar>
+      )}
       <BoardContainer>
         <BoardLayer>{board}</BoardLayer>
         <MapLayer zoom={dimension.zoom / 100} src={img} />
@@ -119,8 +167,10 @@ interface $PlayerSlotProps {
   showName: boolean;
   currentPlayerNumber: number;
   players: Player[];
+  fog: boolean;
   makeDrop: () => Player | undefined;
   makeDrag: (player: Player) => void;
+  toggleFog: (cord: number[]) => void;
   updatePlayers: (players: Player[]) => void;
 }
 const PlayerSlot = ({
@@ -130,9 +180,11 @@ const PlayerSlot = ({
   cord,
   showName,
   players,
+  fog,
   currentPlayerNumber,
   makeDrop,
   makeDrag,
+  toggleFog,
   updatePlayers,
 }: $PlayerSlotProps) => {
   const drop = (e: any, cord: number[]) => {
@@ -145,6 +197,7 @@ const PlayerSlot = ({
         return player;
       }
     });
+    console.log("update Players");
     updatePlayers(newPlayers);
   };
 
@@ -175,7 +228,14 @@ const PlayerSlot = ({
   );
 
   return (
-    <Slot size={size * zoom} onDrop={(e) => drop(e, cord)} onDragOver={dragOver}>
+    <Slot
+      size={size * zoom}
+      fog={fog}
+      onDrop={(e) => drop(e, cord)}
+      isHost={isHost}
+      onDragOver={dragOver}
+      onClick={() => toggleFog(cord)}
+    >
       {players
         .filter((a) => !a.isVisible || isHost)
         .map((playerIcon: Player, index: number) => {
@@ -188,8 +248,10 @@ const PlayerSlot = ({
             return (
               <Image
                 key={"icon" + index}
+                index={index}
                 drag={drag}
                 player={playerIcon}
+                isHost={isHost}
                 showName={showName}
                 dragOver={dragOver}
                 pic={playerIcon.pic}
@@ -268,6 +330,8 @@ const BoardRow = styled.div`
 
 type SizeProp = {
   size: number;
+  fog: boolean;
+  isHost: boolean;
 };
 
 const Slot = styled.div<SizeProp>`
@@ -280,20 +344,35 @@ const Slot = styled.div<SizeProp>`
   box-sizing: border-box;
   border: 1px solid rgba(0, 0, 0, 0.3);
   position: releativ;
+  ${({ fog, isHost }) =>
+    fog ? (isHost ? "background-color: rgba(0,0,0,0.5);" : "background-color: rgba(0,0,0,1);") : ""}
 `;
 
 interface $ImageProps {
+  index: number;
   pic: string;
   size: number;
   showName: boolean;
   isDead: boolean;
   isCurrent: boolean;
   player: Player;
+  isHost: boolean;
   drag: (e: any, player: Player) => void;
   dragOver: any;
 }
 
-const Image = ({ dragOver, drag, pic, size, showName, player, isDead, isCurrent }: $ImageProps) => {
+const Image = ({
+  index,
+  dragOver,
+  drag,
+  pic,
+  size,
+  showName,
+  player,
+  isDead,
+  isCurrent,
+  isHost,
+}: $ImageProps) => {
   if (pic !== "") {
     const style = {
       backgroundImage: `url(${pic})`,
@@ -308,6 +387,7 @@ const Image = ({ dragOver, drag, pic, size, showName, player, isDead, isCurrent 
 
     return (
       <ImageElm onDragStart={(e) => drag(e, player)} onDragOver={dragOver} draggable style={style}>
+        {isHost && player.isMonster && <Tooltip>{index}</Tooltip>}
         {player.isVisible && <FontAwesomeIcon icon={faEyeSlash} style={{ color: "white" }} />}
       </ImageElm>
     );
@@ -324,11 +404,37 @@ const Image = ({ dragOver, drag, pic, size, showName, player, isDead, isCurrent 
     return (
       <ImageElm onDragStart={(e) => drag(e, player)} onDragOver={dragOver} draggable style={style}>
         {player.isVisible && <FontAwesomeIcon icon={faEyeSlash} />}
-        {showName ? player.name : "???"}
+        {showName ? `${player.name} ${index}` : `??? ${index}`}
       </ImageElm>
     );
   }
 };
+
+const Tooltip = styled.div`
+  display: none;
+  position: absolute;
+  top: -35px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  white-space: nowrap;
+  background-color: ${({ theme }) => theme.main.highlight};
+  color: #fff;
+  border-radius: 10px;
+  padding: 5px;
+  transition: 0.3s;
+
+  &::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: ${({ theme }) => theme.main.highlight} transparent transparent transparent;
+  }
+`;
 
 const ImageElm = styled.div`
   margin: 3px;
@@ -337,11 +443,14 @@ const ImageElm = styled.div`
   border: 3px solid ${({ theme }) => theme.main.highlight};
   box-shadow: 0px 0px 10px 0px rgba(172, 172, 172, 0.2);
   background-color: white;
-  overflow: hidden;
   box-sizing: border-box;
   cursor: move;
   position: absolute;
   text-align: center;
+
+  &:hover ${Tooltip} {
+    display: inline;
+  }
 `;
 
 const Empty = styled.div``;

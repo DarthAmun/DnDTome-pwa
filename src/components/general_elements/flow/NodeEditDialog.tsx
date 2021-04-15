@@ -17,7 +17,9 @@ const EditDialog = ({ activeElement, onSave, onClose }: $Props) => {
 
   useEffect(() => {
     if (isNode(activeElement)) setLabel(activeElement.data.label);
-    if (isEdge(activeElement) && activeElement.label !== undefined) setLabel(activeElement.label);
+    // if (isEdge(activeElement) && activeElement.label !== undefined) setLabel(activeElement.label);
+    if (isEdge(activeElement) && activeElement.label !== undefined)
+      console.log(activeElement.label);
   }, [activeElement, setLabel]);
 
   const onSaveClick = () => {

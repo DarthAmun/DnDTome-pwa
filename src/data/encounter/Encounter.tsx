@@ -12,6 +12,7 @@ export default class Encounter implements IEntity {
   map: string;
   mapBase64: string;
   dimension: { width: number; height: number; size: number; zoom: number };
+  board: boolean[][];
 
   constructor(
     id?: number,
@@ -23,7 +24,8 @@ export default class Encounter implements IEntity {
     roundCounter?: number,
     map?: string,
     mapBase64?: string,
-    dimension?: { width: number; height: number; size: number; zoom: number }
+    dimension?: { width: number; height: number; size: number; zoom: number },
+    board?: boolean[][]
   ) {
     this.id = id;
     this.name = name || "";
@@ -35,6 +37,7 @@ export default class Encounter implements IEntity {
     this.map = map || "";
     this.mapBase64 = mapBase64 || "";
     this.dimension = dimension || { width: 20, height: 20, size: 20, zoom: 100 };
+    this.board = board || [];
   }
 }
 
@@ -47,6 +50,7 @@ export function isEncounter(arg: any): arg is Encounter {
   const mapBase64Check = arg.mapBase64 !== undefined && typeof arg.mapBase64 == "string";
   const currentInitCheck = arg.currentInit !== undefined && typeof arg.currentInit == "number";
   const roundCounterCheck = arg.roundCounter !== undefined && typeof arg.roundCounter == "number";
+  const boardCheck = arg.board !== undefined && Array.isArray(arg.board);
   return (
     arg &&
     nameCheck &&
@@ -56,6 +60,7 @@ export function isEncounter(arg: any): arg is Encounter {
     mapCheck &&
     mapBase64Check &&
     currentInitCheck &&
+    boardCheck &&
     roundCounterCheck
   );
 }
