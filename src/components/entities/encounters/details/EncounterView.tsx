@@ -1,4 +1,6 @@
 import {
+  faArrowAltCircleLeft,
+  faArrowAltCircleRight,
   faEye,
   faEyeSlash,
   faHandHoldingHeart,
@@ -22,6 +24,7 @@ import { DamageDialog } from "../../../general_elements/Dialog";
 import { calcDifficulty } from "../../../../services/EncounterService";
 import { LoadingSpinner } from "../../../Loading";
 import Slot from "../../../../data/encounter/Slot";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 interface $Props {
   encounter: Encounter;
@@ -35,6 +38,7 @@ const EncounterView = ({ encounter, dmView, onEdit }: $Props) => {
   const [damageDialogIndex, setDamageDialogIndex] = useState<number>(0);
   const [difficulty, setDifficulty] = useState<string>("");
   const [players, setPlayers] = useState<Player[]>([]);
+  const [initTracker, showInitTracker] = useState<boolean>(false);
 
   useEffect(() => {
     if (encounter !== undefined) {
@@ -263,135 +267,148 @@ const EncounterView = ({ encounter, dmView, onEdit }: $Props) => {
             }}
           />
         )}
-        <View mode={dmView ? 1 : 0}>
-          <Name>
-            <b>{encounter?.name}</b>
-          </Name>
-          <PropWrapper>
-            {dmView && (
+        <View
+          mode={dmView ? 1 : 0}
+          show={initTracker}
+          window={encounter.map !== "" || encounter.mapBase64 !== ""}
+        >
+          <ScrollWrapper window={encounter.map !== "" || encounter.mapBase64 !== ""}>
+            <Name>
+              <b>{encounter?.name}</b>
+            </Name>
+            <PropWrapper>
+              {dmView && (
+                <PropElm>
+                  <PropTitle>Difficulty: </PropTitle>
+                  {difficulty}
+                </PropElm>
+              )}
               <PropElm>
-                <PropTitle>Difficulty: </PropTitle>
-                {difficulty}
+                <PropTitle>Round: </PropTitle>
+                {encounter?.roundCounter}
               </PropElm>
-            )}
-            <PropElm>
-              <PropTitle>Round: </PropTitle>
-              {encounter?.roundCounter}
-            </PropElm>
-            {encounter && !encounter.isPlaying && (
-              <TextButton
-                text={"Start Encounter"}
-                icon={faPlayCircle}
-                onClick={() => startEncounter()}
-              />
-            )}
-            {encounter && encounter.isPlaying && (
-              <>
-                <TextButton text={"Next"} icon={faStepForward} onClick={() => nextPlayer()} />
+              {encounter && !encounter.isPlaying && (
                 <TextButton
-                  text={"End Encounter"}
-                  icon={faStopCircle}
-                  onClick={() => finishEncounter()}
+                  text={"Start Encounter"}
+                  icon={faPlayCircle}
+                  onClick={() => startEncounter()}
                 />
-              </>
+              )}
+              {encounter && encounter.isPlaying && (
+                <>
+                  <TextButton text={"Next"} icon={faStepForward} onClick={() => nextPlayer()} />
+                  <TextButton
+                    text={"End Encounter"}
+                    icon={faStopCircle}
+                    onClick={() => finishEncounter()}
+                  />
+                </>
+              )}
+            </PropWrapper>
+            {!encounter && <LoadingSpinner />}
+            {encounter && (
+              <Table>
+                <thead>
+                  <tr>
+                    <th>Init</th>
+                    <th>Name</th>
+                    {dmView && <th>Current Hp</th>}
+                    {dmView && <th>AC</th>}
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {encounter &&
+                    players
+                      .sort((a: Player, b: Player) => {
+                        if (b.init === a.init || !encounter.isPlaying) {
+                          return a.name.localeCompare(b.name);
+                        }
+                        return b.init - a.init;
+                      })
+                      .filter((a) => !a.isVisible || dmView)
+                      .map((player: Player, index: number) => {
+                        return (
+                          <Row
+                            current={encounter.currentInit === index && encounter.isPlaying}
+                            isDead={player.currentHp <= 0}
+                            key={index}
+                          >
+                            <PropField>
+                              <TinyNumberField
+                                value={player.init}
+                                onChange={(init) => onChangePlayerField("init", init, player)}
+                              />
+                            </PropField>
+                            <Prop>
+                              {player.pic !== "" && player.pic !== undefined ? (
+                                <PlayerImage player={player}></PlayerImage>
+                              ) : (
+                                <></>
+                              )}
+                              {player.isMonster && (
+                                <MainLink
+                                  onClick={() =>
+                                    history.push(`/monster-detail/name/${player.name}`)
+                                  }
+                                >
+                                  {dmView ? `${player.name} ${index}` : `??? ${index}`}
+                                </MainLink>
+                              )}
+                              {!player.isMonster && (
+                                <MainLink
+                                  onClick={() => history.push(`/char-detail/name/${player.name}`)}
+                                >
+                                  {player.name}
+                                </MainLink>
+                              )}
+                            </Prop>
+                            <PropRight>
+                              <DamageButton onClick={() => showDamageDialog(index)}>
+                                <GiBroadsword />
+                                <GiHeartBottle />
+                              </DamageButton>
+                              {dmView && `${player.currentHp} / ${player.hp}`}
+                            </PropRight>
+                            {dmView && <Prop>{player.ac}</Prop>}
+                            {/* <Prop>{player.tag}</Prop> */}
+                            <Prop style={{ minWidth: "100px" }}>
+                              {player.currentHp > 0 && (
+                                <IconButton
+                                  icon={faSkullCrossbones}
+                                  onClick={() => killPlayer(player)}
+                                />
+                              )}
+                              {player.currentHp <= 0 && (
+                                <IconButton
+                                  icon={faHandHoldingHeart}
+                                  onClick={() => revicePlayer(player)}
+                                />
+                              )}
+                              {player.isVisible && (
+                                <IconButton
+                                  icon={faEyeSlash}
+                                  onClick={() => toggleVisibility(player)}
+                                />
+                              )}
+                              {!player.isVisible && (
+                                <IconButton icon={faEye} onClick={() => toggleVisibility(player)} />
+                              )}
+                            </Prop>
+                          </Row>
+                        );
+                      })}
+                </tbody>
+              </Table>
             )}
-          </PropWrapper>
-          {!encounter && <LoadingSpinner />}
-          {encounter && (
-            <Table>
-              <thead>
-                <tr>
-                  <th>Init</th>
-                  <th>Name</th>
-                  {dmView && <th>Current Hp</th>}
-                  {dmView && <th>AC</th>}
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody>
-                {encounter &&
-                  players
-                    .sort((a: Player, b: Player) => {
-                      if (b.init === a.init || !encounter.isPlaying) {
-                        return a.name.localeCompare(b.name);
-                      }
-                      return b.init - a.init;
-                    })
-                    .filter((a) => !a.isVisible || dmView)
-                    .map((player: Player, index: number) => {
-                      return (
-                        <Row
-                          current={encounter.currentInit === index && encounter.isPlaying}
-                          isDead={player.currentHp <= 0}
-                          key={index}
-                        >
-                          <PropField>
-                            <TinyNumberField
-                              value={player.init}
-                              onChange={(init) => onChangePlayerField("init", init, player)}
-                            />
-                          </PropField>
-                          <Prop style={{ minWidth: "100%" }}>
-                            {player.pic !== "" && player.pic !== undefined ? (
-                              <PlayerImage player={player}></PlayerImage>
-                            ) : (
-                              <></>
-                            )}
-                            {player.isMonster && (
-                              <MainLink
-                                onClick={() => history.push(`/monster-detail/name/${player.name}`)}
-                              >
-                                {dmView ? `${player.name} ${index}` : `??? ${index}`}
-                              </MainLink>
-                            )}
-                            {!player.isMonster && (
-                              <MainLink
-                                onClick={() => history.push(`/char-detail/name/${player.name}`)}
-                              >
-                                {player.name}
-                              </MainLink>
-                            )}
-                          </Prop>
-                          <PropRight style={{ minWidth: "100px" }}>
-                            <DamageButton onClick={() => showDamageDialog(index)}>
-                              <GiBroadsword />
-                              <GiHeartBottle />
-                            </DamageButton>
-                            {dmView && `${player.currentHp} / ${player.hp}`}
-                          </PropRight>
-                          {dmView && <Prop>{player.ac}</Prop>}
-                          {/* <Prop>{player.tag}</Prop> */}
-                          <Prop style={{ minWidth: "100px" }}>
-                            {player.currentHp > 0 && (
-                              <IconButton
-                                icon={faSkullCrossbones}
-                                onClick={() => killPlayer(player)}
-                              />
-                            )}
-                            {player.currentHp <= 0 && (
-                              <IconButton
-                                icon={faHandHoldingHeart}
-                                onClick={() => revicePlayer(player)}
-                              />
-                            )}
-                            {player.isVisible && (
-                              <IconButton
-                                icon={faEyeSlash}
-                                onClick={() => toggleVisibility(player)}
-                              />
-                            )}
-                            {!player.isVisible && (
-                              <IconButton icon={faEye} onClick={() => toggleVisibility(player)} />
-                            )}
-                          </Prop>
-                        </Row>
-                      );
-                    })}
-              </tbody>
-            </Table>
+          </ScrollWrapper>
+          {(encounter.map !== "" || encounter.mapBase64 !== "") && (
+            <MoveButton onClick={() => showInitTracker((i) => !i)}>
+              <FontAwesomeIcon icon={initTracker ? faArrowAltCircleRight : faArrowAltCircleLeft} />
+            </MoveButton>
           )}
         </View>
-        {encounter && (
+        {encounter && (encounter.map !== "" || encounter.mapBase64 !== "") && (
           <Board
             isHost={dmView}
             onChangePlayers={onChangePlayers}
@@ -464,26 +481,59 @@ const CenterWrapper = styled.div`
 `;
 
 type viewType = {
-  mode?: number;
+  mode: number;
+  show: boolean;
+  window: boolean;
 };
 
 const View = styled.div<viewType>`
-  flex: 1 1;
+  ${(props) => {
+    if (props.window) {
+      let css = "position: fixed;top: 120px;";
+      if (!props.show) {
+        css += "left: 100px;";
+      } else {
+        if (!props.mode) {
+          css += "left: -360px;";
+        } else {
+          css += "left: -510px;";
+        }
+      }
+      return (
+        css +
+        "transition: left 0.5s; z-index: 500; height: calc(100vh - 140px); overflow-x: visible; box-shadow: 2px 2px 5px 0px rgba(0, 0, 0, 0.3);"
+      );
+    } else {
+      return "max-width: 600px;";
+    }
+  }}
+
   color: ${({ theme }) => theme.tile.color};
+
   font-size: 16px;
-  max-width: 600px;
   ${(props) => {
     if (!props.mode) {
-      return "min-width: 450px;";
+      return props.window ? "min-width: 450px;" : "width: 450px;";
     } else {
-      return "min-width: 600px;";
+      return props.window ? "min-width: 600px;" : "width: 600px;";
     }
   }}
   padding: 5px;
 
   @media (max-width: 576px) {
-    min-width: 100%;
+    width: 100%;
   }
+`;
+type wrapperType = {
+  window: boolean;
+};
+const ScrollWrapper = styled.div<wrapperType>`
+  ${(props) => {
+    if (props.window) {
+      return "width: 100%; height: 100%; overflow-y: auto; position: absolute; z-index: 500;";
+    }
+  }}
+  background-color: ${({ theme }) => theme.main.backgroundColor};
 `;
 
 const Name = styled.div`
@@ -523,7 +573,7 @@ const Prop = styled.td`
   background-color: ${({ theme }) => theme.tile.backgroundColor};
   line-height: 34px;
   white-space: nowrap;
-  width: 1px;
+  display: table-cell;
 `;
 
 const PropRight = styled(Prop)`
@@ -617,3 +667,24 @@ const ImageElm = styled.div`
   }
 `;
 const Empty = styled.div``;
+
+const MoveButton = styled.div`
+  position: absolute;
+  top: 40vh;
+  right: -40px;
+  z-index: 400;
+
+  height: 40px;
+  width: 40px;
+  text-align: center;
+  line-height: 40px;
+  transform: rotate(45deg);
+  cursor: pointer;
+
+  background-color: ${({ theme }) => theme.tile.backgroundColorLink};
+  color: ${({ theme }) => theme.buttons.color};
+
+  svg {
+    transform: rotate(-45deg);
+  }
+`;

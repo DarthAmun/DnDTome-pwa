@@ -96,7 +96,7 @@ const P2PEncounter = ({ encounter, isHost, onEdit }: $Props) => {
           value={peer.id}
           label={`Your ID:`}
           onChange={() => {}}
-          style={{ minWidth: "250px", float: "right" }}
+          style={{ minWidth: "250px", float: "right", height: "30px" }}
         />
       )}
       {peer !== undefined && !isHost && (

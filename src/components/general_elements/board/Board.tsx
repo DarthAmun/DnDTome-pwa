@@ -226,14 +226,12 @@ const PlayerSlot = ({
 };
 
 const BoardWrapper = styled.div`
-  flex: 1 1;
   padding: 5px;
-  margin: 5px;
-  min-height: 75vh;
-  max-width: calc(100vw - 120px);
+  height: calc(100vh - 140px);
+  width: calc(100vw - 110px);
 
   @media (max-width: 576px) {
-    max-width: 100vw;
+    width: 100vw;
   }
 
   display: flex;

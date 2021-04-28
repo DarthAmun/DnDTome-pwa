@@ -85,8 +85,8 @@ const EncounterDetail = ({ encounter, isNew }: $Props) => {
         </EditToggle>
         {!editMode && (
           <EditToggle mode={(!dmMode).toString()}>
-            <ToggleLeft onClick={() => setDmMode(true)}>DM View</ToggleLeft>
-            <ToggleRight onClick={() => setDmMode(false)}>Player View</ToggleRight>
+            <ToggleLeft onClick={() => setDmMode(true)}>DM</ToggleLeft>
+            <ToggleRight onClick={() => setDmMode(false)}>Player</ToggleRight>
           </EditToggle>
         )}
         {editMode && unsavedChanges && <Icon icon={faExclamationTriangle} />}
@@ -104,12 +104,12 @@ const EncounterDetail = ({ encounter, isNew }: $Props) => {
             {message && showAlert && <Message>{message}</Message>}
           </>
         )}
+        <P2PEncounter
+          encounter={encounterObj}
+          onEdit={(value) => editEncounter(value)}
+          isHost={true}
+        />
       </TopBar>
-      <P2PEncounter
-        encounter={encounterObj}
-        onEdit={(value) => editEncounter(value)}
-        isHost={true}
-      />
       {editMode ? (
         <EncounterEditView encounter={encounterObj} onEdit={(value) => editEncounter(value)} />
       ) : (

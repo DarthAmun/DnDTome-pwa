@@ -8,6 +8,7 @@ import { Transform } from "@fortawesome/fontawesome-svg-core";
 interface $Props {
   value: string;
   label: string;
+  disabled?: boolean;
   placeholder?: string;
   icon?: IconDefinition;
   style?: any;
@@ -15,7 +16,16 @@ interface $Props {
   onChange: (value: string) => void;
 }
 
-const StringField = ({ value, label, placeholder, icon, transform, style, onChange }: $Props) => (
+const StringField = ({
+  value,
+  label,
+  disabled,
+  placeholder,
+  icon,
+  transform,
+  style,
+  onChange,
+}: $Props) => (
   <Field style={style}>
     <LabelText>
       {icon ? <Icon icon={icon} transform={transform} /> : ""} {label}
@@ -23,6 +33,7 @@ const StringField = ({ value, label, placeholder, icon, transform, style, onChan
     <Input
       type="text"
       value={value}
+      disabled={disabled || false}
       onChange={(e) => onChange(e.target.value)}
       placeholder={placeholder}
     ></Input>

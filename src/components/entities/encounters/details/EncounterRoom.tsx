@@ -1,3 +1,5 @@
+import { faArrowAltCircleRight, faArrowAltCircleLeft } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useCallback, useEffect, useState } from "react";
 import { useHistory } from "react-router";
 import styled from "styled-components";
@@ -11,6 +13,7 @@ const EncounterRoom = () => {
   let history = useHistory();
   const [encounter, onEdit] = useState<Encounter>();
   const [players, setPlayers] = useState<Player[]>([]);
+  const [initTracker, showInitTracker] = useState<boolean>(false);
 
   useEffect(() => {
     if (encounter !== undefined) {
@@ -58,63 +61,68 @@ const EncounterRoom = () => {
     <>
       <P2PEncounter encounter={encounter} onEdit={onEdit} isHost={false} />
       <CenterWrapper>
-        <View mode={0}>
-          <Name>
-            <b>{encounter?.name}</b>
-          </Name>
-          <PropWrapper>
-            <PropElm>
-              <PropTitle>Round: </PropTitle>
-              {encounter?.roundCounter}
-            </PropElm>
-          </PropWrapper>
-          <Table>
-            <thead>
-              <tr>
-                <th>Init</th>
-                <th>Name</th>
-              </tr>
-            </thead>
-            <tbody>
-              {encounter &&
-                players
-                  .sort((a: Player, b: Player) => {
-                    if (b.init === a.init || !encounter.isPlaying) {
-                      return a.name.localeCompare(b.name);
-                    }
-                    return b.init - a.init;
-                  })
-                  .filter((a) => !a.isVisible)
-                  .map((player: Player, index: number) => {
-                    return (
-                      <Row
-                        current={encounter.currentInit === index && encounter.isPlaying}
-                        isDead={player.currentHp <= 0}
-                        key={index}
-                      >
-                        <PropField>
-                          <TinyNumberField value={player.init} onChange={() => undefined} />
-                        </PropField>
-                        <Prop>
-                          {player.pic !== "" && player.pic !== undefined ? (
-                            <PlayerImage player={player}></PlayerImage>
-                          ) : (
-                            <></>
-                          )}
-                          {player.isMonster && <MainLink>{"???"}</MainLink>}
-                          {!player.isMonster && (
-                            <MainLink
-                              onClick={() => history.push(`/char-detail/name/${player.name}`)}
-                            >
-                              {player.name}
-                            </MainLink>
-                          )}
-                        </Prop>
-                      </Row>
-                    );
-                  })}
-            </tbody>
-          </Table>
+        <View mode={0} show={initTracker}>
+          <ScrollWrapper>
+            <Name>
+              <b>{encounter?.name}</b>
+            </Name>
+            <PropWrapper>
+              <PropElm>
+                <PropTitle>Round: </PropTitle>
+                {encounter?.roundCounter}
+              </PropElm>
+            </PropWrapper>
+            <Table>
+              <thead>
+                <tr>
+                  <th>Init</th>
+                  <th>Name</th>
+                </tr>
+              </thead>
+              <tbody>
+                {encounter &&
+                  players
+                    .sort((a: Player, b: Player) => {
+                      if (b.init === a.init || !encounter.isPlaying) {
+                        return a.name.localeCompare(b.name);
+                      }
+                      return b.init - a.init;
+                    })
+                    .filter((a) => !a.isVisible)
+                    .map((player: Player, index: number) => {
+                      return (
+                        <Row
+                          current={encounter.currentInit === index && encounter.isPlaying}
+                          isDead={player.currentHp <= 0}
+                          key={index}
+                        >
+                          <PropField>
+                            <TinyNumberField value={player.init} onChange={() => undefined} />
+                          </PropField>
+                          <Prop>
+                            {player.pic !== "" && player.pic !== undefined ? (
+                              <PlayerImage player={player}></PlayerImage>
+                            ) : (
+                              <></>
+                            )}
+                            {player.isMonster && <MainLink>{"???"}</MainLink>}
+                            {!player.isMonster && (
+                              <MainLink
+                                onClick={() => history.push(`/char-detail/name/${player.name}`)}
+                              >
+                                {player.name}
+                              </MainLink>
+                            )}
+                          </Prop>
+                        </Row>
+                      );
+                    })}
+              </tbody>
+            </Table>
+          </ScrollWrapper>
+          <MoveButton onClick={() => showInitTracker((i) => !i)}>
+            <FontAwesomeIcon icon={initTracker ? faArrowAltCircleRight : faArrowAltCircleLeft} />
+          </MoveButton>
         </View>
         {encounter && (
           <Board
@@ -164,26 +172,55 @@ const CenterWrapper = styled.div`
 `;
 
 type viewType = {
-  mode?: number;
+  mode: number;
+  show: boolean;
 };
 
 const View = styled.div<viewType>`
-  flex: 1 1;
+  position: fixed;
+  top: 120px;
+  ${(props) => {
+    if (!props.show) {
+      return "left: 100px;";
+    } else {
+      if (!props.mode) {
+        return "left: -360px;";
+      } else {
+        return "left: -510px;";
+      }
+    }
+  }}
+  transition: left 0.5s;
+  z-index: 500;
+
+  height: calc(100vh - 140px);
+  overflow-x: visible;
+
   color: ${({ theme }) => theme.tile.color};
+  box-shadow: 2px 2px 5px 0px rgba(0, 0, 0, 0.3);
+
   font-size: 16px;
-  max-width: 400px;
   ${(props) => {
     if (!props.mode) {
-      return "min-width: 400px;";
+      return "width: 450px;";
     } else {
-      return "min-width: 500px;";
+      return "width: 600px;";
     }
   }}
   padding: 5px;
 
   @media (max-width: 576px) {
-    min-width: 100%;
+    width: 100%;
   }
+`;
+
+const ScrollWrapper = styled.div`
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  position: absolute;
+  background-color: ${({ theme }) => theme.main.backgroundColor};
+  z-index: 500;
 `;
 
 const Name = styled.div`
@@ -222,6 +259,7 @@ const Prop = styled.td`
   border-radius: 5px;
   background-color: ${({ theme }) => theme.tile.backgroundColor};
   line-height: 34px;
+  display: table-cell;
 `;
 
 const PropElm = styled.div`
@@ -311,3 +349,24 @@ const ImageElm = styled.div`
   }
 `;
 const Empty = styled.div``;
+
+const MoveButton = styled.div`
+  position: absolute;
+  top: 40vh;
+  right: -40px;
+  z-index: 400;
+
+  height: 40px;
+  width: 40px;
+  text-align: center;
+  line-height: 40px;
+  transform: rotate(45deg);
+  cursor: pointer;
+
+  background-color: ${({ theme }) => theme.tile.backgroundColorLink};
+  color: ${({ theme }) => theme.buttons.color};
+
+  svg {
+    transform: rotate(-45deg);
+  }
+`;
