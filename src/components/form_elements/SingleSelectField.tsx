@@ -14,12 +14,13 @@ interface $Props {
   }[];
   value: string;
   label: string;
+  style?: any;
   icon?: IconDefinition;
   transform?: string | Transform;
   onChange: (value: string) => void;
 }
 
-const SingleSelectField = ({ options, value, label, icon, transform, onChange }: $Props) => {
+const SingleSelectField = ({ options, value, label, style, icon, transform, onChange }: $Props) => {
   const handleChange = (option: { value: string; label: string }) => {
     if (option !== null && option !== undefined) {
       onChange(option.value);
@@ -27,7 +28,7 @@ const SingleSelectField = ({ options, value, label, icon, transform, onChange }:
   };
 
   return (
-    <Field>
+    <Field style={style}>
       <LabelText>
         {icon ? <Icon icon={icon} transform={transform} /> : ""} {label}
       </LabelText>

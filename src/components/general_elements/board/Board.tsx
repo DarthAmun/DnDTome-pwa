@@ -6,6 +6,7 @@ import Slot from "../../../data/encounter/Slot";
 import Player from "../../../data/encounter/Player";
 import IconButton from "../../form_elements/IconButton";
 import NumberField from "../../form_elements/NumberField";
+import SingleSelectField from "../../form_elements/SingleSelectField";
 
 interface $Props {
   isHost: boolean;
@@ -35,6 +36,7 @@ const Board = ({
   const [dragItem, setDragItem] = useState<Player>();
   const [currentFogBoard, setFogBoard] = useState<Slot[]>(fogBoard);
   const [fog, setFog] = useState<boolean>(false);
+  const [fogSize, setFogSize] = useState<string>("dot");
 
   useEffect(() => {
     setFogBoard(fogBoard);
@@ -51,12 +53,60 @@ const Board = ({
     (cord: number) => {
       if (fog) {
         let newBoard = [...currentFogBoard];
-        newBoard[cord].fog = !newBoard[cord].fog;
+
+        console.log(
+          cord - dimension.width + 1 >= 0,
+          (cord - dimension.width + 1) % dimension.width < cord % dimension.width
+        );
+
+        if (fogSize === "cross") {
+          if (cord - dimension.width >= 0)
+            newBoard[cord - dimension.width].fog = !newBoard[cord - dimension.width].fog;
+          if ((cord - 1) % dimension.width < cord % dimension.width && cord - 1 >= 0)
+            newBoard[cord - 1].fog = !newBoard[cord - 1].fog;
+          newBoard[cord].fog = !newBoard[cord].fog;
+          if ((cord + 1) % dimension.width > cord % dimension.width)
+            newBoard[cord + 1].fog = !newBoard[cord + 1].fog;
+          if (cord + dimension.width < dimension.width * dimension.height)
+            newBoard[cord + dimension.width].fog = !newBoard[cord + dimension.width].fog;
+        } else if (fogSize === "quarter") {
+          if (
+            cord - dimension.width - 1 >= 0 &&
+            (cord - dimension.width - 1) % dimension.width < cord % dimension.width
+          )
+            newBoard[cord - dimension.width - 1].fog = !newBoard[cord - dimension.width - 1].fog;
+          if (cord - dimension.width >= 0)
+            newBoard[cord - dimension.width].fog = !newBoard[cord - dimension.width].fog;
+          if (
+            cord - dimension.width + 1 >= 0 &&
+            (cord - dimension.width + 1) % dimension.width > cord % dimension.width
+          )
+            newBoard[cord - dimension.width + 1].fog = !newBoard[cord - dimension.width + 1].fog;
+          if ((cord - 1) % dimension.width < cord % dimension.width && cord - 1 >= 0)
+            newBoard[cord - 1].fog = !newBoard[cord - 1].fog;
+          newBoard[cord].fog = !newBoard[cord].fog;
+          if ((cord + 1) % dimension.width > cord % dimension.width)
+            newBoard[cord + 1].fog = !newBoard[cord + 1].fog;
+          if (
+            cord + dimension.width - 1 < dimension.width * dimension.height &&
+            (cord + dimension.width - 1) % dimension.width < cord % dimension.width
+          )
+            newBoard[cord + dimension.width - 1].fog = !newBoard[cord + dimension.width - 1].fog;
+          if (cord + dimension.width < dimension.width * dimension.height)
+            newBoard[cord + dimension.width].fog = !newBoard[cord + dimension.width].fog;
+          if (
+            cord + dimension.width + 1 < dimension.width * dimension.height + 1 &&
+            (cord + dimension.width + 1) % dimension.width > cord % dimension.width
+          )
+            newBoard[cord + dimension.width + 1].fog = !newBoard[cord + dimension.width + 1].fog;
+        } else {
+          newBoard[cord].fog = !newBoard[cord].fog;
+        }
         console.log("toggle fog", currentFogBoard[cord], newBoard[cord]);
         setFogBoard(newBoard);
       }
     },
-    [setFogBoard, fog, currentFogBoard]
+    [setFogBoard, fog, currentFogBoard, fogSize]
   );
 
   const makeFog = useCallback(() => {
@@ -91,6 +141,17 @@ const Board = ({
             value={dimension.size}
             label="Size"
             onChange={(size) => onChangeDimension({ ...dimension, size: size })}
+          />
+          <SingleSelectField
+            options={[
+              { value: "dot", label: "dot" },
+              { value: "cross", label: "cross" },
+              { value: "quarter", label: "quarder" },
+            ]}
+            style={{ zIndex: "600" }}
+            value={fogSize}
+            label={"Fog Tool"}
+            onChange={setFogSize}
           />
           <IconButton onClick={makeFog} toggle={fog} icon={faFill} />
         </BoardBar>
