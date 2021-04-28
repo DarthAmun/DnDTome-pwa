@@ -106,7 +106,7 @@ const Board = ({
         setFogBoard(newBoard);
       }
     },
-    [setFogBoard, fog, currentFogBoard, fogSize]
+    [setFogBoard, fog, currentFogBoard, fogSize, dimension]
   );
 
   const makeFog = useCallback(() => {
