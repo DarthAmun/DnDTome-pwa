@@ -1,16 +1,17 @@
 import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import Char from "../../../../data/chars/Char";
-import { reciveAllFiltered } from "../../../../services/DatabaseService";
 import Class from "../../../../data/classes/Class";
 import ClassSet from "../../../../data/chars/ClassSet";
+import Subclass from "../../../../data/classes/Subclass";
 
 import IconButton from "../../../form_elements/IconButton";
 import { faCheckCircle, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
 import NumberField from "../../../form_elements/NumberField";
 import TextButton from "../../../form_elements/TextButton";
+import SingleSelectField from "../../../form_elements/SingleSelectField";
+import { reciveAll } from "../../../../services/DatabaseService";
 import FormatedText from "../../../general_elements/FormatedText";
-import DataSelectField from "../../../form_elements/DataSelectField";
 
 interface $Props {
   char: Char;
@@ -20,6 +21,16 @@ interface $Props {
 
 const CharLabClass = ({ char, onChange, completed }: $Props) => {
   const [classes, setClasses] = useState<Class[]>([]);
+  const [subclasses, setSubclasses] = useState<Subclass[]>([]);
+
+  useEffect(() => {
+    reciveAll("classes", (results: any[]) => {
+      setClasses(results);
+    });
+    reciveAll("subclasses", (results: any[]) => {
+      setSubclasses(results);
+    });
+  }, []);
 
   const removeClass = (oldClass: ClassSet) => {
     let newClassList = char.classes.filter((classe) => classe !== oldClass);
@@ -70,54 +81,41 @@ const CharLabClass = ({ char, onChange, completed }: $Props) => {
     [char, onChange]
   );
 
-  useEffect(() => {
-    if (char.classes.length > 0) {
-      reciveAllFiltered(
-        "classes",
-        [
-          {
-            fieldName: "name",
-            value: char.classes.map((classe) => {
-              return classe.classe;
-            }),
-            sort: 0,
-          },
-        ],
-        (results: any[]) => {
-          setClasses(results);
-        }
-      );
-    }
-  }, [char]);
-
   return (
     <CenterWrapper>
       <CharView>
-        {char.classes.map((classSet: ClassSet, index: number) => {
-          return (
-            <PropWrapper key={index}>
-              <NumberField
-                value={classSet.level}
-                label="Level *"
-                onChange={(level) => changeClassLevel(classSet, level)}
-              />
-              <IconButton icon={faTrash} onClick={() => removeClass(classSet)} />
-              <DataSelectField
-                optionTable={["classes"]}
-                value={classSet.classe}
-                label="Class *"
-                onChange={(classe) => changeClass(classSet, classe)}
-              />
-              <DataSelectField
-                optionTable={["subclasses"]}
-                filters={[{ fieldName: "type", value: classSet.classe, sort: 0 }]}
-                value={classSet.subclasse}
-                label="Subclass"
-                onChange={(subclasse) => changeClassSubclass(classSet, subclasse)}
-              />
-            </PropWrapper>
-          );
-        })}
+        {classes &&
+          subclasses &&
+          char.classes.map((classSet: ClassSet, index: number) => {
+            return (
+              <PropWrapper key={index}>
+                <NumberField
+                  value={classSet.level}
+                  label="Level *"
+                  onChange={(level) => changeClassLevel(classSet, level)}
+                />
+                <IconButton icon={faTrash} onClick={() => removeClass(classSet)} />
+                <SingleSelectField
+                  options={classes?.map((c) => {
+                    return { value: c.name, label: c.name };
+                  })}
+                  value={classSet.classe}
+                  label="Class *"
+                  onChange={(classe) => changeClass(classSet, classe)}
+                />
+                <SingleSelectField
+                  options={subclasses
+                    ?.filter((s) => s.type === classSet.classe)
+                    .map((c) => {
+                      return { value: c.name, label: c.name };
+                    })}
+                  value={classSet.subclasse}
+                  label="Subclass"
+                  onChange={(subclasse) => changeClassSubclass(classSet, subclasse)}
+                />
+              </PropWrapper>
+            );
+          })}
         <TextButton text={"Add new Class"} icon={faPlus} onClick={() => addNewClass()} />
         <IconButton
           icon={faCheckCircle}
@@ -133,15 +131,17 @@ const CharLabClass = ({ char, onChange, completed }: $Props) => {
         />
         <PropWrapper>
           {classes &&
-            classes.map((classe: Class, index: number) => {
-              return (
-                <Text key={index}>
-                  <PropTitle>{classe.name}:</PropTitle>
-                  <FormatedText text={classe.proficiencies} />
-                  <br />
-                  <FormatedText text={classe.equipment} />
-                </Text>
-              );
+            char.classes.map((classSet: ClassSet, index: number) => {
+              return classes
+                .filter((c) => c.name === classSet.classe)
+                .map((classe, i: number) => {
+                  return (
+                    <Text key={index + i}>
+                      <PropTitle>{classe.name}:</PropTitle>
+                      <FormatedText text={classe.proficiencies} />
+                    </Text>
+                  );
+                });
             })}
         </PropWrapper>
       </CharView>

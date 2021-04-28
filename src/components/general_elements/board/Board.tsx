@@ -2,6 +2,7 @@ import { faEyeSlash, faFill } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
+import Slot from "../../../data/encounter/Slot";
 import Player from "../../../data/encounter/Player";
 import IconButton from "../../form_elements/IconButton";
 import NumberField from "../../form_elements/NumberField";
@@ -12,11 +13,11 @@ interface $Props {
   players: Player[];
   showName: boolean;
   dimension: { width: number; height: number; size: number; zoom: number };
-  fogBoard: boolean[][];
+  fogBoard: Slot[];
   currentPlayerNumber: number;
   onChangePlayers: (value: Player[]) => void;
   onChangeDimension: (value: { width: number; height: number; size: number; zoom: number }) => void;
-  onChangeBoard: (fogBoard: boolean[][]) => void;
+  onChangeBoard: (fogBoard: Slot[]) => void;
 }
 
 const Board = ({
@@ -31,95 +32,40 @@ const Board = ({
   onChangeDimension,
   onChangeBoard,
 }: $Props) => {
-  const [board, setBoard] = useState<JSX.Element>();
   const [dragItem, setDragItem] = useState<Player>();
-  const [currentFogBoard, setFogBoard] = useState<boolean[][]>(fogBoard);
+  const [currentFogBoard, setFogBoard] = useState<Slot[]>(fogBoard);
   const [fog, setFog] = useState<boolean>(false);
+
+  useEffect(() => {
+    setFogBoard(fogBoard);
+  }, [fogBoard]);
 
   const makeDrag = useCallback((player: Player) => {
     setDragItem(player);
   }, []);
-
   const makeDrop = useCallback((): Player | undefined => {
     return dragItem;
   }, [dragItem]);
 
   const toggleFog = useCallback(
-    (cord: number[]) => {
+    (cord: number) => {
       if (fog) {
-        console.log("toggle fog");
         let newBoard = [...currentFogBoard];
-        newBoard[cord[0]][cord[1]] = !newBoard[cord[0]][cord[1]];
+        newBoard[cord].fog = !newBoard[cord].fog;
+        console.log("toggle fog", currentFogBoard[cord], newBoard[cord]);
         setFogBoard(newBoard);
       }
     },
-    [currentFogBoard, setFogBoard, fog]
+    [setFogBoard, fog, currentFogBoard]
   );
-
-  const makeRow = useCallback(
-    (row: number) => {
-      let list: any = [];
-      for (let j = 0; j < dimension.width; j++) {
-        list.push(
-          <PlayerSlot
-            isHost={isHost}
-            key={"slot" + row + "" + j}
-            cord={[row, j]}
-            showName={showName}
-            players={players}
-            size={dimension.size}
-            zoom={dimension.zoom / 100}
-            fog={
-              fogBoard && fogBoard.length >= row && fogBoard[row].length >= j
-                ? fogBoard[row][j]
-                : false
-            }
-            makeDrop={makeDrop}
-            makeDrag={makeDrag}
-            toggleFog={toggleFog}
-            updatePlayers={onChangePlayers}
-            currentPlayerNumber={currentPlayerNumber}
-          ></PlayerSlot>
-        );
-      }
-      return list;
-    },
-    [
-      dimension,
-      players,
-      showName,
-      onChangePlayers,
-      currentPlayerNumber,
-      makeDrop,
-      makeDrag,
-      isHost,
-      fogBoard,
-      toggleFog,
-    ]
-  );
-
-  const makeBoard = useCallback(() => {
-    let list: any = [];
-    for (let i = 0; i < dimension.height; i++) {
-      list.push(<BoardRow key={i}>{makeRow(i)}</BoardRow>);
-    }
-    setBoard(list);
-  }, [dimension, makeRow]);
-
-  useEffect(() => {
-    console.time("Redo Board");
-    makeBoard();
-    console.timeEnd("Redo Board");
-    // eslint-disable-next-line
-  }, [img, dimension, players, makeDrop, isHost, fog, currentFogBoard]);
 
   const makeFog = useCallback(() => {
     setFog((f) => !f);
     if (fog) {
       console.log("push board");
-      onChangeBoard(fogBoard);
+      onChangeBoard(currentFogBoard);
     }
-  }, [fog, fogBoard, onChangeBoard]);
+  }, [fog, currentFogBoard, onChangeBoard]);
 
   return (
     <BoardWrapper>
@@ -150,8 +96,30 @@ const Board = ({
         </BoardBar>
       )}
       <BoardContainer>
-        <BoardLayer>{board}</BoardLayer>
-        <MapLayer zoom={dimension.zoom / 100} src={img} />
+        <LayerWrapper zoom={dimension.zoom / 100}>
+          <Grid>
+            {fogBoard?.map((slot: Slot, i: number) => {
+              return (
+                <PlayerSlot
+                  isHost={isHost}
+                  key={i}
+                  cord={i}
+                  showName={showName}
+                  players={players}
+                  size={dimension.size}
+                  zoom={dimension.zoom / 100}
+                  fog={slot.fog}
+                  makeDrop={makeDrop}
+                  makeDrag={makeDrag}
+                  toggleFog={toggleFog}
+                  updatePlayers={onChangePlayers}
+                  currentPlayerNumber={currentPlayerNumber}
+                />
+              );
+            })}
+          </Grid>
+          <MapLayer zoom={dimension.zoom / 100} src={img} />
+        </LayerWrapper>
       </BoardContainer>
     </BoardWrapper>
   );
@@ -163,14 +131,14 @@ interface $PlayerSlotProps {
   isHost: boolean;
   size: number;
   zoom: number;
-  cord: number[];
+  cord: number;
   showName: boolean;
   currentPlayerNumber: number;
   players: Player[];
   fog: boolean;
   makeDrop: () => Player | undefined;
   makeDrag: (player: Player) => void;
-  toggleFog: (cord: number[]) => void;
+  toggleFog: (cord: number) => void;
   updatePlayers: (players: Player[]) => void;
 }
 const PlayerSlot = ({
@@ -187,7 +155,7 @@ const PlayerSlot = ({
   toggleFog,
   updatePlayers,
 }: $PlayerSlotProps) => {
-  const drop = (e: any, cord: number[]) => {
+  const drop = (e: any, cord: number) => {
     e.preventDefault();
     let changedPlayer = makeDrop();
     let newPlayers: Player[] = players.map((player: Player) => {
@@ -200,12 +168,10 @@ const PlayerSlot = ({
     console.log("update Players");
     updatePlayers(newPlayers);
   };
-
   const drag = (e: any, player: Player) => {
     console.log("drag", player.name, player.cord);
     makeDrag(player);
   };
-
   const dragOver = (e: any) => {
     e.preventDefault();
   };
@@ -228,7 +194,7 @@ const PlayerSlot = ({
   );
 
   return (
-    <Slot
+    <GridCell
       size={size * zoom}
       fog={fog}
       onDrop={(e) => drop(e, cord)}
@@ -236,41 +202,34 @@ const PlayerSlot = ({
       onDragOver={dragOver}
       onClick={() => toggleFog(cord)}
     >
-      {players
-        .filter((a) => !a.isVisible || isHost)
-        .map((playerIcon: Player, index: number) => {
-          if (
-            (playerIcon.cord === undefined && cord[0] === 0 && cord[1] === 0) ||
-            (playerIcon.cord !== undefined &&
-              playerIcon.cord[0] === cord[0] &&
-              playerIcon.cord[1] === cord[1])
-          )
-            return (
-              <Image
-                key={"icon" + index}
-                index={index}
-                drag={drag}
-                player={playerIcon}
-                isHost={isHost}
-                showName={showName}
-                dragOver={dragOver}
-                pic={playerIcon.pic}
-                size={defineSize(size, playerIcon)}
-                isDead={playerIcon.currentHp <= 0}
-                isCurrent={currentPlayerNumber === index}
-              />
-            );
-          return <Empty key={"icon" + index} />;
-        })}
-    </Slot>
+      {players.map((playerIcon: Player, index: number) => {
+        if ((!playerIcon.isVisible || isHost) && playerIcon.cord === cord)
+          return (
+            <Image
+              key={"icon" + index}
+              index={index}
+              drag={drag}
+              player={playerIcon}
+              isHost={isHost}
+              showName={showName}
+              dragOver={dragOver}
+              pic={playerIcon.pic}
+              size={defineSize(size, playerIcon)}
+              isDead={playerIcon.currentHp <= 0}
+              isCurrent={currentPlayerNumber === index}
+            />
+          );
+        return <Empty key={"icon" + index} />;
+      })}
+    </GridCell>
   );
 };
 
 const BoardWrapper = styled.div`
-  flex: 1 1 min-content;
+  flex: 1 1;
   padding: 5px;
   margin: 5px;
-  // position: relative;
+  min-height: 75vh;
   max-width: calc(100vw - 120px);
 
   @media (max-width: 576px) {
@@ -278,7 +237,9 @@ const BoardWrapper = styled.div`
   }
 
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: no-wrap;
+  flex-direction: column;
+  justify-content: flex-start;
 `;
 const BoardContainer = styled.div`
   flex: 1 1 100%;
@@ -292,40 +253,45 @@ const BoardContainer = styled.div`
   flex-wrap: wrap;
 `;
 
-const BoardLayer = styled.div`
-  position: absolute;
-
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-start;
-  align-items: flex-start;
-  align-content: flex-start;
-`;
-
 type ZoomProp = {
   zoom: number;
 };
+const LayerWrapper = styled.div<ZoomProp>`
+  width: calc(100px * ${({ zoom }) => zoom * 10});
+  position: absolute;
+  left: 0;
+  right: 0;
+`;
 
 const MapLayer = styled.img<ZoomProp>`
   width: calc(800px * ${({ zoom }) => zoom});
+  width: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
 `;
 
 const BoardBar = styled.div`
   flex: 1 1 100%;
 
-  height: 50px;
+  max-height: 50px;
   width: 100%;
 
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: no-wrap;
   justify-content: space-between;
 `;
 
-const BoardRow = styled.div`
-  flex: 1 1 auto;
-  min-width: max-content;
+const Grid = styled.div`
+  z-index: 100;
+  width: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+
   display: flex;
   flex-wrap: wrap;
+  flex-direction: flex-start;
 `;
 
 type SizeProp = {
@@ -333,17 +299,17 @@ type SizeProp = {
   fog: boolean;
   isHost: boolean;
 };
-
-const Slot = styled.div<SizeProp>`
-  flex: 1;
-  min-height: ${({ size }) => size}px;
-  min-width: ${({ size }) => size}px;
-  max-height: ${({ size }) => size}px;
-  max-width: ${({ size }) => size}px;
-
-  box-sizing: border-box;
+const GridCell = styled.div<SizeProp>`
+  flex: 1 1;
+  min-width: calc(${({ size }) => size}px + 1px);
+  max-width: calc(${({ size }) => size}px + 1px);
+  min-height: calc(${({ size }) => size}px + 1px);
+  max-height: calc(${({ size }) => size}px + 1px);
+  margin-left: -1px;
+  margin-top: -1px;
   border: 1px solid rgba(0, 0, 0, 0.3);
-  position: releativ;
+  position: relative;
+  box-sizing: border-box;
   ${({ fog, isHost }) =>
     fog ? (isHost ? "background-color: rgba(0,0,0,0.5);" : "background-color: rgba(0,0,0,1);") : ""}
 `;
@@ -383,6 +349,7 @@ const Image = ({
       width: size - 6 + "px",
       opacity: isDead ? "0.5" : "1",
       border: isCurrent ? "" : "none",
+      zIndex: 200,
     };
 
     return (

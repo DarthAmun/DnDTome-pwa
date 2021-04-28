@@ -11,7 +11,7 @@ export default class Player {
   isNpc: boolean;
   isVisible: boolean;
   level: number;
-  cord: number[];
+  cord: number;
   pic: string;
   size: string;
 
@@ -28,7 +28,7 @@ export default class Player {
     isNpc?: boolean,
     isVisible?: boolean,
     level?: number,
-    cord?: number[],
+    cord?: number,
     pic?: string,
     size?: string
   ) {
@@ -44,7 +44,7 @@ export default class Player {
     this.isNpc = isNpc || false;
     this.isVisible = isVisible || true;
     this.level = level || 0;
-    this.cord = cord || [0, 0];
+    this.cord = cord || 0;
     this.pic = pic || "";
     this.size = size || "";
   }

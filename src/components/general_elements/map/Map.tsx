@@ -6,6 +6,10 @@ import Location from "../../../data/world/Location";
 import FormatedText from "../FormatedText";
 import MarkerEditDialog from "./MarkerEditDialog";
 
+import marker2x from "./marker-icon-2x.png";
+import marker from "./marker-icon.png";
+import markerShadow from "./marker-shadow.png";
+
 interface $Props {
   location: Location;
   editable: boolean;
@@ -161,9 +165,9 @@ const Markers = ({
   };
 
   let icon = new Icon({
-    iconRetinaUrl: require("leaflet/dist/images/marker-icon-2x.png"),
-    iconUrl: require("leaflet/dist/images/marker-icon.png"),
-    shadowUrl: require("leaflet/dist/images/marker-shadow.png"),
+    iconRetinaUrl: marker2x,
+    iconUrl: marker,
+    shadowUrl: markerShadow,
     iconSize: [25, 41],
     iconAnchor: [12, 41],
   });

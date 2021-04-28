@@ -1,6 +1,8 @@
 import { faFilePdf, faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import React, { useEffect, useState } from "react";
+import { GiCryoChamber } from "react-icons/gi";
 import styled from "styled-components";
+import Npc from "../../../../data/campaign/Npc";
 import BuildChar from "../../../../data/chars/BuildChar";
 import Char from "../../../../data/chars/Char";
 import Class from "../../../../data/classes/Class";
@@ -9,7 +11,7 @@ import FeatureSet from "../../../../data/classes/FeatureSet";
 import Modifier from "../../../../data/Modifier";
 import Trait from "../../../../data/races/Trait";
 import { applyMods, buildCharacter } from "../../../../services/CharacterService";
-import { update } from "../../../../services/DatabaseService";
+import { saveNew, update } from "../../../../services/DatabaseService";
 import { exportPdf } from "../../../../services/PdfService";
 import TextButton from "../../../form_elements/TextButton";
 import FormatedText from "../../../general_elements/FormatedText";
@@ -57,6 +59,11 @@ const CharView = ({ character, modifications, isNpc }: $Props) => {
     update("chars", char.character);
   };
 
+  const makeNpcCopy = () => {
+    let newNpc = new Npc(1, character.name, character.pic, character.picBase64, character);
+    saveNew("npcs", newNpc, `${buildChar.character.name} copy`);
+  };
+
   return (
     <>
       {loading && <LoadingSpinner />}
@@ -83,6 +90,10 @@ const CharView = ({ character, modifications, isNpc }: $Props) => {
                   icon={faFilePdf}
                   onClick={() => exportPdf(buildChar.character)}
                 />
+                <Button onClick={() => makeNpcCopy()}>
+                  <GiCryoChamber />
+                  {` Create Npc copy`}
+                </Button>
               </View>
             </>
           )}
@@ -285,4 +296,36 @@ const TraitLevel = styled(TraitName)`
 `;
 const TraitText = styled(TraitName)`
   flex: 4 4 auto;
+`;
+
+const Button = styled.button`
+  svg {
+    color: ${({ theme }) => theme.buttons.color};
+    transition: color 0.2s;
+  }
+  &:hover svg {
+    color: ${({ theme }) => theme.buttons.hoverColor};
+  }
+
+  color: ${({ theme }) => theme.buttons.color};
+  font-size: 16px;
+  float: left;
+  height: 20px;
+  padding: 10px;
+  margin: 5px;
+  cursor: pointer;
+  box-shadow: inset -2px -2px 5px 0px rgba(0, 0, 0, 0.3);
+  box-sizing: content-box;
+  border-radius: 10px;
+  border: none;
+
+  transition: color 0.2s;
+  background: ${({ theme }) => theme.buttons.backgroundColor};
+  &:hover {
+    color: ${({ theme }) => theme.buttons.hoverColor};
+  }
+
+  &:disabled {
+    background-color: ${({ theme }) => theme.buttons.disabled};
+  }
 `;

@@ -9,6 +9,7 @@ import Select from "react-select";
 import Filter from "../../data/Filter";
 import IEntity from "../../data/IEntity";
 import { reciveAllFilteredPromise } from "../../services/DatabaseService";
+import { LocalLoadingSpinner } from "../Loading";
 
 interface $Props {
   optionTable: string[];
@@ -36,6 +37,7 @@ const DataSelectField = ({
       label: string;
     }[]
   >([]);
+  const [loading, setLoading] = useState<boolean>(true);
 
   const findAllItems = useCallback(
     async (optionsTable: string[]) => {
@@ -61,6 +63,7 @@ const DataSelectField = ({
   useEffect(() => {
     if (optionsTable !== undefined && optionsTable.length > 0) {
       findAllItems(optionsTable);
+      setLoading(false);
     }
   }, [optionsTable, findAllItems, filters]);
 
@@ -75,16 +78,19 @@ const DataSelectField = ({
       <LabelText>
         {icon ? <Icon icon={icon} transform={transform} /> : ""} {label}
       </LabelText>
-      <StyledSelect
-        isMulti={false}
-        classNamePrefix="react-select"
-        value={{
-          value: value,
-          label: value,
-        }}
-        options={options}
-        onChange={(option: { value: string; label: string }) => handleChange(option)}
-      />
+      {loading && <LocalLoadingSpinner />}
+      {!loading && (
+        <StyledSelect
+          isMulti={false}
+          classNamePrefix="react-select"
+          value={{
+            value: value,
+            label: value,
+          }}
+          options={options}
+          onChange={(option: { value: string; label: string }) => handleChange(option)}
+        />
+      )}
     </Field>
   );
 };

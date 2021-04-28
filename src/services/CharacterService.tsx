@@ -245,16 +245,18 @@ export const buildCharacter = async (character: Char): Promise<BuildChar> => {
   });
   if (race !== undefined) {
     race.traits.forEach((trait: Trait) => {
-      if (trait !== undefined)
+      if (trait !== undefined) {
         if (trait.level <= level) {
           raceFeatures.push(trait);
         }
+      }
     });
     subrace?.traits.forEach((trait: Trait) => {
-      if (trait !== undefined)
+      if (trait !== undefined) {
         if (trait.level <= level) {
           raceFeatures.push(trait);
         }
+      }
     });
   }
   character.items.forEach((originItem) => {

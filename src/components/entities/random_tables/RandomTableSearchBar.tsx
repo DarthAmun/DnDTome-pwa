@@ -61,7 +61,6 @@ const RandomTableSearchBar = () => {
   const createNewRandomTable = () => {
     let newRandomTable = new RandomTable(0, "NEw");
     delete newRandomTable.id;
-    console.log(newRandomTable);
     createNewWithId("randomTables", newRandomTable, (id) => {
       history.push(`/randomTable-detail/id/${id}`);
     });

@@ -35,7 +35,6 @@ const FlowChart = ({ initElements, isEditable, onEdit }: $Props) => {
   const [showEditDialog, setEditDialaog] = useState<boolean>();
 
   useEffect(() => {
-    console.log("change");
     if (onEdit !== undefined && initElements !== elements) onEdit(elements);
   }, [elements, onEdit, initElements]);
 

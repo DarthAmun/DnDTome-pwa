@@ -62,7 +62,7 @@ const MonsterTile = ({ monster }: $Props) => {
     <Tile to={"/monster-detail/id/" + monster.id}>
       <Type type={firstToUpper(monster.type)}>
         {firstToUpper(monster.type)}{" "}
-        {monster.subtype && monster.subtype.trim() !== ""
+        {monster.subtype !== undefined && monster.subtype.trim() !== ""
           ? "(" + firstToUpper(monster.subtype) + ")"
           : ""}
       </Type>

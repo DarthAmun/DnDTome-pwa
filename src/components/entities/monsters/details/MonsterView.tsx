@@ -2,11 +2,13 @@ import { faDiscord } from "@fortawesome/free-brands-svg-icons";
 import { faLink, faPaperPlane, faRunning, faShieldAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useCallback, useEffect, useState } from "react";
-import { GiAngelOutfit, GiLifeBar, GiResize } from "react-icons/gi";
+import { GiAngelOutfit, GiCryoChamber, GiLifeBar, GiResize } from "react-icons/gi";
 import { MdRecordVoiceOver, MdRemoveRedEye } from "react-icons/md";
 import styled from "styled-components";
+import Npc from "../../../../data/campaign/Npc";
 import Monster from "../../../../data/Monster";
 import { useWebhook } from "../../../../hooks/webhookHook";
+import { saveNew } from "../../../../services/DatabaseService";
 import { sendEmbedMessage } from "../../../../services/DiscordService";
 import TextButton from "../../../form_elements/TextButton";
 import FormatedText from "../../../general_elements/FormatedText";
@@ -100,6 +102,11 @@ const MonsterView = ({ monster, isNpc }: $Props) => {
         });
     }
     return boni;
+  };
+
+  const makeNpcCopy = () => {
+    let newNpc = new Npc(1, monster.name, monster.pic, monster.picBase64, undefined, monster);
+    saveNew("npcs", newNpc, `${monster.name} copy`);
   };
 
   return (
@@ -216,6 +223,10 @@ const MonsterView = ({ monster, isNpc }: $Props) => {
             />
           )}
           {!isNpc && !!send && <P2PSender data={monster} mode={"THIS"} />}
+          <Button onClick={() => makeNpcCopy()}>
+            <GiCryoChamber />
+            {` Create Npc copy`}
+          </Button>
         </PropWrapper>
       </View>
       {monster.ablt && (
@@ -398,3 +409,35 @@ const ImageElm = styled.img`
   margin-right: auto;
 `;
 const Empty = styled.div``;
+
+const Button = styled.button`
+  svg {
+    color: ${({ theme }) => theme.buttons.color};
+    transition: color 0.2s;
+  }
+  &:hover svg {
+    color: ${({ theme }) => theme.buttons.hoverColor};
+  }
+
+  color: ${({ theme }) => theme.buttons.color};
+  font-size: 16px;
+  float: left;
+  height: 20px;
+  padding: 10px;
+  margin: 5px;
+  cursor: pointer;
+  box-shadow: inset -2px -2px 5px 0px rgba(0, 0, 0, 0.3);
+  box-sizing: content-box;
+  border-radius: 10px;
+  border: none;
+
+  transition: color 0.2s;
+  background: ${({ theme }) => theme.buttons.backgroundColor};
+  &:hover {
+    color: ${({ theme }) => theme.buttons.hoverColor};
+  }
+
+  &:disabled {
+    background-color: ${({ theme }) => theme.buttons.disabled};
+  }
+`;

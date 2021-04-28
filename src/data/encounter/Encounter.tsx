@@ -1,5 +1,6 @@
 import IEntity from "../IEntity";
 import Player from "./Player";
+import Slot from "./Slot";
 
 export default class Encounter implements IEntity {
   id?: number;
@@ -12,7 +13,7 @@ export default class Encounter implements IEntity {
   map: string;
   mapBase64: string;
   dimension: { width: number; height: number; size: number; zoom: number };
-  board: boolean[][];
+  board: Slot[];
 
   constructor(
     id?: number,
@@ -25,7 +26,7 @@ export default class Encounter implements IEntity {
     map?: string,
     mapBase64?: string,
     dimension?: { width: number; height: number; size: number; zoom: number },
-    board?: boolean[][]
+    board?: Slot[]
   ) {
     this.id = id;
     this.name = name || "";

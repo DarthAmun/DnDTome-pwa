@@ -37,35 +37,98 @@ const FormatedText = ({ text }: $Props) => {
   };
 
   const rollDiscord = useCallback(
-    (command: string) => {
+    (command: string, adv: boolean, dis: boolean) => {
       if (!command.includes("d")) {
         let newCommand = "d20" + command;
         let value = parseInt(command.replaceAll("+", ""));
         const { result, text, rolls } = rollCommand(newCommand);
+        const { result: result2, rolls: rolls2 } = rollCommand(newCommand);
 
         let krit = false;
-        if (result - value === 20) krit = true;
-        let fail = false;
-        if (result - value === 1) fail = true;
+        if (!adv && !dis && result - value === 20) krit = true;
+        else if (adv && (result - value === 20 || result2 - value === 20)) krit = true;
+        else if (dis && result - value === 20 && result2 - value === 20) krit = true;
 
-        let rollString = "d20" + rolls + command;
+        let fail = false;
+        if (!adv && !dis && result - value === 1) fail = true;
+        else if (adv && result - value === 1 && result - value === 1) fail = true;
+        else if (dis && (result - value === 1 || result - value === 1)) fail = true;
+
+        let rollString = "d20" + rolls + rolls2 + command;
+        rollString += adv ? "adv" : "";
+        rollString += dis ? "dis" : "";
+
         if (result !== undefined && webhook !== undefined) {
-          sendMessage(
-            webhook,
-            result +
-              " " +
-              text +
-              (fail ? " :red_circle:" : "") +
-              (krit ? " :green_circle:" : "") +
-              " ||" +
-              rollString +
-              "||"
-          );
+          if (adv) {
+            let resultText =
+              result >= result2
+                ? "**" + result + "** ~~" + result2 + "~~"
+                : "~~" + result + "~~ **" + result2 + "**";
+            sendMessage(
+              webhook,
+              resultText +
+                " " +
+                text +
+                (fail ? " :red_circle:" : "") +
+                (krit ? " :green_circle:" : "") +
+                " ||" +
+                rollString +
+                "||"
+            );
+          } else if (dis) {
+            let resultText =
+              result >= result2
+                ? "~~" + result + "~~ **" + result2 + "**"
+                : "**" + result + "** ~~" + result2 + "~~";
+            sendMessage(
+              webhook,
+              resultText +
+                " " +
+                text +
+                (fail ? " :red_circle:" : "") +
+                (krit ? " :green_circle:" : "") +
+                " ||" +
+                rollString +
+                "||"
+            );
+          } else {
+            sendMessage(
+              webhook,
+              result +
+                " " +
+                text +
+                (fail ? " :red_circle:" : "") +
+                (krit ? " :green_circle:" : "") +
+                " ||" +
+                rollString +
+                "||"
+            );
+          }
         }
       } else {
         const { result, text, rolls } = rollCommand(command);
+        const { result: result2, rolls: rolls2 } = rollCommand(command);
+
+        let rollString = command + rolls + rolls2;
+        rollString += adv ? " adv" : "";
+        rollString += dis ? " dis" : "";
+
         if (result !== undefined && webhook !== undefined) {
-          sendMessage(webhook, result + " " + text + " ||" + command + " " + rolls + "||");
+          if (adv) {
+            let resultText =
+              result >= result2
+                ? "**" + result + "** ~~" + result2 + "~~"
+                : "~~" + result + "~~ **" + result2 + "**";
+            sendMessage(webhook, resultText + " " + text + " ||" + rollString + "||");
+          } else if (dis) {
+            let resultText =
+              result >= result2
+                ? "~~" + result + "~~ **" + result2 + "**"
+                : "**" + result + "** ~~" + result2 + "~~";
+            sendMessage(webhook, resultText + " " + text + " ||" + rollString + "||");
+          } else {
+            sendMessage(webhook, result + " " + text + " ||" + rollString + "||");
+          }
         }
       }
     },
@@ -86,9 +149,11 @@ const FormatedText = ({ text }: $Props) => {
               if (linkEntity === "dice") {
                 formattedParts.push(
                   <TextPart key={"TextPart" + index}>
-                    <DiscordPart onClick={() => rollDiscord(linkParts[1])}>
+                    <DiscordPart onClick={() => rollDiscord(linkParts[1], false, false)}>
                       <LinkCheck type={linkParts[0]} name={linkParts[1]} /> {linkParts[1]}
                     </DiscordPart>
+                    <Adv onClick={() => rollDiscord(linkParts[1], true, false)}>Adv</Adv>
+                    <Dis onClick={() => rollDiscord(linkParts[1], false, true)}>Dis</Dis>
                     <TextPart>{codePart[1]}</TextPart>
                   </TextPart>
                 );
@@ -135,6 +200,7 @@ const FormatedText = ({ text }: $Props) => {
       }
       return <></>;
     },
+    // eslint-disable-next-line
     [history]
   );
 
@@ -252,6 +318,19 @@ const Link = styled.span`
 const DiscordPart = styled(Link)`
   background-color: #7289da;
   color: white;
+  border-top-right-radius: 0px;
+  border-bottom-right-radius: 0px;
+`;
+const Adv = styled(Link)`
+  background-color: #7289da;
+  color: white;
+  border-radius: 0px;
+`;
+const Dis = styled(Link)`
+  background-color: #7289da;
+  color: white;
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
 `;
 
 const TextPart = styled.span`

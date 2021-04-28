@@ -79,10 +79,6 @@ const EntityDetail = ({ entity, tableName, isNew, view }: $Props) => {
   };
 
   useEffect(() => {
-    console.log(tableName);
-  }, [tableName]);
-
-  useEffect(() => {
     if (entityObj !== entity) {
       setUnsavedChanges(true);
     }

@@ -9,7 +9,8 @@ import { reciveAllFiltered, reciveAllFilteredPromise } from "../../services/Data
 import Filter from "../../data/Filter";
 
 interface $Props {
-  optionTable: string | string[];
+  optionTable?: string | string[];
+  options?: IEntity[];
   filters?: Filter[];
   value: string;
   label: string;
@@ -20,6 +21,7 @@ interface $Props {
 
 const AutoStringField = ({
   optionTable,
+  options,
   filters,
   value,
   label,
@@ -27,8 +29,9 @@ const AutoStringField = ({
   transform,
   onChange,
 }: $Props) => {
-  const [optionsTable] = useState<string | string[]>(optionTable);
-  const [options, setOptions] = useState<IEntity[]>([]);
+  const [term, setTerm] = useState<string>(value);
+  const [optionsTable] = useState<string | string[]>(optionTable !== undefined ? optionTable : []);
+  const [allOptions, setOptions] = useState<IEntity[]>(options !== undefined ? options : []);
   const [filteredOptions, setFilteredOptions] = useState<IEntity[]>([]);
 
   const findAllItems = useCallback(
@@ -46,44 +49,65 @@ const AutoStringField = ({
   );
 
   useEffect(() => {
-    if (typeof optionsTable === "string") {
-      reciveAllFiltered(optionsTable, filters !== undefined ? filters : [], (data: any[]) => {
-        setOptions(data);
-      });
+    if (optionTable !== undefined) {
+      if (typeof optionsTable === "string") {
+        reciveAllFiltered(optionsTable, filters !== undefined ? filters : [], (data: any[]) => {
+          setOptions(data);
+        });
+      }
+      if (optionsTable instanceof Array && optionsTable.length > 0) {
+        findAllItems(optionsTable);
+      }
     }
-    if (optionsTable instanceof Array && optionsTable.length > 0) {
-      findAllItems(optionsTable);
-    }
-  }, [optionsTable, findAllItems, filters]);
+  }, [optionTable, optionsTable, findAllItems, filters]);
 
   const onSearch = useCallback(
     (searchTerm: string) => {
-      onChange(searchTerm);
+      console.time("search");
+      setTerm(searchTerm);
       if (searchTerm.length > 2) {
-        let newOptions = options
+        let newOptions = allOptions
           .filter((option) => {
-            return option.name.includes(searchTerm);
+            return option.name.toLowerCase().startsWith(searchTerm.toLowerCase());
           })
           .slice(0, 5);
         setFilteredOptions(newOptions);
       } else {
         setFilteredOptions([]);
       }
+      console.timeEnd("search");
     },
-    [options, onChange]
+    [allOptions]
   );
+
+  const applyTerm = (e: any) => {
+    if (e.key === "Enter") {
+      onChange(term);
+    }
+  };
 
   return (
     <Field>
       <LabelText>
         {icon ? <Icon icon={icon} transform={transform} /> : ""} {label}
       </LabelText>
-      <Input type="text" value={value} onChange={(e) => onSearch(e.target.value)}></Input>
+      <Input
+        type="text"
+        value={term}
+        onChange={(e) => onSearch(e.target.value)}
+        onKeyDown={(e) => applyTerm(e)}
+      ></Input>
       <Options>
         {filteredOptions.length > 0 &&
           filteredOptions.map((opt, index: number) => {
             return (
-              <Option key={index} onClick={(e) => onSearch(opt.name)}>
+              <Option
+                key={index}
+                onClick={(e) => {
+                  setTerm(opt.name);
+                  onChange(opt.name);
+                }}
+              >
                 {opt.name}
               </Option>
             );

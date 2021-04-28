@@ -5,19 +5,40 @@ import {
   faFileExport,
   faPaperPlane,
   faTrashAlt,
+  faUserCog,
 } from "@fortawesome/free-solid-svg-icons";
 import { exportAllFromTable } from "../../services/OptionService";
 import IconButton from "../form_elements/IconButton";
 import P2PSender from "../p2p/P2PSender";
 import TextButton from "../form_elements/TextButton";
+import Selection from "../../data/Selection";
+import { deleteAll, reciveAllPromise, resaveFromList } from "../../services/DatabaseService";
 
 interface $Props {
   amount: number;
+  isReload: (val: boolean) => void;
   triggerDeleteAll: (tableName: string) => void;
 }
 
-const SelectionsOptions = ({ amount, triggerDeleteAll }: $Props) => {
+const SelectionsOptions = ({ amount, isReload, triggerDeleteAll }: $Props) => {
   const [send, setSend] = useState<boolean>(false);
+
+  const triggerRegroupAll = async () => {
+    let newSelections: Selection[] = [];
+    let selections: Selection[] = await reciveAllPromise("selections");
+    selections.forEach((selection) => {
+      let sels = newSelections.filter((ns) => ns.name === selection.name);
+      if (sels.length > 0) {
+        sels[0].selectionOptions = [...sels[0].selectionOptions, ...selection.selectionOptions];
+      } else {
+        newSelections.push(selection);
+      }
+    });
+    deleteAll("selections");
+    resaveFromList("selections", newSelections);
+    isReload(true);
+  };
+
   return (
     <OptionTab>
       <OptionSection>
@@ -26,9 +47,7 @@ const SelectionsOptions = ({ amount, triggerDeleteAll }: $Props) => {
           <SectionText>Export all Selections?</SectionText>
           <IconButton
             icon={faFileExport}
-            onClick={() =>
-              exportAllFromTable("selections", "DnDTome_selections.json")
-            }
+            onClick={() => exportAllFromTable("selections", "DnDTome_selections.json")}
           />
         </SectionRow>
       </OptionSection>
@@ -36,10 +55,14 @@ const SelectionsOptions = ({ amount, triggerDeleteAll }: $Props) => {
         <SelectionTitle>Delete</SelectionTitle>
         <SectionRow>
           <SectionText>Delete all {amount} Selections?</SectionText>
-          <IconButton
-            icon={faTrashAlt}
-            onClick={() => triggerDeleteAll("selections")}
-          />
+          <IconButton icon={faTrashAlt} onClick={() => triggerDeleteAll("selections")} />
+        </SectionRow>
+      </OptionSection>
+      <OptionSection>
+        <SelectionTitle>Regroup</SelectionTitle>
+        <SectionRow>
+          <SectionText>Regroup all {amount} Selections?</SectionText>
+          <IconButton icon={faUserCog} onClick={() => triggerRegroupAll()} />
         </SectionRow>
       </OptionSection>
       <OptionSection>

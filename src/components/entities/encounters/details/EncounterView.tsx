@@ -21,6 +21,7 @@ import Board from "../../../general_elements/board/Board";
 import { DamageDialog } from "../../../general_elements/Dialog";
 import { calcDifficulty } from "../../../../services/EncounterService";
 import { LoadingSpinner } from "../../../Loading";
+import Slot from "../../../../data/encounter/Slot";
 
 interface $Props {
   encounter: Encounter;
@@ -188,9 +189,22 @@ const EncounterView = ({ encounter, dmView, onEdit }: $Props) => {
     [encounter, onEdit]
   );
 
-  const showDamageDialog = (i: number) => {
-    setDamageDialogIndex(i);
-    setDamageDialog(true);
+  const onChangeDimension = (dimension: {
+    width: number;
+    height: number;
+    size: number;
+    zoom: number;
+  }) => {
+    if (dimension.zoom === encounter.dimension.zoom) {
+      console.time("makeFogBoard");
+      let newBoard: Slot[] = [...Array(dimension.width * dimension.height)].map(() => {
+        return new Slot();
+      });
+      console.timeEnd("makeFogBoard");
+      onEdit({ ...encounter, dimension: dimension, board: newBoard });
+    } else {
+      onEdit({ ...encounter, dimension: dimension });
+    }
   };
 
   const getMap = useCallback(() => {
@@ -208,26 +222,13 @@ const EncounterView = ({ encounter, dmView, onEdit }: $Props) => {
     return "";
   }, [encounter]);
 
-  const toggleVisibility = (player: Player) => {
-    onChangePlayerField("isVisible", !player.isVisible, player);
+  const showDamageDialog = (i: number) => {
+    setDamageDialogIndex(i);
+    setDamageDialog(true);
   };
 
-  const onChangeDimension = (dimension: {
-    width: number;
-    height: number;
-    size: number;
-    zoom: number;
-  }) => {
-    console.time("makeBoard");
-    let newBoard: boolean[][] = [];
-    for (let i = 0; i < dimension.height; i++) {
-      newBoard.push([]);
-      for (let j = 0; j < dimension.width; j++) {
-        newBoard[i].push(true);
-      }
-    }
-    console.timeEnd("makeBoard");
-    onEdit({ ...encounter, dimension: dimension, board: newBoard });
+  const toggleVisibility = (player: Player) => {
+    onChangePlayerField("isVisible", !player.isVisible, player);
   };
 
   return (
@@ -390,7 +391,7 @@ const EncounterView = ({ encounter, dmView, onEdit }: $Props) => {
             </Table>
           )}
         </View>
-        {encounter && getMap() !== "" && (
+        {encounter && (
           <Board
             isHost={dmView}
             onChangePlayers={onChangePlayers}
@@ -406,7 +407,7 @@ const EncounterView = ({ encounter, dmView, onEdit }: $Props) => {
             onChangeDimension={(dimension) => onChangeDimension(dimension)}
             onChangeBoard={(board) => onEdit({ ...encounter, board: board })}
             img={getMap()}
-          ></Board>
+          />
         )}
       </CenterWrapper>
     </>
@@ -470,7 +471,7 @@ const View = styled.div<viewType>`
   flex: 1 1;
   color: ${({ theme }) => theme.tile.color};
   font-size: 16px;
-  max-width: 800px;
+  max-width: 600px;
   ${(props) => {
     if (!props.mode) {
       return "min-width: 450px;";

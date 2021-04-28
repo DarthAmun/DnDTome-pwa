@@ -204,6 +204,7 @@ const CharEditView = ({ character, onEdit, isNpc }: $Props) => {
       });
     }
     let newChar = { ...character, activeSelections: newActiveSelections };
+
     return new Promise((resolve, reject) => {
       if (newChar !== undefined) resolve(newChar);
       reject("Error");
@@ -318,53 +319,25 @@ const CharEditView = ({ character, onEdit, isNpc }: $Props) => {
   );
 
   const onChangeActiveSelection = useCallback(
-    (
-      oldActiveSelection: {
-        selectionName: string;
-        activeOption: {
-          entityName: string;
-          entityText: string;
-          level: number;
-        };
-        featureName: string;
-        className: string;
-      },
-      select: string
-    ) => {
+    (id: number, select: string) => {
       if (character !== undefined) {
-        let newActiveSelections = character.activeSelections.map(
-          (activeSelection: {
-            selectionName: string;
-            activeOption: {
-              entityName: string;
-              entityText: string;
-              level: number;
-            };
-            featureName: string;
-            featureCount: number;
-            className: string;
-          }) => {
-            if (activeSelection === oldActiveSelection) {
-              let activSelect = {
-                entityName: "",
-                entityText: "",
-                level: 0,
-              };
-              selections.forEach((selection: Selection) => {
-                if (selection.name === activeSelection.selectionName) {
-                  selection.selectionOptions.forEach((option) => {
-                    if (option.entityName === select) {
-                      activSelect = option;
-                    }
-                  });
-                }
-              });
-              return { ...activeSelection, activeOption: activSelect };
-            } else {
-              return activeSelection;
-            }
+        let newActiveSelections = [...character.activeSelections];
+        let activSelect = {
+          entityName: "",
+          entityText: "",
+          level: 0,
+        };
+
+        selections.forEach((selection: Selection) => {
+          if (selection.name === newActiveSelections[id].selectionName) {
+            selection.selectionOptions.forEach((option) => {
+              if (option.entityName === select) {
+                activSelect = option;
+              }
+            });
           }
-        );
+        });
+        newActiveSelections[id].activeOption = activSelect;
         onEdit({ ...character, activeSelections: newActiveSelections });
       }
     },
@@ -493,7 +466,7 @@ const CharEditView = ({ character, onEdit, isNpc }: $Props) => {
                 />
                 <TextField
                   value={character.profsLangs}
-                  label="Languages"
+                  label="Proficiencies"
                   onChange={(profsLangs) => onEdit({ ...character, profsLangs: profsLangs })}
                 />
                 <TextField
@@ -569,7 +542,7 @@ const CharEditView = ({ character, onEdit, isNpc }: $Props) => {
                             label: activeSelection.activeOption.entityName,
                           }}
                           label={activeSelection.selectionName}
-                          onChange={(select) => onChangeActiveSelection(activeSelection, select)}
+                          onChange={(select) => onChangeActiveSelection(index, select)}
                         />
                       </PropWrapper>
                     );

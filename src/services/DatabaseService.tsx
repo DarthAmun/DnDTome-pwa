@@ -74,6 +74,22 @@ export const saveNewFromList = (tableName: string, entities: IEntity[], filename
     });
 };
 
+export const resaveFromList = (tableName: string, entities: IEntity[]) => {
+  const db = new MyAppDatabase();
+  db.open()
+    .then(async function () {
+      const refinedEntities = (entities as IEntity[]).map((entity: IEntity) => {
+        delete entity["id"];
+        return entity;
+      });
+      const prom = await db.table(tableName).bulkPut(refinedEntities);
+      return prom;
+    })
+    .finally(function () {
+      db.close();
+    });
+};
+
 export const saveWithCallback = (
   tableName: string,
   data: IEntity,

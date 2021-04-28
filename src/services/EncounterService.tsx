@@ -68,6 +68,7 @@ const expTable: {
 ];
 
 export const calcDifficulty = (encounter: Encounter) => {
+  console.time("calcDifficulty");
   let calcExp: {
     easy: number;
     medium: number;
@@ -128,5 +129,6 @@ export const calcDifficulty = (encounter: Encounter) => {
     difficulty = "Deadly (" + enemyExp + " Exp)";
   }
 
+  console.timeEnd("calcDifficulty");
   return { difficulty: difficulty, calcExp: calcExp };
 };

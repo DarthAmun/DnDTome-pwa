@@ -116,7 +116,7 @@ const EncounterRoom = () => {
             </tbody>
           </Table>
         </View>
-        {encounter && getMap() !== "" && (
+        {encounter && (
           <Board
             isHost={false}
             onChangePlayers={onChangePlayers}
@@ -132,7 +132,7 @@ const EncounterRoom = () => {
             onChangeDimension={() => {}}
             onChangeBoard={() => {}}
             img={getMap()}
-          ></Board>
+          />
         )}
       </CenterWrapper>
     </>
@@ -171,7 +171,7 @@ const View = styled.div<viewType>`
   flex: 1 1;
   color: ${({ theme }) => theme.tile.color};
   font-size: 16px;
-  max-width: 800px;
+  max-width: 400px;
   ${(props) => {
     if (!props.mode) {
       return "min-width: 400px;";

@@ -57,7 +57,7 @@ const CampaignTile = ({ campaign }: $Props) => {
 export default CampaignTile;
 
 const Tile = styled(Link)`
-  flex: 1 1 15em;
+  flex: 1 1 30em;
   color: ${({ theme }) => theme.tile.color};
   background-color: ${({ theme }) => theme.tile.backgroundColor};
   margin: 0.5em;

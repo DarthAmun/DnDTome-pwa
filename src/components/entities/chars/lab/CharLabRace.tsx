@@ -5,12 +5,12 @@ import Race from "../../../../data/races/Race";
 import Trait from "../../../../data/races/Trait";
 import Subrace from "../../../../data/races/Subrace";
 import Class from "../../../../data/classes/Class";
-import { reciveAllFiltered } from "../../../../services/DatabaseService";
+import { reciveAll, reciveAllFiltered } from "../../../../services/DatabaseService";
 
 import IconButton from "../../../form_elements/IconButton";
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 import FormatedText from "../../../general_elements/FormatedText";
-import DataSelectField from "../../../form_elements/DataSelectField";
+import SingleSelectField from "../../../form_elements/SingleSelectField";
 
 interface $Props {
   char: Char;
@@ -21,8 +21,8 @@ interface $Props {
 const CharLabRace = ({ char, onChange, completed }: $Props) => {
   const [classes, setClasses] = useState<Class[]>([]);
 
-  const [race, setRace] = useState<Race>();
-  const [subrace, setSubrace] = useState<Subrace>();
+  const [races, setRaces] = useState<Race[]>();
+  const [subraces, setSubraces] = useState<Subrace[]>();
 
   useEffect(() => {
     reciveAllFiltered(
@@ -43,28 +43,13 @@ const CharLabRace = ({ char, onChange, completed }: $Props) => {
   }, [char.classes]);
 
   useEffect(() => {
-    if (char.race && char.race.race.length > 1) {
-      reciveAllFiltered(
-        "races",
-        [{ fieldName: "name", value: char.race.race, sort: 0 }],
-        (results: any[]) => {
-          setRace(results[0]);
-        }
-      );
-    }
-  }, [char]);
-
-  useEffect(() => {
-    if (char.race && char.race.subrace.length > 1) {
-      reciveAllFiltered(
-        "subraces",
-        [{ fieldName: "name", value: char.race.subrace, sort: 0 }],
-        (results: any[]) => {
-          setSubrace(results[0]);
-        }
-      );
-    }
-  }, [char]);
+    reciveAll("races", (results: any[]) => {
+      setRaces(results);
+    });
+    reciveAll("subraces", (results: any[]) => {
+      setSubraces(results);
+    });
+  }, []);
 
   return (
     <>
@@ -84,66 +69,85 @@ const CharLabRace = ({ char, onChange, completed }: $Props) => {
         </CharView>
       </CenterWrapper>
       <CenterWrapper>
-        <CharView>
-          <DataSelectField
-            optionTable={["races"]}
-            value={char.race.race}
-            label="Race *"
-            onChange={(race) => onChange({ ...char, race: { ...char.race, race: race } })}
-          />
-          <DataSelectField
-            optionTable={["subraces"]}
-            filters={[{ fieldName: "type", value: char.race.race, sort: 0 }]}
-            value={char.race.subrace}
-            label="Subrace"
-            onChange={(subrace) => onChange({ ...char, race: { ...char.race, subrace: subrace } })}
-          />
-          <IconButton
-            icon={faCheckCircle}
-            disabled={!(char && char.race && char.race.race.length > 1)}
-            onClick={() => completed(true, "Abilities")}
-          />
-          <PropWrapper>
-            {race && (
-              <Text>
-                <PropTitle>{race.name}:</PropTitle>
-                <FormatedText text={race.abilityScores} />
-                <br />
-                <FormatedText text={race.speed} />
-                {race.traits.map((trait: Trait, index: number) => {
-                  return (
-                    <TraitWrapper key={index}>
-                      <TraitName>{trait.name}</TraitName>
-                      <TraitLevel>Level: {trait.level}</TraitLevel>
-                      <TraitText>
-                        <FormatedText text={trait.text} />
-                      </TraitText>
-                    </TraitWrapper>
-                  );
+        {races && subraces && (
+          <CharView>
+            <SingleSelectField
+              options={races?.map((c) => {
+                return { value: c.name, label: c.name };
+              })}
+              value={char.race.race}
+              label="Race *"
+              onChange={(race) => onChange({ ...char, race: { ...char.race, race: race } })}
+            />
+            <SingleSelectField
+              options={subraces
+                ?.filter((s) => s.type === char.race.race)
+                .map((c) => {
+                  return { value: c.name, label: c.name };
                 })}
-              </Text>
-            )}
-            {subrace && (
-              <Text>
-                <PropTitle>{subrace.name}:</PropTitle>
-                <FormatedText text={subrace.abilityScores} />
-                <br />
-                <FormatedText text={subrace.type} />
-                {subrace.traits.map((trait: Trait, index: number) => {
-                  return (
-                    <TraitWrapper key={index}>
-                      <TraitName>{trait.name}</TraitName>
-                      <TraitLevel>Level: {trait.level}</TraitLevel>
-                      <TraitText>
-                        <FormatedText text={trait.text} />
-                      </TraitText>
-                    </TraitWrapper>
-                  );
-                })}
-              </Text>
-            )}
-          </PropWrapper>
-        </CharView>
+              value={char.race.subrace}
+              label="Subrace"
+              onChange={(subrace) =>
+                onChange({ ...char, race: { ...char.race, subrace: subrace } })
+              }
+            />
+            <IconButton
+              icon={faCheckCircle}
+              disabled={!(char && char.race && char.race.race.length > 1)}
+              onClick={() => completed(true, "Abilities")}
+            />
+            <PropWrapper>
+              {char.race &&
+                races
+                  .filter((r) => r.name === char.race.race)
+                  .map((race) => {
+                    return (
+                      <Text>
+                        <PropTitle>{race.name}:</PropTitle>
+                        <FormatedText text={race.abilityScores} />
+                        <br />
+                        <FormatedText text={race.speed} />
+                        {race.traits.map((trait: Trait, index: number) => {
+                          return (
+                            <TraitWrapper key={index}>
+                              <TraitName>{trait.name}</TraitName>
+                              <TraitLevel>Level: {trait.level}</TraitLevel>
+                              <TraitText>
+                                <FormatedText text={trait.text} />
+                              </TraitText>
+                            </TraitWrapper>
+                          );
+                        })}
+                      </Text>
+                    );
+                  })}
+              {char.race.subrace &&
+                subraces
+                  .filter((r) => r.name === char.race.subrace)
+                  .map((subrace) => {
+                    return (
+                      <Text>
+                        <PropTitle>{subrace.name}:</PropTitle>
+                        <FormatedText text={subrace.abilityScores} />
+                        <br />
+                        <FormatedText text={subrace.type} />
+                        {subrace.traits.map((trait: Trait, index: number) => {
+                          return (
+                            <TraitWrapper key={index}>
+                              <TraitName>{trait.name}</TraitName>
+                              <TraitLevel>Level: {trait.level}</TraitLevel>
+                              <TraitText>
+                                <FormatedText text={trait.text} />
+                              </TraitText>
+                            </TraitWrapper>
+                          );
+                        })}
+                      </Text>
+                    );
+                  })}
+            </PropWrapper>
+          </CharView>
+        )}
       </CenterWrapper>
     </>
   );

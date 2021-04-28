@@ -470,6 +470,18 @@ const CharGeneral = ({ buildChar, onChange }: $Props) => {
       <MinView>
         <PropColumnWrapper>
           <Text>
+            <PropTitle>Languages:</PropTitle>
+            <FormatedText text={buildChar.race.lang} />
+          </Text>
+          {buildChar.classes.map((c) => {
+            return (
+              <Text>
+                <PropTitle>{c.name} Profs:</PropTitle>
+                <FormatedText text={c.proficiencies} />
+              </Text>
+            );
+          })}
+          <Text>
             <PropTitle>Proficiencies:</PropTitle>
             <FormatedText text={buildChar.character.profsLangs} />
           </Text>

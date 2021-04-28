@@ -325,7 +325,11 @@ const Options = () => {
         />
       )}
       {activeTab === "Selections" && (
-        <SelectionsOptions amount={selectionAmount} triggerDeleteAll={triggerDeleteAll} />
+        <SelectionsOptions
+          amount={selectionAmount}
+          triggerDeleteAll={triggerDeleteAll}
+          isReload={isReload}
+        />
       )}
       {activeTab === "Chars" && (
         <CharsOptions amount={charAmount} triggerDeleteAll={triggerDeleteAll} />
