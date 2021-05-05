@@ -162,12 +162,7 @@ const FormatedText = ({ text }: $Props) => {
                 if (linkParts[1].includes("|")) {
                   const entityParts = linkParts[1].split("|");
                   const link: string =
-                    "/" +
-                    linkEntity +
-                    "-detail/name/" +
-                    entityParts[0] +
-                    "?source=" +
-                    entityParts[1];
+                    "/" + linkEntity + "-detail/name/" + entityParts[0] + "|" + entityParts[1];
                   formattedParts.push(
                     <TextPart key={"TextPart" + index}>
                       <Link onClick={() => history.push(link)}>

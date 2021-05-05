@@ -256,3 +256,53 @@ export const useItemByAttr = <T, U>(table: Dexie.Table<T, U>, attr: string, attr
 
   return state;
 };
+
+export const useItemByMultiAttr = <T, U>(table: Dexie.Table<T, U>, obj: Object) => {
+  const [effect, setEffect] = useState<boolean>(true);
+  const reducer = useCallback((state: ItemState<T>, action: ItemAction<T>): ItemState<T> => {
+    switch (action.type) {
+      case "resolved":
+        return [action.data, false, undefined];
+      case "empty":
+        return [undefined, false, undefined];
+      case "error":
+        return [undefined, false, action.error];
+      default:
+        return [undefined, true, undefined];
+    }
+  }, []);
+
+  const [state, dispatch] = useReducer(reducer, [undefined, true, undefined]);
+
+  useEffect(() => {
+    if (effect && table !== undefined) {
+      const getAndDispatch = () =>
+        table
+          .where(obj)
+          .first()
+          .then((data) => {
+            if (data !== undefined) {
+              dispatch({
+                type: "resolved",
+                data,
+              });
+            } else {
+              dispatch({
+                type: "empty",
+              });
+            }
+          })
+          .catch((error) => {
+            dispatch({
+              type: "error",
+              error,
+            });
+          });
+
+      getAndDispatch();
+      setEffect(false);
+    }
+  }, [table, obj, effect]);
+
+  return state;
+};

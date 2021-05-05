@@ -11,6 +11,7 @@ import { isMonster } from "../../../../data/Monster";
 import {
   reciveAllFilteredPromise,
   recivePromiseByAttribute,
+  recivePromiseByMultiAttribute,
 } from "../../../../services/DatabaseService";
 import { calcDifficulty } from "../../../../services/EncounterService";
 import AutoStringField from "../../../form_elements/AutoStringField";
@@ -87,7 +88,8 @@ const EncounterEditView = ({ encounter, onEdit }: $Props) => {
       let enemies = [...encounter.enemies];
 
       let found: any[] = [];
-      found.push(recivePromiseByAttribute("monsters", "name", newEnemy));
+      let [name, sources] = newEnemy.split("|");
+      found.push(recivePromiseByMultiAttribute("monsters", { name: name, sources: sources }));
       found.push(recivePromiseByAttribute("npcs", "name", newEnemy));
       found.push(recivePromiseByAttribute("chars", "name", newEnemy));
       let results = await Promise.all(found);
@@ -206,7 +208,8 @@ const EncounterEditView = ({ encounter, onEdit }: $Props) => {
       let players = [...encounter.players];
 
       let found: any[] = [];
-      found.push(recivePromiseByAttribute("monsters", "name", newPlayer));
+      let [name, sources] = newPlayer.split("|");
+      found.push(recivePromiseByMultiAttribute("monsters", { name: name, sources: sources }));
       found.push(recivePromiseByAttribute("npcs", "name", newPlayer));
       found.push(recivePromiseByAttribute("chars", "name", newPlayer));
       let results = await Promise.all(found);

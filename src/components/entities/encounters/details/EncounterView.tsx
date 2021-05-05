@@ -352,7 +352,9 @@ const EncounterView = ({ encounter, dmView, onEdit }: $Props) => {
                                     history.push(`/monster-detail/name/${player.name}`)
                                   }
                                 >
-                                  {dmView ? `${player.name} ${index}` : `??? ${index}`}
+                                  {dmView
+                                    ? `${player.name.split("|")[0]} ${index}`
+                                    : `??? ${index}`}
                                 </MainLink>
                               )}
                               {!player.isMonster && (

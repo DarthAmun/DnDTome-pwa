@@ -353,6 +353,33 @@ const CharEditView = ({ character, onEdit, isNpc }: $Props) => {
     }
   };
 
+  const calcHpValues = async () => {
+    if (character !== undefined) {
+      let newConMod = formatScore(character["con"]);
+
+      let classes: Class[] = [];
+      let classList: Promise<Class>[] = [];
+      character.classes.forEach((classe) => {
+        classList.push(recivePromiseByAttribute("classes", "name", classe.classe));
+      });
+      classes = await Promise.all(classList);
+
+      let newHp: number = parseInt(classes[0].hitDices.replaceAll("d", "").trim()) + newConMod;
+      classes.forEach((classe: Class, index: number) => {
+        if (index === 0)
+          [...Array(character.classes[index].level - 1)].forEach(() => {
+            newHp += parseInt(classe.hitDices.replaceAll("d", "").trim()) / 2 + 1 + newConMod;
+          });
+        else
+          [...Array(character.classes[index].level)].forEach(() => {
+            newHp += parseInt(classe.hitDices.replaceAll("d", "").trim()) / 2 + 1 + newConMod;
+          });
+      });
+
+      onEdit({ ...character, hp: newHp });
+    }
+  };
+
   return (
     <>
       {character && (
@@ -410,6 +437,7 @@ const CharEditView = ({ character, onEdit, isNpc }: $Props) => {
               label="Hit Points"
               onChange={(hp) => onEdit({ ...character, hp: hp })}
             />
+            <TextButton text={"Autocalc"} icon={faCalculator} onClick={() => calcHpValues()} />
             <NumberField
               value={character.init}
               label="Initiative"
@@ -495,7 +523,9 @@ const CharEditView = ({ character, onEdit, isNpc }: $Props) => {
                       />
                       <DataSelectField
                         optionTable={["subclasses"]}
-                        filters={[{ fieldName: "type", value: classSet.classe, sort: 0 }]}
+                        filters={[
+                          { fieldName: "type", value: classSet.classe.split("|")[0], sort: 0 },
+                        ]}
                         value={classSet.subclasse}
                         label="Subclass"
                         onChange={(subclasse) => changeClassSubclass(classSet, subclasse)}

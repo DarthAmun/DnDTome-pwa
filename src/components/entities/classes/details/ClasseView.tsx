@@ -64,7 +64,7 @@ const ClasseView = ({ classe }: $Props) => {
     delete newSubclass.id;
     newSubclass.type = classe.name;
     createNewWithId("subclasses", newSubclass, (id) => {
-      history.push(`/subclass-detail/id/${id}`);
+      history.push(`/subclasse-detail/id/${id}`);
     });
   };
 

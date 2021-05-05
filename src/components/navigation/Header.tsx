@@ -1,15 +1,129 @@
 import React from "react";
+import { useHistory } from "react-router";
 import styled from "styled-components";
 import packageJson from "../../../package.json";
+import Group from "../../data/campaign/Group";
+import Npc from "../../data/campaign/Npc";
+import Quest from "../../data/campaign/Quest";
+import Gear from "../../data/Gear";
+import Item from "../../data/Item";
+import Monster from "../../data/Monster";
+import Race from "../../data/races/Race";
+import Subrace from "../../data/races/Subrace";
+import RandomTable from "../../data/RandomTable";
+import Spell from "../../data/Spell";
+import World from "../../data/world/World";
+import Class from "../../data/classes/Class";
+import Subclass from "../../data/classes/Subclass";
+import Event from "../../data/world/Event";
+import Selection from "../../data/Selection";
+import Location from "../../data/world/Location";
 import LogoImg from "../../logo192.png";
+import { createNewWithId } from "../../services/DatabaseService";
+import ComandStringField from "../form_elements/ComandStringField";
+import Campaign from "../../data/campaign/Campaign";
+import IEntity from "../../data/IEntity";
 
 const Header = () => {
+  let history = useHistory();
+  const comandNames: string[] = ["new", "edit", "search", "go"];
+  const entityNames: string[] = [
+    "spell",
+    "item",
+    "gear",
+    "race",
+    "class",
+    "selection",
+    "char",
+    "monster",
+    "encounter",
+    "campagin",
+    "quest",
+    "group",
+    "npc",
+    "world",
+    "location",
+    "event",
+    "randomTable",
+  ];
+
+  const entities = {
+    campaign: new Campaign(),
+    classe: new Class(),
+    event: new Event(),
+    gear: new Gear(),
+    group: new Group(),
+    item: new Item(),
+    location: new Location(),
+    monster: new Monster(),
+    npc: new Npc(),
+    quest: new Quest(),
+    race: new Race(),
+    randomTable: new RandomTable(),
+    selection: new Selection(),
+    spell: new Spell(),
+    subclasse: new Subclass(),
+    subrace: new Subrace(),
+    world: new World(),
+  };
+
+  const makeComands = (): string[] => {
+    let newComands: string[] = [];
+    comandNames.forEach((c) => {
+      entityNames.forEach((e) => {
+        newComands.push(c + " " + e + " 'name'");
+      });
+    });
+    newComands.push("go home");
+    newComands.push("go options");
+    newComands.push("go statistics");
+    newComands.push("help");
+    return newComands.sort();
+  };
+
+  const applyComand = (com: string[]) => {
+    if (com[1] === "class") com[1] = com[1] + "e";
+    switch (com[0]) {
+      case "go":
+        if (com[1] === "home") history.push(`/home`);
+        else if (com[1] === "statistics") history.push(`/statistics`);
+        else if (com[1] === "options") history.push(`/options`);
+        else if (com.length > 2)
+          history.push(`/${com[1]}-detail/name/${com[2].replaceAll("'", "")}`);
+        else history.push(`/${com[1]}-overview`);
+        break;
+      case "edit":
+        history.push(`/${com[1]}-detail/name/${com[2].replaceAll("'", "")}?editMode`);
+        break;
+      case "new":
+        let newEntity: IEntity = entities[com[1]];
+        delete newEntity.id;
+        if (com.length > 2) newEntity.name = com[2];
+        createNewWithId(com[1] + "s", newEntity, (id) => {
+          history.push(`/${com[1]}-detail/id/${id}`);
+        });
+        break;
+      case "search":
+        history.push(
+          `/${com[1]}-overview?filter=[{"fieldName":"name","value":"${com[2].replaceAll(
+            "'",
+            ""
+          )}","sort":0}]`
+        );
+        break;
+      case "help":
+        history.push(`/help`);
+        break;
+    }
+  };
+
   return (
     <Bar>
       <NameWrapper>
         <Logo src={LogoImg} />
         <Name>DnDTome</Name>
       </NameWrapper>
+      <ComandStringField options={makeComands()} value={""} label=">" onChange={applyComand} />
       <HomeCredits>v{packageJson.version}</HomeCredits>
     </Bar>
   );

@@ -445,7 +445,7 @@ export const makeItems = (obj: any, fileName: string): Item | Gear => {
 };
 
 export const makeRace = (obj: any, fileName: string): Race => {
-  if (obj._copy === undefined && obj.source !== "DMG") {
+  if (obj._copy === undefined) {
     const name = obj.name;
     const sources = obj.source;
 
@@ -535,7 +535,7 @@ export const makeRace = (obj: any, fileName: string): Race => {
 
 export const makeSubrace = (obj: any, race: Race, fileName: string): Subrace => {
   const subname = obj.name;
-  const subtype = race.name;
+  const subtype = race.name + "|" + race.sources;
 
   let subabilityScores = "";
   if (obj.ability !== undefined)
@@ -1238,7 +1238,6 @@ export const makeSubclass = (obj: any, json: any, classe: string, fileName: stri
       }
     });
   }
-
   return new Subclass(0, obj.name, classe, features, fileName, obj.source);
 };
 

@@ -473,20 +473,24 @@ const CharGeneral = ({ buildChar, onChange }: $Props) => {
             <PropTitle>Languages:</PropTitle>
             <FormatedText text={buildChar.race.lang} />
           </Text>
-          {buildChar.classes.map((c) => {
-            return (
-              <Text>
-                <PropTitle>{c.name} Profs:</PropTitle>
-                <FormatedText text={c.proficiencies} />
-              </Text>
-            );
-          })}
           <Text>
             <PropTitle>Proficiencies:</PropTitle>
             <FormatedText text={buildChar.character.profsLangs} />
           </Text>
         </PropColumnWrapper>
       </MinView>
+      {buildChar.classes.map((c) => {
+        return (
+          <MinView>
+            <PropColumnWrapper>
+              <Text>
+                <PropTitle>{c.name} Profs:</PropTitle>
+                <FormatedText text={c.proficiencies} />
+              </Text>
+            </PropColumnWrapper>
+          </MinView>
+        );
+      })}
       <MinView>
         <PropColumnWrapper>
           <SmallNumberField

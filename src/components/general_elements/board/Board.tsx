@@ -53,12 +53,6 @@ const Board = ({
     (cord: number) => {
       if (fog) {
         let newBoard = [...currentFogBoard];
-
-        console.log(
-          cord - dimension.width + 1 >= 0,
-          (cord - dimension.width + 1) % dimension.width < cord % dimension.width
-        );
-
         if (fogSize === "cross") {
           if (cord - dimension.width >= 0)
             newBoard[cord - dimension.width].fog = !newBoard[cord - dimension.width].fog;
@@ -102,7 +96,6 @@ const Board = ({
         } else {
           newBoard[cord].fog = !newBoard[cord].fog;
         }
-        console.log("toggle fog", currentFogBoard[cord], newBoard[cord]);
         setFogBoard(newBoard);
       }
     },
@@ -430,7 +423,7 @@ const Image = ({
     return (
       <ImageElm onDragStart={(e) => drag(e, player)} onDragOver={dragOver} draggable style={style}>
         {player.isVisible && <FontAwesomeIcon icon={faEyeSlash} />}
-        {showName ? `${player.name} ${index}` : `??? ${index}`}
+        {showName ? `${player.name.split("|")[0]} ${index}` : `??? ${index}`}
       </ImageElm>
     );
   }

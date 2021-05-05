@@ -1,80 +1,50 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useCallback, useRef } from "react";
 import styled from "styled-components";
-import IEntity from "../../data/IEntity";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { IconDefinition } from "@fortawesome/free-solid-svg-icons";
 import { Transform } from "@fortawesome/fontawesome-svg-core";
-import { reciveAllFiltered, reciveAllFilteredPromise } from "../../services/DatabaseService";
-import Filter from "../../data/Filter";
+import { useHotkeys } from "react-hotkeys-hook";
 
 interface $Props {
-  optionTable?: string | string[];
-  options?: IEntity[];
-  filters?: Filter[];
+  options?: string[];
   value: string;
   label: string;
   icon?: IconDefinition;
   transform?: string | Transform;
-  onChange: (value: string) => void;
+  onChange: (value: string[]) => void;
 }
 
-const AutoStringField = ({
-  optionTable,
-  options,
-  filters,
-  value,
-  label,
-  icon,
-  transform,
-  onChange,
-}: $Props) => {
+const ComandStringField = ({ options, value, label, icon, transform, onChange }: $Props) => {
+  const inputRef = useRef<HTMLInputElement>(null);
   const [term, setTerm] = useState<string>(value);
-  const [optionsTable] = useState<string | string[]>(optionTable !== undefined ? optionTable : []);
-  const [allOptions, setOptions] = useState<IEntity[]>(options !== undefined ? options : []);
-  const [filteredOptions, setFilteredOptions] = useState<IEntity[]>([]);
+  const [allOptions] = useState<string[]>(options !== undefined ? options : []);
+  const [filteredOptions, setFilteredOptions] = useState<string[]>([]);
 
-  const findAllItems = useCallback(
-    async (optionsTable: string[]) => {
-      let itemList: Promise<IEntity[]>[] = [];
-      optionsTable.forEach((table) => {
-        itemList.push(reciveAllFilteredPromise(table, filters !== undefined ? filters : []));
-      });
-      const results = await Promise.all(itemList);
-      results.forEach((items: IEntity[]) => {
-        setOptions((o) => o.concat(items));
-      });
-    },
-    [filters]
-  );
-
-  useEffect(() => {
-    if (optionTable !== undefined) {
-      if (typeof optionsTable === "string") {
-        reciveAllFiltered(optionsTable, filters !== undefined ? filters : [], (data: any[]) => {
-          setOptions(data);
-        });
-      }
-      if (optionsTable instanceof Array && optionsTable.length > 0) {
-        findAllItems(optionsTable);
-      }
+  useHotkeys("ctrl+p", (e) => {
+    e.preventDefault();
+    if (inputRef !== null && inputRef.current !== null) {
+      inputRef.current.focus();
     }
-  }, [optionTable, optionsTable, findAllItems, filters]);
+  });
+
+  useHotkeys("cmd+p", (e) => {
+    e.preventDefault();
+    if (inputRef !== null && inputRef.current !== null) {
+      inputRef.current.focus();
+    }
+  });
 
   const onSearch = useCallback(
     (searchTerm: string) => {
       console.time("search");
       setTerm(searchTerm);
-      if (searchTerm.length > 2) {
-        let newOptions = allOptions
-          .filter((option) => {
-            return option.name.toLowerCase().startsWith(searchTerm.toLowerCase());
-          })
-          .slice(0, 5);
-        setFilteredOptions(newOptions);
-      } else {
-        setFilteredOptions([]);
-      }
+      let newOptions = allOptions
+        .filter((option) => {
+          return option.toLowerCase().startsWith(searchTerm.toLowerCase());
+        })
+        .slice(0, 5);
+      setFilteredOptions(newOptions);
       console.timeEnd("search");
     },
     [allOptions]
@@ -82,7 +52,9 @@ const AutoStringField = ({
 
   const applyTerm = (e: any) => {
     if (e.key === "Enter") {
-      onChange(term);
+      onChange(term.split(" "));
+      setTerm("");
+      setFilteredOptions(allOptions.slice(0, 5));
     }
   };
 
@@ -92,10 +64,13 @@ const AutoStringField = ({
         {icon ? <Icon icon={icon} transform={transform} /> : ""} {label}
       </LabelText>
       <Input
+        ref={inputRef}
         type="text"
         value={term}
+        placeholder={"ctrl/cmd + p to focus"}
         onChange={(e) => onSearch(e.target.value)}
         onKeyDown={(e) => applyTerm(e)}
+        onFocus={(e) => onSearch(e.target.value)}
       ></Input>
       <Options>
         {filteredOptions.length > 0 &&
@@ -104,11 +79,10 @@ const AutoStringField = ({
               <Option
                 key={index}
                 onClick={(e) => {
-                  setTerm(opt.name + "|" + opt.sources);
-                  onChange(opt.name + "|" + opt.sources);
+                  setTerm(opt);
                 }}
               >
-                {opt.name}|{opt.sources}
+                {opt}
               </Option>
             );
           })}
@@ -117,17 +91,19 @@ const AutoStringField = ({
   );
 };
 
-export default AutoStringField;
+export default ComandStringField;
 
 const Field = styled.label`
   color: ${({ theme }) => theme.tile.color};
   background-color: ${({ theme }) => theme.tile.backgroundColor};
   font-size: 16px;
-  height: 38px;
+  height: 30px;
+  width: calc(100% - 300px);
+  min-width: 200px;
+  max-width: 600px;
   line-height: 30px;
-  flex: 1 1 auto;
   padding: 5px;
-  margin: 5px;
+  margin-top: -5px;
   border-radius: 5px;
   position: relative;
   overflow: visible;
@@ -148,6 +124,7 @@ const Icon = styled(FontAwesomeIcon)`
 
 const LabelText = styled.div`
   flex: 1 1 auto;
+  max-width: 15px;
 `;
 
 const Options = styled.div`
@@ -171,13 +148,13 @@ const Option = styled.div`
   cursor: pointer;
   color: ${({ theme }) => theme.input.color};
   background-color: ${({ theme }) => theme.input.backgroundColor};
-  margin-bottom: 1px;
+  border-bottom: 1px solid black;
   border-radius: 5px;
 `;
 
 const Input = styled.input`
   flex: 3 1 auto;
-  height: 38px;
+  height: 30px;
   padding: 5px;
   box-sizing: border-box;
   border: none;

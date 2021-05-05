@@ -50,8 +50,8 @@ const DataSelectField = ({
         entities.forEach((entity: IEntity) => {
           setOptions((o) =>
             o.concat({
-              value: entity.name,
-              label: entity.name,
+              value: entity.name + "|" + entity.sources,
+              label: entity.name + "|" + entity.sources,
             })
           );
         });

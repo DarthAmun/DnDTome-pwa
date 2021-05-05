@@ -197,6 +197,30 @@ export const recivePromiseByAttribute = (tableName: string, name: string, value:
     });
 };
 
+export const recivePromiseByMultiAttribute = (tableName: string, obj: IEntity) => {
+  const db = new MyAppDatabase();
+  if (obj.sources !== undefined) {
+    return db
+      .open()
+      .then(async function () {
+        return await db.table(tableName).where(obj).first();
+      })
+      .finally(function () {
+        db.close();
+      });
+  } else {
+    delete obj.sources;
+    return db
+      .open()
+      .then(async function () {
+        return await db.table(tableName).where(obj).first();
+      })
+      .finally(function () {
+        db.close();
+      });
+  }
+};
+
 export const reciveAllPromiseByAttribute = (tableName: string, name: string, value: string) => {
   const db = new MyAppDatabase();
   return db

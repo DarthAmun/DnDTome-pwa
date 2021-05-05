@@ -82,9 +82,13 @@ const ItemView = ({ item }: $Props) => {
   }, [item, webhook, itemBase]);
 
   useEffect(() => {
+    let [name, sources] = item.base.split("|");
     reciveAllFiltered(
       "gears",
-      [{ fieldName: "name", value: item.base, sort: 0 }],
+      [
+        { fieldName: "name", value: name, sort: 0 },
+        { fieldName: "sources", value: sources, sort: 0 },
+      ],
       (results: any[]) => {
         setItemBase(results[0]);
       }

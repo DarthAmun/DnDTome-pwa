@@ -1,7 +1,7 @@
 import React from "react";
 import { RouteComponentProps } from "react-router";
 import { MyAppDatabase } from "../../../../../database/MyDatabase";
-import { useItemByAttr } from "../../../../../hooks/DexieHooks";
+import { useItemByMultiAttr } from "../../../../../hooks/DexieHooks";
 import { LoadingSpinner } from "../../../../Loading";
 import CharDetail from "../CharDetail";
 
@@ -9,11 +9,8 @@ type TParams = { name: string };
 
 const NameToChar = ({ match }: RouteComponentProps<TParams>) => {
   const db = new MyAppDatabase();
-  const [char, loading, error] = useItemByAttr(
-    db.chars,
-    "name",
-    match.params.name
-  );
+  let [name, sources] = match.params.name.split("|");
+  const [char, loading, error] = useItemByMultiAttr(db.chars, { name: name, sources: sources });
 
   return (
     <>

@@ -75,16 +75,14 @@ const CharView = ({ character, modifications, isNpc }: $Props) => {
             <>
               <CharGeneral buildChar={buildChar} onChange={saveChar} />
               <View>
-                <PropWrapper>
-                  {!send && (
-                    <TextButton
-                      text={`Send ${buildChar.character.name}`}
-                      icon={faPaperPlane}
-                      onClick={() => setSend(true)}
-                    />
-                  )}
-                  {!!send && <P2PSender data={buildChar.character} mode={"THIS"} />}
-                </PropWrapper>
+                {!send && (
+                  <TextButton
+                    text={`Send ${buildChar.character.name}`}
+                    icon={faPaperPlane}
+                    onClick={() => setSend(true)}
+                  />
+                )}
+                {!!send && <P2PSender data={buildChar.character} mode={"THIS"} />}
                 <TextButton
                   text={`Export ${buildChar.character.name} to Pdf`}
                   icon={faFilePdf}
