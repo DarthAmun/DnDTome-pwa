@@ -1,10 +1,11 @@
-import { faFilePdf, faPaperPlane } from "@fortawesome/free-solid-svg-icons";
-import React, { useEffect, useState } from "react";
+import { faBolt, faFilePdf, faPaperPlane } from "@fortawesome/free-solid-svg-icons";
+import React, { useEffect, useState, useCallback } from "react";
 import { GiCryoChamber } from "react-icons/gi";
 import styled from "styled-components";
 import Npc from "../../../../data/campaign/Npc";
 import BuildChar from "../../../../data/chars/BuildChar";
 import Char from "../../../../data/chars/Char";
+import Boni from "../../../../data/classes/Boni";
 import Class from "../../../../data/classes/Class";
 import Feature from "../../../../data/classes/Feature";
 import FeatureSet from "../../../../data/classes/FeatureSet";
@@ -13,6 +14,7 @@ import Trait from "../../../../data/races/Trait";
 import { applyMods, buildCharacter } from "../../../../services/CharacterService";
 import { saveNew, update } from "../../../../services/DatabaseService";
 import { exportPdf } from "../../../../services/PdfService";
+import SmallNumberField from "../../../form_elements/SmallNumberField";
 import TextButton from "../../../form_elements/TextButton";
 import FormatedText from "../../../general_elements/FormatedText";
 import TabBar from "../../../general_elements/TabBar";
@@ -54,15 +56,42 @@ const CharView = ({ character, modifications, isNpc }: $Props) => {
       });
   }, [character, setBuildChar, modifications, buildChar.oldCharacter]);
 
-  const saveChar = (char: BuildChar) => {
+  const saveChar = useCallback((char: BuildChar) => {
     setBuildChar(char);
     update("chars", char.character);
-  };
+  }, []);
 
   const makeNpcCopy = () => {
     let newNpc = new Npc(1, character.name, character.pic, character.picBase64, character);
     saveNew("npcs", newNpc, `${buildChar.character.name} copy`);
   };
+
+  const castFeature = (currency: string, cost: number | undefined) => {
+    if (cost !== undefined)
+      buildChar.character.currencyBonis.forEach(
+        (boni: { origin: string; value: number; max: number }) => {
+          if (boni.origin === currency) {
+            if (boni.value - cost >= 0) onCurrencyBoniChange(boni, boni.value - cost);
+          }
+        }
+      );
+  };
+
+  const onCurrencyBoniChange = useCallback(
+    (oldBoni: { origin: string; value: number; max: number }, value: number) => {
+      let newBonis = buildChar.character.currencyBonis.map(
+        (boni: { origin: string; value: number; max: number }) => {
+          if (boni === oldBoni) {
+            return { ...boni, value: value };
+          } else {
+            return boni;
+          }
+        }
+      );
+      saveChar({ ...buildChar, character: { ...buildChar.character, currencyBonis: newBonis } });
+    },
+    [buildChar, saveChar]
+  );
 
   return (
     <>
@@ -109,6 +138,36 @@ const CharView = ({ character, modifications, isNpc }: $Props) => {
                     );
                   })}
               </PropWrapper>
+              <PropColumnWrapper>
+                {buildChar.character.currencyBonis &&
+                  buildChar.character.currencyBonis.map(
+                    (boni: { origin: string; value: number; max: number }, index: number) => {
+                      return (
+                        <SmallNumberField
+                          key={index}
+                          max={boni.max}
+                          showMax={true}
+                          value={boni.value}
+                          label={boni.origin}
+                          onChange={(boniChange) => onCurrencyBoniChange(boni, boniChange)}
+                        />
+                      );
+                    }
+                  )}
+                {buildChar.classFeatures &&
+                  buildChar.classFeatures
+                    .sort((f1, f2) => f2.level - f1.level)[0]
+                    .bonis?.map((boni: Boni, index: number) => {
+                      if (!boni.isCurrency)
+                        return (
+                          <Prop key={index}>
+                            <PropTitle>{boni.name}:</PropTitle>
+                            {boni.value}
+                          </Prop>
+                        );
+                      return <></>;
+                    })}
+              </PropColumnWrapper>
               <PropWrapper>
                 {buildChar.classFeatures &&
                   buildChar.classFeatures
@@ -130,6 +189,13 @@ const CharView = ({ character, modifications, isNpc }: $Props) => {
                         return (
                           <Text key={index}>
                             <PropTitle>{feature.name}:</PropTitle>
+                            {feature.usedCurrency !== "" && feature.usedCurrency !== undefined && (
+                              <TextButton
+                                text={"Use " + feature.cost + " " + feature.usedCurrency}
+                                icon={faBolt}
+                                onClick={() => castFeature(feature.usedCurrency, feature.cost)}
+                              />
+                            )}
                             <FormatedText text={feature.text} />
                             {selectionsData.map((activeSelectOption) => {
                               return (
@@ -259,6 +325,28 @@ const PropWrapper = styled.div`
   justify-content: space-around;
 `;
 
+const PropColumnWrapper = styled(PropWrapper)`
+  flex-direction: column;
+`;
+
+const Prop = styled.div`
+  flex: 1 1 auto;
+  max-width: 100%;
+  height: auto;
+  margin: 2px;
+  padding: 10px;
+  border-radius: 5px;
+  background-color: ${({ theme }) => theme.tile.backgroundColor};
+
+  svg {
+    margin-right: 5px;
+    height: auto;
+    border-radius: 150px;
+    transition: color 0.2s;
+    color: ${({ theme }) => theme.main.highlight};
+  }
+`;
+
 const PropTitle = styled.span`
   display: inline-block;
   color: ${({ theme }) => theme.tile.backgroundColorLink};
@@ -268,9 +356,8 @@ const PropTitle = styled.span`
 
 const Text = styled.div`
   height: auto;
-  width: calc(100% - 20px);
-  margin: 0 0 5px 0;
-  float: left;
+  flex: 1 1 calc(100% - 20px);
+  margin: 0 5px 5px 0;
   line-height: 18px;
   padding: 10px;
   border-radius: 5px;

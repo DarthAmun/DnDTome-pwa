@@ -1039,14 +1039,14 @@ const addAdditionalClassFeatures = (
         featureSets.push(
           new FeatureSet(
             +featureParts[3],
-            [new Feature(featureParts[0], text, [], undefined)],
+            [new Feature(featureParts[0], text, "", 0, [], undefined)],
             [],
             []
           )
         );
       } else {
         featureSets[+featureParts[3] - 1].features.push(
-          new Feature(featureParts[0], text, [], undefined)
+          new Feature(featureParts[0], text, "", 0, [], undefined)
         );
       }
     }
@@ -1108,12 +1108,18 @@ export const makeClass = (obj: any, json: any, fileName: string): Class => {
             }
             let bonis: Boni[] | undefined = featureSets[rowIndex].bonis;
             if (bonis === undefined) bonis = [];
-            if (typeof row[colIndex] == "string") {
+            if (typeof row[colIndex] == "number") {
+              bonis.push(new Boni(clearLabel, row[colIndex] + "", true));
+            } else if (typeof row[colIndex] == "string") {
               let text = replaceTags(row[colIndex]).split("|")[0].trim();
               bonis.push(new Boni(clearLabel, text, false));
             } else {
-              if (row[colIndex].value !== undefined)
+              if (row[colIndex].value !== undefined) {
                 bonis.push(new Boni(clearLabel, row[colIndex].value + "", false));
+              } else if (row[colIndex].toRoll !== undefined) {
+                let text = row[colIndex].toRoll[0].number + "d" + row[colIndex].toRoll[0].faces;
+                bonis.push(new Boni(clearLabel, text, false));
+              }
             }
             featureSets[rowIndex].bonis = bonis;
           });
@@ -1149,14 +1155,14 @@ export const makeClass = (obj: any, json: any, fileName: string): Class => {
           featureSets.push(
             new FeatureSet(
               +featureParts[3],
-              [new Feature(featureParts[0], text, [], undefined)],
+              [new Feature(featureParts[0], text, "", 0, [], undefined)],
               [],
               []
             )
           );
         } else {
           featureSets[+featureParts[3] - 1].features.push(
-            new Feature(featureParts[0], text, [], undefined)
+            new Feature(featureParts[0], text, "", 0, [], undefined)
           );
         }
       }
@@ -1190,7 +1196,7 @@ const addAdditionalSubclassFeatures = (additional: string[], features: FeatureSe
       features
         .filter((featureSet) => featureSet.level === +featureParts[5])
         .forEach((feat) => {
-          feat.features.push(new Feature(featureParts[0], text, [], undefined));
+          feat.features.push(new Feature(featureParts[0], text, "", 0, [], undefined));
         });
     }
   });
@@ -1233,7 +1239,7 @@ export const makeSubclass = (obj: any, json: any, classe: string, fileName: stri
         features
           .filter((featureSet) => featureSet.level === +featureParts[5])
           .forEach((feat) => {
-            feat.features.push(new Feature(featureParts[0], text, [], undefined));
+            feat.features.push(new Feature(featureParts[0], text, "", 0, [], undefined));
           });
       }
     });

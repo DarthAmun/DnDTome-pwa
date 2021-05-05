@@ -5,12 +5,13 @@ import Race from "../../../../data/races/Race";
 import Trait from "../../../../data/races/Trait";
 import Subrace from "../../../../data/races/Subrace";
 import Class from "../../../../data/classes/Class";
-import { reciveAll, reciveAllFiltered } from "../../../../services/DatabaseService";
+import { reciveAll, recivePromiseByMultiAttribute } from "../../../../services/DatabaseService";
 
 import IconButton from "../../../form_elements/IconButton";
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 import FormatedText from "../../../general_elements/FormatedText";
 import SingleSelectField from "../../../form_elements/SingleSelectField";
+import ClassSet from "../../../../data/chars/ClassSet";
 
 interface $Props {
   char: Char;
@@ -25,21 +26,12 @@ const CharLabRace = ({ char, onChange, completed }: $Props) => {
   const [subraces, setSubraces] = useState<Subrace[]>();
 
   useEffect(() => {
-    reciveAllFiltered(
-      "classes",
-      [
-        {
-          fieldName: "name",
-          value: char.classes.map((classe) => {
-            return classe.classe;
-          }),
-          sort: 0,
-        },
-      ],
-      (results: any[]) => {
-        setClasses(results);
-      }
-    );
+    let classList: Promise<Class>[] = [];
+    char.classes.forEach((classe: ClassSet) => {
+      let [name, sources] = classe.classe.split("|");
+      classList.push(recivePromiseByMultiAttribute("classes", { name: name, sources: sources }));
+    });
+    Promise.all(classList).then(setClasses);
   }, [char.classes]);
 
   useEffect(() => {
@@ -60,7 +52,7 @@ const CharLabRace = ({ char, onChange, completed }: $Props) => {
               classes.map((classe: Class, index: number) => {
                 return (
                   <Text key={index}>
-                    <PropTitle>{classe.name}:</PropTitle>
+                    <PropTitle>{classe.name + "|" + classe.sources}:</PropTitle>
                     <FormatedText text={classe.proficiencies} />
                   </Text>
                 );
@@ -73,7 +65,7 @@ const CharLabRace = ({ char, onChange, completed }: $Props) => {
           <CharView>
             <SingleSelectField
               options={races?.map((c) => {
-                return { value: c.name, label: c.name };
+                return { value: c.name + "|" + c.sources, label: c.name + "|" + c.sources };
               })}
               value={char.race.race}
               label="Race *"
@@ -83,7 +75,7 @@ const CharLabRace = ({ char, onChange, completed }: $Props) => {
               options={subraces
                 ?.filter((s) => s.type === char.race.race)
                 .map((c) => {
-                  return { value: c.name, label: c.name };
+                  return { value: c.name + "|" + c.sources, label: c.name + "|" + c.sources };
                 })}
               value={char.race.subrace}
               label="Subrace"
@@ -99,7 +91,11 @@ const CharLabRace = ({ char, onChange, completed }: $Props) => {
             <PropWrapper>
               {char.race &&
                 races
-                  .filter((r) => r.name === char.race.race)
+                  .filter(
+                    (r) =>
+                      r.name === char.race.race.split("|")[0] &&
+                      r.sources === char.race.race.split("|")[1]
+                  )
                   .map((race) => {
                     return (
                       <Text>
@@ -123,7 +119,11 @@ const CharLabRace = ({ char, onChange, completed }: $Props) => {
                   })}
               {char.race.subrace &&
                 subraces
-                  .filter((r) => r.name === char.race.subrace)
+                  .filter(
+                    (r) =>
+                      r.name === char.race.subrace.split("|")[0] &&
+                      r.sources === char.race.subrace.split("|")[1]
+                  )
                   .map((subrace) => {
                     return (
                       <Text>

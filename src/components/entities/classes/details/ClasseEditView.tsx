@@ -98,7 +98,7 @@ const ClasseEditView = ({ classe, onEdit }: $Props) => {
     oldFeatureSet: FeatureSet,
     oldFeature: Feature,
     field: string,
-    value: string
+    value: string | number
   ) => {
     let features = classe.featureSets.map((featureSet: FeatureSet) => {
       if (featureSet === oldFeatureSet && featureSet.features !== undefined) {
@@ -242,6 +242,8 @@ const ClasseEditView = ({ classe, onEdit }: $Props) => {
           name: "",
           text: "",
           type: FeatureType.normal,
+          usedCurrency: "",
+          cost: 0,
           selections: [],
         });
         return { ...featureSet, features: features };
@@ -404,6 +406,25 @@ const ClasseEditView = ({ classe, onEdit }: $Props) => {
                         label="Types"
                         onChange={(type) => onFeatureChange(featureSet, feature, "type", type)}
                       />
+                      {featureSet.bonis !== undefined && (
+                        <>
+                          <EnumField
+                            options={featureSet.bonis.map((boni) => {
+                              return { value: boni.name, label: boni.name };
+                            })}
+                            value={{ value: feature.usedCurrency, label: feature.usedCurrency }}
+                            label="Currency"
+                            onChange={(curr) =>
+                              onFeatureChange(featureSet, feature, "usedCurrency", curr)
+                            }
+                          />
+                          <FeatureNumber
+                            value={feature.cost || 0}
+                            label="Cost"
+                            onChange={(cost) => onFeatureChange(featureSet, feature, "cost", cost)}
+                          />
+                        </>
+                      )}
                       <IconButton icon={faTrash} onClick={() => removeFeature(feature)} />
                       <FeatureText
                         value={feature.text}

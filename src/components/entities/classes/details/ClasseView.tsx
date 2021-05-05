@@ -216,7 +216,13 @@ const ClasseView = ({ classe }: $Props) => {
             return featureSet.features.map((feature, index: number) => {
               return (
                 <Text key={index}>
-                  <PropTitle>{feature.name}:</PropTitle>
+                  <PropTitle>
+                    {feature.name}
+                    {feature.usedCurrency !== "" && feature.usedCurrency !== undefined
+                      ? " (uses " + feature.cost + " " + feature.usedCurrency + ")"
+                      : ""}
+                    :
+                  </PropTitle>
                   <FormatedText text={feature.text} />
                 </Text>
               );

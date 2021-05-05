@@ -1,8 +1,7 @@
-import React, { useCallback } from "react";
+import React from "react";
 import styled from "styled-components";
 import BuildChar from "../../../../../data/chars/BuildChar";
 import Spell from "../../../../../data/Spell";
-import SmallNumberField from "../../../../form_elements/SmallNumberField";
 import RollableProp from "../../../../general_elements/RollableProp";
 import CharSpellView from "./CharSpellView";
 import SpellSlotCounter from "./SpellSlotCounter";
@@ -13,22 +12,6 @@ interface $Props {
 }
 
 const CharSpell = ({ buildChar, saveChar }: $Props) => {
-  const onCurrencyBoniChange = useCallback(
-    (oldBoni: { origin: string; value: number; max: number }, value: number) => {
-      let newBonis = buildChar.character.currencyBonis.map(
-        (boni: { origin: string; value: number; max: number }) => {
-          if (boni === oldBoni) {
-            return { ...boni, value: value };
-          } else {
-            return boni;
-          }
-        }
-      );
-      saveChar({ ...buildChar, character: { ...buildChar.character, currencyBonis: newBonis } });
-    },
-    [buildChar, saveChar]
-  );
-
   return (
     <>
       <MinView>
@@ -42,21 +25,6 @@ const CharSpell = ({ buildChar, saveChar }: $Props) => {
             <PropTitle>Casting Dc:</PropTitle>
             {buildChar.character.castingDC}
           </Prop>
-          {buildChar.character.currencyBonis &&
-            buildChar.character.currencyBonis.map(
-              (boni: { origin: string; value: number; max: number }, index: number) => {
-                return (
-                  <SmallNumberField
-                    key={index}
-                    max={boni.max}
-                    showMax={true}
-                    value={boni.value}
-                    label={boni.origin}
-                    onChange={(boniChange) => onCurrencyBoniChange(boni, boniChange)}
-                  />
-                );
-              }
-            )}
         </PropWrapper>
         <PropWrapper>
           {buildChar.character.spellSlots && (

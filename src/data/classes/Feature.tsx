@@ -12,9 +12,7 @@ export enum FeatureType {
   bonusAction,
   reaction,
 }
-export function getOptionFromEnum(
-  value: FeatureType
-): { value: string; label: string } {
+export function getOptionFromEnum(value: FeatureType): { value: string; label: string } {
   let opt = undefined;
   featureTypeArray.forEach((option) => {
     if (option.value === value.toString()) opt = option;
@@ -29,16 +27,23 @@ export default class Feature implements IEntity {
   name: string;
   text: string;
   type: FeatureType;
+  usedCurrency: string;
+  cost: number;
   selections: string[];
+
   constructor(
     name: string,
     text: string,
+    usedCurrency: string,
+    cost: number,
     selections: string[],
     type?: FeatureType
   ) {
     this.name = name;
     this.text = text;
     this.type = type || FeatureType.normal;
+    this.usedCurrency = usedCurrency || "";
+    this.cost = cost || 0;
     this.selections = selections;
   }
 }

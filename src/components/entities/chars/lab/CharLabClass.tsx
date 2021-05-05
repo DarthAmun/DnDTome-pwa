@@ -97,7 +97,7 @@ const CharLabClass = ({ char, onChange, completed }: $Props) => {
                 <IconButton icon={faTrash} onClick={() => removeClass(classSet)} />
                 <SingleSelectField
                   options={classes?.map((c) => {
-                    return { value: c.name, label: c.name };
+                    return { value: c.name + "|" + c.sources, label: c.name + "|" + c.sources };
                   })}
                   value={classSet.classe}
                   label="Class *"
@@ -105,9 +105,9 @@ const CharLabClass = ({ char, onChange, completed }: $Props) => {
                 />
                 <SingleSelectField
                   options={subclasses
-                    ?.filter((s) => s.type === classSet.classe)
+                    ?.filter((s) => s.type === classSet.classe.split("|")[0])
                     .map((c) => {
-                      return { value: c.name, label: c.name };
+                      return { value: c.name + "|" + c.sources, label: c.name + "|" + c.sources };
                     })}
                   value={classSet.subclasse}
                   label="Subclass"

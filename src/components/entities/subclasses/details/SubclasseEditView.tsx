@@ -234,6 +234,8 @@ const SubclasseEditView = ({ subclasse, onEdit }: $Props) => {
           name: "",
           text: "",
           selections: [],
+          usedCurrency: "",
+          cost: 0,
           type: FeatureType.normal,
         });
         return { ...featureSet, features: features };
