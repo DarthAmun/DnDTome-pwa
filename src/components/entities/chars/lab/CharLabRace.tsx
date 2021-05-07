@@ -5,7 +5,11 @@ import Race from "../../../../data/races/Race";
 import Trait from "../../../../data/races/Trait";
 import Subrace from "../../../../data/races/Subrace";
 import Class from "../../../../data/classes/Class";
-import { reciveAll, recivePromiseByMultiAttribute } from "../../../../services/DatabaseService";
+import {
+  reciveAll,
+  recivePromiseByAttribute,
+  recivePromiseByMultiAttribute,
+} from "../../../../services/DatabaseService";
 
 import IconButton from "../../../form_elements/IconButton";
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
@@ -29,7 +33,11 @@ const CharLabRace = ({ char, onChange, completed }: $Props) => {
     let classList: Promise<Class>[] = [];
     char.classes.forEach((classe: ClassSet) => {
       let [name, sources] = classe.classe.split("|");
-      classList.push(recivePromiseByMultiAttribute("classes", { name: name, sources: sources }));
+      if (sources !== undefined) {
+        classList.push(recivePromiseByMultiAttribute("classes", { name: name, sources: sources }));
+      } else {
+        classList.push(recivePromiseByAttribute("classes", "name", name));
+      }
     });
     Promise.all(classList).then(setClasses);
   }, [char.classes]);
@@ -73,7 +81,11 @@ const CharLabRace = ({ char, onChange, completed }: $Props) => {
             />
             <SingleSelectField
               options={subraces
-                ?.filter((s) => s.type === char.race.race)
+                ?.filter(
+                  (s) =>
+                    s.type === char.race.race.split("|")[0] ||
+                    (char.race.race.split("|")[1] !== undefined ? s.type === char.race.race : false)
+                )
                 .map((c) => {
                   return { value: c.name + "|" + c.sources, label: c.name + "|" + c.sources };
                 })}

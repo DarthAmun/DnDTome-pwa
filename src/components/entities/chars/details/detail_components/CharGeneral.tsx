@@ -479,9 +479,9 @@ const CharGeneral = ({ buildChar, onChange }: $Props) => {
           </Text>
         </PropColumnWrapper>
       </MinView>
-      {buildChar.classes.map((c) => {
+      {buildChar.classes.map((c, index: number) => {
         return (
-          <MinView>
+          <MinView key={index}>
             <PropColumnWrapper>
               <Text>
                 <PropTitle>{c.name} Profs:</PropTitle>

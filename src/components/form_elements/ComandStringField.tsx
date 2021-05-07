@@ -52,7 +52,14 @@ const ComandStringField = ({ options, value, label, icon, transform, onChange }:
 
   const applyTerm = (e: any) => {
     if (e.key === "Enter") {
-      onChange(term.split(" "));
+      let command = term.split(" ");
+      let commandTask: string = command[0];
+      let commandEntity: string = command[1];
+      command = command.slice(2);
+      let rest = "";
+      command.forEach((c) => (rest += " " + c));
+
+      onChange([commandTask, commandEntity, rest.trim()]);
       setTerm("");
       setFilteredOptions(allOptions.slice(0, 5));
     }

@@ -32,7 +32,7 @@ export const recalcClasses = async (char: Char) => {
   const results = await Promise.all(classList);
   results.forEach((classe: Class) => {
     char.classes.forEach((classSet) => {
-      if (classe.name === classSet.classe) {
+      if (classe.name === classSet.classe.split("|")[0]) {
         fullClassList.push({ class: classe, classSet: classSet });
       }
     });
@@ -66,33 +66,31 @@ export const recalcClasses = async (char: Char) => {
     }
   });
 
-  if (char.currencyBonis && char.currencyBonis.length > 0) {
-    let updatedBonis = bonis.map((newBoni) => {
-      let updatedOldBonis = char.currencyBonis.map((old) => {
-        if (newBoni.origin === old.origin) {
-          return {
-            origin: newBoni.origin,
-            value: old.value,
-            max: newBoni.max,
-          };
-        } else {
-          return null;
-        }
-      });
-      if (
-        updatedOldBonis &&
-        updatedOldBonis.length > 0 &&
-        updatedOldBonis[0] !== undefined &&
-        updatedOldBonis[0] !== null
-      ) {
-        return updatedOldBonis[0];
+  let updatedBonis = bonis.map((newBoni) => {
+    let updatedOldBonis = char.currencyBonis.map((old) => {
+      if (newBoni.origin === old.origin) {
+        return {
+          origin: newBoni.origin,
+          value: old.value,
+          max: newBoni.max,
+        };
       } else {
-        return newBoni;
+        return null;
       }
     });
-    if (updatedBonis && updatedBonis.length > 0) {
-      bonis = Array.from(updatedBonis);
+    if (
+      updatedOldBonis &&
+      updatedOldBonis.length > 0 &&
+      updatedOldBonis[0] !== undefined &&
+      updatedOldBonis[0] !== null
+    ) {
+      return updatedOldBonis[0];
+    } else {
+      return newBoni;
     }
+  });
+  if (updatedBonis && updatedBonis.length > 0) {
+    bonis = Array.from(updatedBonis);
   }
 
   if (char.spellSlots && char.spellSlots.length > 0) {
@@ -208,7 +206,11 @@ export const buildCharacter = async (character: Char): Promise<BuildChar> => {
   currentItems.forEach((item) => {
     if (item !== undefined) {
       let [name, sources] = item.base.split("|");
-      baseList.push(recivePromiseByMultiAttribute("gears", { name: name, sources: sources }));
+      if (sources !== undefined) {
+        baseList.push(recivePromiseByMultiAttribute("gears", { name: name, sources: sources }));
+      } else {
+        baseList.push(recivePromiseByAttribute("gears", "name", name));
+      }
     }
   });
 
@@ -219,9 +221,11 @@ export const buildCharacter = async (character: Char): Promise<BuildChar> => {
   let currentGears = await Promise.all(gearList);
   let currentBases = await Promise.all(baseList);
 
-  currentBases = currentBases.filter(
-    (q, idx) => currentBases.findIndex((g) => g.name === q.name) === idx
-  );
+  currentBases = currentBases
+    .filter((q) => q !== undefined)
+    .filter((q, idx) => currentBases.findIndex((g) => g.name === q.name) === idx);
+
+  console.log(currentBases);
 
   let [name, sources] = character.race.race.split("|");
   race = await recivePromiseByMultiAttribute("races", { name: name, sources: sources });
@@ -233,7 +237,7 @@ export const buildCharacter = async (character: Char): Promise<BuildChar> => {
       let classLevel = 0;
       character.classes.forEach((charClass) => {
         if (charClass !== undefined)
-          if (classe.name === charClass.classe) {
+          if (classe.name === charClass.classe.split("|")[0]) {
             classLevel = charClass.level;
           }
       });
@@ -246,7 +250,7 @@ export const buildCharacter = async (character: Char): Promise<BuildChar> => {
       });
       subclasses?.forEach((subclass: Subclass) => {
         if (subclass !== undefined)
-          if (subclass.type === classe.name) {
+          if (subclass.type.split("|")[0] === classe.name) {
             subclass.features.forEach((featureSet: FeatureSet) => {
               if (featureSet.level <= classLevel) {
                 classFeatures.push(featureSet);
@@ -256,6 +260,7 @@ export const buildCharacter = async (character: Char): Promise<BuildChar> => {
       });
     }
   });
+
   if (race !== undefined) {
     race.traits.forEach((trait: Trait) => {
       if (trait !== undefined) {
@@ -282,12 +287,16 @@ export const buildCharacter = async (character: Char): Promise<BuildChar> => {
           ) {
             if (item.base !== "") {
               currentBases.forEach((base: Gear) => {
-                if (
-                  base !== undefined &&
-                  base.name.toLowerCase() + "|" + base.sources.toLowerCase() ===
-                    item.base.toLowerCase()
-                ) {
-                  items.push({ ...originItem, item: item, base: base });
+                if (base !== undefined) {
+                  let [name, sources] = item.base.split("|");
+                  if (
+                    (sources !== undefined &&
+                      base.name.toLowerCase() + "|" + base.sources.toLowerCase() ===
+                        name.toLowerCase()) ||
+                    (sources === undefined && base.name.toLowerCase() === name.toLowerCase())
+                  ) {
+                    items.push({ ...originItem, item: item, base: base });
+                  }
                 }
               });
             } else {

@@ -50,8 +50,10 @@ const CharEditView = ({ character, onEdit, isNpc }: $Props) => {
     });
   }, []);
 
-  const removeSpell = (oldSpell: string) => {
-    let newSpellList = character.spells.filter((spell) => spell !== oldSpell);
+  const removeSpell = (index: number) => {
+    let newSpellList = [...character.spells];
+    newSpellList.splice(index, 1);
+    console.log(character.spells, newSpellList, index);
     onEdit({ ...character, spells: newSpellList });
   };
   const addNewSpell = () => {
@@ -65,13 +67,9 @@ const CharEditView = ({ character, onEdit, isNpc }: $Props) => {
     onEdit({ ...character, spells: spells });
   };
 
-  const removeItem = (oldItem: {
-    origin: string;
-    attuned: boolean;
-    prof: boolean;
-    attribute: string;
-  }) => {
-    let newItemList = character.items.filter((item) => item.origin !== oldItem.origin);
+  const removeItem = (index: number) => {
+    let newItemList = [...character.items];
+    newItemList.splice(index, 1);
     onEdit({ ...character, items: newItemList });
   };
   const addNewItem = () => {
@@ -103,8 +101,9 @@ const CharEditView = ({ character, onEdit, isNpc }: $Props) => {
     onEdit({ ...character, items: items });
   };
 
-  const removeMonster = (oldMonster: string) => {
-    let newMonsterList = character.monsters.filter((monster) => monster !== oldMonster);
+  const removeMonster = (index: number) => {
+    let newMonsterList = [...character.monsters];
+    newMonsterList.splice(index, 1);
     onEdit({ ...character, monsters: newMonsterList });
   };
   const addNewMonster = () => {
@@ -118,8 +117,9 @@ const CharEditView = ({ character, onEdit, isNpc }: $Props) => {
     onEdit({ ...character, monsters: monsters });
   };
 
-  const removeClass = (oldClass: ClassSet) => {
-    let newClassList = character.classes.filter((classe) => classe !== oldClass);
+  const removeClass = (index: number) => {
+    let newClassList = [...character.classes];
+    newClassList.splice(index, 1);
     onEdit({ ...character, classes: newClassList });
   };
   const addNewClass = () => {
@@ -514,7 +514,7 @@ const CharEditView = ({ character, onEdit, isNpc }: $Props) => {
                         label="Level"
                         onChange={(level) => changeClassLevel(classSet, level)}
                       />
-                      <IconButton icon={faTrash} onClick={() => removeClass(classSet)} />
+                      <IconButton icon={faTrash} onClick={() => removeClass(index)} />
                       <DataSelectField
                         optionTable={["classes"]}
                         value={classSet.classe}
@@ -879,7 +879,7 @@ const CharEditView = ({ character, onEdit, isNpc }: $Props) => {
                         label="Spell"
                         onChange={(newSpell) => onChangeSpell(newSpell, index)}
                       />
-                      <IconButton icon={faTrash} onClick={() => removeSpell(spell)} />
+                      <IconButton icon={faTrash} onClick={() => removeSpell(index)} />
                     </Container>
                   );
                 })}
@@ -942,7 +942,7 @@ const CharEditView = ({ character, onEdit, isNpc }: $Props) => {
                             onChangeItemAttribute({ ...item, attribute: type }, index)
                           }
                         />
-                        <IconButton icon={faTrash} onClick={() => removeItem(item)} />
+                        <IconButton icon={faTrash} onClick={() => removeItem(index)} />
                       </Container>
                     );
                   }
@@ -961,7 +961,7 @@ const CharEditView = ({ character, onEdit, isNpc }: $Props) => {
                         label="Monster"
                         onChange={(newMonster) => onChangeMonster(newMonster, index)}
                       />
-                      <IconButton icon={faTrash} onClick={() => removeMonster(monster)} />
+                      <IconButton icon={faTrash} onClick={() => removeMonster(index)} />
                     </Container>
                   );
                 })}

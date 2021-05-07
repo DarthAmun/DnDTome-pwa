@@ -6,7 +6,7 @@ import Skills from "../../../../data/chars/Skills";
 import Class from "../../../../data/classes/Class";
 import Race from "../../../../data/races/Race";
 import Subrace from "../../../../data/races/Subrace";
-import { reciveAllFiltered } from "../../../../services/DatabaseService";
+import { recivePromiseByMultiAttribute } from "../../../../services/DatabaseService";
 
 import IconButton from "../../../form_elements/IconButton";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -19,6 +19,7 @@ import {
 import NumberField from "../../../form_elements/NumberField";
 import FormatedText from "../../../general_elements/FormatedText";
 import { calcProf } from "../../../../services/CharacterService";
+import ClassSet from "../../../../data/chars/ClassSet";
 
 interface $Props {
   char: Char;
@@ -32,44 +33,25 @@ const CharLabAbilities = ({ char, onChange, completed }: $Props) => {
   const [subrace, setSubrace] = useState<Subrace>();
 
   useEffect(() => {
-    reciveAllFiltered(
-      "classes",
-      [
-        {
-          fieldName: "name",
-          value: char.classes.map((classe) => {
-            return classe.classe;
-          }),
-          sort: 0,
-        },
-      ],
-      (results: any[]) => {
-        setClasses(results);
-      }
-    );
+    let classList: Promise<Class>[] = [];
+    char.classes.forEach((classe: ClassSet) => {
+      let [name, sources] = classe.classe.split("|");
+      classList.push(recivePromiseByMultiAttribute("classes", { name: name, sources: sources }));
+    });
+    Promise.all(classList).then(setClasses);
   }, [char.classes]);
 
   useEffect(() => {
     if (char.race && char.race.race.length > 1) {
-      reciveAllFiltered(
-        "races",
-        [{ fieldName: "name", value: char.race.race, sort: 0 }],
-        (results: any[]) => {
-          setRace(results[0]);
-        }
-      );
+      let [name, sources] = char.race.race.split("|");
+      recivePromiseByMultiAttribute("races", { name: name, sources: sources }).then(setRace);
     }
   }, [char]);
 
   useEffect(() => {
     if (char.race && char.race.subrace.length > 1) {
-      reciveAllFiltered(
-        "subraces",
-        [{ fieldName: "name", value: char.race.subrace, sort: 0 }],
-        (results: any[]) => {
-          setSubrace(results[0]);
-        }
-      );
+      let [name, sources] = char.race.subrace.split("|");
+      recivePromiseByMultiAttribute("subraces", { name: name, sources: sources }).then(setSubrace);
     }
   }, [char]);
 

@@ -1,7 +1,10 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router";
 import styled from "styled-components";
-import { recivePromiseByAttribute, saveWithCallback } from "../../../../services/DatabaseService";
+import {
+  recivePromiseByMultiAttribute,
+  saveWithCallback,
+} from "../../../../services/DatabaseService";
 import ClassSet from "../../../../data/chars/ClassSet";
 import Boni from "../../../../data/classes/Boni";
 import Class from "../../../../data/classes/Class";
@@ -15,11 +18,13 @@ import CharLabClass from "./CharLabClass";
 import CharLabRace from "./CharLabRace";
 import CharLabAbilities from "./CharLabAbilities";
 import CharLabEquipment from "./CharLabEquipment";
+import { useQuery } from "../../../../hooks/QueryHook";
 
 const CharLab = () => {
   let history = useHistory();
+  const name = useQuery().get("name");
   const [activeTab, setTab] = useState<string>("General");
-  const [newChar, updateChar] = useState<Char>(new Char());
+  const [newChar, updateChar] = useState<Char>(new Char(-1, name !== null ? name : ""));
 
   const [completedGeneral, setGeneral] = useState<boolean>(false);
   const [completedClass, setClass] = useState<boolean>(false);
@@ -56,12 +61,14 @@ const CharLab = () => {
       max: number[];
     }[] = [];
     let fullClassList: { class: Class; classSet: ClassSet }[] = [];
-    let classList: Promise<Class>[] = [];
 
-    char.classes?.forEach((classe) => {
-      classList.push(recivePromiseByAttribute("classes", "name", classe.classe));
+    let classList: Promise<Class>[] = [];
+    char.classes.forEach((classe: ClassSet) => {
+      let [name, sources] = classe.classe.split("|");
+      classList.push(recivePromiseByMultiAttribute("classes", { name: name, sources: sources }));
     });
     const results = await Promise.all(classList);
+
     results?.forEach((classe: Class) => {
       char.classes.forEach((classSet) => {
         if (classe.name === classSet.classe) {
@@ -100,62 +107,58 @@ const CharLab = () => {
       }
     });
 
-    if (char.currencyBonis && char.currencyBonis.length > 0) {
-      let updatedBonis = bonis.map((newBoni) => {
-        let updatedOldBonis = char.currencyBonis?.map((old) => {
-          if (newBoni.origin === old.origin) {
-            return {
-              origin: newBoni.origin,
-              value: old.value,
-              max: newBoni.max,
-            };
-          } else {
-            return null;
-          }
-        });
-        if (
-          updatedOldBonis &&
-          updatedOldBonis.length > 0 &&
-          updatedOldBonis[0] !== undefined &&
-          updatedOldBonis[0] !== null
-        ) {
-          return updatedOldBonis[0];
+    let updatedBonis = bonis.map((newBoni) => {
+      let updatedOldBonis = char.currencyBonis?.map((old) => {
+        if (newBoni.origin === old.origin) {
+          return {
+            origin: newBoni.origin,
+            value: old.value,
+            max: newBoni.max,
+          };
         } else {
-          return newBoni;
+          return null;
         }
       });
-      if (updatedBonis && updatedBonis.length > 0) {
-        bonis = Array.from(updatedBonis);
+      if (
+        updatedOldBonis &&
+        updatedOldBonis.length > 0 &&
+        updatedOldBonis[0] !== undefined &&
+        updatedOldBonis[0] !== null
+      ) {
+        return updatedOldBonis[0];
+      } else {
+        return newBoni;
       }
+    });
+    if (updatedBonis && updatedBonis.length > 0) {
+      bonis = Array.from(updatedBonis);
     }
 
-    if (char.spellSlots && char.spellSlots.length > 0) {
-      let updatedSpellSlots = spellSlots?.map((newSpellSlots) => {
-        let updatedOldSlots = char.spellSlots?.map((old) => {
-          if (newSpellSlots.origin === old.origin) {
-            return {
-              origin: newSpellSlots.origin,
-              slots: old.slots,
-              max: newSpellSlots.max,
-            };
-          } else {
-            return null;
-          }
-        });
-        if (
-          updatedOldSlots &&
-          updatedOldSlots.length > 0 &&
-          updatedOldSlots[0] !== undefined &&
-          updatedOldSlots[0] !== null
-        ) {
-          return updatedOldSlots[0];
+    let updatedSpellSlots = spellSlots?.map((newSpellSlots) => {
+      let updatedOldSlots = char.spellSlots?.map((old) => {
+        if (newSpellSlots.origin === old.origin) {
+          return {
+            origin: newSpellSlots.origin,
+            slots: old.slots,
+            max: newSpellSlots.max,
+          };
         } else {
-          return newSpellSlots;
+          return null;
         }
       });
-      if (updatedSpellSlots && updatedSpellSlots.length > 0) {
-        spellSlots = Array.from(updatedSpellSlots);
+      if (
+        updatedOldSlots &&
+        updatedOldSlots.length > 0 &&
+        updatedOldSlots[0] !== undefined &&
+        updatedOldSlots[0] !== null
+      ) {
+        return updatedOldSlots[0];
+      } else {
+        return newSpellSlots;
       }
+    });
+    if (updatedSpellSlots && updatedSpellSlots.length > 0) {
+      spellSlots = Array.from(updatedSpellSlots);
     }
 
     let updatedChar = {

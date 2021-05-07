@@ -1,12 +1,13 @@
-import { faDiscord } from "@fortawesome/free-brands-svg-icons";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { ReactNodeArray, useCallback, useEffect, useState } from "react";
+import reactStringReplace from "react-string-replace";
 import { useHistory } from "react-router";
 import styled from "styled-components";
+import LinkCheck from "./LinkCheck";
 import { useWebhook } from "../../hooks/webhookHook";
 import { rollCommand } from "../../services/DiceService";
 import { formatDiscordText, sendEmbedMessage, sendMessage } from "../../services/DiscordService";
+import { faDiscord } from "@fortawesome/free-brands-svg-icons";
 import IconButton from "../form_elements/IconButton";
-import LinkCheck from "./LinkCheck";
 
 interface $Props {
   text: string;
@@ -15,7 +16,7 @@ interface $Props {
 const FormatedText = ({ text }: $Props) => {
   let webhook = useWebhook();
   const [json, setJson] = useState<string>("");
-  const [formatedText, setFormatedText] = useState<JSX.Element[]>();
+  const [formatedTextParts, setFormatedParts] = useState<ReactNodeArray>();
   let history = useHistory();
 
   useEffect(() => {
@@ -31,10 +32,6 @@ const FormatedText = ({ text }: $Props) => {
       setJson(JSON.stringify(newJson));
     }
   }, [text, webhook]);
-
-  const cut = (str: string, cutStart: number, cutEnd: number) => {
-    return str.substr(0, cutStart) + str.substr(cutEnd + 1);
-  };
 
   const rollDiscord = useCallback(
     (command: string, adv: boolean, dis: boolean) => {
@@ -136,142 +133,94 @@ const FormatedText = ({ text }: $Props) => {
   );
 
   const formatLink = useCallback(
-    (text: string, index: number): JSX.Element => {
-      if (text !== undefined) {
-        if (text.includes("[[") && text.includes("]]")) {
-          const parts = text.split("[[");
-          let formattedParts: any[] = [];
-          parts.forEach((part: string, index: number) => {
-            if (part.includes("]]")) {
-              const codePart: string[] = part.split("]]");
-              const linkParts: string[] = codePart[0].split(".");
-              let linkEntity = linkParts[0];
-              if (linkEntity === "dice") {
-                formattedParts.push(
-                  <TextPart key={"TextPart" + index}>
-                    <DiscordPart onClick={() => rollDiscord(linkParts[1], false, false)}>
-                      <LinkCheck type={linkParts[0]} name={linkParts[1]} /> {linkParts[1]}
-                    </DiscordPart>
-                    <Adv onClick={() => rollDiscord(linkParts[1], true, false)}>Adv</Adv>
-                    <Dis onClick={() => rollDiscord(linkParts[1], false, true)}>Dis</Dis>
-                    <TextPart>{codePart[1]}</TextPart>
-                  </TextPart>
-                );
-              } else {
-                if (linkEntity === "class" || linkEntity === "subclass") linkEntity += "e";
-                if (linkParts[1].includes("|")) {
-                  const entityParts = linkParts[1].split("|");
-                  const link: string =
-                    "/" + linkEntity + "-detail/name/" + entityParts[0] + "|" + entityParts[1];
-                  formattedParts.push(
-                    <TextPart key={"TextPart" + index}>
-                      <Link onClick={() => history.push(link)}>
-                        <LinkCheck type={linkParts[0]} name={entityParts[0]} /> {entityParts[0]} (
-                        {entityParts[1]})
-                      </Link>
-                      <TextPart>{codePart[1]}</TextPart>
-                    </TextPart>
-                  );
-                } else {
-                  const link: string = "/" + linkEntity + "-detail/name/" + linkParts[1];
-                  formattedParts.push(
-                    <TextPart key={"TextPart" + index}>
-                      <Link onClick={() => history.push(link)}>
-                        <LinkCheck type={linkParts[0]} name={linkParts[1]} /> {linkParts[1]}
-                      </Link>
-                      <TextPart>{codePart[1]}</TextPart>
-                    </TextPart>
-                  );
-                }
-              }
-            } else {
-              if (part !== "") formattedParts.push(<TextPart key={index}>{part}</TextPart>);
-            }
-          });
-          return <>{formattedParts}</>;
-        } else if (text.length > 0) {
-          return <TextPart key={"TextPart" + index}>{text}</TextPart>;
+    (text: string | ReactNodeArray): ReactNodeArray => {
+      return reactStringReplace(text, /\[\[(\w*\.[\w|\s|||+|-]*)\]\]/gm, (match, i) => {
+        const linkParts: string[] = match.split(".");
+        let entityName = linkParts[0];
+        let nameSource = linkParts[1];
+        let [name, sources] = nameSource.split("|");
+        if (entityName === "dice") {
+          if (nameSource.startsWith("+")) {
+            nameSource = nameSource.replace("+", "");
+            [name, sources] = nameSource.split("|");
+          }
+          return (
+            <TextPart key={match + i}>
+              <DiscordPart onClick={() => rollDiscord(name, false, false)}>
+                <LinkCheck type={entityName} name={nameSource} /> {nameSource}
+              </DiscordPart>
+              <Adv onClick={() => rollDiscord(name, true, false)}>Adv</Adv>
+              <Dis onClick={() => rollDiscord(name, false, true)}>Dis</Dis>
+            </TextPart>
+          );
         }
-      }
-      return <></>;
+        if (entityName === "class" || entityName === "subclass") entityName += "e";
+        return (
+          <Link
+            key={match + i}
+            onClick={() => history.push("/" + entityName + "-detail/name/" + nameSource)}
+          >
+            <LinkCheck type={entityName} name={nameSource} /> {nameSource}
+            {sources !== undefined ? ` (${sources})` : ""}
+          </Link>
+        );
+      });
     },
-    // eslint-disable-next-line
-    [history]
+    [history, rollDiscord]
   );
 
   const formatTable = useCallback(
-    (textPart: string): JSX.Element[] => {
-      if (textPart.includes("||tableStart||")) {
-        let newTable: JSX.Element[] = [];
-        const table: string[] = text.split("||tableStart||");
-
-        table.forEach((textPart: string, index: number) => {
-          if (textPart.includes("||tableEnd||")) {
-            const tableEnd = textPart.split("||tableEnd||");
-            const tableRows: string[] = tableEnd[0].split("||");
-            let isHead = true;
-            newTable.push(
-              <table key={"table" + index}>
-                <tbody key={"tbody" + index}>
-                  {tableRows.map((row: string, index: number) => {
-                    if (row.includes("|")) {
-                      if (isHead) {
-                        isHead = false;
-                        const cells = row.split("|");
-                        return (
-                          <tr key={index}>
-                            {cells.map((cell: string, index: number) => {
-                              return <TableHeadProp key={index}>{cell}</TableHeadProp>;
-                            })}
-                          </tr>
-                        );
-                      } else {
-                        const cells = row.split("|");
-                        return (
-                          <tr key={index}>
-                            {cells.map((cell: string, index: number) => {
-                              return <TableProp key={index}>{formatLink(cell, index)}</TableProp>;
-                            })}
-                          </tr>
-                        );
-                      }
+    (text: string): ReactNodeArray => {
+      return reactStringReplace(
+        text,
+        /\|\|tableStart\|\|([\s\S]*?)\|\|tableEnd\|\|/gm,
+        (match, i) => {
+          const tableRows: string[] = match.split("||");
+          let isHead = true;
+          return (
+            <table key={match + i}>
+              <tbody key={match + i}>
+                {tableRows.map((row: string, index: number) => {
+                  if (row.includes("|")) {
+                    if (isHead) {
+                      isHead = false;
+                      const cells = row.split("|");
+                      return (
+                        <tr key={match + i + index}>
+                          {cells.map((cell: string, index: number) => {
+                            return <TableHeadProp key={index}>{cell}</TableHeadProp>;
+                          })}
+                        </tr>
+                      );
                     } else {
-                      return <></>;
+                      const cells = row.split("|");
+                      return (
+                        <tr key={match + i + index}>
+                          {cells.map((cell: string, index: number) => {
+                            return <TableProp key={index}>{formatLink(cell)}</TableProp>;
+                          })}
+                        </tr>
+                      );
                     }
-                  })}
-                </tbody>
-              </table>
-            );
-            newTable.push(formatLink(tableEnd[1], index));
-          } else {
-            newTable.push(formatLink(table[0], index));
-          }
-        });
-        return newTable;
-      }
-      return [formatLink(textPart, 0)];
+                  } else {
+                    return <></>;
+                  }
+                })}
+              </tbody>
+            </table>
+          );
+        }
+      );
     },
-    [text, formatLink]
-  );
-
-  const formatText = useCallback(
-    (textPart: string) => {
-      while (textPart.includes("{{")) {
-        const cutStart = textPart.indexOf("{{");
-        const cutEnd = textPart.indexOf("}}") + 1;
-        textPart = cut(textPart, cutStart, cutEnd);
-      }
-      return formatTable(textPart);
-    },
-    [formatTable]
+    [formatLink]
   );
 
   useEffect(() => {
-    if (text !== undefined) {
-      let formatedText = formatText(text);
-      setFormatedText(formatedText);
-    }
-  }, [text, history, formatText]);
+    let checkedText = formatTable(text);
+    checkedText = formatLink(checkedText);
+    setFormatedParts(checkedText);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <FormatedTextContainer>
@@ -286,7 +235,7 @@ const FormatedText = ({ text }: $Props) => {
           onClick={() => sendEmbedMessage(webhook, json)}
         />
       )}
-      {formatedText}
+      {formatedTextParts}
     </FormatedTextContainer>
   );
 };

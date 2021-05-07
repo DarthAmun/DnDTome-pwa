@@ -82,6 +82,7 @@ const Header = () => {
   };
 
   const applyComand = (com: string[]) => {
+    console.log("Term", com);
     if (com[1] === "class") com[1] = com[1] + "e";
     switch (com[0]) {
       case "go":
@@ -96,12 +97,16 @@ const Header = () => {
         history.push(`/${com[1]}-detail/name/${com[2].replaceAll("'", "")}?editMode`);
         break;
       case "new":
-        let newEntity: IEntity = entities[com[1]];
-        delete newEntity.id;
-        if (com.length > 2) newEntity.name = com[2];
-        createNewWithId(com[1] + "s", newEntity, (id) => {
-          history.push(`/${com[1]}-detail/id/${id}`);
-        });
+        if (com[1] === "char") {
+          history.push(`/char-lab?name=${com[2]}`);
+        } else {
+          let newEntity: IEntity = entities[com[1]];
+          delete newEntity.id;
+          if (com.length > 2) newEntity.name = com[2];
+          createNewWithId(com[1] + "s", newEntity, (id) => {
+            history.push(`/${com[1]}-detail/id/${id}`);
+          });
+        }
         break;
       case "search":
         history.push(

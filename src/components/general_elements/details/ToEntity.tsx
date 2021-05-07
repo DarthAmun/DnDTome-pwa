@@ -8,6 +8,7 @@ import Campaign from "../../../data/campaign/Campaign";
 import {
   createNewWithId,
   recivePromise,
+  recivePromiseByAttribute,
   recivePromiseByMultiAttribute,
 } from "../../../services/DatabaseService";
 import IEntity from "../../../data/IEntity";
@@ -56,10 +57,16 @@ const ToEntity = ({ match }: RouteComponentProps<TParams>) => {
       let newEntity: IEntity | undefined = undefined;
       if (match.params.name !== undefined) {
         let [entityName, sources] = match.params.name.split("|");
-        newEntity = await recivePromiseByMultiAttribute(name + "s", {
-          name: entityName,
-          sources: sources,
-        });
+        if (sources !== undefined) {
+          newEntity = await recivePromiseByMultiAttribute(name + "s", {
+            name: entityName,
+            sources: sources,
+          });
+          console.log(entityName, newEntity);
+        } else {
+          newEntity = await recivePromiseByAttribute(name + "s", "name", entityName);
+          console.log(entityName, newEntity);
+        }
       }
       if (match.params.id !== undefined)
         newEntity = await recivePromise(name + "s", +match.params.id);

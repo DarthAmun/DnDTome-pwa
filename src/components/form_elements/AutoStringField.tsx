@@ -34,6 +34,10 @@ const AutoStringField = ({
   const [allOptions, setOptions] = useState<IEntity[]>(options !== undefined ? options : []);
   const [filteredOptions, setFilteredOptions] = useState<IEntity[]>([]);
 
+  useEffect(() => {
+    setTerm(value);
+  }, [value]);
+
   const findAllItems = useCallback(
     async (optionsTable: string[]) => {
       let itemList: Promise<IEntity[]>[] = [];
@@ -41,6 +45,7 @@ const AutoStringField = ({
         itemList.push(reciveAllFilteredPromise(table, filters !== undefined ? filters : []));
       });
       const results = await Promise.all(itemList);
+      setOptions([]);
       results.forEach((items: IEntity[]) => {
         setOptions((o) => o.concat(items));
       });
@@ -70,6 +75,11 @@ const AutoStringField = ({
           .filter((option) => {
             return option.name.toLowerCase().startsWith(searchTerm.toLowerCase());
           })
+          .sort(
+            (a, b) =>
+              Math.abs(a.name.length - searchTerm.length) -
+              Math.abs(b.name.length - searchTerm.length)
+          )
           .slice(0, 5);
         setFilteredOptions(newOptions);
       } else {

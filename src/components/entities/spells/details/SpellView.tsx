@@ -12,12 +12,12 @@ import {
   faPaperPlane,
 } from "@fortawesome/free-solid-svg-icons";
 import Spell from "../../../../data/Spell";
-import FormatedText from "../../../general_elements/FormatedText";
 import P2PSender from "../../../p2p/P2PSender";
 import TextButton from "../../../form_elements/TextButton";
 import { useWebhook } from "../../../../hooks/webhookHook";
 import { formatDiscordText, sendEmbedMessage } from "../../../../services/DiscordService";
 import { faDiscord } from "@fortawesome/free-brands-svg-icons";
+import FormatedText from "../../../general_elements/FormatedText";
 
 interface $Props {
   spell: Spell;

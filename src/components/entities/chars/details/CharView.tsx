@@ -44,6 +44,7 @@ const CharView = ({ character, modifications, isNpc }: $Props) => {
   useEffect(() => {
     if (character !== buildChar.oldCharacter)
       buildCharacter(character).then(async (buildChar) => {
+        console.log(character.currencyBonis);
         const newBuildChar = await applyMods(buildChar, modifications);
         let newTabs = ["General", "Combat", "Classes", "Race"];
         if (newBuildChar.items.length > 0) newTabs.push("Items");
@@ -160,7 +161,7 @@ const CharView = ({ character, modifications, isNpc }: $Props) => {
                     .bonis?.map((boni: Boni, index: number) => {
                       if (!boni.isCurrency)
                         return (
-                          <Prop key={index}>
+                          <Prop key={boni.name + index}>
                             <PropTitle>{boni.name}:</PropTitle>
                             {boni.value}
                           </Prop>
@@ -172,7 +173,7 @@ const CharView = ({ character, modifications, isNpc }: $Props) => {
                 {buildChar.classFeatures &&
                   buildChar.classFeatures
                     .sort((f1, f2) => f1.level - f2.level)
-                    .map((featureSet: FeatureSet) => {
+                    .map((featureSet: FeatureSet, fsi: number) => {
                       return featureSet.features.map((feature: Feature, index: number) => {
                         let selectionsData: {
                           entityName: string;
@@ -187,7 +188,7 @@ const CharView = ({ character, modifications, isNpc }: $Props) => {
                           });
                         }
                         return (
-                          <Text key={index}>
+                          <Text key={feature.name + fsi + index}>
                             <PropTitle>{feature.name}:</PropTitle>
                             {feature.usedCurrency !== "" && feature.usedCurrency !== undefined && (
                               <TextButton
@@ -197,12 +198,17 @@ const CharView = ({ character, modifications, isNpc }: $Props) => {
                               />
                             )}
                             <FormatedText text={feature.text} />
-                            {selectionsData.map((activeSelectOption) => {
+                            {selectionsData.map((activeSelectOption, i: number) => {
                               return (
                                 <>
                                   <br />
-                                  <PropTitle>Choosen {activeSelectOption.entityName}:</PropTitle>
-                                  <FormatedText text={activeSelectOption.entityText} />
+                                  <PropTitle key={activeSelectOption.entityName + i}>
+                                    Choosen {activeSelectOption.entityName}:
+                                  </PropTitle>
+                                  <FormatedText
+                                    key={activeSelectOption.entityName + "text" + i}
+                                    text={activeSelectOption.entityText}
+                                  />
                                 </>
                               );
                             })}

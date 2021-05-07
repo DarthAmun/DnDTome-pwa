@@ -46,7 +46,7 @@ const RaceView = ({ race }: $Props) => {
   const createNewSubrace = () => {
     let newSubrace = new Subrace();
     delete newSubrace.id;
-    newSubrace.type = race.name;
+    newSubrace.type = race.name + "|" + race.sources;
     createNewWithId("subraces", newSubrace, (id) => {
       history.push(`/subrace-detail/id/${id}`);
     });
