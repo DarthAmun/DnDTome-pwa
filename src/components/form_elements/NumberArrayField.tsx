@@ -14,14 +14,7 @@ interface $Props {
   onChange: (value: number[]) => void;
 }
 
-const NumberArrayField = ({
-  values,
-  label,
-  icon,
-  transform,
-  max,
-  onChange,
-}: $Props) => {
+const NumberArrayField = ({ values, label, icon, transform, max, onChange }: $Props) => {
   const [array, setArray] = useState<number[]>(values);
 
   const handleValueChange = (index: number, value: number) => {
@@ -106,5 +99,11 @@ const Input = styled.input`
   color: ${({ theme }) => theme.input.color};
   border-radius: 5px;
   margin: 2px;
+
   -moz-appearance: textfield;
+  &::-webkit-inner-spin-button,
+  &::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
 `;

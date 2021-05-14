@@ -42,32 +42,34 @@ const SpellSlotCounter = ({ char, saveChar }: $Props) => {
           return (
             <Slots key={index}>
               <SlotTitle>{classSlots.origin}</SlotTitle>
-              {classSlots.max.map((slot: number, slotIndex: number) => {
-                return (
-                  <SlotRow key={index + "" + slotIndex}>
-                    <SlotTitle>{slotIndex + 1}:</SlotTitle>
-                    {(() => {
-                      const options = [];
-                      for (let i = 0; i <= slot - 1; i++) {
-                        options.push(
-                          <SlotIcon
-                            key={index + "" + slotIndex + "" + i}
-                            onClick={(e) => burnSpellSlot(index, slotIndex, i)}
-                          >
-                            <FontAwesomeIcon
-                              icon={changeSlotIcon(
-                                char.character.spellSlots[index].slots[slotIndex],
-                                i
-                              )}
-                            />
-                          </SlotIcon>
-                        );
-                      }
-                      return options;
-                    })()}
-                  </SlotRow>
-                );
-              })}
+              {classSlots.max
+                .filter((slot) => slot > 0)
+                .map((slot: number, slotIndex: number) => {
+                  return (
+                    <SlotRow key={index + "" + slotIndex}>
+                      <SlotTitle>{slotIndex + 1}:</SlotTitle>
+                      {(() => {
+                        const options = [];
+                        for (let i = 0; i <= slot - 1; i++) {
+                          options.push(
+                            <SlotIcon
+                              key={index + "" + slotIndex + "" + i}
+                              onClick={(e) => burnSpellSlot(index, slotIndex, i)}
+                            >
+                              <FontAwesomeIcon
+                                icon={changeSlotIcon(
+                                  char.character.spellSlots[index].slots[slotIndex],
+                                  i
+                                )}
+                              />
+                            </SlotIcon>
+                          );
+                        }
+                        return options;
+                      })()}
+                    </SlotRow>
+                  );
+                })}
             </Slots>
           );
         }

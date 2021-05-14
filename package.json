@@ -1,6 +1,6 @@
 {
   "name": "dndtome",
-  "version": "0.7.5c",
+  "version": "0.7.5e",
   "private": true,
   "homepage": "https://darthamun.github.io/DnDTome-pwa/",
   "devDependencies": {

@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { BiError, BiHistory, BiSelectMultiple } from "react-icons/bi";
+import React from "react";
+import { BiSelectMultiple } from "react-icons/bi";
 import {
   GiCrystalWand,
   GiBackpack,
@@ -23,31 +23,12 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { MdEvent } from "react-icons/md";
 import { HiUserGroup } from "react-icons/hi";
-import { recivePromiseByAttributeCount } from "../../services/DatabaseService";
 
 interface $Props {
   type: string;
-  name: string;
 }
 
-const LinkCheck = ({ type, name }: $Props) => {
-  const [loading, setLoading] = useState<boolean>(true);
-  const [entitiyFound, setEntity] = useState<boolean>(false);
-
-  useEffect(() => {
-    if (type === "dice") {
-      setEntity(true);
-      setLoading(false);
-    } else {
-      let newType = type + "s";
-      if (type === "class" || type === "subclass") newType = type + "es";
-      recivePromiseByAttributeCount(newType, "name", name).then((count: number) => {
-        setEntity(count > 0);
-        setLoading(false);
-      });
-    }
-  }, [type, name]);
-
+const LinkCheck = ({ type }: $Props) => {
   const formatIcon = (type: string) => {
     switch (type) {
       case "spell":
@@ -91,17 +72,11 @@ const LinkCheck = ({ type, name }: $Props) => {
       case "dice":
         return <GiDiceTwentyFacesTwenty />;
       default:
-        return "";
+        return <></>;
     }
   };
 
-  return (
-    <>
-      {loading && <BiHistory />}
-      {!loading && !entitiyFound && <BiError />}
-      {!loading && entitiyFound && <>{formatIcon(type)}</>}
-    </>
-  );
+  return formatIcon(type);
 };
 
 export default LinkCheck;

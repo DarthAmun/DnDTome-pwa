@@ -134,7 +134,7 @@ const FormatedText = ({ text }: $Props) => {
 
   const formatLink = useCallback(
     (text: string | ReactNodeArray): ReactNodeArray => {
-      return reactStringReplace(text, /\[\[(\w*\.[\w|\s|||+|-]*)\]\]/gm, (match, i) => {
+      return reactStringReplace(text, /\[\[(\w*\.[\s\S]*?)\]\]/gm, (match, i) => {
         const linkParts: string[] = match.split(".");
         let entityName = linkParts[0];
         let nameSource = linkParts[1];
@@ -147,7 +147,7 @@ const FormatedText = ({ text }: $Props) => {
           return (
             <TextPart key={match + i}>
               <DiscordPart onClick={() => rollDiscord(name, false, false)}>
-                <LinkCheck type={entityName} name={nameSource} /> {nameSource}
+                <LinkCheck type={entityName} /> {nameSource}
               </DiscordPart>
               <Adv onClick={() => rollDiscord(name, true, false)}>Adv</Adv>
               <Dis onClick={() => rollDiscord(name, false, true)}>Dis</Dis>
@@ -160,7 +160,7 @@ const FormatedText = ({ text }: $Props) => {
             key={match + i}
             onClick={() => history.push("/" + entityName + "-detail/name/" + nameSource)}
           >
-            <LinkCheck type={entityName} name={nameSource} /> {nameSource}
+            <LinkCheck type={entityName} /> {name}
             {sources !== undefined ? ` (${sources})` : ""}
           </Link>
         );
@@ -244,6 +244,7 @@ export default FormatedText;
 
 const FormatedTextContainer = styled.div`
   line-height: 20px;
+  white-space: pre-line;
 `;
 
 const Link = styled.span`
