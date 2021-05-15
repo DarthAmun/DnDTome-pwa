@@ -51,7 +51,9 @@ const FormatedText = ({ text }: $Props) => {
         else if (adv && result - value === 1 && result - value === 1) fail = true;
         else if (dis && (result - value === 1 || result - value === 1)) fail = true;
 
-        let rollString = "d20" + rolls + rolls2 + command;
+        let rollString = "d20";
+        if (!adv && !dis) rollString += rolls + command;
+        else rollString += rolls + rolls2 + command;
         rollString += adv ? "adv" : "";
         rollString += dis ? "dis" : "";
 
@@ -103,10 +105,13 @@ const FormatedText = ({ text }: $Props) => {
           }
         }
       } else {
+        if (command.startsWith("+")) command = command.replace("+", "");
         const { result, text, rolls } = rollCommand(command);
         const { result: result2, rolls: rolls2 } = rollCommand(command);
 
-        let rollString = command + rolls + rolls2;
+        let rollString = command;
+        if (!adv && !dis) rollString += rolls;
+        else rollString += rolls + rolls2;
         rollString += adv ? " adv" : "";
         rollString += dis ? " dis" : "";
 
@@ -140,10 +145,6 @@ const FormatedText = ({ text }: $Props) => {
         let nameSource = linkParts[1];
         let [name, sources] = nameSource.split("|");
         if (entityName === "dice") {
-          if (nameSource.startsWith("+")) {
-            nameSource = nameSource.replace("+", "");
-            [name, sources] = nameSource.split("|");
-          }
           return (
             <TextPart key={match + i}>
               <DiscordPart onClick={() => rollDiscord(name, false, false)}>

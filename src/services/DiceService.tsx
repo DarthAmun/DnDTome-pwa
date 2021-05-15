@@ -1,3 +1,5 @@
+import { ControlButton } from "react-flow-renderer";
+
 export const rollCommand = (
   commands: string,
   krit?: boolean
@@ -18,11 +20,21 @@ export const rollCommand = (
   let rolls: string = "(`";
   newCommands.split(" ").forEach((fullCommand: string) => {
     let commandSplits: string[] = [];
-    fullCommand.split("+").forEach((part) => {
-      let split = part.split("-");
-      commandSplits = commandSplits.concat(split);
-    });
+    fullCommand
+      .split("+")
+      .map((part, i: number) => {
+        if (i > 0) return "+" + part;
+        return part;
+      })
+      .forEach((part) => {
+        let split = part.split("-").map((part, i: number) => {
+          if (i > 0) return "-" + part;
+          return part;
+        });
+        commandSplits = commandSplits.concat(split);
+      });
 
+    console.log(commandSplits);
     commandSplits.forEach((command: string) => {
       let multiplier: number = 1;
       if (command.includes("d")) {
@@ -57,11 +69,14 @@ export const rollCommand = (
           }
         }
       } else {
+        rolls = rolls.slice(0, -1);
         result += parseInt(command);
-        rolls += command + ",";
+        rolls += "|" + command + ",";
       }
     });
-    rolls = rolls.slice(0, -1) + "`)";
+    console.log(rolls);
+    rolls = rolls.slice(0, -1);
+    if (!rolls.endsWith(")")) rolls += "`)";
   });
 
   return { result: result, text: text, rolls: rolls };
