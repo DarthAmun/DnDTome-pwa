@@ -2,7 +2,7 @@ import BuildWorld from "../data/world/BuildWorld";
 import World from "../data/world/World";
 import Location from "../data/world/Location";
 import Event from "../data/world/Event";
-import { recivePromiseByAttribute } from "./DatabaseService";
+import { recivePromiseByAttribute, recivePromiseByMultiAttribute } from "./DatabaseService";
 
 export const buildWorld = async (world: World): Promise<BuildWorld> => {
   console.time("t");
@@ -15,14 +15,17 @@ export const buildWorld = async (world: World): Promise<BuildWorld> => {
   let locationList: Promise<Location>[] = [];
 
   world.events.forEach((event: string) => {
-    eventList.push(recivePromiseByAttribute("events", "name", event));
+    let [name, sources] = event.split("|");
+    eventList.push(recivePromiseByMultiAttribute("events", { name: name, sources: sources }));
   });
   world.locations.forEach((location: string) => {
-    locationList.push(recivePromiseByAttribute("locations", "name", location));
+    let [name, sources] = location.split("|");
+    locationList.push(recivePromiseByMultiAttribute("locations", { name: name, sources: sources }));
   });
   events = await Promise.all(eventList);
   locations = await Promise.all(locationList);
-  map = await recivePromiseByAttribute("locations", "name", world.map);
+  let [name, sources] = world.map.split("|");
+  map = await recivePromiseByMultiAttribute("locations", { name: name, sources: sources });
   console.timeEnd("load");
 
   console.timeEnd("t");
