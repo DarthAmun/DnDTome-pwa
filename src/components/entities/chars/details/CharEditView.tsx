@@ -19,7 +19,11 @@ import FeatureSet from "../../../../data/classes/FeatureSet";
 import Subclass from "../../../../data/classes/Subclass";
 import Selection from "../../../../data/Selection";
 import { calcLevel, calcProf } from "../../../../services/CharacterService";
-import { reciveAll, recivePromiseByAttribute } from "../../../../services/DatabaseService";
+import {
+  reciveAll,
+  recivePromiseByAttribute,
+  recivePromiseByMultiAttribute,
+} from "../../../../services/DatabaseService";
 import AutoStringField from "../../../form_elements/AutoStringField";
 import CheckField from "../../../form_elements/CheckField";
 import DataSelectField from "../../../form_elements/DataSelectField";
@@ -360,7 +364,8 @@ const CharEditView = ({ character, onEdit, isNpc }: $Props) => {
       let classes: Class[] = [];
       let classList: Promise<Class>[] = [];
       character.classes.forEach((classe) => {
-        classList.push(recivePromiseByAttribute("classes", "name", classe.classe));
+        let [name, sources] = classe.classe.split("|");
+        classList.push(recivePromiseByMultiAttribute("classes", { name: name, sources: sources }));
       });
       classes = await Promise.all(classList);
 

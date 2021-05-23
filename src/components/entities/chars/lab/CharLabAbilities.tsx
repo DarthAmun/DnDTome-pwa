@@ -236,7 +236,7 @@ const CharLabAbilities = ({ char, onChange, completed }: $Props) => {
             <PropWithProf>
               <PropText>
                 <PropTitle>Acrobatics:</PropTitle>
-                {calcSkill(char.skills.acrobaticsProf, char.str)}
+                {calcSkill(char.skills.acrobaticsProf, char.dex)}
               </PropText>
               <PropProf onClick={(e) => changeProf("acrobaticsProf")}>
                 <Icon icon={formatProf(char.skills.acrobaticsProf)} />
@@ -263,7 +263,7 @@ const CharLabAbilities = ({ char, onChange, completed }: $Props) => {
             <PropWithProf>
               <PropText>
                 <PropTitle>Athletics:</PropTitle>
-                {calcSkill(char.skills.athleticsProf, char.dex)}
+                {calcSkill(char.skills.athleticsProf, char.str)}
               </PropText>
               <PropProf onClick={(e) => changeProf("athleticsProf")}>
                 <Icon icon={formatProf(char.skills.athleticsProf)} />

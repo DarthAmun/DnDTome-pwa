@@ -84,15 +84,16 @@ const ClasseEditView = ({ classe, onEdit }: $Props) => {
     });
     onEdit({ ...classe, featureSets: features });
   };
-  const onSpellslotChange = (oldFeature: FeatureSet, value: number[]) => {
-    let features = classe.featureSets.map((featureSet: FeatureSet) => {
-      if (featureSet === oldFeature && featureSet.spellslots !== undefined) {
-        return { ...featureSet, spellslots: value } as FeatureSet;
-      } else {
-        return featureSet;
-      }
-    });
-    onEdit({ ...classe, featureSets: features });
+  const onSpellslotChange = (index: number, value: number[]) => {
+    let featureSets = [...classe.featureSets];
+    let newSet = featureSets[index];
+    if (newSet.spellslots !== undefined) {
+      let newSlots = [...newSet.spellslots];
+      newSet.spellslots = newSlots.map((s, i) => {
+        return value[i];
+      });
+      onEdit({ ...classe, featureSets: featureSets });
+    }
   };
   const onFeatureChange = (
     oldFeatureSet: FeatureSet,
@@ -149,13 +150,10 @@ const ClasseEditView = ({ classe, onEdit }: $Props) => {
     onEdit({ ...classe, featureSets: featuresets });
   };
 
-  const removeFeatureSet = (oldFeatureSet: FeatureSet) => {
-    let featureSets = classe.featureSets;
-    const index: number = featureSets.indexOf(oldFeatureSet);
-    if (index !== -1) {
-      featureSets.splice(index, 1);
-      onEdit({ ...classe, featureSets: featureSets });
-    }
+  const removeFeatureSet = (index: number) => {
+    let featureSets = [...classe.featureSets];
+    featureSets.splice(index, 1);
+    onEdit({ ...classe, featureSets: featureSets });
   };
   const removeBoni = (oldBoni: Boni) => {
     let featureSets = classe.featureSets.map((featureSet) => {
@@ -198,27 +196,24 @@ const ClasseEditView = ({ classe, onEdit }: $Props) => {
     });
     onEdit({ ...classe, featureSets: featureSets });
   };
-  const removeSpellslot = (oldFeatureSet: FeatureSet) => {
-    let featureSets = classe.featureSets.map((featureSet) => {
-      if (featureSet.spellslots !== undefined && featureSet === oldFeatureSet) {
-        return {
-          ...featureSet,
-          spellslots: [...featureSet.spellslots].slice(0, featureSet.spellslots.length - 1),
-        };
-      }
-      return featureSet;
-    });
-    onEdit({ ...classe, featureSets: featureSets });
+  const removeSpellslot = (index: number) => {
+    let featureSets = [...classe.featureSets];
+    let newSet = featureSets[index];
+    if (newSet.spellslots !== undefined) {
+      let newSlots = [...newSet.spellslots];
+      newSet.spellslots = newSlots.slice(0, newSlots.length - 1);
+      onEdit({ ...classe, featureSets: featureSets });
+    }
   };
 
-  const addNewSpellslot = (oldFeatureSet: FeatureSet) => {
-    let featureSets = classe.featureSets.map((featureSet) => {
-      if (featureSet.spellslots !== undefined && featureSet === oldFeatureSet) {
-        return { ...featureSet, spellslots: [...featureSet.spellslots, 0] };
-      }
-      return featureSet;
-    });
-    onEdit({ ...classe, featureSets: featureSets });
+  const addNewSpellslot = (index: number) => {
+    let featureSets = [...classe.featureSets];
+    let newSet = featureSets[index];
+    if (newSet.spellslots !== undefined) {
+      let newSlots = [...newSet.spellslots];
+      newSet.spellslots = [...newSlots, 0];
+      onEdit({ ...classe, featureSets: featureSets });
+    }
   };
   const addNewBoni = (oldFeatureSet: FeatureSet) => {
     let featureSets = classe.featureSets.map((featureSet) => {
@@ -351,14 +346,14 @@ const ClasseEditView = ({ classe, onEdit }: $Props) => {
                 label="Level"
                 onChange={(level) => onFeatureSetChange(featureSet, "level", level)}
               />
-              <IconButton icon={faTrash} onClick={() => removeFeatureSet(featureSet)} />
+              <IconButton icon={faTrash} onClick={() => removeFeatureSet(index)} />
               <FeatureNumberArray
                 values={featureSet.spellslots ? featureSet.spellslots : []}
                 label="Spellslots"
-                onChange={(spellslots) => onSpellslotChange(featureSet, spellslots)}
+                onChange={(spellslots) => onSpellslotChange(index, spellslots)}
               />
-              <IconButton icon={faMinus} onClick={() => removeSpellslot(featureSet)} />
-              <IconButton icon={faPlus} onClick={() => addNewSpellslot(featureSet)} />
+              <IconButton icon={faMinus} onClick={() => removeSpellslot(index)} />
+              <IconButton icon={faPlus} onClick={() => addNewSpellslot(index)} />
               {featureSet.bonis &&
                 featureSet.bonis.map((boni: Boni, index: number) => {
                   return (

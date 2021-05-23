@@ -64,8 +64,7 @@ export function isCampaign(arg: any): arg is Campaign {
   return (
     arg &&
     nameCheck &&
-    picCheck &&
-    picBase64Check &&
+    (picCheck || picBase64Check) &&
     descriptionCheck &&
     playersCheck &&
     logsCheck &&
@@ -76,9 +75,7 @@ export function isCampaign(arg: any): arg is Campaign {
   );
 }
 
-export function findCampaignFormattError(
-  arg: any
-): {
+export function findCampaignFormattError(arg: any): {
   nameCheck: boolean;
 } {
   const nameCheck = arg.name !== undefined && typeof arg.name == "string";

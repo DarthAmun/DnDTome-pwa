@@ -64,14 +64,11 @@ export function isGear(arg: any): arg is Gear {
     weightCheck &&
     propertiesCheck &&
     typeCheck &&
-    picCheck &&
-    picBase64Check
+    (picCheck || picBase64Check)
   );
 }
 
-export function findGearFormattError(
-  arg: any
-): {
+export function findGearFormattError(arg: any): {
   nameCheck: boolean;
   sourcesCheck: boolean;
   descriptionCheck: boolean;

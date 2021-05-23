@@ -64,14 +64,11 @@ export function isItem(arg: any): arg is Item {
     rarityCheck &&
     baseCheck &&
     typeCheck &&
-    picCheck &&
-    picBase64Check
+    (picCheck || picBase64Check)
   );
 }
 
-export function findItemFromattError(
-  arg: any
-): {
+export function findItemFromattError(arg: any): {
   nameCheck: boolean;
   sourcesCheck: boolean;
   descriptionCheck: boolean;

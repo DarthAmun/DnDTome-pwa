@@ -79,14 +79,11 @@ export function isSpell(arg: any): arg is Spell {
     durationCheck &&
     ritualCheck &&
     textCheck &&
-    picCheck &&
-    picBase64Check
+    (picCheck || picBase64Check)
   );
 }
 
-export function findSpellFormattError(
-  arg: any
-): {
+export function findSpellFormattError(arg: any): {
   nameCheck: boolean;
   classesCheck: boolean;
   sourcesCheck: boolean;

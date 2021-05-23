@@ -51,17 +51,14 @@ export function isNpc(arg: any): arg is Npc {
   return (
     arg &&
     nameCheck &&
-    picCheck &&
-    picBase64Check &&
+    (picCheck || picBase64Check) &&
     descriptionCheck &&
     traitsCheck &&
     sourcesCheck
   );
 }
 
-export function findNpcFormattError(
-  arg: any
-): {
+export function findNpcFormattError(arg: any): {
   nameCheck: boolean;
 } {
   const nameCheck = arg.name !== undefined && typeof arg.name == "string";

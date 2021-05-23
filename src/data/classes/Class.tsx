@@ -59,14 +59,11 @@ export function isClass(arg: any): arg is Class {
     hitDicesCheck &&
     proficienciesCheck &&
     equipmentCheck &&
-    picCheck &&
-    picBase64Check
+    (picCheck || picBase64Check)
   );
 }
 
-export function findClassFormattError(
-  arg: any
-): {
+export function findClassFormattError(arg: any): {
   nameCheck: boolean;
   sourcesCheck: boolean;
   featureSetsCheck: boolean;

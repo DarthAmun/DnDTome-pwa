@@ -138,8 +138,7 @@ export function isMonster(arg: any): arg is Monster {
   return (
     arg &&
     nameCheck &&
-    picCheck &&
-    picBase64Check &&
+    (picCheck || picBase64Check) &&
     sourcesCheck &&
     sizeCheck &&
     typeCheck &&
@@ -169,9 +168,7 @@ export function isMonster(arg: any): arg is Monster {
   );
 }
 
-export function findMonsterFormattError(
-  arg: any
-): {
+export function findMonsterFormattError(arg: any): {
   nameCheck: boolean;
   picCheck: boolean;
   sourcesCheck: boolean;

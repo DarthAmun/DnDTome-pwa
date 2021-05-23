@@ -172,8 +172,7 @@ export function isChar(arg: any): arg is Char {
     nameCheck &&
     playerCheck &&
     campaignCheck &&
-    picCheck &&
-    picBase64Check &&
+    (picCheck || picBase64Check) &&
     raceCheck &&
     backgroundCheck &&
     acCheck &&

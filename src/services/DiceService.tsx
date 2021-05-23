@@ -1,5 +1,3 @@
-import { ControlButton } from "react-flow-renderer";
-
 export const rollCommand = (
   commands: string,
   krit?: boolean
@@ -34,7 +32,6 @@ export const rollCommand = (
         commandSplits = commandSplits.concat(split);
       });
 
-    console.log(commandSplits);
     commandSplits.forEach((command: string) => {
       let multiplier: number = 1;
       if (command.includes("d")) {
@@ -74,7 +71,6 @@ export const rollCommand = (
         rolls += "|" + command + ",";
       }
     });
-    console.log(rolls);
     rolls = rolls.slice(0, -1);
     if (!rolls.endsWith(")")) rolls += "`)";
   });

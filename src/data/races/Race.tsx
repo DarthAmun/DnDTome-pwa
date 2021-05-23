@@ -64,8 +64,7 @@ export function isRace(arg: any): arg is Race {
   return (
     arg &&
     nameCheck &&
-    picCheck &&
-    picBase64Check &&
+    (picCheck || picBase64Check) &&
     abilityScoresCheck &&
     ageCheck &&
     alignmentCheck &&
@@ -77,9 +76,7 @@ export function isRace(arg: any): arg is Race {
   );
 }
 
-export function findRaceFormattError(
-  arg: any
-): {
+export function findRaceFormattError(arg: any): {
   nameCheck: boolean;
   picCheck: boolean;
   abilityScoresCheck: boolean;

@@ -47,8 +47,7 @@ export function isQuest(arg: any): arg is Quest {
   return (
     arg &&
     nameCheck &&
-    picCheck &&
-    picBase64Check &&
+    (picCheck || picBase64Check) &&
     descriptionCheck &&
     followQuestCheck &&
     rewardsCheck &&
@@ -56,9 +55,7 @@ export function isQuest(arg: any): arg is Quest {
   );
 }
 
-export function findQuestFormattError(
-  arg: any
-): {
+export function findQuestFormattError(arg: any): {
   nameCheck: boolean;
 } {
   const nameCheck = arg.name !== undefined && typeof arg.name == "string";

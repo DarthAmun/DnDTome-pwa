@@ -90,10 +90,11 @@ const EncounterEditView = ({ encounter, onEdit }: $Props) => {
       let found: any[] = [];
       let [name, sources] = newEnemy.split("|");
       found.push(recivePromiseByMultiAttribute("monsters", { name: name, sources: sources }));
-      found.push(recivePromiseByAttribute("npcs", "name", newEnemy));
-      found.push(recivePromiseByAttribute("chars", "name", newEnemy));
+      found.push(recivePromiseByMultiAttribute("npcs", { name: name, sources: sources }));
+      found.push(recivePromiseByMultiAttribute("chars", { name: name, sources: sources }));
       let results = await Promise.all(found);
       results = results.filter((e) => e !== undefined);
+      console.log("Found:", results);
 
       if (results[0] && isMonster(results[0])) {
         enemies[i] = {
@@ -210,10 +211,12 @@ const EncounterEditView = ({ encounter, onEdit }: $Props) => {
       let found: any[] = [];
       let [name, sources] = newPlayer.split("|");
       found.push(recivePromiseByMultiAttribute("monsters", { name: name, sources: sources }));
-      found.push(recivePromiseByAttribute("npcs", "name", newPlayer));
-      found.push(recivePromiseByAttribute("chars", "name", newPlayer));
+      found.push(recivePromiseByMultiAttribute("npcs", { name: name, sources: sources }));
+      found.push(recivePromiseByMultiAttribute("chars", { name: name, sources: sources }));
       let results = await Promise.all(found);
       results = results.filter((e) => e !== undefined);
+      console.log("Found:", results);
+      console.log(isMonster(results[0]), isChar(results[0]), isNpc(results[0]));
 
       if (results[0] && isMonster(results[0])) {
         players[i] = {

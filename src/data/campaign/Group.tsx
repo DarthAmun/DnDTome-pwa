@@ -60,8 +60,7 @@ export function isGroup(arg: any): arg is Group {
   return (
     arg &&
     nameCheck &&
-    picCheck &&
-    picBase64Check &&
+    (picCheck || picBase64Check) &&
     descriptionCheck &&
     notesCheck &&
     playersCheck &&
@@ -72,9 +71,7 @@ export function isGroup(arg: any): arg is Group {
   );
 }
 
-export function findCampaignFormattError(
-  arg: any
-): {
+export function findCampaignFormattError(arg: any): {
   nameCheck: boolean;
 } {
   const nameCheck = arg.name !== undefined && typeof arg.name == "string";
