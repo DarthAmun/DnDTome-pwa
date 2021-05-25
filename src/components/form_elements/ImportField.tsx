@@ -11,7 +11,9 @@ import { saveNewFromList } from "../../services/DatabaseService";
 
 import ProgressBar from "@ramonak/react-progress-bar";
 import {
+  makeBackground,
   makeClass,
+  makeFeat,
   makeItems,
   makeMonster,
   makeRace,
@@ -124,6 +126,13 @@ const FileTile = ({ file, modus }: $FileProps) => {
         if (newSubclass.name !== "")
           listOfNew.push({ tableName: "subclasses", newEntitiy: newSubclass });
       }
+    } else if (key === "feat") {
+      const newFeat = makeFeat(obj, json, file.name);
+      if (newFeat.name !== "") listOfNew.push({ tableName: "feats", newEntitiy: newFeat });
+    } else if (key === "background") {
+      const newBackground = makeBackground(obj, json, file.name);
+      if (newBackground.name !== "")
+        listOfNew.push({ tableName: "backgrounds", newEntitiy: newBackground });
     }
     return listOfNew;
   };
@@ -174,6 +183,7 @@ const FileTile = ({ file, modus }: $FileProps) => {
 
     value.forEach((obj: any) => {
       convertTypes(obj.featureType).forEach((type: string) => {
+        if (type === "Unknown") type = fileName;
         if (selections.filter((selc) => selc.name === type).length <= 0) {
           selections.push({
             name: type,

@@ -20,6 +20,7 @@ import NumberField from "../../../form_elements/NumberField";
 import FormatedText from "../../../general_elements/FormatedText";
 import { calcProf } from "../../../../services/CharacterService";
 import ClassSet from "../../../../data/chars/ClassSet";
+import Background from "../../../../data/Background";
 
 interface $Props {
   char: Char;
@@ -31,6 +32,7 @@ const CharLabAbilities = ({ char, onChange, completed }: $Props) => {
   const [classes, setClasses] = useState<Class[]>([]);
   const [race, setRace] = useState<Race>();
   const [subrace, setSubrace] = useState<Subrace>();
+  const [background, setBackground] = useState<Background>();
 
   useEffect(() => {
     let classList: Promise<Class>[] = [];
@@ -46,12 +48,15 @@ const CharLabAbilities = ({ char, onChange, completed }: $Props) => {
       let [name, sources] = char.race.race.split("|");
       recivePromiseByMultiAttribute("races", { name: name, sources: sources }).then(setRace);
     }
-  }, [char]);
-
-  useEffect(() => {
     if (char.race && char.race.subrace.length > 1) {
       let [name, sources] = char.race.subrace.split("|");
       recivePromiseByMultiAttribute("subraces", { name: name, sources: sources }).then(setSubrace);
+    }
+    if (char.background) {
+      let [name, sources] = char.background.split("|");
+      recivePromiseByMultiAttribute("backgrounds", { name: name, sources: sources }).then(
+        setBackground
+      );
     }
   }, [char]);
 
@@ -123,6 +128,14 @@ const CharLabAbilities = ({ char, onChange, completed }: $Props) => {
                 <>
                   <PropTitle>{subrace.name}:</PropTitle>
                   <FormatedText text={subrace.abilityScores} />
+                </>
+              )}
+            </Text>
+            <Text>
+              {background && (
+                <>
+                  <PropTitle>{background.name}:</PropTitle>
+                  <FormatedText text={background.proficiencies} />
                 </>
               )}
             </Text>

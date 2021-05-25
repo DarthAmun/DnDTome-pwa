@@ -98,7 +98,7 @@ const CharLabRace = ({ char, onChange, completed }: $Props) => {
             <IconButton
               icon={faCheckCircle}
               disabled={!(char && char.race && char.race.race.length > 1)}
-              onClick={() => completed(true, "Abilities")}
+              onClick={() => completed(true, "Background")}
             />
             <PropWrapper>
               {char.race &&

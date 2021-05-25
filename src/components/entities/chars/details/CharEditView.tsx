@@ -422,10 +422,16 @@ const CharEditView = ({ character, onEdit, isNpc }: $Props) => {
               />
               <IconButton icon={faTrash} onClick={() => onEdit({ ...character, picBase64: "" })} />
             </FieldGroup>
-            <StringField
+            <DataSelectField
+              optionTable={["backgrounds"]}
               value={character.background}
               label="Background"
-              onChange={(background) => onEdit({ ...character, background: background })}
+              onChange={(background) =>
+                onEdit({
+                  ...character,
+                  background: background,
+                })
+              }
             />
             <StringField
               value={character.alignment}
@@ -598,7 +604,6 @@ const CharEditView = ({ character, onEdit, isNpc }: $Props) => {
                     })
                   }
                 />
-
                 <DataSelectField
                   optionTable={["subraces"]}
                   filters={[{ fieldName: "type", value: character.race.race, sort: 0 }]}

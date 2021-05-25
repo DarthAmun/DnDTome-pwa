@@ -54,6 +54,10 @@ import SubraceEditView from "../../entities/subraces/details/SubraceEditView";
 import SubraceView from "../../entities/subraces/details/SubraceView";
 import WorldEditView from "../../entities/worlds/details/WorldEditView";
 import WorldView from "../../entities/worlds/details/WorldView";
+import FeatEditView from "../../entities/feats/details/FeatEditView";
+import FeatView from "../../entities/feats/details/FeatView";
+import BackgroundEditView from "../../entities/backgrounds/details/BackgroundEditView";
+import BackgroundView from "../../entities/backgrounds/details/BackgroundView";
 
 interface $Props {
   entity: IEntity;
@@ -151,6 +155,10 @@ const EntityDetail = ({ entity, tableName, isNew, view }: $Props) => {
     SubraceEditView: SubraceEditView,
     WorldView: WorldView,
     WorldEditView: WorldEditView,
+    FeatView: FeatView,
+    FeatEditView: FeatEditView,
+    BackgroundView: BackgroundView,
+    BackgroundEditView: BackgroundEditView,
   };
 
   return (

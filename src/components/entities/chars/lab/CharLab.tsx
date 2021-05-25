@@ -19,6 +19,7 @@ import CharLabRace from "./CharLabRace";
 import CharLabAbilities from "./CharLabAbilities";
 import CharLabEquipment from "./CharLabEquipment";
 import { useQuery } from "../../../../hooks/QueryHook";
+import CharLabBackground from "./CharLabBackground";
 
 const CharLab = () => {
   let history = useHistory();
@@ -29,6 +30,7 @@ const CharLab = () => {
   const [completedGeneral, setGeneral] = useState<boolean>(false);
   const [completedClass, setClass] = useState<boolean>(false);
   const [completedRace, setRace] = useState<boolean>(false);
+  const [completedBackground, setBackground] = useState<boolean>(false);
   const [completedAbilities, setAbilities] = useState<boolean>(false);
   const [completedEquipment, setEquipment] = useState<boolean>(false);
 
@@ -42,6 +44,10 @@ const CharLab = () => {
   };
   const updateRace = (value: boolean, nextTab: string) => {
     setRace(value);
+    setTab(nextTab);
+  };
+  const updateBackground = (value: boolean, nextTab: string) => {
+    setBackground(value);
     setTab(nextTab);
   };
   const updateAbilities = (value: boolean, nextTab: string) => {
@@ -182,7 +188,7 @@ const CharLab = () => {
   return (
     <>
       <TabBar
-        children={["General", "Class", "Race", "Abilities", "Equipment", "Finished"]}
+        children={["General", "Class", "Race", "Background", "Abilities", "Equipment", "Finished"]}
         onChange={(tab: string) => setTab(tab)}
         activeTab={activeTab}
       />
@@ -221,8 +227,25 @@ const CharLab = () => {
               )}
               {completedRace && (
                 <PropWrapper>
-                  <Prop>Would you like to edit race again? </Prop>
+                  <Prop>Would you like to edit the race again? </Prop>
                   <IconButton icon={faEdit} onClick={() => setRace(false)} />
+                </PropWrapper>
+              )}
+            </>
+          )}
+          {activeTab === "Background" && (
+            <>
+              {!completedBackground && (
+                <CharLabBackground
+                  char={newChar}
+                  onChange={updateChar}
+                  completed={updateBackground}
+                />
+              )}
+              {completedBackground && (
+                <PropWrapper>
+                  <Prop>Would you like to edit the background again? </Prop>
+                  <IconButton icon={faEdit} onClick={() => setBackground(false)} />
                 </PropWrapper>
               )}
             </>
@@ -266,6 +289,7 @@ const CharLab = () => {
               {(!completedGeneral ||
                 !completedClass ||
                 !completedRace ||
+                !completedBackground ||
                 !completedAbilities ||
                 !completedGeneral ||
                 !completedEquipment) && (
@@ -276,6 +300,7 @@ const CharLab = () => {
               {completedGeneral &&
                 completedClass &&
                 completedRace &&
+                completedBackground &&
                 completedAbilities &&
                 completedGeneral &&
                 completedEquipment && (

@@ -1,8 +1,9 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { RouteComponentProps, useHistory } from "react-router";
-import Details from "./EntityDetail";
+import { useQuery } from "../../../hooks/QueryHook";
 
 import { LoadingSpinner } from "../../Loading";
+import Details from "./EntityDetail";
 import ErrorTile from "../ErrorTile";
 import Campaign from "../../../data/campaign/Campaign";
 import {
@@ -29,7 +30,8 @@ import Subclass from "../../../data/classes/Subclass";
 import Event from "../../../data/world/Event";
 import Selection from "../../../data/Selection";
 import Location from "../../../data/world/Location";
-import { useQuery } from "../../../hooks/QueryHook";
+import Feat from "../../../data/Feat";
+import Background from "../../../data/Background";
 
 type TParams = { id?: string; name?: string };
 
@@ -113,6 +115,8 @@ const ToEntity = ({ match }: RouteComponentProps<TParams>) => {
     subclasse: new Subclass(0, match.params.name),
     subrace: new Subrace(match.params.name),
     world: new World(0, match.params.name),
+    feat: new Feat(0, match.params.name),
+    background: new Background(0, match.params.name),
   };
 
   const createNewEntity = () => {

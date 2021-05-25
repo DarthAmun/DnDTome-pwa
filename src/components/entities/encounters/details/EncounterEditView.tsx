@@ -10,7 +10,6 @@ import IEntity from "../../../../data/IEntity";
 import { isMonster } from "../../../../data/Monster";
 import {
   reciveAllFilteredPromise,
-  recivePromiseByAttribute,
   recivePromiseByMultiAttribute,
 } from "../../../../services/DatabaseService";
 import { calcDifficulty } from "../../../../services/EncounterService";

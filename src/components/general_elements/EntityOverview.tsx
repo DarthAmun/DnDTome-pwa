@@ -46,6 +46,10 @@ import SelectionTile from "../entities/selections/SelectionTile";
 import SpellTile from "../entities/spells/SpellTile";
 import WorldTile from "../entities/worlds/WorldTile";
 import { useQuery } from "../../hooks/QueryHook";
+import BackgroundSearchBar from "../entities/backgrounds/BackgroundSearchBar";
+import BackgroundTile from "../entities/backgrounds/BackgroundTile";
+import FeatSearchBar from "../entities/feats/FeatSearchBar";
+import FeatTile from "../entities/feats/FeatTile";
 
 const EntityOverview = ({ match }: RouteComponentProps) => {
   const rawFilters = useQuery().get("filter");
@@ -131,6 +135,8 @@ const EntityOverview = ({ match }: RouteComponentProps) => {
     world: WorldSearchBar,
     char: CharSearchBar,
     encounter: EncounterSearchBar,
+    feat: FeatSearchBar,
+    background: BackgroundSearchBar,
   };
 
   const tiles = {
@@ -152,6 +158,8 @@ const EntityOverview = ({ match }: RouteComponentProps) => {
     world: WorldTile,
     char: CharTile,
     encounter: EncounterTile,
+    feat: FeatTile,
+    background: BackgroundTile,
   };
 
   return (

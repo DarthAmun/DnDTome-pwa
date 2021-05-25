@@ -1,8 +1,10 @@
+import Background from "../data/Background";
 import Boni from "../data/classes/Boni";
 import Class from "../data/classes/Class";
 import Feature from "../data/classes/Feature";
 import FeatureSet from "../data/classes/FeatureSet";
 import Subclass from "../data/classes/Subclass";
+import Feat from "../data/Feat";
 import Gear from "../data/Gear";
 import Item from "../data/Item";
 import Monster from "../data/Monster";
@@ -88,47 +90,8 @@ const replaceTags = (text: string): string => {
 
 const parseGear = (obj: any, fileName: string) => {
   let text = "";
-  if (obj.entries !== undefined) {
-    obj.entries.forEach((textPart: string | any) => {
-      if (typeof textPart === "string") {
-        text += textPart + "\n";
-      } else {
-        if (textPart.name !== undefined && textPart.entries !== undefined) {
-          text += "\n" + textPart.name + ". ";
-          textPart.entries.forEach((entryTextPart: string) => {
-            text += entryTextPart + "\n";
-          });
-        } else if (textPart.items !== undefined) {
-          textPart.items.forEach((listItem: string) => {
-            text += "• " + listItem + "\n";
-          });
-        } else if (textPart.type !== undefined && textPart.type === "table") {
-          text += "||tableStart||\n";
-          if (textPart.colLabels !== undefined) {
-            text += "||";
-            textPart.colLabels.forEach((listItem: string) => {
-              text += listItem + "|";
-            });
-            text += "|\n";
-          }
-          textPart.rows.forEach((rows: string[]) => {
-            text += "||";
-            rows.forEach((cel: string) => {
-              text += cel + "|";
-            });
-            text += "|\n";
-          });
-          text += "||tableEnd||\n";
-        } else {
-          let convertText = JSON.stringify(textPart);
-          convertText = replaceTags(convertText);
-          text += convertText;
-        }
-      }
-    });
-    text = replaceTags(text);
-  }
-  const description = text.trim();
+  if (obj.entries !== undefined) text = recursiveTextAdder(obj.entries, text).text;
+  const description = replaceTags(text);
 
   let type = "";
   if (obj.type !== undefined) {
@@ -285,47 +248,8 @@ const parseGear = (obj: any, fileName: string) => {
 
 const parseItem = (obj: any, fileName: string) => {
   let text = "";
-  if (obj.entries !== undefined) {
-    obj.entries.forEach((textPart: string | any) => {
-      if (typeof textPart === "string") {
-        text += textPart + "\n";
-      } else {
-        if (textPart.name !== undefined && textPart.entries !== undefined) {
-          text += "\n" + textPart.name + ". ";
-          textPart.entries.forEach((entryTextPart: string) => {
-            text += entryTextPart + "\n";
-          });
-        } else if (textPart.items !== undefined) {
-          textPart.items.forEach((listItem: string) => {
-            text += "• " + listItem + "\n";
-          });
-        } else if (textPart.type !== undefined && textPart.type === "table") {
-          text += "||tableStart||\n";
-          if (textPart.colLabels !== undefined) {
-            text += "||";
-            textPart.colLabels.forEach((listItem: string) => {
-              text += listItem + "|";
-            });
-            text += "|\n";
-          }
-          textPart.rows.forEach((rows: string[]) => {
-            text += "||";
-            rows.forEach((cel: string) => {
-              text += cel + "|";
-            });
-            text += "|\n";
-          });
-          text += "||tableEnd||\n";
-        } else {
-          let convertText = JSON.stringify(textPart);
-          convertText = replaceTags(convertText);
-          text += convertText;
-        }
-      }
-    });
-    text = replaceTags(text);
-  }
-  const description = text.trim();
+  if (obj.entries !== undefined) text = recursiveTextAdder(obj.entries, text).text;
+  const description = replaceTags(text);
 
   let magicBonus = 0;
   if (obj.bonusSpellAttack !== undefined) {
@@ -645,44 +569,7 @@ export const makeSpell = (obj: any, fileName: string): Spell => {
   duration = duration.trim();
 
   let text = "";
-  obj.entries.forEach((textPart: string | any) => {
-    if (typeof textPart === "string") {
-      text += textPart + "\n";
-    } else {
-      if (textPart.name !== undefined && textPart.entries !== undefined) {
-        text += "\n" + textPart.name + ". ";
-        textPart.entries.forEach((entryTextPart: string) => {
-          text += entryTextPart + "\n";
-        });
-      } else if (textPart.items !== undefined) {
-        textPart.items.forEach((listItem: string) => {
-          text += "• " + listItem + "\n";
-        });
-      } else if (textPart.type !== undefined && textPart.type === "table") {
-        text += "||tableStart||\n";
-        if (textPart.colLabels !== undefined) {
-          text += "||";
-          textPart.colLabels.forEach((listItem: string) => {
-            text += listItem + "|";
-          });
-          text += "|\n";
-        }
-        textPart.rows.forEach((rows: string[]) => {
-          text += "||";
-          rows.forEach((cel: string) => {
-            text += cel + "|";
-          });
-          text += "|\n";
-        });
-        text += "||tableEnd||\n";
-      } else {
-        let convertText = JSON.stringify(textPart);
-        convertText = replaceTags(convertText);
-        text += convertText;
-      }
-    }
-  });
-
+  if (obj.entries !== undefined) text = recursiveTextAdder(obj.entries, text).text;
   if (obj.entriesHigherLevel !== undefined && obj.entriesHigherLevel.entries !== undefined) {
     obj.entriesHigherLevel.forEach((entry: any) => {
       text += "At Higher Levels: ";
@@ -695,7 +582,6 @@ export const makeSpell = (obj: any, fileName: string): Spell => {
       }
     });
   }
-
   text = replaceTags(text);
 
   return new Spell(
@@ -1248,64 +1134,77 @@ export const makeSubclass = (obj: any, json: any, classe: string, fileName: stri
 };
 
 const recursiveTextAdder = (
-  entries: any[],
-  text: string
+  entries: any,
+  text: string,
+  seperator?: string
 ): { text: string; additional: string[] } => {
-  let additional: string[] = [];
   let newText: string = text;
-  if (Array.isArray(entries)) {
-    entries?.forEach((entry: any) => {
-      if (typeof entry == "string") {
-        newText += entry + "\n";
-      } else if (entry.entries !== undefined) {
-        newText += entry.name + "\n";
-        newText = recursiveTextAdder(entry.entries, newText).text;
-      } else if (entry.items !== undefined) {
-        entry.items.forEach((item: string) => {
-          newText += "• " + item + "\n";
+  let additional: string[] = [];
+  if (entries !== undefined) {
+    if (typeof entries == "string" || typeof entries == "number") {
+      newText += entries + "";
+    } else if (Array.isArray(entries)) {
+      entries.forEach((entry) => {
+        const { text, additional } = recursiveTextAdder(entry, newText, seperator);
+        newText = text;
+        additional.concat(additional);
+      });
+      newText += "\n";
+    } else if (entries.entries !== undefined) {
+      if (entries.name !== undefined) newText += entries.name + "\n";
+      const { text, additional } = recursiveTextAdder(entries.entries, newText, seperator);
+      newText = text + "\r\n";
+      additional.concat(additional);
+    } else if (entries.items !== undefined) {
+      entries.items.forEach((item: any) => {
+        if (typeof entries == "string" || typeof entries == "number") {
+          newText += "\r\n• " + item;
+        } else if (item.type !== undefined && item.type === "item") {
+          newText += "\r\n• " + item.name + ": " + item.entry;
+        }
+      });
+      newText += "\n\n";
+    } else if (entries.type !== undefined && entries.type === "refClassFeature") {
+      additional.push(entries.classFeature);
+    } else if (entries.type !== undefined && entries.type === "refSubclassFeature") {
+      additional.push(entries.subclassFeature);
+    } else if (entries.type !== undefined && entries.type === "table") {
+      newText += "\n ||tableStart||";
+      if (entries.colLabels) {
+        newText += "||";
+        entries.colLabels.forEach((s: string) => (newText += s + "|"));
+        newText += "|";
+      }
+      if (entries.rows) {
+        newText += "||";
+        entries.rows.forEach((row: string[]) => {
+          newText += "||";
+          if (Array.isArray(row))
+            row.forEach((s: string) => {
+              newText += s + "|";
+            });
+          newText += "|";
         });
-      } else if (entry.type !== undefined && entry.type === "refClassFeature") {
-        additional.push(entry.classFeature);
-      } else if (entry.type !== undefined && entry.type === "refSubclassFeature") {
-        additional.push(entry.subclassFeature);
-      } else if (entry.type !== undefined && entry.type === "table") {
-        newText += "\n ||tableStart||";
-        if (entry.colLabels) {
-          newText += "||";
-          entry.colLabels.forEach((s: string) => (newText += s + "|"));
-          newText += "|";
-        }
-        if (entry.rows) {
-          newText += "||";
-          entry.rows.forEach((row: string[]) => {
-            newText += "||";
-            if (Array.isArray(row))
-              row.forEach((s: string) => {
-                newText += s + "|";
-              });
-            newText += "|";
-          });
-          newText += "|";
-        }
-        newText += "||tableEnd||\n";
-      } else {
-        for (const value of Object.entries(entry)) {
-          newText += value[1] + "\n";
-        }
+        newText += "|";
       }
-    });
-  } else {
-    if (entries !== undefined)
-      if (typeof entries == "string" || typeof entries == "number") {
-        newText += entries + "\n";
-      } else {
-        for (const value of Object.entries(entries)) {
-          newText += value[1] + "\n";
+      newText += "||tableEnd||\r\n";
+    } else if (typeof entries == "object") {
+      for (const value of Object.entries(entries)) {
+        if (value[0] !== undefined) {
+          const { text, additional } = recursiveTextAdder(value[0], newText, seperator);
+          newText = text + (seperator || ": ");
+          additional.concat(additional);
         }
+        if (value[1] !== undefined) {
+          const { text, additional } = recursiveTextAdder(value[1], newText, seperator);
+          newText = text;
+          additional.concat(additional);
+        }
+        newText += "\r\n";
       }
+    }
   }
-
-  return { text: newText + "\n", additional: additional };
+  return { text: newText, additional: additional };
 };
 
 export const makeSelection = (
@@ -1317,42 +1216,7 @@ export const makeSelection = (
   level: number;
 } => {
   let text = "";
-  obj.entries?.forEach((textPart: string | any) => {
-    if (typeof textPart === "string") {
-      text += textPart + "\n";
-    } else {
-      if (textPart.name !== undefined && textPart.entries !== undefined) {
-        text += "\n" + textPart.name + ". ";
-        textPart.entries.forEach((entryTextPart: string) => {
-          text += entryTextPart + "\n";
-        });
-      } else if (textPart.items !== undefined) {
-        textPart.items.forEach((listItem: string) => {
-          text += "• " + listItem + "\n";
-        });
-      } else if (textPart.type !== undefined && textPart.type === "table") {
-        text += "||tableStart||\n";
-        if (textPart.colLabels !== undefined) {
-          text += "||";
-          textPart.colLabels.forEach((listItem: string) => {
-            text += listItem + "|";
-          });
-          text += "|\n";
-        }
-        textPart.rows.forEach((rows: string[]) => {
-          text += "||";
-          rows.forEach((cel: string) => {
-            text += cel + "|";
-          });
-          text += "|\n";
-        });
-        text += "||tableend||\n";
-      } else {
-        let convertText = JSON.stringify(textPart);
-        text += replaceTags(convertText);
-      }
-    }
-  });
+  if (obj.entries !== undefined) text = recursiveTextAdder(obj.entries, text).text;
   text = replaceTags(text);
 
   let level: number = 0;
@@ -1409,5 +1273,54 @@ export const makeSelection = (
     entityPrerequsite: prequisite,
     entityText: text,
     level: level,
+  };
+};
+
+export const makeFeat = (obj: any, json: any, fileName: string): Feat => {
+  let text = "";
+  if (obj.ability !== undefined) text = recursiveTextAdder(obj.ability, text).text;
+  if (obj.entries !== undefined) text = recursiveTextAdder(obj.entries, text).text;
+  text = replaceTags(text);
+
+  let prequisite = "";
+  if (obj.prerequisite !== undefined)
+    prequisite = recursiveTextAdder(obj.prerequisite, prequisite).text;
+  prequisite = replaceTags(prequisite);
+
+  let name = obj.name;
+  name = obj.source !== undefined ? name + " (" + obj.source + ")" : name;
+
+  return {
+    name: name,
+    prerequisite: prequisite,
+    description: text,
+    sources: obj.source,
+  };
+};
+
+export const makeBackground = (obj: any, json: any, fileName: string): Background => {
+  let proficiencies = "";
+  let text = "";
+
+  if (obj.entries !== undefined) {
+    let entries = [...obj.entries];
+    if (entries[0].type === "list") {
+      proficiencies = recursiveTextAdder(entries[0], proficiencies).text;
+      entries = entries.slice(1);
+    }
+    proficiencies = replaceTags(proficiencies);
+
+    text = recursiveTextAdder(entries, text).text;
+    text = replaceTags(text);
+  }
+
+  let name = obj.name;
+  name = obj.source !== undefined ? name + " (" + obj.source + ")" : name;
+
+  return {
+    name: name,
+    proficiencies: proficiencies,
+    description: text,
+    sources: obj.source,
   };
 };

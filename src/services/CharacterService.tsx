@@ -225,8 +225,6 @@ export const buildCharacter = async (character: Char): Promise<BuildChar> => {
     .filter((q) => q !== undefined)
     .filter((q, idx) => currentBases.findIndex((g) => g.name === q.name) === idx);
 
-  console.log(currentBases);
-
   let [name, sources] = character.race.race.split("|");
   race = await recivePromiseByMultiAttribute("races", { name: name, sources: sources });
   [name, sources] = character.race.subrace.split("|");

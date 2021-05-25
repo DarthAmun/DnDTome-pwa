@@ -25,6 +25,8 @@ import {
   GiScrollUnfurled,
   GiDjinn,
   GiRollingDices,
+  GiBindle,
+  GiSherlockHolmes,
 } from "react-icons/gi";
 import { BiSelectMultiple } from "react-icons/bi";
 import { HiUserGroup } from "react-icons/hi";
@@ -124,6 +126,14 @@ const NavMenu = ({ open }: $Props) => {
               <GiBookshelf />
               <RightTooltip>Library</RightTooltip>
             </Link>
+            <Seperator />
+            <Link
+              to="/encounter-overview"
+              className={location.pathname === "/encounter-overview" ? "menuItemActiv" : ""}
+            >
+              <GiSwordClash />
+              <RightTooltip>Encounters</RightTooltip>
+            </Link>
           </LeftSide>
           <RightSide>
             <Link
@@ -146,6 +156,20 @@ const NavMenu = ({ open }: $Props) => {
             >
               <GiBackpack />
               <RightTooltip>Gear</RightTooltip>
+            </Link>{" "}
+            <Link
+              to="/feat-overview"
+              className={location.pathname === "/feat-overview" ? "menuItemActiv" : ""}
+            >
+              <GiBindle />
+              <RightTooltip>Feats</RightTooltip>
+            </Link>
+            <Link
+              to="/background-overview"
+              className={location.pathname === "/background-overview" ? "menuItemActiv" : ""}
+            >
+              <GiSherlockHolmes />
+              <RightTooltip>Backgrounds</RightTooltip>
             </Link>
             <Link
               to="/race-overview"
@@ -182,13 +206,6 @@ const NavMenu = ({ open }: $Props) => {
             >
               <FontAwesomeIcon icon={faDragon} />
               <RightTooltip>Monsters</RightTooltip>
-            </Link>
-            <Link
-              to="/encounter-overview"
-              className={location.pathname === "/encounter-overview" ? "menuItemActiv" : ""}
-            >
-              <GiSwordClash />
-              <RightTooltip>Encounters</RightTooltip>
             </Link>
           </RightSide>
         </MiddleSide>

@@ -115,7 +115,9 @@ const CharHeader = ({ char, isNpc }: $Props) => {
             })}
           <Prop>
             <PropTitle>Background:</PropTitle>
-            {char.background}
+            <MainLink onClick={() => history.push(`/background-detail/name/${char.background}`)}>
+              {char.background}
+            </MainLink>
           </Prop>
           <Prop>
             <PropTitle>Alignment:</PropTitle>
