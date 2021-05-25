@@ -71,6 +71,8 @@ import RandomTableTile from "../entities/random_tables/RandomTableTile";
 import { isRandomTable } from "../../data/RandomTable";
 import RandomTablesOptions from "./RandomTablesOptions";
 import { Dialog } from "../general_elements/Dialog";
+import FeatsOptions from "./FeatsOptions";
+import BackgroundsOptions from "./BackgrounsOptions";
 
 const Options = () => {
   const [activeTab, setTab] = useState<string>("General");
@@ -95,6 +97,8 @@ const Options = () => {
   const [groupAmount, setGroupAmount] = useState<number>(0);
   const [selectionAmount, setSelectionAmount] = useState<number>(0);
   const [randomTableAmount, setRandomTableAmount] = useState<number>(0);
+  const [featAmount, setFeatAmount] = useState<number>(0);
+  const [backgroundAmount, setBackgroundAmount] = useState<number>(0);
 
   const [reload, isReload] = useState<boolean>(true);
   const [data, setData] = useState<IEntity[] | IEntity>();
@@ -157,6 +161,12 @@ const Options = () => {
       });
       reciveCount("randomTables", (result: number) => {
         setRandomTableAmount(result);
+      });
+      reciveCount("feats", (result: number) => {
+        setFeatAmount(result);
+      });
+      reciveCount("backgrounds", (result: number) => {
+        setBackgroundAmount(result);
       });
       reciveAllPromise("chars").then((result: any[]) => {
         return result;
@@ -260,6 +270,8 @@ const Options = () => {
           "Spells",
           "Gears",
           "Magic Items",
+          "Feats",
+          "Backgrounds",
           "Monsters",
           "Races",
           "Classes",
@@ -299,6 +311,20 @@ const Options = () => {
       {activeTab === "Magic Items" && (
         <ItemsOptions
           amount={itemAmount}
+          triggerDeleteAll={triggerDeleteAll}
+          triggerDeleteByAttr={triggerDeleteByAttr}
+        />
+      )}
+      {activeTab === "Feats" && (
+        <FeatsOptions
+          amount={featAmount}
+          triggerDeleteAll={triggerDeleteAll}
+          triggerDeleteByAttr={triggerDeleteByAttr}
+        />
+      )}
+      {activeTab === "Backgrounds" && (
+        <BackgroundsOptions
+          amount={backgroundAmount}
           triggerDeleteAll={triggerDeleteAll}
           triggerDeleteByAttr={triggerDeleteByAttr}
         />

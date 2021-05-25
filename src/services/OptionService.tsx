@@ -260,6 +260,8 @@ export const exportAll = async (filename: string) => {
   let locations = await reciveAllPromise("locations");
   let events = await reciveAllPromise("events");
   let groups = await reciveAllPromise("groups");
+  let feats = await reciveAllPromise("feats");
+  let backgrounds = await reciveAllPromise("backgrounds");
 
   let all: any = {
     spells: spells,
@@ -281,6 +283,8 @@ export const exportAll = async (filename: string) => {
     locations: locations,
     events: events,
     groups: groups,
+    feats: feats,
+    backgrounds: backgrounds,
   };
 
   let contentType = "application/json;charset=utf-8;";

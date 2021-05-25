@@ -12,6 +12,8 @@ import {
   GiDjinn,
   GiBookshelf,
   GiDiceTwentyFacesTwenty,
+  GiBindle,
+  GiSherlockHolmes,
 } from "react-icons/gi";
 import {
   faMeteor,
@@ -69,6 +71,10 @@ const LinkCheck = ({ type }: $Props) => {
         return <GiBookshelf />;
       case "group":
         return <HiUserGroup />;
+      case "feat":
+        return <GiBindle />;
+      case "background":
+        return <GiSherlockHolmes />;
       case "dice":
         return <GiDiceTwentyFacesTwenty />;
       default:
