@@ -194,9 +194,11 @@ const ClasseView = ({ classe }: $Props) => {
                       <FeatureRow key={index}>
                         <FeatureProp>{featureSet.level}</FeatureProp>
                         <FeatureProp>
-                          {featureSet.features.map((feature) => {
-                            return feature.name + ", ";
-                          })}
+                          {!featureSet.isAbilityImprov &&
+                            featureSet.features.map((feature) => {
+                              return feature.name + ", ";
+                            })}
+                          {featureSet.isAbilityImprov && "Abilityscore Improvement or Feat"}
                         </FeatureProp>
                         {featureSet.bonis?.map((boni, index: number) => {
                           return <FeatureProp key={index}>{boni.value}</FeatureProp>;

@@ -62,7 +62,6 @@ import EventTile from "../entities/events/EventTile";
 import WorldTile from "../entities/worlds/WorldTile";
 import EventsOptions from "./EventsOptions";
 import WorldsOptions from "./WorldsOptions";
-import ImportField, { ImportModus } from "../form_elements/ImportField";
 import GroupTile from "../entities/groups/GroupTile";
 import GroupsOptions from "./GroupsOptions";
 import DiscordOptions from "./DiscordOptions";
@@ -73,6 +72,7 @@ import RandomTablesOptions from "./RandomTablesOptions";
 import { Dialog } from "../general_elements/Dialog";
 import FeatsOptions from "./FeatsOptions";
 import BackgroundsOptions from "./BackgrounsOptions";
+import ImportField, { ImportModus } from "../form_elements/ImportField";
 
 const Options = () => {
   const [activeTab, setTab] = useState<string>("General");

@@ -58,13 +58,13 @@ export const saveNew = (tableName: string, entity: IEntity, filename: string) =>
     });
 };
 
-export const saveNewFromList = (tableName: string, entities: IEntity[], filename: string) => {
+export const saveNewFromList = (tableName: string, entities: IEntity[]) => {
   const db = new MyAppDatabase();
   db.open()
     .then(async function () {
       const refinedEntities = (entities as IEntity[]).map((entity: IEntity) => {
         delete entity["id"];
-        return { ...entity, filename: filename };
+        return { ...entity, filename: entity.sources };
       });
       const prom = await db.table(tableName).bulkPut(refinedEntities);
       return prom;
@@ -502,6 +502,7 @@ export const deleteAllByAttrs = (tableName: string, attr: string, attrs: string[
 
 export const exportFilteredFromTable = (tableName: string, filters: Filter[], filename: string) => {
   reciveAllFiltered(tableName, filters, (all: IndexableType[]) => {
+    console.log(filters, all);
     const data = { [tableName]: all };
     let contentType = "application/json;charset=utf-8;";
     var a = document.createElement("a");

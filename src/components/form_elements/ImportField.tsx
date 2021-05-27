@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 
 import FileField from "./FileField";
@@ -54,12 +54,7 @@ const ImportField = ({ modus }: $Props) => {
           onChange={(file) => changeFile(file)}
         />
       </Files>
-      <Files>
-        {files &&
-          files.map((file: File, index: number) => (
-            <FileTile key={index} modus={modus} file={file} />
-          ))}
-      </Files>
+      <Files>{files && files.length > 0 && <FileTile modus={modus} files={files} />}</Files>
     </>
   );
 };
@@ -67,77 +62,20 @@ const ImportField = ({ modus }: $Props) => {
 export default ImportField;
 
 interface $FileProps {
-  file: File;
+  files: File[];
   modus: ImportModus;
 }
 
-const FileTile = ({ file, modus }: $FileProps) => {
+const FileTile = ({ files, modus }: $FileProps) => {
+  const [filesDone, setFilesDone] = useState<number>(0);
   const [succCount, setSucc] = useState<number>(0);
+  const [fails, setFails] = useState<any[]>([]);
   const [maxCount, setMax] = useState<number>(0);
+  const [listOfNewEntities, setListOfNewEntites] = useState<
+    { tableName: string; newEntitiy: IEntity }[]
+  >([]);
 
-  const make5eToolsEntity = (
-    key: string,
-    obj: any,
-    fileName: string,
-    json: any,
-    listOfNew: { tableName: string; newEntitiy: IEntity }[]
-  ) => {
-    if (key === "monster") {
-      const newMonster = makeMonster(obj);
-      if (newMonster.name !== "") listOfNew.push({ tableName: "monsters", newEntitiy: newMonster });
-    } else if (key === "spell") {
-      const newSpell = makeSpell(obj, fileName);
-      if (newSpell.name !== "") listOfNew.push({ tableName: "spells", newEntitiy: newSpell });
-    } else if (key === "item" || key === "baseitem") {
-      const newItem = makeItems(obj, fileName);
-      if (newItem.name !== "")
-        if (isGear(newItem)) {
-          listOfNew.push({ tableName: "gears", newEntitiy: newItem });
-        } else if (isItem(newItem)) {
-          listOfNew.push({ tableName: "items", newEntitiy: newItem });
-        }
-    } else if (key === "race") {
-      const newRace = makeRace(obj, fileName);
-      if (newRace.name !== "") {
-        listOfNew.push({ tableName: "races", newEntitiy: newRace });
-        if (obj._copy === undefined && obj.source !== "DMG") {
-          if (obj.subraces !== undefined) {
-            obj.subraces.forEach(async (subrace: any) => {
-              const newSubrace = makeSubrace(subrace, newRace, file.name);
-              listOfNew.push({ tableName: "subraces", newEntitiy: newSubrace });
-            });
-          }
-        }
-      }
-    } else if (key === "class") {
-      const newClass = makeClass(obj, json, fileName);
-      if (newClass.name !== "") {
-        listOfNew.push({ tableName: "classes", newEntitiy: newClass });
-        if (obj.subclasses !== undefined) {
-          obj.subclasses.forEach(async (subclass: any) => {
-            const newSubclass = makeSubclass(subclass, json, newClass.name, file.name);
-            listOfNew.push({ tableName: "subclasses", newEntitiy: newSubclass });
-          });
-        }
-      }
-    } else if (key === "subclass") {
-      if (obj.className !== undefined) {
-        const newSubclass = makeSubclass(obj, json, obj.className, file.name);
-        if (newSubclass.name !== "")
-          listOfNew.push({ tableName: "subclasses", newEntitiy: newSubclass });
-      }
-    } else if (key === "feat") {
-      const newFeat = makeFeat(obj, json, file.name);
-      if (newFeat.name !== "") listOfNew.push({ tableName: "feats", newEntitiy: newFeat });
-    } else if (key === "background") {
-      const newBackground = makeBackground(obj, json, file.name);
-      if (newBackground.name !== "")
-        listOfNew.push({ tableName: "backgrounds", newEntitiy: newBackground });
-    }
-    return listOfNew;
-  };
-
-  const convertTypes = (types: string[]): string[] => {
+  const convertTypes = useCallback((types: string[]): string[] => {
     let newTypes: string[] = [];
     if (types !== undefined && Array.isArray(types))
       newTypes = types.map((type: string) => {
@@ -171,66 +109,184 @@ const FileTile = ({ file, modus }: $FileProps) => {
         return "Unknown";
       });
     return newTypes;
-  };
+  }, []);
 
-  const make5eToolsSelections = (
-    value: any[],
-    json: any,
-    fileName: string,
-    listOfNew: { tableName: string; newEntitiy: IEntity }[]
-  ) => {
-    let selections: Selection[] = [];
-
-    value.forEach((obj: any) => {
-      convertTypes(obj.featureType).forEach((type: string) => {
-        if (type === "Unknown") type = fileName;
-        if (selections.filter((selc) => selc.name === type).length <= 0) {
-          selections.push({
-            name: type,
-            filename: fileName,
-            selectionOptions: [makeSelection(obj)],
-          });
-        } else {
-          selections = selections.map((selc) => {
-            if (selc.name === type) {
-              return { ...selc, selectionOptions: [...selc.selectionOptions, makeSelection(obj)] };
+  const make5eToolsEntity = useCallback(
+    (
+      key: string,
+      obj: any,
+      fileName: string,
+      json: any,
+      listOfNew: { tableName: string; newEntitiy: IEntity }[]
+    ) => {
+      let newList = [...listOfNew];
+      if (key === "monster") {
+        const newMonster = makeMonster(obj);
+        if (newMonster.name !== "") newList.push({ tableName: "monsters", newEntitiy: newMonster });
+      } else if (key === "spell") {
+        const newSpell = makeSpell(obj, fileName);
+        if (newSpell.name !== "") newList.push({ tableName: "spells", newEntitiy: newSpell });
+      } else if (key === "item" || key === "baseitem") {
+        const newItem = makeItems(obj, fileName);
+        if (newItem.name !== "")
+          if (isGear(newItem)) {
+            newList.push({ tableName: "gears", newEntitiy: newItem });
+          } else if (isItem(newItem)) {
+            newList.push({ tableName: "items", newEntitiy: newItem });
+          }
+      } else if (key === "race") {
+        const newRace = makeRace(obj, fileName);
+        if (newRace.name !== "") {
+          newList.push({ tableName: "races", newEntitiy: newRace });
+          if (obj._copy === undefined && obj.source !== "DMG") {
+            if (obj.subraces !== undefined) {
+              obj.subraces.forEach(async (subrace: any) => {
+                const newSubrace = makeSubrace(subrace, newRace, fileName);
+                newList.push({ tableName: "subraces", newEntitiy: newSubrace });
+              });
             }
-            return selc;
-          });
-        }
-      });
-    });
-
-    selections.forEach((selc: Selection) => {
-      listOfNew.push({ tableName: "selections", newEntitiy: selc });
-    });
-    return listOfNew;
-  };
-
-  const scanImportFile = async (json: any, fileName: string) => {
-    console.log("Start 5eTools Json interpreting " + fileName);
-
-    let listOfNew: { tableName: string; newEntitiy: IEntity }[] = [];
-
-    let newMax: number = 0;
-    for (const [key, value] of Object.entries(json)) {
-      if (Array.isArray(value)) {
-        newMax += value.length;
-        if (modus === ImportModus.NORMAL) {
-          // eslint-disable-next-line
-          value.forEach((obj: any) => listOfNew.push({ tableName: key, newEntitiy: obj }));
-        } else if (modus === ImportModus.ETOOLS) {
-          if (key === "optionalfeature") {
-            make5eToolsSelections(value, json, fileName, listOfNew);
-          } else {
-            // eslint-disable-next-line
-            value.forEach((obj: any) => make5eToolsEntity(key, obj, fileName, json, listOfNew));
           }
         }
+      } else if (key === "class") {
+        const newClass = makeClass(obj, json, fileName);
+        if (newClass.name !== "") {
+          newList.push({ tableName: "classes", newEntitiy: newClass });
+          if (obj.subclasses !== undefined) {
+            obj.subclasses.forEach(async (subclass: any) => {
+              const newSubclass = makeSubclass(subclass, json, newClass.name, fileName);
+              newList.push({ tableName: "subclasses", newEntitiy: newSubclass });
+            });
+          }
+        }
+      } else if (key === "subclass") {
+        if (obj.className !== undefined) {
+          const newSubclass = makeSubclass(obj, json, obj.className, fileName);
+          if (newSubclass.name !== "")
+            newList.push({ tableName: "subclasses", newEntitiy: newSubclass });
+        }
+      } else if (key === "feat") {
+        const newFeat = makeFeat(obj, json, fileName);
+        if (newFeat.name !== "") newList.push({ tableName: "feats", newEntitiy: newFeat });
+      } else if (key === "background") {
+        const newBackground = makeBackground(obj, json, fileName);
+        if (newBackground.name !== "")
+          newList.push({ tableName: "backgrounds", newEntitiy: newBackground });
+      }
+      return newList;
+    },
+    []
+  );
+
+  const make5eToolsSelections = useCallback(
+    (value: any[], fileName: string, listOfNew: { tableName: string; newEntitiy: IEntity }[]) => {
+      let newList = [...listOfNew];
+      let selections: Selection[] = [];
+
+      value.forEach((obj: any) => {
+        convertTypes(obj.featureType).forEach((type: string) => {
+          if (type === "Unknown") type = fileName;
+          if (selections.filter((selc) => selc.name === type).length <= 0) {
+            selections.push({
+              name: type,
+              filename: fileName,
+              selectionOptions: [makeSelection(obj)],
+            });
+          } else {
+            selections = selections.map((selc) => {
+              if (selc.name === type) {
+                return {
+                  ...selc,
+                  selectionOptions: [...selc.selectionOptions, makeSelection(obj)],
+                };
+              }
+              return selc;
+            });
+          }
+        });
+      });
+
+      selections.forEach((selc: Selection) => {
+        newList.push({ tableName: "selections", newEntitiy: selc });
+      });
+      return newList;
+    },
+    [convertTypes]
+  );
+
+  const scanImportFile = (json: any, filename: string) => {
+    for (const [key, value] of Object.entries(json)) {
+      if (Array.isArray(value)) {
+        setMax((m) => m + value.length);
+        let count: number = 0;
+        if (modus === ImportModus.NORMAL) {
+          // eslint-disable-next-line
+          value.forEach((obj: IEntity) => {
+            count++;
+            setListOfNewEntites((l) => [...l, { tableName: key, newEntitiy: obj }]);
+          });
+        } else if (modus === ImportModus.ETOOLS) {
+          if (key === "optionalfeature") {
+            setListOfNewEntites((l) => {
+              let list = make5eToolsSelections(value, filename, l);
+              if (list.length - l.length === 0)
+                setFails((f) =>
+                  f.concat(
+                    value.map((val) => {
+                      return { obj: val, filename: filename };
+                    })
+                  )
+                );
+              else {
+                let selc = list[list.length - 1].newEntitiy as Selection;
+                count += selc.selectionOptions.length;
+              }
+              return list;
+            });
+          } else {
+            // eslint-disable-next-line
+            value.forEach((obj: any) => {
+              setListOfNewEntites((l) => {
+                let list = make5eToolsEntity(key, obj, filename, json, l);
+                if (list.length - l.length === 0)
+                  setFails((f) => f.concat({ obj: obj, filename: filename }));
+                else count += list.length - l.length;
+                return list;
+              });
+            });
+          }
+        }
+        setSucc((s) => s + count);
       }
     }
-    setMax(newMax);
+    setFilesDone((f) => f + 1);
+  };
 
+  useEffect(() => {
+    setFilesDone(0);
+    setMax(0);
+    setSucc(0);
+    setFails([]);
+    setListOfNewEntites([]);
+
+    console.log("-+ Start Filereader +-");
+    files.forEach((file) => {
+      let fileReader = new FileReader();
+      fileReader.onloadend = function () {
+        const content = fileReader.result;
+        if (content !== null) {
+          let json = JSON.parse(content.toString());
+          console.log("Json loaded from " + file.name);
+          scanImportFile(json, file.name);
+          console.log("---------");
+        }
+      };
+      fileReader.readAsText(file);
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [files]);
+
+  const save = useCallback(async () => {
+    let listOfNew = [...listOfNewEntities];
     while (listOfNew.length > 0) {
       let newTableName = listOfNew[0].tableName;
       let bulkList: IEntity[] = listOfNew
@@ -238,37 +294,39 @@ const FileTile = ({ file, modus }: $FileProps) => {
         .map((entity: { tableName: string; newEntitiy: IEntity }) => {
           return entity.newEntitiy;
         });
-      await saveNewFromList(newTableName, bulkList, fileName);
+      await saveNewFromList(newTableName, bulkList);
       listOfNew = listOfNew.filter((entity) => entity.tableName !== newTableName);
-      setSucc(newMax - listOfNew.length);
     }
-  };
+  }, [listOfNewEntities]);
 
   useEffect(() => {
-    console.log("Start Filereader " + file.name);
-    let fileReader = new FileReader();
-    fileReader.onloadend = function () {
-      const content = fileReader.result;
-      if (content !== null) {
-        let json = JSON.parse(content.toString());
-        console.log("Json loaded from " + file.name);
-        scanImportFile(json, file.name);
-      }
-    };
-    fileReader.readAsText(file);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [file]);
+    if (filesDone === files.length) {
+      save();
+    }
+  }, [filesDone, files.length, save]);
 
   return (
     <FileWrapper>
-      {file.name} {succCount}/{maxCount}
+      Files done: {filesDone}/{files.length} | Found entities:{maxCount} (Failed entities:{" "}
+      {fails.length})
       <ProgressBar
-        completed={Math.round((succCount / maxCount) * 100)}
+        completed={Math.round((filesDone / files.length) * 100)}
         isLabelVisible={false}
         bgColor={"#F55C5C"}
         height={"5px"}
         margin={"5px"}
       />
+      {fails &&
+        fails.length > 0 &&
+        filesDone === files.length &&
+        fails.map((fail) => {
+          console.log(fail);
+          return (
+            <Fails>
+              {fail.filename} - {fail.obj.name} ... failed.
+            </Fails>
+          );
+        })}
     </FileWrapper>
   );
 };
@@ -279,6 +337,10 @@ const Files = styled.div`
 
 const FileWrapper = styled.div`
   width: clac(100% - 20px);
-  height: 50px;
   padding: 10px;
+`;
+
+const Fails = styled.div`
+  width: clac(100% - 20px);
+  border-bottom: solid 1px rgba(0, 0, 0, 0.1);
 `;

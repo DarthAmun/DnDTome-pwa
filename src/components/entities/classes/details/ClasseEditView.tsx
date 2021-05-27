@@ -44,7 +44,7 @@ const ClasseEditView = ({ classe, onEdit }: $Props) => {
   const onFeatureSetChange = (
     oldFeature: FeatureSet,
     field: string,
-    value: string | number | any[]
+    value: string | number | boolean | any[]
   ) => {
     let features = classe.featureSets.map((featureSet: FeatureSet) => {
       if (featureSet === oldFeature) {
@@ -275,6 +275,7 @@ const ClasseEditView = ({ classe, onEdit }: $Props) => {
             features: [],
             bonis: classe.featureSets[classe.featureSets.length - 1].bonis,
             spellslots: classe.featureSets[classe.featureSets.length - 1].spellslots,
+            isAbilityImprov: false,
           },
         ],
       });
@@ -288,6 +289,7 @@ const ClasseEditView = ({ classe, onEdit }: $Props) => {
             features: [],
             bonis: [],
             spellslots: [],
+            isAbilityImprov: false,
           },
         ],
       });
@@ -347,6 +349,11 @@ const ClasseEditView = ({ classe, onEdit }: $Props) => {
                 onChange={(level) => onFeatureSetChange(featureSet, "level", level)}
               />
               <IconButton icon={faTrash} onClick={() => removeFeatureSet(index)} />
+              <CheckField
+                value={featureSet.isAbilityImprov}
+                label="is Ability Improvement?"
+                onChange={(value) => onFeatureSetChange(featureSet, "isAbilityImprov", value)}
+              />
               <FeatureNumberArray
                 values={featureSet.spellslots ? featureSet.spellslots : []}
                 label="Spellslots"

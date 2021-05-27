@@ -1034,22 +1034,25 @@ export const makeClass = (obj: any, json: any, fileName: string): Class => {
       text = replaceTags(text);
 
       if (text !== undefined && text !== null && text !== "") {
+        let isAbilityImprov: boolean = false;
         if (featureParts[0].toLocaleLowerCase() === "ability score improvement") {
-          text = "";
+          isAbilityImprov = true;
         }
         if (featureSets[+featureParts[3] - 1] === undefined) {
           featureSets.push(
             new FeatureSet(
               +featureParts[3],
-              [new Feature(featureParts[0], text, "", 0, [], undefined)],
+              isAbilityImprov ? [] : [new Feature(featureParts[0], text, "", 0, [], undefined)],
               [],
-              []
+              [],
+              isAbilityImprov
             )
           );
         } else {
           featureSets[+featureParts[3] - 1].features.push(
             new Feature(featureParts[0], text, "", 0, [], undefined)
           );
+          featureSets[+featureParts[3] - 1].isAbilityImprov = isAbilityImprov;
         }
       }
     });
@@ -1140,7 +1143,7 @@ const recursiveTextAdder = (
 ): { text: string; additional: string[] } => {
   let newText: string = text;
   let additional: string[] = [];
-  if (entries !== undefined) {
+  if (entries !== undefined && entries !== null) {
     if (typeof entries == "string" || typeof entries == "number") {
       newText += entries + "";
     } else if (Array.isArray(entries)) {
@@ -1157,7 +1160,7 @@ const recursiveTextAdder = (
       additional.concat(additional);
     } else if (entries.items !== undefined) {
       entries.items.forEach((item: any) => {
-        if (typeof entries == "string" || typeof entries == "number") {
+        if (typeof item == "string" || typeof item == "number") {
           newText += "\r\n• " + item;
         } else if (item.type !== undefined && item.type === "item") {
           newText += "\r\n• " + item.name + ": " + item.entry;

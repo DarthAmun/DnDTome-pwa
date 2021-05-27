@@ -37,7 +37,8 @@ const P2PEncounter = ({ encounter, isHost, onEdit }: $Props) => {
         });
         conn.on("data", function (data) {
           var newData = JSON.parse(data);
-          if (encounter !== newData && encounter?.name === newData.name) {
+          // if (encounter !== newData && encounter?.name === newData.name) {
+          if (encounter !== data) {
             onEdit(newData);
           }
         });
@@ -58,7 +59,8 @@ const P2PEncounter = ({ encounter, isHost, onEdit }: $Props) => {
       });
       conn.on("data", function (data) {
         var newData = JSON.parse(data);
-        if (encounter !== newData && encounter?.name === newData.name) {
+        // if (encounter !== newData && encounter?.name === newData.name) {
+        if (encounter !== data) {
           setChanged(true);
           onEdit(newData);
         }

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Char from "../../../../data/chars/Char";
 import Class from "../../../../data/classes/Class";
-import { reciveAllFiltered } from "../../../../services/DatabaseService";
+import { recivePromiseByMultiAttribute } from "../../../../services/DatabaseService";
 
 import IconButton from "../../../form_elements/IconButton";
 import { faCheckCircle, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
@@ -11,6 +11,7 @@ import FormatedText from "../../../general_elements/FormatedText";
 import CheckField from "../../../form_elements/CheckField";
 import EnumField from "../../../form_elements/EnumField";
 import TextButton from "../../../form_elements/TextButton";
+import ClassSet from "../../../../data/chars/ClassSet";
 
 interface $Props {
   char: Char;
@@ -22,21 +23,12 @@ const CharLabEquipment = ({ char, onChange, completed }: $Props) => {
   const [classes, setClasses] = useState<Class[]>([]);
 
   useEffect(() => {
-    reciveAllFiltered(
-      "classes",
-      [
-        {
-          fieldName: "name",
-          value: char.classes.map((classe) => {
-            return classe.classe;
-          }),
-          sort: 0,
-        },
-      ],
-      (results: any[]) => {
-        setClasses(results);
-      }
-    );
+    let classList: Promise<Class>[] = [];
+    char.classes.forEach((classe: ClassSet) => {
+      let [name, sources] = classe.classe.split("|");
+      classList.push(recivePromiseByMultiAttribute("classes", { name: name, sources: sources }));
+    });
+    Promise.all(classList).then(setClasses);
   }, [char.classes]);
 
   const removeItem = (oldItem: {

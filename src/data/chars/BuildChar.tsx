@@ -1,6 +1,7 @@
 import Class from "../classes/Class";
 import FeatureSet from "../classes/FeatureSet";
 import Subclass from "../classes/Subclass";
+import Feat from "../Feat";
 import Gear from "../Gear";
 import Item from "../Item";
 import Modifier from "../Modifier";
@@ -22,6 +23,7 @@ export default class BuildChar {
   race: Race;
   subrace: Subrace;
   raceFeatures: Trait[];
+  feats: Feat[];
   gears: {
     gear: Gear;
     origin: string;
@@ -51,6 +53,7 @@ export default class BuildChar {
     race?: Race,
     subrace?: Subrace,
     raceFeatures?: Trait[],
+    feats?: Feat[],
     gears?: {
       gear: Gear;
       origin: string;
@@ -80,6 +83,7 @@ export default class BuildChar {
     this.race = race || new Race();
     this.subrace = subrace || new Subrace();
     this.raceFeatures = raceFeatures || [];
+    this.feats = feats || [];
     this.gears = gears || [];
     this.items = items || [];
     this.spells = spells || [];

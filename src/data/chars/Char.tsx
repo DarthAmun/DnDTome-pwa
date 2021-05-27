@@ -47,6 +47,7 @@ export default class Char implements IEntity {
   int: number;
   wis: number;
   cha: number;
+  abilityImprovs: { origin: string; level: number; s1: string; s2: string; feat: string }[];
   saves: Saves;
   actions: string;
   profsLangs: string;
@@ -101,6 +102,7 @@ export default class Char implements IEntity {
     int?: number,
     wis?: number,
     cha?: number,
+    abilityImprovs?: { origin: string; level: number; s1: string; s2: string; feat: string }[],
     saves?: Saves,
     actions?: string,
     profsLangs?: string,
@@ -139,6 +141,7 @@ export default class Char implements IEntity {
     this.int = int || 0;
     this.wis = wis || 0;
     this.cha = cha || 0;
+    this.abilityImprovs = abilityImprovs || [];
     this.saves = saves || new Saves();
     this.actions = actions || "";
     this.profsLangs = profsLangs || "";

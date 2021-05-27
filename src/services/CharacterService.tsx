@@ -1,3 +1,4 @@
+import Background from "../data/Background";
 import BuildChar from "../data/chars/BuildChar";
 import Char from "../data/chars/Char";
 import ClassSet from "../data/chars/ClassSet";
@@ -5,6 +6,7 @@ import Boni from "../data/classes/Boni";
 import Class from "../data/classes/Class";
 import FeatureSet from "../data/classes/FeatureSet";
 import Subclass from "../data/classes/Subclass";
+import Feat from "../data/Feat";
 import Gear from "../data/Gear";
 import Item from "../data/Item";
 import Modifier, { ModifierOperator } from "../data/Modifier";
@@ -153,6 +155,8 @@ export const buildCharacter = async (character: Char): Promise<BuildChar> => {
   let race: Race;
   let subrace: Subrace;
   let raceFeatures: Trait[] = [];
+  let feats: Feat[] = [];
+  let background: Background;
   let gears: {
     gear: Gear;
     origin: string;
@@ -179,6 +183,7 @@ export const buildCharacter = async (character: Char): Promise<BuildChar> => {
   let baseList: Promise<Gear>[] = [];
   let monsterList: Promise<Monster>[] = [];
   let spellList: Promise<Spell>[] = [];
+  let featList: Promise<Feat>[] = [];
 
   character.classes.forEach((classe) => {
     let [name, sources] = classe.classe.split("|");
@@ -201,6 +206,12 @@ export const buildCharacter = async (character: Char): Promise<BuildChar> => {
     let [name, sources] = spell.split("|");
     spellList.push(recivePromiseByMultiAttribute("spells", { name: name, sources: sources }));
   });
+  character.abilityImprovs?.forEach((a) => {
+    if (a.feat !== "") {
+      let [name, sources] = a.feat.split("|");
+      featList.push(recivePromiseByMultiAttribute("feats", { name: name, sources: sources }));
+    }
+  });
 
   let currentItems = await Promise.all(itemList);
   currentItems.forEach((item) => {
@@ -218,6 +229,7 @@ export const buildCharacter = async (character: Char): Promise<BuildChar> => {
   subclasses = await Promise.all(subclassList);
   monsters = await Promise.all(monsterList);
   spells = await Promise.all(spellList);
+  feats = await Promise.all(featList);
   let currentGears = await Promise.all(gearList);
   let currentBases = await Promise.all(baseList);
 
@@ -229,6 +241,8 @@ export const buildCharacter = async (character: Char): Promise<BuildChar> => {
   race = await recivePromiseByMultiAttribute("races", { name: name, sources: sources });
   [name, sources] = character.race.subrace.split("|");
   subrace = await recivePromiseByMultiAttribute("subraces", { name: name, sources: sources });
+  [name, sources] = character.background.split("|");
+  background = await recivePromiseByMultiAttribute("backgrounds", { name: name, sources: sources });
 
   classes.forEach((classe: Class) => {
     if (classe !== undefined) {
@@ -316,30 +330,54 @@ export const buildCharacter = async (character: Char): Promise<BuildChar> => {
   });
   console.timeEnd("load");
 
-  console.time("modifier");
-  let modifiers: Modifier[] = [];
-  gears.forEach((gear) => {
-    modifiers = modifiers.concat(extractModifier(gear.gear.description, "Gear: " + gear.origin));
-  });
-  items.forEach((item) => {
-    modifiers = modifiers.concat(
-      extractModifier(item.item.description, "Magic Item: " + item.origin)
-    );
-  });
-  raceFeatures.forEach((trait) => {
-    modifiers = modifiers.concat(extractModifier(trait.text, "Race Feature: " + trait.name));
-  });
-  classFeatures.forEach((featureSet) => {
-    featureSet.features.forEach((feature) => {
-      modifiers = modifiers.concat(extractModifier(feature.text, "Class Feature: " + feature.name));
-    });
-  });
-  console.timeEnd("modifier");
-
   items = items.filter((item) => item !== undefined);
   gears = gears.filter((gear) => gear !== undefined);
   spells = spells.filter((spell) => spell !== undefined);
   monsters = monsters.filter((monster) => monster !== undefined);
+  feats = feats.filter((feat) => feat !== undefined);
+
+  console.time("modifier");
+  let modifiers: Modifier[] = [];
+  gears?.forEach((gear) => {
+    modifiers = modifiers.concat(extractModifier(gear.gear.description, "Gear: " + gear.origin));
+  });
+  items?.forEach((item) => {
+    modifiers = modifiers.concat(
+      extractModifier(item.item.description, "Magic Item: " + item.origin)
+    );
+  });
+  raceFeatures?.forEach((trait) => {
+    modifiers = modifiers.concat(extractModifier(trait.text, "Race Feature: " + trait.name));
+  });
+  classFeatures?.forEach((featureSet) => {
+    featureSet.features.forEach((feature) => {
+      modifiers = modifiers.concat(extractModifier(feature.text, "Class Feature: " + feature.name));
+    });
+  });
+  character.abilityImprovs
+    ?.filter((a) => a.level <= level)
+    .forEach((a) => {
+      if (a.feat === "") {
+        modifiers = modifiers.concat(
+          extractModifier(
+            `{{${a.s1}+1}}{{${a.s2}+1}}`,
+            "Ability improvement from " + a.origin + " on level " + a.level + ": "
+          )
+        );
+      }
+    });
+  feats?.forEach((f) => {
+    modifiers = modifiers.concat(extractModifier(f.description, "Feat: " + f.name));
+  });
+  if (background !== undefined) {
+    modifiers = modifiers.concat(
+      extractModifier(background.description, "Background: " + background.name)
+    );
+    modifiers = modifiers.concat(
+      extractModifier(background.proficiencies, "Background: " + background.name)
+    );
+  }
+  console.timeEnd("modifier");
 
   console.timeEnd("build Character");
   return new BuildChar(
@@ -352,6 +390,7 @@ export const buildCharacter = async (character: Char): Promise<BuildChar> => {
     race,
     subrace,
     raceFeatures,
+    feats,
     gears,
     items,
     spells,

@@ -19,11 +19,7 @@ import FeatureSet from "../../../../data/classes/FeatureSet";
 import Subclass from "../../../../data/classes/Subclass";
 import Selection from "../../../../data/Selection";
 import { calcLevel, calcProf } from "../../../../services/CharacterService";
-import {
-  reciveAll,
-  recivePromiseByAttribute,
-  recivePromiseByMultiAttribute,
-} from "../../../../services/DatabaseService";
+import { reciveAll, recivePromiseByMultiAttribute } from "../../../../services/DatabaseService";
 import AutoStringField from "../../../form_elements/AutoStringField";
 import CheckField from "../../../form_elements/CheckField";
 import DataSelectField from "../../../form_elements/DataSelectField";
@@ -144,17 +140,80 @@ const CharEditView = ({ character, onEdit, isNpc }: $Props) => {
       featureCount: number;
       className: string;
     }[] = [];
+    let newAbilityImprovs: {
+      origin: string;
+      level: number;
+      s1: string;
+      s2: string;
+      feat: string;
+    }[] = [];
     if (character !== undefined) {
       let classes: Class[] = [];
       let subclasses: Subclass[] = [];
       let classList: Promise<Class>[] = [];
       let subclassList: Promise<Subclass>[] = [];
       character.classes.forEach((classe) => {
-        classList.push(recivePromiseByAttribute("classes", "name", classe.classe));
-        subclassList.push(recivePromiseByAttribute("subclasses", "name", classe.subclasse));
+        let [name, sources] = classe.classe.split("|");
+        classList.push(recivePromiseByMultiAttribute("classes", { name: name, sources: sources }));
+        [name, sources] = classe.subclasse.split("|");
+        subclassList.push(
+          recivePromiseByMultiAttribute("subclasses", { name: name, sources: sources })
+        );
       });
       classes = await Promise.all(classList);
       subclasses = await Promise.all(subclassList);
+
+      character.classes?.forEach((classe) => {
+        classes?.forEach((c) => {
+          if (classe.classe === c.name + "|" + c.sources) {
+            c?.featureSets.forEach((featureSet: FeatureSet) => {
+              if (featureSet.isAbilityImprov && classe.level >= featureSet.level) {
+                let found: boolean = false;
+                character.abilityImprovs?.forEach((a) => {
+                  if (a.origin === c.name + "|" + c.sources && featureSet.level === a.level) {
+                    newAbilityImprovs.push(a);
+                    found = true;
+                  }
+                });
+                if (!found) {
+                  newAbilityImprovs.push({
+                    origin: c.name + "|" + c.sources,
+                    level: featureSet.level,
+                    s1: "str",
+                    s2: "str",
+                    feat: "",
+                  });
+                }
+              }
+            });
+          }
+        });
+      });
+
+      // if (featureSet.isAbilityImprov) {
+      //   character.classes.forEach((c) => {
+      //     if (c.classe === classe.name + "|" + classe.sources && c.level >= featureSet.level) {
+      //       let found: boolean = false;
+      //       character.abilityImprovs?.forEach((a) => {
+      //         if (
+      //           featureSet.level === a.level &&
+      //           classe.name + "|" + classe.sources === a.origin
+      //         ) {
+      //           found = true;
+      //         }
+      //       });
+      //       if (!found) {
+      //         newAbilityImprovs.push({
+      //           origin: classe.name + "|" + classe.sources,
+      //           level: featureSet.level,
+      //           s1: "str",
+      //           s2: "str",
+      //           feat: "",
+      //         });
+      //       }
+      //     }
+      //   });
+      // }
 
       classes.forEach((classe: Class) => {
         classe?.featureSets.forEach((featureSet: FeatureSet) => {
@@ -207,7 +266,12 @@ const CharEditView = ({ character, onEdit, isNpc }: $Props) => {
         });
       });
     }
-    let newChar = { ...character, activeSelections: newActiveSelections };
+    console.log(newAbilityImprovs);
+    let newChar = {
+      ...character,
+      activeSelections: newActiveSelections,
+      abilityImprovs: newAbilityImprovs,
+    };
 
     return new Promise((resolve, reject) => {
       if (newChar !== undefined) resolve(newChar);

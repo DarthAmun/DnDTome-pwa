@@ -44,6 +44,8 @@ const LinkCheck = ({ type }: $Props) => {
         return <GiWomanElfFace />;
       case "class":
       case "subclass":
+      case "classe":
+      case "subclasse":
         return <GiPlagueDoctorProfile />;
       case "selection":
         return <BiSelectMultiple />;
