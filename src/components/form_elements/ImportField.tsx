@@ -68,7 +68,6 @@ interface $FileProps {
 
 const FileTile = ({ files, modus }: $FileProps) => {
   const [filesDone, setFilesDone] = useState<number>(0);
-  const [succCount, setSucc] = useState<number>(0);
   const [fails, setFails] = useState<any[]>([]);
   const [maxCount, setMax] = useState<number>(0);
   const [listOfNewEntities, setListOfNewEntites] = useState<
@@ -217,11 +216,9 @@ const FileTile = ({ files, modus }: $FileProps) => {
     for (const [key, value] of Object.entries(json)) {
       if (Array.isArray(value)) {
         setMax((m) => m + value.length);
-        let count: number = 0;
         if (modus === ImportModus.NORMAL) {
           // eslint-disable-next-line
           value.forEach((obj: IEntity) => {
-            count++;
             setListOfNewEntites((l) => [...l, { tableName: key, newEntitiy: obj }]);
           });
         } else if (modus === ImportModus.ETOOLS) {
@@ -236,10 +233,6 @@ const FileTile = ({ files, modus }: $FileProps) => {
                     })
                   )
                 );
-              else {
-                let selc = list[list.length - 1].newEntitiy as Selection;
-                count += selc.selectionOptions.length;
-              }
               return list;
             });
           } else {
@@ -249,13 +242,11 @@ const FileTile = ({ files, modus }: $FileProps) => {
                 let list = make5eToolsEntity(key, obj, filename, json, l);
                 if (list.length - l.length === 0)
                   setFails((f) => f.concat({ obj: obj, filename: filename }));
-                else count += list.length - l.length;
                 return list;
               });
             });
           }
         }
-        setSucc((s) => s + count);
       }
     }
     setFilesDone((f) => f + 1);
@@ -264,7 +255,6 @@ const FileTile = ({ files, modus }: $FileProps) => {
   useEffect(() => {
     setFilesDone(0);
     setMax(0);
-    setSucc(0);
     setFails([]);
     setListOfNewEntites([]);
 

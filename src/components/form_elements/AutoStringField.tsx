@@ -71,8 +71,10 @@ const AutoStringField = ({
       console.time("search");
       setTerm(searchTerm);
       if (searchTerm.length > 2) {
+        console.log(searchTerm);
         let newOptions = allOptions
           .filter((option) => {
+            console.log(option.name.toLowerCase().startsWith(searchTerm.toLowerCase()));
             return option.name.toLowerCase().startsWith(searchTerm.toLowerCase());
           })
           .sort(

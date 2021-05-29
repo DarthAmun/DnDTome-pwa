@@ -4,10 +4,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import Npc from "../../../../data/campaign/Npc";
+import BuildChar from "../../../../data/chars/BuildChar";
 import Char from "../../../../data/chars/Char";
 import { useWebhook } from "../../../../hooks/webhookHook";
 import { recalcClasses } from "../../../../services/CharacterService";
 import { sendEmbedMessage } from "../../../../services/DiscordService";
+import { updateWithCallback } from "../../../../services/DatabaseService";
 import TextButton from "../../../form_elements/TextButton";
 import FormatedText from "../../../general_elements/FormatedText";
 import P2PSender from "../../../p2p/P2PSender";
@@ -58,6 +60,17 @@ const NpcView = ({ npc }: $Props) => {
     }
     return "";
   }, [npc]);
+
+  const saveChar = (obj: BuildChar) => {
+    recalcClasses(obj.oldCharacter).then((updatedChar) => {
+      setCharacter(updatedChar);
+      let newNpc = { ...npc };
+      newNpc.char = updatedChar;
+      updateWithCallback("npcs", newNpc, (data: number) => {
+        console.log(data);
+      });
+    });
+  };
 
   return (
     <CenterWrapper>
@@ -114,7 +127,7 @@ const NpcView = ({ npc }: $Props) => {
       )}
       {npc.char && updatedChar && (
         <View>
-          <CharView character={updatedChar} modifications={true} isNpc />
+          <CharView character={updatedChar} modifications={true} saveChar={saveChar} isNpc />
         </View>
       )}
     </CenterWrapper>

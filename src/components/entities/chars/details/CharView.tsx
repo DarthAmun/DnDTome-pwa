@@ -13,7 +13,7 @@ import IEntity from "../../../../data/IEntity";
 import Modifier from "../../../../data/Modifier";
 import Trait from "../../../../data/races/Trait";
 import { applyMods, buildCharacter } from "../../../../services/CharacterService";
-import { reciveAllFilteredPromise, saveNew, update } from "../../../../services/DatabaseService";
+import { reciveAllFilteredPromise, saveNew } from "../../../../services/DatabaseService";
 import { exportPdf } from "../../../../services/PdfService";
 import AutoStringField from "../../../form_elements/AutoStringField";
 import SingleSelectField from "../../../form_elements/SingleSelectField";
@@ -34,10 +34,11 @@ import CharSpell from "./detail_components/CharSpells";
 interface $Props {
   character: Char;
   modifications: boolean;
+  saveChar: (obj: BuildChar) => void;
   isNpc?: boolean;
 }
 
-const CharView = ({ character, modifications, isNpc }: $Props) => {
+const CharView = ({ character, modifications, saveChar, isNpc }: $Props) => {
   const [send, setSend] = useState<boolean>(false);
   const [buildChar, setBuildChar] = useState<BuildChar>(new BuildChar());
   const [loading, setLoading] = useState<boolean>(true);
@@ -61,29 +62,27 @@ const CharView = ({ character, modifications, isNpc }: $Props) => {
     findAllItems(["feats"]);
   }, [findAllItems]);
 
-  useEffect(() => {
-    console.log(allOptions);
-  }, [allOptions]);
+  const rebuildChar = useCallback(
+    (char: Char) => {
+      buildCharacter(char).then(async (buildChar) => {
+        const newBuildChar = await applyMods(buildChar, modifications);
+        let newTabs = ["General", "Combat", "Classes", "Race"];
+        if (newBuildChar.feats.length > 0) newTabs.push("Feats");
+        if (newBuildChar.items.length > 0) newTabs.push("Items");
+        else if (newBuildChar.gears.length > 0) newTabs.push("Items");
+        if (newBuildChar.spells.length > 0) newTabs.push("Spells");
+        if (newBuildChar.monsters.length > 0) newTabs.push("Monsters");
+        setTabs([...newTabs, "Notes", "Modifications"]);
+        setBuildChar(newBuildChar);
+        setLoading(false);
+      });
+    },
+    [modifications]
+  );
 
   useEffect(() => {
-    buildCharacter(character).then(async (buildChar) => {
-      const newBuildChar = await applyMods(buildChar, modifications);
-      let newTabs = ["General", "Combat", "Classes", "Race"];
-      if (newBuildChar.feats.length > 0) newTabs.push("Feats");
-      if (newBuildChar.items.length > 0) newTabs.push("Items");
-      else if (newBuildChar.gears.length > 0) newTabs.push("Items");
-      if (newBuildChar.spells.length > 0) newTabs.push("Spells");
-      if (newBuildChar.monsters.length > 0) newTabs.push("Monsters");
-      setTabs([...newTabs, "Notes", "Modifications"]);
-      setBuildChar(newBuildChar);
-      setLoading(false);
-    });
-  }, [character, setBuildChar, modifications, buildChar.oldCharacter]);
-
-  const saveChar = useCallback((char: BuildChar) => {
-    setBuildChar(char);
-    update("chars", char.character);
-  }, []);
+    rebuildChar(character);
+  }, [character, setBuildChar, modifications, rebuildChar]);
 
   const makeNpcCopy = () => {
     let newNpc = new Npc(1, character.name, character.pic, character.picBase64, character);
@@ -103,7 +102,7 @@ const CharView = ({ character, modifications, isNpc }: $Props) => {
 
   const onCurrencyBoniChange = useCallback(
     (oldBoni: { origin: string; value: number; max: number }, value: number) => {
-      let newBonis = buildChar.character.currencyBonis.map(
+      let newBonis = buildChar.oldCharacter.currencyBonis.map(
         (boni: { origin: string; value: number; max: number }) => {
           if (boni === oldBoni) {
             return { ...boni, value: value };
@@ -112,7 +111,10 @@ const CharView = ({ character, modifications, isNpc }: $Props) => {
           }
         }
       );
-      saveChar({ ...buildChar, character: { ...buildChar.character, currencyBonis: newBonis } });
+      saveChar({
+        ...buildChar,
+        oldCharacter: { ...buildChar.oldCharacter, currencyBonis: newBonis },
+      });
     },
     [buildChar, saveChar]
   );
@@ -129,7 +131,7 @@ const CharView = ({ character, modifications, isNpc }: $Props) => {
       name: string,
       value: string
     ) => {
-      let newAbilityImprovs = buildChar.character.abilityImprovs.map(
+      let newAbilityImprovs = buildChar.oldCharacter.abilityImprovs.map(
         (set: { origin: string; level: number; s1: string; s2: string; feat: string }) => {
           if (abilityImprov.level === set.level && abilityImprov.origin === set.origin) {
             return { ...set, [name]: value };
@@ -140,7 +142,7 @@ const CharView = ({ character, modifications, isNpc }: $Props) => {
       );
       saveChar({
         ...buildChar,
-        character: { ...buildChar.character, abilityImprovs: newAbilityImprovs },
+        oldCharacter: { ...buildChar.oldCharacter, abilityImprovs: newAbilityImprovs },
       });
     },
     [buildChar, saveChar]
@@ -211,12 +213,12 @@ const CharView = ({ character, modifications, isNpc }: $Props) => {
                     })}
               </PropColumnWrapper>
               <PropWrapper>
-                {buildChar.character.abilityImprovs &&
-                  buildChar.character.abilityImprovs
+                {buildChar.oldCharacter.abilityImprovs &&
+                  buildChar.oldCharacter.abilityImprovs
                     .filter((a) => a.level <= buildChar.level)
                     .map((a, i) => {
                       return (
-                        <Prop key={i}>
+                        <Prop key={a.feat + i}>
                           <PropTitle>
                             Class: {a.origin} - Level: {a.level}
                           </PropTitle>

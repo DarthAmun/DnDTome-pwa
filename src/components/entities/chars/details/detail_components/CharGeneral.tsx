@@ -47,9 +47,9 @@ const CharGeneral = ({ buildChar, onChange }: $Props) => {
   const changeMoney = (field: string, value: number) => {
     const newChar: BuildChar = {
       ...buildChar,
-      character: {
-        ...buildChar.character,
-        money: { ...buildChar.character.money, [field]: value },
+      oldCharacter: {
+        ...buildChar.oldCharacter,
+        money: { ...buildChar.oldCharacter.money, [field]: value },
       },
     };
     onChange(newChar);
@@ -494,27 +494,27 @@ const CharGeneral = ({ buildChar, onChange }: $Props) => {
       <MinView>
         <PropColumnWrapper>
           <SmallNumberField
-            value={buildChar.character.money.copper}
+            value={buildChar.oldCharacter.money.copper}
             label="Copper"
             onChange={(copper) => changeMoney("copper", copper)}
           />
           <SmallNumberField
-            value={buildChar.character.money.silver}
+            value={buildChar.oldCharacter.money.silver}
             label="Silver"
             onChange={(silver) => changeMoney("silver", silver)}
           />
           <SmallNumberField
-            value={buildChar.character.money.gold}
+            value={buildChar.oldCharacter.money.gold}
             label="Gold"
             onChange={(gold) => changeMoney("gold", gold)}
           />
           <SmallNumberField
-            value={buildChar.character.money.platinum}
+            value={buildChar.oldCharacter.money.platinum}
             label="Platinum"
             onChange={(platinum) => changeMoney("platinum", platinum)}
           />
           <SmallNumberField
-            value={buildChar.character.money.electrum}
+            value={buildChar.oldCharacter.money.electrum}
             label="Electrum"
             onChange={(electrum) => changeMoney("electrum", electrum)}
           />

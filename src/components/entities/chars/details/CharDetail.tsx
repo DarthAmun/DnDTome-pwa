@@ -11,6 +11,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router";
 import styled from "styled-components";
+import BuildChar from "../../../../data/chars/BuildChar";
 import Char from "../../../../data/chars/Char";
 import { recalcClasses } from "../../../../services/CharacterService";
 import { createNewWithId, remove, updateWithCallback } from "../../../../services/DatabaseService";
@@ -88,6 +89,10 @@ const CharDetail = ({ char, isNew }: $Props) => {
     updateChar("chars", obj, msg);
   };
 
+  const save = (obj: BuildChar) => {
+    editAndSaveChar(obj.oldCharacter, "Saved successful!");
+  };
+
   return (
     <>
       {showDeleteDialog && (
@@ -137,7 +142,7 @@ const CharDetail = ({ char, isNew }: $Props) => {
       {editMode ? (
         <CharEditView character={charObj} onEdit={(value) => editChar(value)} />
       ) : (
-        <CharView character={charObj} modifications={modMode} />
+        <CharView character={charObj} modifications={modMode} saveChar={save} />
       )}
     </>
   );

@@ -190,31 +190,6 @@ const CharEditView = ({ character, onEdit, isNpc }: $Props) => {
         });
       });
 
-      // if (featureSet.isAbilityImprov) {
-      //   character.classes.forEach((c) => {
-      //     if (c.classe === classe.name + "|" + classe.sources && c.level >= featureSet.level) {
-      //       let found: boolean = false;
-      //       character.abilityImprovs?.forEach((a) => {
-      //         if (
-      //           featureSet.level === a.level &&
-      //           classe.name + "|" + classe.sources === a.origin
-      //         ) {
-      //           found = true;
-      //         }
-      //       });
-      //       if (!found) {
-      //         newAbilityImprovs.push({
-      //           origin: classe.name + "|" + classe.sources,
-      //           level: featureSet.level,
-      //           s1: "str",
-      //           s2: "str",
-      //           feat: "",
-      //         });
-      //       }
-      //     }
-      //   });
-      // }
-
       classes.forEach((classe: Class) => {
         classe?.featureSets.forEach((featureSet: FeatureSet) => {
           featureSet.features.forEach((feature: Feature) => {

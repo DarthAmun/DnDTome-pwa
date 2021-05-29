@@ -4,6 +4,18 @@ import styled from "styled-components";
 import FormatedText from "../general_elements/FormatedText";
 import TabBar from "../general_elements/TabBar";
 
+import CreateNewEntity from "./gifs/createNewEntity.gif";
+import CreateNewEntityBar from "./gifs/createNewEntity_bar.gif";
+import CreateNewSubentity from "./gifs/createNewSubentity.gif";
+import Import_5eTools from "./gifs/import_5eTools.gif";
+import Import from "./gifs/import.gif";
+import Export from "./gifs/export.gif";
+import ExportEntity from "./gifs/exportEntity.gif";
+import ExportFilteredEntity from "./gifs/exportFilteredEntity.gif";
+import Asi from "./gifs/asi.gif";
+import AsiChar from "./gifs/asiChar.gif";
+import Selection from "./gifs/selection.gif";
+
 const Help = () => {
   const [activeTab, setTab] = useState<string>("Install");
 
@@ -11,7 +23,16 @@ const Help = () => {
     <>
       <General>
         <TabBar
-          children={["Install", "Create", "Import", "Export", "Text Formating", "Modifiers"]}
+          children={[
+            "Install",
+            "Create",
+            "Import",
+            "Export",
+            "Selections",
+            "Asi and Feats",
+            "Text Formating",
+            "Modifiers",
+          ]}
           onChange={(tab: string) => setTab(tab)}
           activeTab={activeTab}
         />
@@ -41,6 +62,16 @@ const Help = () => {
                 To create a new Spell for example go to Spells and hit "Add Spell" in the top
                 middle.
               </SectionText>
+              <Gif src={CreateNewEntity} />
+            </HelpSection>
+            <HelpSection>
+              <SelectionTitle>How to create Entitys via the command bar</SelectionTitle>
+              <SectionText>
+                To create a new Spell for example click inside the command bar at the top of the
+                site or hit the shortcut. After which the command "new spell test" for example
+                creates a spell with the name "test".
+              </SectionText>
+              <Gif src={CreateNewEntityBar} />
             </HelpSection>
             <HelpSection>
               <SelectionTitle>How to create Sub-Entitys</SelectionTitle>
@@ -48,6 +79,7 @@ const Help = () => {
                 For subclasses/subraces you need to visit a class/race and click the little circled
                 + in the subclass/subrace section of the class/race.
               </SectionText>
+              <Gif src={CreateNewSubentity} />
             </HelpSection>
           </>
         )}
@@ -58,6 +90,7 @@ const Help = () => {
               <SectionText>
                 Go to options and select a file in the top left file select dialog titled "Import".
               </SectionText>
+              <Gif src={Import} />
             </HelpSection>
             <HelpSection>
               <SelectionTitle>How to import Entitiys via the send functionallity</SelectionTitle>
@@ -72,6 +105,7 @@ const Help = () => {
                 Go to options and navigate to "Other Import" and select the file dialog suited for
                 the entity you want to import.
               </SectionText>
+              <Gif src={Import_5eTools} />
               <SectionText>Your entity is not listed there?</SectionText>
               <SectionText>Those will be updated and added gradually.</SectionText>
             </HelpSection>
@@ -92,10 +126,21 @@ const Help = () => {
                 "Export". This will export your hole collection to one big file! (Excluding your pdf
                 library)
               </SectionText>
+              <Gif src={Export} />
               <SectionText>
                 Or go to options and navigate to the entities you want to send for example "Spells".
                 There you can export all your spells to one file.
               </SectionText>
+              <Gif src={ExportEntity} />
+            </HelpSection>
+            <HelpSection>
+              <SelectionTitle>How to export only certain Entitiys to .json files</SelectionTitle>
+              <SectionText>
+                Go to the overview of the entity and search via the searchbar to determine which
+                entities should be exported. then click the "Export filtered"-Button located in the
+                bottom right section.
+              </SectionText>
+              <Gif src={ExportFilteredEntity} />
             </HelpSection>
             <HelpSection>
               <SelectionTitle>How to send Entitiys via the send functionallity</SelectionTitle>
@@ -116,6 +161,26 @@ const Help = () => {
             <HelpSection>
               <SelectionTitle>How to export to other sources</SelectionTitle>
               <SectionText>As of now you can only export to dndtome .json files.</SectionText>
+            </HelpSection>
+          </>
+        )}
+        {activeTab === "Selections" && (
+          <>
+            <HelpSection>
+              <SelectionTitle>How to use selections</SelectionTitle>
+              <Gif src={Selection} />
+            </HelpSection>
+          </>
+        )}
+        {activeTab === "Asi and Feats" && (
+          <>
+            <HelpSection>
+              <SelectionTitle>How to add Asi and Feats to a class</SelectionTitle>
+              <Gif src={Asi} />
+            </HelpSection>
+            <HelpSection>
+              <SelectionTitle>How to choose an Asi or Feat for a char</SelectionTitle>
+              <Gif src={AsiChar} />
             </HelpSection>
           </>
         )}
@@ -209,9 +274,9 @@ const Help = () => {
             <HelpSection>
               <SelectionTitle>What are modifiers?</SelectionTitle>
               <SectionText>
-                Modifiers enable you to give class-, subclass-, race-, subracefeatures and magic
-                items (for now) spezial modifiers that will directly modify the character using
-                those things.
+                Modifiers enable you to give class-, subclass-, race-, subracefeatures, backgrounds,
+                feats and magic items (for now) spezial modifiers that will directly modify the
+                character using those things.
               </SectionText>
             </HelpSection>
             <HelpSection>
@@ -355,6 +420,7 @@ const HelpSection = styled.div`
   border-radius: 3px;
   box-shadow: ${({ theme }) => theme.tile.boxShadow};
   overflow: hidden;
+  max-width: max-content;
 
   display: flex;
   flex-wrap: wrap;
@@ -378,4 +444,9 @@ const SectionText = styled.div`
   flex: 1 1 auto;
   width: calc(100% - 10px);
   padding: 5px;
+`;
+
+const Gif = styled.img`
+  width: 100%;
+  max-width: 600px;
 `;

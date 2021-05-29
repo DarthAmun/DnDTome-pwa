@@ -93,6 +93,11 @@ const Board = ({
             (cord + dimension.width + 1) % dimension.width > cord % dimension.width
           )
             newBoard[cord + dimension.width + 1].fog = !newBoard[cord + dimension.width + 1].fog;
+        } else if (fogSize === "full") {
+          const newFog = !newBoard[cord].fog;
+          [...currentFogBoard].forEach((slot: Slot, index) => {
+            newBoard[index].fog = newFog;
+          });
         } else {
           newBoard[cord].fog = !newBoard[cord].fog;
         }
@@ -140,6 +145,7 @@ const Board = ({
               { value: "dot", label: "dot" },
               { value: "cross", label: "cross" },
               { value: "quarter", label: "quarder" },
+              { value: "full", label: "full" },
             ]}
             style={{ zIndex: "600" }}
             value={fogSize}

@@ -82,7 +82,8 @@ const Home = () => {
         </HomeSection>
         <HomeSection>
           <SelectionTitle>
-            <FontAwesomeIcon icon={faQuestionCircle} /> Help
+            <FontAwesomeIcon icon={faQuestionCircle} /> Help{" "}
+            <span style={{ color: "red" }}>*Now with gif's*</span>
           </SelectionTitle>
           <SectionText>
             Help on where to find what and how to add tables or hyperlinks inside of text fields.
