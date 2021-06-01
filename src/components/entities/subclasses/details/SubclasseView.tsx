@@ -136,6 +136,15 @@ const SubclasseView = ({ subclasse }: $Props) => {
                   <Text key={index}>
                     <PropTitle>{feature.name}:</PropTitle>
                     <FormatedText text={feature.text} />
+                    {feature.selections !== undefined &&
+                      feature.selections.map((selection) => {
+                        return (
+                          <>
+                            <PropTitle>Choose from {selection}</PropTitle>
+                            <br />
+                          </>
+                        );
+                      })}
                   </Text>
                 );
               });

@@ -7,7 +7,7 @@ import Selection from "../../data/Selection";
 import { faFileImport } from "@fortawesome/free-solid-svg-icons";
 import { isGear } from "../../data/Gear";
 import { isItem } from "../../data/Item";
-import { saveNewFromList } from "../../services/DatabaseService";
+import { reciveAllFilteredPromise, saveNewFromList, update } from "../../services/DatabaseService";
 
 import ProgressBar from "@ramonak/react-progress-bar";
 import {
@@ -22,10 +22,12 @@ import {
   makeSubclass,
   makeSubrace,
 } from "../../services/5eToolService";
+import Filter from "../../data/Filter";
 
 export enum ImportModus {
   NORMAL,
   ETOOLS,
+  IMAGE,
 }
 
 interface $Props {
@@ -49,7 +51,9 @@ const ImportField = ({ modus }: $Props) => {
         <FileField
           label=""
           isMulti={true}
-          accept={".json"}
+          accept={
+            modus === ImportModus.NORMAL || modus === ImportModus.ETOOLS ? ".json" : "image/*"
+          }
           icon={faFileImport}
           onChange={(file) => changeFile(file)}
         />
@@ -252,6 +256,31 @@ const FileTile = ({ files, modus }: $FileProps) => {
     setFilesDone((f) => f + 1);
   };
 
+  const importImage = async (base64: string, fileName: string) => {
+    let entityTable: string = fileName.split("_")[0];
+    let entityName: string = fileName.split("_")[1].split(".")[0];
+    console.log(entityTable, entityName);
+
+    let entities = await reciveAllFilteredPromise(entityTable, [new Filter("name", entityName)]);
+
+    let newList: IEntity[] = [];
+    if (entities !== undefined) entities.forEach((entity: IEntity) => newList.push(entity));
+    console.log("... found " + newList.length + " entities that match " + entityName + " ...");
+
+    newList.forEach((entity: any) => {
+      if (
+        (entity.picBase64 === "" && entity.pic === "") ||
+        entity.name.toLowerCase() === entityName.toLowerCase()
+      ) {
+        console.log("... updated " + entity.name + " ...");
+        update(entityTable, { ...entity, picBase64: base64 });
+      } else {
+        console.log("... not updated " + entity.name + " since already having a picture...");
+      }
+    });
+    setFilesDone((f) => f + 1);
+  };
+
   useEffect(() => {
     setFilesDone(0);
     setMax(0);
@@ -259,19 +288,32 @@ const FileTile = ({ files, modus }: $FileProps) => {
     setListOfNewEntites([]);
 
     console.log("-+ Start Filereader +-");
-    files.forEach((file) => {
-      let fileReader = new FileReader();
-      fileReader.onloadend = function () {
-        const content = fileReader.result;
-        if (content !== null) {
-          let json = JSON.parse(content.toString());
-          console.log("Json loaded from " + file.name);
-          scanImportFile(json, file.name);
-          console.log("---------");
-        }
-      };
-      fileReader.readAsText(file);
-    });
+
+    if (modus === ImportModus.IMAGE) {
+      setMax((m) => m + files.length);
+      files.forEach((file) => {
+        let fileReader = new FileReader();
+        fileReader.onloadend = function (event: any) {
+          console.log("Image (" + file.name + ") import started...");
+          importImage(event.target.result, file.name);
+        };
+        fileReader.readAsDataURL(file);
+      });
+    } else {
+      files.forEach((file) => {
+        let fileReader = new FileReader();
+        fileReader.onloadend = function () {
+          const content = fileReader.result;
+          if (content !== null) {
+            let json = JSON.parse(content.toString());
+            console.log("Json loaded from " + file.name);
+            scanImportFile(json, file.name);
+            console.log("---------");
+          }
+        };
+        fileReader.readAsText(file);
+      });
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [files]);
 

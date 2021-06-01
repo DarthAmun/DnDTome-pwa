@@ -56,7 +56,7 @@ const CharGeneral = ({ buildChar, onChange }: $Props) => {
   };
 
   const changeHp = (field: string, value: number) => {
-    const newChar = { ...buildChar, character: { ...buildChar.character, [field]: value } };
+    const newChar = { ...buildChar, oldCharacter: { ...buildChar.oldCharacter, [field]: value } };
     onChange(newChar);
   };
 

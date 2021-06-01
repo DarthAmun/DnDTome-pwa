@@ -115,7 +115,7 @@ export const darkTheme: Theme = {
     highlight: "#8000ff",
   },
   tile: {
-    backgroundColor: "#1F2340",
+    backgroundColor: "#272c4a",
     backgroundColorLink: "#E45D68",
     headerColor: "#CACBDB",
     color: "lightslategray",

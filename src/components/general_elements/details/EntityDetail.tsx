@@ -58,6 +58,8 @@ import FeatEditView from "../../entities/feats/details/FeatEditView";
 import FeatView from "../../entities/feats/details/FeatView";
 import BackgroundEditView from "../../entities/backgrounds/details/BackgroundEditView";
 import BackgroundView from "../../entities/backgrounds/details/BackgroundView";
+import NoteView from "../../entities/notes/details/NoteView";
+import NoteEditView from "../../entities/notes/details/NoteEditView";
 
 interface $Props {
   entity: IEntity;
@@ -113,7 +115,6 @@ const EntityDetail = ({ entity, tableName, isNew, view }: $Props) => {
   };
 
   const editAndSaveEntity = (entity: IEntity, msg: string) => {
-    console.log("save");
     editEntity(entity);
     updateEntity(entity, msg);
   };
@@ -159,6 +160,8 @@ const EntityDetail = ({ entity, tableName, isNew, view }: $Props) => {
     FeatEditView: FeatEditView,
     BackgroundView: BackgroundView,
     BackgroundEditView: BackgroundEditView,
+    NoteView: NoteView,
+    NoteEditView: NoteEditView,
   };
 
   return (

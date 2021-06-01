@@ -14,6 +14,7 @@ import {
   GiDiceTwentyFacesTwenty,
   GiBindle,
   GiSherlockHolmes,
+  GiStabbedNote,
 } from "react-icons/gi";
 import {
   faMeteor,
@@ -58,6 +59,8 @@ const LinkCheck = ({ type }: $Props) => {
       case "campaign":
         return <GiBookmarklet />;
       case "quest":
+        return <GiStabbedNote />;
+      case "note":
         return <GiScrollUnfurled />;
       case "event":
         return <MdEvent />;

@@ -100,6 +100,9 @@ const App = () => {
               <Route path="/background-detail/name/:name" component={ToEntity}></Route>
               <Route path="/background-detail/id/:id" component={ToEntity}></Route>
               <Route path="/background-overview" component={EntityOverview}></Route>
+              <Route path="/note-detail/name/:name" component={ToEntity}></Route>
+              <Route path="/note-detail/id/:id" component={ToEntity}></Route>
+              <Route path="/note-overview" component={EntityOverview}></Route>
               <Route path="/statistics" component={Statistics}></Route>
               <Route path="/options" component={Options}></Route>
               <Route path="/help" component={Help}></Route>

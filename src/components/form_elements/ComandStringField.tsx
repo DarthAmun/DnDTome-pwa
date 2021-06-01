@@ -8,6 +8,7 @@ import { useHotkeys } from "react-hotkeys-hook";
 
 interface $Props {
   options?: string[];
+  defaultComands?: string[];
   value: string;
   label: string;
   icon?: IconDefinition;
@@ -15,7 +16,15 @@ interface $Props {
   onChange: (value: string[]) => void;
 }
 
-const ComandStringField = ({ options, value, label, icon, transform, onChange }: $Props) => {
+const ComandStringField = ({
+  options,
+  defaultComands,
+  value,
+  label,
+  icon,
+  transform,
+  onChange,
+}: $Props) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [term, setTerm] = useState<string>(value);
   const [allOptions] = useState<string[]>(options !== undefined ? options : []);
@@ -37,7 +46,6 @@ const ComandStringField = ({ options, value, label, icon, transform, onChange }:
 
   const onSearch = useCallback(
     (searchTerm: string) => {
-      console.time("search");
       setTerm(searchTerm);
       let newOptions = allOptions
         .filter((option) => {
@@ -45,7 +53,6 @@ const ComandStringField = ({ options, value, label, icon, transform, onChange }:
         })
         .slice(0, 5);
       setFilteredOptions(newOptions);
-      console.timeEnd("search");
     },
     [allOptions]
   );
@@ -61,7 +68,7 @@ const ComandStringField = ({ options, value, label, icon, transform, onChange }:
 
       onChange([commandTask, commandEntity, rest.trim()]);
       setTerm("");
-      setFilteredOptions(allOptions.slice(0, 5));
+      setFilteredOptions([]);
     }
   };
 
@@ -80,7 +87,23 @@ const ComandStringField = ({ options, value, label, icon, transform, onChange }:
         onFocus={(e) => onSearch(e.target.value)}
       ></Input>
       <Options>
+        {defaultComands &&
+          defaultComands.length > 0 &&
+          term === "" &&
+          defaultComands.map((opt, index: number) => {
+            return (
+              <Option
+                key={index}
+                onClick={(e) => {
+                  setTerm(opt);
+                }}
+              >
+                {opt}
+              </Option>
+            );
+          })}
         {filteredOptions.length > 0 &&
+          term !== "" &&
           filteredOptions.map((opt, index: number) => {
             return (
               <Option
@@ -118,6 +141,10 @@ const Field = styled.label`
   display: flex;
   justify-content: center;
   align-items: center;
+
+  @media (max-width: 576px) {
+    display: none;
+  }
 `;
 
 const Icon = styled(FontAwesomeIcon)`

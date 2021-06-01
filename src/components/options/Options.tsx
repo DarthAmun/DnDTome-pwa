@@ -261,6 +261,10 @@ const Options = () => {
         </SectionRow>
       </OptionSection>
       <OptionSection>
+        <SelectionTitle>Import Images</SelectionTitle>
+        <ImportField modus={ImportModus.IMAGE} />
+      </OptionSection>
+      <OptionSection>
         <SelectionTitle>Reset Database</SelectionTitle>
         <IconButton icon={faTrashAlt} onClick={() => setResetDialog(true)} />
       </OptionSection>

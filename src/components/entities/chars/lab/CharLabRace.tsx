@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Char from "../../../../data/chars/Char";
 import Race from "../../../../data/races/Race";
-import Trait from "../../../../data/races/Trait";
 import Subrace from "../../../../data/races/Subrace";
 import Class from "../../../../data/classes/Class";
 import {
@@ -16,6 +15,8 @@ import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 import FormatedText from "../../../general_elements/FormatedText";
 import SingleSelectField from "../../../form_elements/SingleSelectField";
 import ClassSet from "../../../../data/chars/ClassSet";
+import RaceView from "../../races/details/RaceView";
+import SubraceView from "../../subraces/details/SubraceView";
 
 interface $Props {
   char: Char;
@@ -109,25 +110,7 @@ const CharLabRace = ({ char, onChange, completed }: $Props) => {
                       r.sources === char.race.race.split("|")[1]
                   )
                   .map((race) => {
-                    return (
-                      <Text>
-                        <PropTitle>{race.name}:</PropTitle>
-                        <FormatedText text={race.abilityScores} />
-                        <br />
-                        <FormatedText text={race.speed} />
-                        {race.traits.map((trait: Trait, index: number) => {
-                          return (
-                            <TraitWrapper key={index}>
-                              <TraitName>{trait.name}</TraitName>
-                              <TraitLevel>Level: {trait.level}</TraitLevel>
-                              <TraitText>
-                                <FormatedText text={trait.text} />
-                              </TraitText>
-                            </TraitWrapper>
-                          );
-                        })}
-                      </Text>
-                    );
+                    return <RaceView race={race} />;
                   })}
               {char.race.subrace &&
                 subraces
@@ -137,25 +120,7 @@ const CharLabRace = ({ char, onChange, completed }: $Props) => {
                       r.sources === char.race.subrace.split("|")[1]
                   )
                   .map((subrace) => {
-                    return (
-                      <Text>
-                        <PropTitle>{subrace.name}:</PropTitle>
-                        <FormatedText text={subrace.abilityScores} />
-                        <br />
-                        <FormatedText text={subrace.type} />
-                        {subrace.traits.map((trait: Trait, index: number) => {
-                          return (
-                            <TraitWrapper key={index}>
-                              <TraitName>{trait.name}</TraitName>
-                              <TraitLevel>Level: {trait.level}</TraitLevel>
-                              <TraitText>
-                                <FormatedText text={trait.text} />
-                              </TraitText>
-                            </TraitWrapper>
-                          );
-                        })}
-                      </Text>
-                    );
+                    return <SubraceView subrace={subrace} />;
                   })}
             </PropWrapper>
           </CharView>
@@ -217,14 +182,3 @@ const Text = styled.div`
   border-radius: 5px;
   background-color: ${({ theme }) => theme.tile.backgroundColor};
 `;
-
-const TraitWrapper = styled.div`
-  width: calc(100% - 24px);
-  padding: 10px;
-  margin: 2px;
-`;
-const TraitName = styled.div`
-  font-weight: bold;
-`;
-const TraitLevel = styled.div``;
-const TraitText = styled.div``;

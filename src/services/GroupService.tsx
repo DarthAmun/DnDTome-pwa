@@ -16,13 +16,13 @@ export const buildGroup = async (group: Group): Promise<BuildGroup> => {
   let npcList: Promise<Npc>[] = [];
   let monsterList: Promise<Monster>[] = [];
 
-  group.players.forEach((player: string) => {
+  group.players?.forEach((player: string) => {
     characterList.push(recivePromiseByAttribute("chars", "name", player));
   });
-  group.npcs.forEach((npc: string) => {
+  group.npcs?.forEach((npc: string) => {
     npcList.push(recivePromiseByAttribute("npcs", "name", npc));
   });
-  group.monsters.forEach((monster: string) => {
+  group.monsters?.forEach((monster: string) => {
     monsterList.push(recivePromiseByAttribute("monsters", "name", monster));
   });
   characters = await Promise.all(characterList);

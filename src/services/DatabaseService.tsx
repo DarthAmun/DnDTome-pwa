@@ -423,6 +423,10 @@ export const reciveAllFilteredPromise = (tableName: string, filters: Filter[]) =
           .sortBy(sortedFiled);
       }
     })
+    .catch((reason) => {
+      console.log(reason);
+      return undefined;
+    })
     .finally(function () {
       db.close();
     });
@@ -502,7 +506,6 @@ export const deleteAllByAttrs = (tableName: string, attr: string, attrs: string[
 
 export const exportFilteredFromTable = (tableName: string, filters: Filter[], filename: string) => {
   reciveAllFiltered(tableName, filters, (all: IndexableType[]) => {
-    console.log(filters, all);
     const data = { [tableName]: all };
     let contentType = "application/json;charset=utf-8;";
     var a = document.createElement("a");

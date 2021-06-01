@@ -11,7 +11,7 @@ import NumberField from "../../../form_elements/NumberField";
 import TextButton from "../../../form_elements/TextButton";
 import SingleSelectField from "../../../form_elements/SingleSelectField";
 import { reciveAll } from "../../../../services/DatabaseService";
-import FormatedText from "../../../general_elements/FormatedText";
+import ClasseView from "../../classes/details/ClasseView";
 
 interface $Props {
   char: Char;
@@ -133,14 +133,13 @@ const CharLabClass = ({ char, onChange, completed }: $Props) => {
           {classes &&
             char.classes.map((classSet: ClassSet, index: number) => {
               return classes
-                .filter((c) => c.name === classSet.classe)
+                .filter(
+                  (c) =>
+                    c.name === classSet.classe.split("|")[0] &&
+                    c.sources === classSet.classe.split("|")[1]
+                )
                 .map((classe, i: number) => {
-                  return (
-                    <Text key={index + i}>
-                      <PropTitle>{classe.name}:</PropTitle>
-                      <FormatedText text={classe.proficiencies} />
-                    </Text>
-                  );
+                  return <ClasseView key={index + i} classe={classe} />;
                 });
             })}
         </PropWrapper>
@@ -182,22 +181,4 @@ const PropWrapper = styled.div`
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
-`;
-
-const PropTitle = styled.span`
-  display: inline-block;
-  color: ${({ theme }) => theme.tile.backgroundColorLink};
-  text-decoration: none;
-  margin: 0px 5px 0px 5px;
-`;
-
-const Text = styled.div`
-  height: auto;
-  width: calc(100% - 20px);
-  margin: 0 0 5px 0;
-  float: left;
-  line-height: 18px;
-  padding: 10px;
-  border-radius: 5px;
-  background-color: ${({ theme }) => theme.tile.backgroundColor};
 `;

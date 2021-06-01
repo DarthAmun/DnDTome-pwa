@@ -53,7 +53,6 @@ const CharEditView = ({ character, onEdit, isNpc }: $Props) => {
   const removeSpell = (index: number) => {
     let newSpellList = [...character.spells];
     newSpellList.splice(index, 1);
-    console.log(character.spells, newSpellList, index);
     onEdit({ ...character, spells: newSpellList });
   };
   const addNewSpell = () => {
@@ -167,81 +166,81 @@ const CharEditView = ({ character, onEdit, isNpc }: $Props) => {
         classes?.forEach((c) => {
           if (classe.classe === c.name + "|" + c.sources) {
             c?.featureSets.forEach((featureSet: FeatureSet) => {
-              if (featureSet.isAbilityImprov && classe.level >= featureSet.level) {
-                let found: boolean = false;
-                character.abilityImprovs?.forEach((a) => {
-                  if (a.origin === c.name + "|" + c.sources && featureSet.level === a.level) {
-                    newAbilityImprovs.push(a);
-                    found = true;
+              if (classe.level >= featureSet.level) {
+                if (featureSet.isAbilityImprov) {
+                  let found: boolean = false;
+                  character.abilityImprovs?.forEach((a) => {
+                    if (a.origin === c.name + "|" + c.sources && featureSet.level === a.level) {
+                      newAbilityImprovs.push(a);
+                      found = true;
+                    }
+                  });
+                  if (!found) {
+                    newAbilityImprovs.push({
+                      origin: c.name + "|" + c.sources,
+                      level: featureSet.level,
+                      s1: "str",
+                      s2: "str",
+                      feat: "",
+                    });
                   }
-                });
-                if (!found) {
-                  newAbilityImprovs.push({
-                    origin: c.name + "|" + c.sources,
-                    level: featureSet.level,
-                    s1: "str",
-                    s2: "str",
-                    feat: "",
+                }
+                if (featureSet) {
+                  featureSet.features.forEach((feature: Feature) => {
+                    if (feature.selections !== undefined && feature.selections.length > 0) {
+                      let count = 1;
+                      feature.selections.forEach((select: string) => {
+                        selections.forEach((selection: Selection) => {
+                          if (selection.name === select) {
+                            newActiveSelections.push({
+                              selectionName: selection.name,
+                              activeOption: selection.selectionOptions[0],
+                              featureName: feature.name,
+                              featureCount: count,
+                              className: c.name,
+                            });
+                            count++;
+                          }
+                        });
+                      });
+                    }
                   });
                 }
               }
             });
           }
-        });
-      });
-
-      classes.forEach((classe: Class) => {
-        classe?.featureSets.forEach((featureSet: FeatureSet) => {
-          featureSet.features.forEach((feature: Feature) => {
-            if (feature.selections !== undefined && feature.selections.length > 0) {
-              let count = 1;
-              feature.selections.forEach((select: string) => {
-                selections.forEach((selection: Selection) => {
-                  if (selection.name === select) {
-                    newActiveSelections.push({
-                      selectionName: selection.name,
-                      activeOption: selection.selectionOptions[0],
-                      featureName: feature.name,
-                      featureCount: count,
-                      className: classe.name,
+          subclasses.forEach((subclass: Subclass) => {
+            if (subclass !== undefined) {
+              if (c?.name === subclass.type) {
+                subclass.features.forEach((featureSet: FeatureSet) => {
+                  if (classe.level >= featureSet.level) {
+                    featureSet.features.forEach((feature: Feature) => {
+                      if (feature.selections !== undefined && feature.selections.length > 0) {
+                        let count = 1;
+                        feature.selections.forEach((select: string) => {
+                          selections.forEach((selection: Selection) => {
+                            if (selection.name === select) {
+                              newActiveSelections.push({
+                                selectionName: selection.name,
+                                activeOption: selection.selectionOptions[0],
+                                featureName: feature.name,
+                                featureCount: count,
+                                className: subclass.name,
+                              });
+                              count++;
+                            }
+                          });
+                        });
+                      }
                     });
-                    count++;
                   }
                 });
-              });
+              }
             }
           });
         });
-        subclasses.forEach((subclass: Subclass) => {
-          if (subclass !== undefined) {
-            if (classe?.name === subclass.type) {
-              subclass.features.forEach((featureSet: FeatureSet) => {
-                featureSet.features.forEach((feature: Feature) => {
-                  if (feature.selections !== undefined && feature.selections.length > 0) {
-                    let count = 1;
-                    feature.selections.forEach((select: string) => {
-                      selections.forEach((selection: Selection) => {
-                        if (selection.name === select) {
-                          newActiveSelections.push({
-                            selectionName: selection.name,
-                            activeOption: selection.selectionOptions[0],
-                            featureName: feature.name,
-                            featureCount: count,
-                            className: subclass.name,
-                          });
-                          count++;
-                        }
-                      });
-                    });
-                  }
-                });
-              });
-            }
-          }
-        });
       });
     }
-    console.log(newAbilityImprovs);
     let newChar = {
       ...character,
       activeSelections: newActiveSelections,
@@ -390,7 +389,7 @@ const CharEditView = ({ character, onEdit, isNpc }: $Props) => {
   const calcSpellValues = () => {
     if (character !== undefined) {
       let newCastingHit = formatScore(character[spellAttr]) + calcProf(character);
-      let newCastingDC = newCastingHit + 10;
+      let newCastingDC = newCastingHit + 8;
 
       onEdit({ ...character, castingHit: newCastingHit, castingDC: newCastingDC });
     }

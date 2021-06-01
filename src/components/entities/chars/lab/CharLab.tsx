@@ -1,13 +1,7 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router";
 import styled from "styled-components";
-import {
-  recivePromiseByMultiAttribute,
-  saveWithCallback,
-} from "../../../../services/DatabaseService";
-import ClassSet from "../../../../data/chars/ClassSet";
-import Boni from "../../../../data/classes/Boni";
-import Class from "../../../../data/classes/Class";
+import { saveWithCallback } from "../../../../services/DatabaseService";
 import Char from "../../../../data/chars/Char";
 
 import { faCheckCircle, faEdit } from "@fortawesome/free-solid-svg-icons";
@@ -20,6 +14,7 @@ import CharLabAbilities from "./CharLabAbilities";
 import CharLabEquipment from "./CharLabEquipment";
 import { useQuery } from "../../../../hooks/QueryHook";
 import CharLabBackground from "./CharLabBackground";
+import { recalcClasses } from "../../../../services/CharacterService";
 
 const CharLab = () => {
   let history = useHistory();
@@ -57,123 +52,6 @@ const CharLab = () => {
   const updateEquipment = (value: boolean, nextTab: string) => {
     setEquipment(value);
     setTab(nextTab);
-  };
-
-  const recalcClasses = async (char: Char) => {
-    let bonis: { origin: string; value: number; max: number }[] = [];
-    let spellSlots: {
-      origin: string;
-      slots: number[];
-      max: number[];
-    }[] = [];
-    let fullClassList: { class: Class; classSet: ClassSet }[] = [];
-
-    let classList: Promise<Class>[] = [];
-    char.classes.forEach((classe: ClassSet) => {
-      let [name, sources] = classe.classe.split("|");
-      classList.push(recivePromiseByMultiAttribute("classes", { name: name, sources: sources }));
-    });
-    const results = await Promise.all(classList);
-
-    results?.forEach((classe: Class) => {
-      char.classes.forEach((classSet) => {
-        if (classe.name === classSet.classe) {
-          fullClassList.push({ class: classe, classSet: classSet });
-        }
-      });
-    });
-
-    fullClassList?.forEach((classe: { class: Class; classSet: ClassSet }) => {
-      let featureSet = classe.class.featureSets[classe.classSet.level - 1];
-      if (featureSet !== undefined) {
-        if (featureSet.bonis) {
-          featureSet.bonis?.forEach((boni: Boni) => {
-            if (boni.isCurrency) {
-              bonis = [
-                ...bonis,
-                {
-                  origin: boni.name,
-                  value: +boni.value,
-                  max: +boni.value,
-                },
-              ];
-            }
-          });
-        }
-        if (featureSet.spellslots && featureSet.spellslots.length > 0) {
-          spellSlots = [
-            ...spellSlots,
-            {
-              origin: classe.class.name,
-              slots: featureSet.spellslots,
-              max: featureSet.spellslots,
-            },
-          ];
-        }
-      }
-    });
-
-    let updatedBonis = bonis.map((newBoni) => {
-      let updatedOldBonis = char.currencyBonis?.map((old) => {
-        if (newBoni.origin === old.origin) {
-          return {
-            origin: newBoni.origin,
-            value: old.value,
-            max: newBoni.max,
-          };
-        } else {
-          return null;
-        }
-      });
-      if (
-        updatedOldBonis &&
-        updatedOldBonis.length > 0 &&
-        updatedOldBonis[0] !== undefined &&
-        updatedOldBonis[0] !== null
-      ) {
-        return updatedOldBonis[0];
-      } else {
-        return newBoni;
-      }
-    });
-    if (updatedBonis && updatedBonis.length > 0) {
-      bonis = Array.from(updatedBonis);
-    }
-
-    let updatedSpellSlots = spellSlots?.map((newSpellSlots) => {
-      let updatedOldSlots = char.spellSlots?.map((old) => {
-        if (newSpellSlots.origin === old.origin) {
-          return {
-            origin: newSpellSlots.origin,
-            slots: old.slots,
-            max: newSpellSlots.max,
-          };
-        } else {
-          return null;
-        }
-      });
-      if (
-        updatedOldSlots &&
-        updatedOldSlots.length > 0 &&
-        updatedOldSlots[0] !== undefined &&
-        updatedOldSlots[0] !== null
-      ) {
-        return updatedOldSlots[0];
-      } else {
-        return newSpellSlots;
-      }
-    });
-    if (updatedSpellSlots && updatedSpellSlots.length > 0) {
-      spellSlots = Array.from(updatedSpellSlots);
-    }
-
-    let updatedChar = {
-      ...char,
-      spellSlots: spellSlots,
-      currencyBonis: bonis,
-    };
-    updateChar(updatedChar);
-    return updatedChar;
   };
 
   const saveChar = () => {

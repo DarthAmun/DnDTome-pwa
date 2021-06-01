@@ -9,7 +9,6 @@ import Select from "react-select";
 import Filter from "../../data/Filter";
 import IEntity from "../../data/IEntity";
 import { reciveAllFilteredPromise } from "../../services/DatabaseService";
-import { LocalLoadingSpinner } from "../Loading";
 
 interface $Props {
   optionTable: string[];
@@ -41,21 +40,27 @@ const DataSelectField = ({
 
   const findAllItems = useCallback(
     async (optionsTable: string[]) => {
-      let entityList: Promise<IEntity[]>[] = [];
+      let entityList: Promise<IEntity[] | undefined>[] = [];
       optionsTable.forEach((table) => {
         entityList.push(reciveAllFilteredPromise(table, filters !== undefined ? filters : []));
       });
-      const results = await Promise.all(entityList);
-      results.forEach((entities: IEntity[]) => {
-        entities.forEach((entity: IEntity) => {
-          setOptions((o) =>
-            o.concat({
+      let results = await Promise.all(entityList);
+
+      let newList: {
+        value: string;
+        label: string;
+      }[] = [];
+      results.forEach((entities: IEntity[] | undefined) => {
+        if (entities !== undefined)
+          entities.forEach((entity: IEntity) => {
+            newList.push({
               value: entity.name + "|" + entity.sources,
               label: entity.name + "|" + entity.sources,
-            })
-          );
-        });
+            });
+          });
       });
+      setOptions(newList);
+      setLoading(false);
     },
     [filters]
   );
@@ -63,7 +68,6 @@ const DataSelectField = ({
   useEffect(() => {
     if (optionsTable !== undefined && optionsTable.length > 0) {
       findAllItems(optionsTable);
-      setLoading(false);
     }
   }, [optionsTable, findAllItems, filters]);
 
@@ -78,19 +82,18 @@ const DataSelectField = ({
       <LabelText>
         {icon ? <Icon icon={icon} transform={transform} /> : ""} {label}
       </LabelText>
-      {loading && <LocalLoadingSpinner />}
-      {!loading && (
-        <StyledSelect
-          isMulti={false}
-          classNamePrefix="react-select"
-          value={{
-            value: value,
-            label: value,
-          }}
-          options={options}
-          onChange={(option: { value: string; label: string }) => handleChange(option)}
-        />
-      )}
+      <StyledSelect
+        isMulti={false}
+        isLoading={loading}
+        isClearable={true}
+        classNamePrefix="react-select"
+        value={{
+          value: value,
+          label: value,
+        }}
+        options={options}
+        onChange={(option: { value: string; label: string }) => handleChange(option)}
+      />
     </Field>
   );
 };
@@ -128,7 +131,7 @@ const StyledSelect = styled(Select)`
   flex: 3 2 auto;
   box-sizing: border-box;
   border: none;
-  min-width: 120px;
+  min-width: 200px;
 
   background-color: ${({ theme }) => theme.input.backgroundColor};
   color: ${({ theme }) => theme.input.color};

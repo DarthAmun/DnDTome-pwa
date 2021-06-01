@@ -32,6 +32,7 @@ import Selection from "../../../data/Selection";
 import Location from "../../../data/world/Location";
 import Feat from "../../../data/Feat";
 import Background from "../../../data/Background";
+import Note from "../../../data/Note";
 
 type TParams = { id?: string; name?: string };
 
@@ -64,10 +65,8 @@ const ToEntity = ({ match }: RouteComponentProps<TParams>) => {
             name: entityName,
             sources: sources,
           });
-          console.log(entityName, newEntity);
         } else {
           newEntity = await recivePromiseByAttribute(name + "s", "name", entityName);
-          console.log(entityName, newEntity);
         }
       }
       if (match.params.id !== undefined)
@@ -117,6 +116,7 @@ const ToEntity = ({ match }: RouteComponentProps<TParams>) => {
     world: new World(0, match.params.name),
     feat: new Feat(0, match.params.name),
     background: new Background(0, match.params.name),
+    note: new Note(0, match.params.name),
   };
 
   const createNewEntity = () => {

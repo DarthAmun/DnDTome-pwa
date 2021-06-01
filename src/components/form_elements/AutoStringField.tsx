@@ -40,15 +40,17 @@ const AutoStringField = ({
 
   const findAllItems = useCallback(
     async (optionsTable: string[]) => {
-      let itemList: Promise<IEntity[]>[] = [];
+      let itemList: Promise<IEntity[] | undefined>[] = [];
       optionsTable.forEach((table) => {
         itemList.push(reciveAllFilteredPromise(table, filters !== undefined ? filters : []));
       });
-      const results = await Promise.all(itemList);
-      setOptions([]);
-      results.forEach((items: IEntity[]) => {
-        setOptions((o) => o.concat(items));
+      let results = await Promise.all(itemList);
+
+      let newList: IEntity[] = [];
+      results.forEach((entities: IEntity[] | undefined) => {
+        if (entities !== undefined) entities.forEach((entity: IEntity) => newList.push(entity));
       });
+      setOptions(newList);
     },
     [filters]
   );
@@ -71,12 +73,8 @@ const AutoStringField = ({
       console.time("search");
       setTerm(searchTerm);
       if (searchTerm.length > 2) {
-        console.log(searchTerm);
         let newOptions = allOptions
-          .filter((option) => {
-            console.log(option.name.toLowerCase().startsWith(searchTerm.toLowerCase()));
-            return option.name.toLowerCase().startsWith(searchTerm.toLowerCase());
-          })
+          .filter((option) => option.name.toLowerCase().startsWith(searchTerm.toLowerCase()))
           .sort(
             (a, b) =>
               Math.abs(a.name.length - searchTerm.length) -

@@ -47,14 +47,17 @@ const EncounterEditView = ({ encounter, onEdit }: $Props) => {
   }, [encounter]);
 
   const findAllItems = useCallback(async (optionsTable: string[]) => {
-    let itemList: Promise<IEntity[]>[] = [];
+    let itemList: Promise<IEntity[] | undefined>[] = [];
     optionsTable.forEach((table) => {
       itemList.push(reciveAllFilteredPromise(table, []));
     });
-    const results = await Promise.all(itemList);
-    results.forEach((items: IEntity[]) => {
-      setOptions((o) => o.concat(items));
+    let results = await Promise.all(itemList);
+
+    let newList: IEntity[] = [];
+    results.forEach((entities: IEntity[] | undefined) => {
+      if (entities !== undefined) entities.forEach((entity: IEntity) => newList.push(entity));
     });
+    setOptions(newList);
   }, []);
 
   useEffect(() => {
@@ -93,7 +96,6 @@ const EncounterEditView = ({ encounter, onEdit }: $Props) => {
       found.push(recivePromiseByMultiAttribute("chars", { name: name, sources: sources }));
       let results = await Promise.all(found);
       results = results.filter((e) => e !== undefined);
-      console.log("Found:", results);
 
       if (results[0] && isMonster(results[0])) {
         enemies[i] = {
@@ -214,8 +216,6 @@ const EncounterEditView = ({ encounter, onEdit }: $Props) => {
       found.push(recivePromiseByMultiAttribute("chars", { name: name, sources: sources }));
       let results = await Promise.all(found);
       results = results.filter((e) => e !== undefined);
-      console.log("Found:", results);
-      console.log(isMonster(results[0]), isChar(results[0]), isNpc(results[0]));
 
       if (results[0] && isMonster(results[0])) {
         players[i] = {

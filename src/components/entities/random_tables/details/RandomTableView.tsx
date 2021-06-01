@@ -12,7 +12,7 @@ interface $Props {
 }
 
 const RandomTableView = ({ randomtable: randomTable }: $Props) => {
-  const [rand, setRand] = useState<number>(-1);
+  const [rands, setRands] = useState<number[]>([]);
 
   const rollForRandom = () => {
     const min = 1;
@@ -28,7 +28,7 @@ const RandomTableView = ({ randomtable: randomTable }: $Props) => {
       max = +lastRowValues;
     }
     const rand = Math.round(min + Math.random() * (max - min));
-    setRand(rand);
+    setRands((r) => [rand, ...r]);
   };
 
   return (
@@ -36,33 +36,6 @@ const RandomTableView = ({ randomtable: randomTable }: $Props) => {
       <Name>
         <b>{randomTable.name}</b>
       </Name>
-      <View>
-        <TextButton text={"Roll"} icon={faDice} onClick={() => rollForRandom()} />
-        {rand >= 0 && (
-          <Prop>
-            {rand} <Icon icon={faArrowRight} />
-            {randomTable.rows.map((row: { value: string; cells: string }) => {
-              if (row.value.includes("-")) {
-                // normal -
-                let range = row.value.trim().split("-");
-                const min: number = +range[0];
-                const max: number = +range[1];
-                if (min <= rand && rand <= max) return <FormatedText text={row.cells} />;
-              } else if (row.value.includes("–")) {
-                // – used by DnDBeyond
-                let range = row.value.trim().split("–");
-                const min: number = +range[0];
-                const max: number = +range[1];
-                if (min <= rand && rand <= max) return <FormatedText text={row.cells} />;
-              } else {
-                const valueNumber = +row.value;
-                if (valueNumber === rand) return <FormatedText text={row.cells} />;
-              }
-              return <></>;
-            })}
-          </Prop>
-        )}
-      </View>
       <View>
         <table>
           <tbody>
@@ -90,6 +63,77 @@ const RandomTableView = ({ randomtable: randomTable }: $Props) => {
               })}
           </tbody>
         </table>
+      </View>
+      <View>
+        <TextButton text={"Roll"} icon={faDice} onClick={() => rollForRandom()} />
+        {rands !== [] &&
+          rands.map((rand) => {
+            return (
+              <Prop>
+                <PropTitle>
+                  Rolled: {rand} <Icon icon={faArrowRight} />
+                </PropTitle>
+                {randomTable.rows.map((row: { value: string; cells: string }) => {
+                  if (row.value.includes("-")) {
+                    // normal -
+                    let range = row.value.trim().split("-");
+                    const min: number = +range[0];
+                    const max: number = +range[1];
+                    if (min <= rand && rand <= max) {
+                      let newRows = row.cells.split("|");
+                      const main = newRows[0];
+                      newRows = newRows.slice(1);
+                      return (
+                        <>
+                          <PropTitle>{main}</PropTitle>
+                          {newRows &&
+                            newRows.map((row) => {
+                              return <FormatedText text={row} />;
+                            })}
+                        </>
+                      );
+                    }
+                  } else if (row.value.includes("–")) {
+                    // – used by DnDBeyond
+                    let range = row.value.trim().split("–");
+                    const min: number = +range[0];
+                    const max: number = +range[1];
+                    if (min <= rand && rand <= max) {
+                      let newRows = row.cells.split("|");
+                      const main = newRows[0];
+                      newRows = newRows.slice(1);
+                      return (
+                        <>
+                          <PropTitle>{main}</PropTitle>
+                          {newRows &&
+                            newRows.map((row) => {
+                              return <FormatedText text={row} />;
+                            })}
+                        </>
+                      );
+                    }
+                  } else {
+                    const valueNumber = +row.value;
+                    if (valueNumber === rand) {
+                      let newRows = row.cells.split("|");
+                      const main = newRows[0];
+                      newRows = newRows.slice(1);
+                      return (
+                        <>
+                          <PropTitle>{main}</PropTitle>
+                          {newRows &&
+                            newRows.map((row) => {
+                              return <FormatedText text={row} />;
+                            })}
+                        </>
+                      );
+                    }
+                  }
+                  return <></>;
+                })}
+              </Prop>
+            );
+          })}
       </View>
     </CenterWrapper>
   );
@@ -150,16 +194,23 @@ const TableProp = styled.td`
 `;
 
 const Prop = styled.div`
+  width: 100%;
   background-color: ${({ theme }) => theme.input.backgroundColor};
   color: ${({ theme }) => theme.input.color};
   padding: 10px;
   margin: 5px;
   border-radius: 5px;
   box-sizing: content-box;
-  text-align: center;
+  text-align: left;
 
-  height: ${({ theme }) => theme.buttons.height};
   line-height: ${({ theme }) => theme.buttons.height};s
+`;
+
+const PropTitle = styled.span`
+  display: inline-block;
+  color: ${({ theme }) => theme.tile.backgroundColorLink};
+  text-decoration: none;
+  margin: 0px 5px 0px 5px;
 `;
 
 const Icon = styled(FontAwesomeIcon)`

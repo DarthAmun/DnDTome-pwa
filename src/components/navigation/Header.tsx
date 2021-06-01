@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useHistory } from "react-router";
 import styled from "styled-components";
 import packageJson from "../../../package.json";
@@ -23,10 +23,17 @@ import { createNewWithId } from "../../services/DatabaseService";
 import ComandStringField from "../form_elements/ComandStringField";
 import Campaign from "../../data/campaign/Campaign";
 import IEntity from "../../data/IEntity";
+import Feat from "../../data/Feat";
+import Background from "../../data/Background";
+import { GiRollingDices } from "react-icons/gi";
+import { RightTooltip } from "../SearchbarStyle";
+import DiceRoller from "../DiceRoller";
+import Note from "../../data/Note";
 
 const Header = () => {
   let history = useHistory();
-  const comandNames: string[] = ["new", "edit", "search", "go"];
+  const [showDiceRoller, setDiceRoller] = useState<boolean>(false);
+  const comandNames: string[] = ["new", "edit", "search", "go", "n", "e", "s", "g"];
   const entityNames: string[] = [
     "spell",
     "item",
@@ -44,7 +51,10 @@ const Header = () => {
     "world",
     "location",
     "event",
+    "note",
     "randomTable",
+    "feat",
+    "background",
   ];
 
   const entities = {
@@ -65,6 +75,9 @@ const Header = () => {
     subclasse: new Subclass(),
     subrace: new Subrace(),
     world: new World(),
+    feat: new Feat(),
+    background: new Background(),
+    note: new Note(),
   };
 
   const makeComands = (): string[] => {
@@ -81,10 +94,20 @@ const Header = () => {
     return newComands.sort();
   };
 
+  const makeDefault = (): string[] => {
+    let newComands: string[] = [];
+    newComands.push("go ...");
+    newComands.push("new ...");
+    newComands.push("edit ...");
+    newComands.push("search ...");
+    newComands.push("help");
+    return newComands.sort();
+  };
+
   const applyComand = (com: string[]) => {
-    console.log("Term", com);
     if (com[1] === "class") com[1] = com[1] + "e";
     switch (com[0]) {
+      case "g":
       case "go":
         if (com[1] === "home") history.push(`/home`);
         else if (com[1] === "statistics") history.push(`/statistics`);
@@ -93,9 +116,11 @@ const Header = () => {
           history.push(`/${com[1]}-detail/name/${com[2].replaceAll("'", "")}`);
         else history.push(`/${com[1]}-overview`);
         break;
+      case "e":
       case "edit":
         history.push(`/${com[1]}-detail/name/${com[2].replaceAll("'", "")}?editMode`);
         break;
+      case "n":
       case "new":
         if (com[1] === "char") {
           history.push(`/char-lab?name=${com[2]}`);
@@ -108,6 +133,7 @@ const Header = () => {
           });
         }
         break;
+      case "s":
       case "search":
         history.push(
           `/${com[1]}-overview?filter=[{"fieldName":"name","value":"${com[2].replaceAll(
@@ -123,14 +149,30 @@ const Header = () => {
   };
 
   return (
-    <Bar>
-      <NameWrapper>
-        <Logo src={LogoImg} />
-        <Name>DnDTome</Name>
-      </NameWrapper>
-      <ComandStringField options={makeComands()} value={""} label=">" onChange={applyComand} />
-      <HomeCredits>v{packageJson.version}</HomeCredits>
-    </Bar>
+    <>
+      {showDiceRoller && <DiceRoller />}
+      <Bar>
+        <NameWrapper>
+          <Logo src={LogoImg} />
+          <Name>DnDTome</Name>
+        </NameWrapper>
+        <ComandStringField
+          options={makeComands()}
+          defaultComands={makeDefault()}
+          value={""}
+          label=">"
+          onChange={applyComand}
+        />
+        <Roller
+          className={showDiceRoller ? "menuItemActiv" : ""}
+          onClick={() => setDiceRoller((val) => !val)}
+        >
+          <GiRollingDices />
+          <RightTooltip>Dice Roller</RightTooltip>
+        </Roller>
+        <HomeCredits>v{packageJson.version}</HomeCredits>
+      </Bar>
+    </>
   );
 };
 
@@ -193,4 +235,32 @@ const HomeCredits = styled.div`
 const Logo = styled.img`
   height: 30px;
   float: left;
+`;
+
+const Roller = styled.div`
+  height: 20px;
+  font-size: 20px;
+  text-align: center;
+  margin: 5px;
+  cursor: pointer;
+  color: ${({ theme }) => theme.tile.color};
+  text-decoration: none;
+  transition: color 0.3s linear;
+
+  svg {
+    padding: 0px;
+    margin: 0px;
+  }
+
+  &:hover {
+    color: ${({ theme }) => theme.tile.color};
+    ${RightTooltip} {
+      opacity: 1;
+      visibility: visible;
+    }
+  }
+
+  &.menuItemActiv {
+    color: ${({ theme }) => theme.main.highlight};
+  }
 `;

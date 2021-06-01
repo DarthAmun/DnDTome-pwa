@@ -226,6 +226,15 @@ const ClasseView = ({ classe }: $Props) => {
                     :
                   </PropTitle>
                   <FormatedText text={feature.text} />
+                  {feature.selections !== undefined &&
+                    feature.selections.map((selection) => {
+                      return (
+                        <>
+                          <PropTitle>Choose from {selection}</PropTitle>
+                          <br />
+                        </>
+                      );
+                    })}
                 </Text>
               );
             });

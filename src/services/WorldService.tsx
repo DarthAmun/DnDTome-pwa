@@ -14,11 +14,11 @@ export const buildWorld = async (world: World): Promise<BuildWorld> => {
   let eventList: Promise<Event>[] = [];
   let locationList: Promise<Location>[] = [];
 
-  world.events.forEach((event: string) => {
+  world.events?.forEach((event: string) => {
     let [name, sources] = event.split("|");
     eventList.push(recivePromiseByMultiAttribute("events", { name: name, sources: sources }));
   });
-  world.locations.forEach((location: string) => {
+  world.locations?.forEach((location: string) => {
     let [name, sources] = location.split("|");
     locationList.push(recivePromiseByMultiAttribute("locations", { name: name, sources: sources }));
   });

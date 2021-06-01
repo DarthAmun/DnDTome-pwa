@@ -50,6 +50,8 @@ import BackgroundSearchBar from "../entities/backgrounds/BackgroundSearchBar";
 import BackgroundTile from "../entities/backgrounds/BackgroundTile";
 import FeatSearchBar from "../entities/feats/FeatSearchBar";
 import FeatTile from "../entities/feats/FeatTile";
+import NoteSearchBar from "../entities/notes/NoteSearchBar";
+import NoteTile from "../entities/notes/NoteTile";
 
 const EntityOverview = ({ match }: RouteComponentProps) => {
   const rawFilters = useQuery().get("filter");
@@ -137,6 +139,7 @@ const EntityOverview = ({ match }: RouteComponentProps) => {
     encounter: EncounterSearchBar,
     feat: FeatSearchBar,
     background: BackgroundSearchBar,
+    note: NoteSearchBar,
   };
 
   const tiles = {
@@ -160,6 +163,7 @@ const EntityOverview = ({ match }: RouteComponentProps) => {
     encounter: EncounterTile,
     feat: FeatTile,
     background: BackgroundTile,
+    note: NoteTile,
   };
 
   return (

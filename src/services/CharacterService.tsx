@@ -17,6 +17,29 @@ import Trait from "../data/races/Trait";
 import Spell from "../data/Spell";
 import { recivePromiseByAttribute, recivePromiseByMultiAttribute } from "./DatabaseService";
 
+const MulticlassSpellslotTable: number[][] = [
+  [2, 0, 0, 0, 0, 0, 0, 0, 0],
+  [3, 0, 0, 0, 0, 0, 0, 0, 0],
+  [4, 2, 0, 0, 0, 0, 0, 0, 0],
+  [4, 3, 0, 0, 0, 0, 0, 0, 0],
+  [4, 3, 2, 0, 0, 0, 0, 0, 0],
+  [4, 3, 3, 0, 0, 0, 0, 0, 0],
+  [4, 3, 3, 1, 0, 0, 0, 0, 0],
+  [4, 3, 3, 2, 0, 0, 0, 0, 0],
+  [4, 3, 3, 3, 1, 0, 0, 0, 0],
+  [4, 3, 3, 3, 2, 0, 0, 0, 0],
+  [4, 3, 3, 3, 2, 1, 0, 0, 0],
+  [4, 3, 3, 3, 2, 1, 0, 0, 0],
+  [4, 3, 3, 3, 2, 1, 1, 0, 0],
+  [4, 3, 3, 3, 2, 1, 1, 0, 0],
+  [4, 3, 3, 3, 2, 1, 1, 1, 0],
+  [4, 3, 3, 3, 2, 1, 1, 1, 0],
+  [4, 3, 3, 3, 2, 1, 1, 1, 1],
+  [4, 3, 3, 3, 3, 1, 1, 1, 1],
+  [4, 3, 3, 3, 3, 2, 1, 1, 1],
+  [4, 3, 3, 3, 3, 2, 2, 1, 1],
+];
+
 export const recalcClasses = async (char: Char) => {
   let bonis: { origin: string; value: number; max: number }[] = [];
   let spellSlots: {
@@ -32,7 +55,7 @@ export const recalcClasses = async (char: Char) => {
     classList.push(recivePromiseByMultiAttribute("classes", { name: name, sources: sources }));
   });
   const results = await Promise.all(classList);
-  results.forEach((classe: Class) => {
+  results?.forEach((classe: Class) => {
     char.classes.forEach((classSet) => {
       if (classe.name === classSet.classe.split("|")[0]) {
         fullClassList.push({ class: classe, classSet: classSet });
@@ -40,36 +63,62 @@ export const recalcClasses = async (char: Char) => {
     });
   });
 
-  fullClassList.forEach((classe: { class: Class; classSet: ClassSet }) => {
+  let multiclassCasterCount: number = 0;
+  let levelsTotal: number = 0;
+  fullClassList?.forEach((classe: { class: Class; classSet: ClassSet }) => {
+    if (
+      classe.class.featureSets[0].spellslots &&
+      classe.class.featureSets[0].spellslots.length > 0
+    ) {
+      multiclassCasterCount++;
+      if (classe.class.featureSets[0].spellslots.length === 9) levelsTotal += classe.classSet.level;
+      else if (classe.class.featureSets[0].spellslots.length === 5)
+        levelsTotal += Math.floor(classe.classSet.level / 2);
+    }
+  });
+
+  fullClassList?.forEach((classe: { class: Class; classSet: ClassSet }) => {
     let featureSet = classe.class.featureSets[classe.classSet.level - 1];
-    if (featureSet.bonis) {
-      featureSet.bonis.forEach((boni: Boni) => {
-        if (boni.isCurrency) {
-          bonis = [
-            ...bonis,
+    if (featureSet !== undefined) {
+      if (featureSet.bonis) {
+        featureSet.bonis?.forEach((boni: Boni) => {
+          if (boni.isCurrency) {
+            bonis = [
+              ...bonis,
+              {
+                origin: boni.name,
+                value: +boni.value,
+                max: +boni.value,
+              },
+            ];
+          }
+        });
+      }
+      if (multiclassCasterCount === 1) {
+        if (featureSet.spellslots && featureSet.spellslots.length > 0) {
+          spellSlots = [
+            ...spellSlots,
             {
-              origin: boni.name,
-              value: +boni.value,
-              max: +boni.value,
+              origin: classe.class.name,
+              slots: featureSet.spellslots,
+              max: featureSet.spellslots,
             },
           ];
         }
-      });
-    }
-    if (featureSet.spellslots && featureSet.spellslots.length > 0) {
-      spellSlots = [
-        ...spellSlots,
-        {
-          origin: classe.class.name,
-          slots: featureSet.spellslots,
-          max: featureSet.spellslots,
-        },
-      ];
+      } else if (multiclassCasterCount > 1) {
+        spellSlots = [
+          {
+            origin: "Multiclass Spellslots",
+            slots: MulticlassSpellslotTable[levelsTotal - 1],
+            max: MulticlassSpellslotTable[levelsTotal - 1],
+          },
+        ];
+      }
     }
   });
 
   let updatedBonis = bonis.map((newBoni) => {
-    let updatedOldBonis = char.currencyBonis.map((old) => {
+    let updatedOldBonis = char.currencyBonis?.map((old) => {
       if (newBoni.origin === old.origin) {
         return {
           origin: newBoni.origin,
@@ -233,9 +282,10 @@ export const buildCharacter = async (character: Char): Promise<BuildChar> => {
   let currentGears = await Promise.all(gearList);
   let currentBases = await Promise.all(baseList);
 
-  currentBases = currentBases
-    .filter((q) => q !== undefined)
-    .filter((q, idx) => currentBases.findIndex((g) => g.name === q.name) === idx);
+  currentBases = currentBases.filter((q) => q !== undefined);
+  currentBases = currentBases.filter(
+    (q, idx) => currentBases.findIndex((g) => g.name === q.name) === idx
+  );
 
   let [name, sources] = character.race.race.split("|");
   race = await recivePromiseByMultiAttribute("races", { name: name, sources: sources });
@@ -300,12 +350,13 @@ export const buildCharacter = async (character: Char): Promise<BuildChar> => {
             if (item.base !== "") {
               currentBases.forEach((base: Gear) => {
                 if (base !== undefined) {
-                  let [name, sources] = item.base.split("|");
+                  let [baseName, baseSources] = item.base.split("|");
                   if (
-                    (sources !== undefined &&
+                    (baseSources !== undefined &&
                       base.name.toLowerCase() + "|" + base.sources.toLowerCase() ===
-                        name.toLowerCase()) ||
-                    (sources === undefined && base.name.toLowerCase() === name.toLowerCase())
+                        item.base.toLowerCase()) ||
+                    (baseSources === undefined &&
+                      base.name.toLowerCase() === baseName.toLowerCase())
                   ) {
                     items.push({ ...originItem, item: item, base: base });
                   }

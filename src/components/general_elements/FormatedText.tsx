@@ -20,7 +20,7 @@ const FormatedText = ({ text }: $Props) => {
   let history = useHistory();
 
   useEffect(() => {
-    if (webhook !== undefined) {
+    if (webhook !== undefined && text !== undefined) {
       let newText = formatDiscordText(text);
       if (newText.length >= 2000) {
         newText = newText.substring(0, 1997) + "...";
