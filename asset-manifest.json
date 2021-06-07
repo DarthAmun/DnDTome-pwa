@@ -13,10 +13,10 @@
     "static/js/5.9bc794d2.chunk.js": "/DnDTome-pwa/static/js/5.9bc794d2.chunk.js",
     "static/js/5.9bc794d2.chunk.js.map": "/DnDTome-pwa/static/js/5.9bc794d2.chunk.js.map",
     "main.css": "/DnDTome-pwa/static/css/main.484463a6.chunk.css",
-    "main.js": "/DnDTome-pwa/static/js/main.c2476868.chunk.js",
-    "main.js.map": "/DnDTome-pwa/static/js/main.c2476868.chunk.js.map",
-    "runtime-main.js": "/DnDTome-pwa/static/js/runtime-main.de56f804.js",
-    "runtime-main.js.map": "/DnDTome-pwa/static/js/runtime-main.de56f804.js.map",
+    "main.js": "/DnDTome-pwa/static/js/main.891aa16c.chunk.js",
+    "main.js.map": "/DnDTome-pwa/static/js/main.891aa16c.chunk.js.map",
+    "runtime-main.js": "/DnDTome-pwa/static/js/runtime-main.e2bb8eee.js",
+    "runtime-main.js.map": "/DnDTome-pwa/static/js/runtime-main.e2bb8eee.js.map",
     "static/css/8.c1e28d34.chunk.css": "/DnDTome-pwa/static/css/8.c1e28d34.chunk.css",
     "static/js/8.ceacc77c.chunk.js": "/DnDTome-pwa/static/js/8.ceacc77c.chunk.js",
     "static/js/8.ceacc77c.chunk.js.map": "/DnDTome-pwa/static/js/8.ceacc77c.chunk.js.map",
@@ -30,8 +30,8 @@
     "static/js/12.cf66ed5f.chunk.js.map": "/DnDTome-pwa/static/js/12.cf66ed5f.chunk.js.map",
     "static/js/13.56250901.chunk.js": "/DnDTome-pwa/static/js/13.56250901.chunk.js",
     "static/js/13.56250901.chunk.js.map": "/DnDTome-pwa/static/js/13.56250901.chunk.js.map",
-    "static/js/14.99df57e4.chunk.js": "/DnDTome-pwa/static/js/14.99df57e4.chunk.js",
-    "static/js/14.99df57e4.chunk.js.map": "/DnDTome-pwa/static/js/14.99df57e4.chunk.js.map",
+    "static/js/14.da244593.chunk.js": "/DnDTome-pwa/static/js/14.da244593.chunk.js",
+    "static/js/14.da244593.chunk.js.map": "/DnDTome-pwa/static/js/14.da244593.chunk.js.map",
     "static/js/15.ca8f1e9c.chunk.js": "/DnDTome-pwa/static/js/15.ca8f1e9c.chunk.js",
     "static/js/15.ca8f1e9c.chunk.js.map": "/DnDTome-pwa/static/js/15.ca8f1e9c.chunk.js.map",
     "static/js/16.0c54cd01.chunk.js": "/DnDTome-pwa/static/js/16.0c54cd01.chunk.js",
@@ -69,9 +69,9 @@
     "static/media/selection.aad0d62e.gif": "/DnDTome-pwa/static/media/selection.aad0d62e.gif"
   },
   "entrypoints": [
-    "static/js/runtime-main.de56f804.js",
+    "static/js/runtime-main.e2bb8eee.js",
     "static/js/11.5165db6a.chunk.js",
     "static/css/main.484463a6.chunk.css",
-    "static/js/main.c2476868.chunk.js"
+    "static/js/main.891aa16c.chunk.js"
   ]
 }
