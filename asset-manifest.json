@@ -15,8 +15,8 @@
     "main.css": "/DnDTome-pwa/static/css/main.484463a6.chunk.css",
     "main.js": "/DnDTome-pwa/static/js/main.891aa16c.chunk.js",
     "main.js.map": "/DnDTome-pwa/static/js/main.891aa16c.chunk.js.map",
-    "runtime-main.js": "/DnDTome-pwa/static/js/runtime-main.c3ba2b73.js",
-    "runtime-main.js.map": "/DnDTome-pwa/static/js/runtime-main.c3ba2b73.js.map",
+    "runtime-main.js": "/DnDTome-pwa/static/js/runtime-main.a7154d74.js",
+    "runtime-main.js.map": "/DnDTome-pwa/static/js/runtime-main.a7154d74.js.map",
     "static/css/8.c1e28d34.chunk.css": "/DnDTome-pwa/static/css/8.c1e28d34.chunk.css",
     "static/js/8.ec14f9b6.chunk.js": "/DnDTome-pwa/static/js/8.ec14f9b6.chunk.js",
     "static/js/8.ec14f9b6.chunk.js.map": "/DnDTome-pwa/static/js/8.ec14f9b6.chunk.js.map",
@@ -30,8 +30,8 @@
     "static/js/12.ab835068.chunk.js.map": "/DnDTome-pwa/static/js/12.ab835068.chunk.js.map",
     "static/js/13.56250901.chunk.js": "/DnDTome-pwa/static/js/13.56250901.chunk.js",
     "static/js/13.56250901.chunk.js.map": "/DnDTome-pwa/static/js/13.56250901.chunk.js.map",
-    "static/js/14.58b54eb1.chunk.js": "/DnDTome-pwa/static/js/14.58b54eb1.chunk.js",
-    "static/js/14.58b54eb1.chunk.js.map": "/DnDTome-pwa/static/js/14.58b54eb1.chunk.js.map",
+    "static/js/14.010b987f.chunk.js": "/DnDTome-pwa/static/js/14.010b987f.chunk.js",
+    "static/js/14.010b987f.chunk.js.map": "/DnDTome-pwa/static/js/14.010b987f.chunk.js.map",
     "static/js/15.ca8f1e9c.chunk.js": "/DnDTome-pwa/static/js/15.ca8f1e9c.chunk.js",
     "static/js/15.ca8f1e9c.chunk.js.map": "/DnDTome-pwa/static/js/15.ca8f1e9c.chunk.js.map",
     "static/js/16.0c54cd01.chunk.js": "/DnDTome-pwa/static/js/16.0c54cd01.chunk.js",
@@ -69,7 +69,7 @@
     "static/media/selection.aad0d62e.gif": "/DnDTome-pwa/static/media/selection.aad0d62e.gif"
   },
   "entrypoints": [
-    "static/js/runtime-main.c3ba2b73.js",
+    "static/js/runtime-main.a7154d74.js",
     "static/js/11.5165db6a.chunk.js",
     "static/css/main.484463a6.chunk.css",
     "static/js/main.891aa16c.chunk.js"
