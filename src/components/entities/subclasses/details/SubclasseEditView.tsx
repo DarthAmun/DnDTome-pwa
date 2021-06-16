@@ -6,9 +6,12 @@ import FeatureSet from "../../../../data/classes/FeatureSet";
 import Boni from "../../../../data/classes/Boni";
 import Selection from "../../../../data/Selection";
 import Feature, {
+  FeatureRest,
+  featureRestArray,
   FeatureType,
   featureTypeArray,
-  getOptionFromEnum,
+  getOptionFromRestEnum,
+  getOptionFromTypeEnum,
 } from "../../../../data/classes/Feature";
 
 import { faLink, faPlus, faTrash, faMinus } from "@fortawesome/free-solid-svg-icons";
@@ -90,7 +93,7 @@ const SubclasseEditView = ({ subclasse, onEdit }: $Props) => {
     oldFeatureSet: FeatureSet,
     oldFeature: Feature,
     field: string,
-    value: string
+    value: string | number
   ) => {
     let features = subclasse.features.map((featureSet: FeatureSet) => {
       if (featureSet === oldFeatureSet && featureSet.features !== undefined) {
@@ -219,6 +222,7 @@ const SubclasseEditView = ({ subclasse, onEdit }: $Props) => {
           name: "",
           value: "",
           isCurrency: false,
+          rest: FeatureRest.none,
         };
         return { ...featureSet, bonis: [...featureSet.bonis, newBoni] };
       }
@@ -235,6 +239,8 @@ const SubclasseEditView = ({ subclasse, onEdit }: $Props) => {
           text: "",
           selections: [],
           usedCurrency: "",
+          uses: 0,
+          rest: FeatureRest.none,
           cost: 0,
           type: FeatureType.normal,
         });
@@ -345,6 +351,14 @@ const SubclasseEditView = ({ subclasse, onEdit }: $Props) => {
                         label="Boni Value"
                         onChange={(value) => onBoniChange(featureSet, boni, "value", value)}
                       />
+                      {boni.rest !== undefined && (
+                        <EnumField
+                          options={featureRestArray}
+                          value={getOptionFromRestEnum(boni.rest)}
+                          label="Reset on"
+                          onChange={(rest) => onBoniChange(featureSet, boni, "rest", rest)}
+                        />
+                      )}
                     </BoniContainer>
                   );
                 })}
@@ -368,9 +382,20 @@ const SubclasseEditView = ({ subclasse, onEdit }: $Props) => {
                       />
                       <EnumField
                         options={featureTypeArray}
-                        value={getOptionFromEnum(feature.type)}
+                        value={getOptionFromTypeEnum(feature.type)}
                         label="Types"
                         onChange={(type) => onFeatureChange(featureSet, feature, "type", type)}
+                      />
+                      <NumberField
+                        value={feature.uses}
+                        label="Uses"
+                        onChange={(uses) => onFeatureChange(featureSet, feature, "uses", uses)}
+                      />
+                      <EnumField
+                        options={featureRestArray}
+                        value={getOptionFromRestEnum(feature.rest)}
+                        label="per"
+                        onChange={(rest) => onFeatureChange(featureSet, feature, "rest", rest)}
                       />
                       <IconButton icon={faTrash} onClick={() => removeFeature(feature)} />
                       <FeatureText

@@ -1,7 +1,7 @@
 import Background from "../data/Background";
 import Boni from "../data/classes/Boni";
 import Class from "../data/classes/Class";
-import Feature from "../data/classes/Feature";
+import Feature, { FeatureRest } from "../data/classes/Feature";
 import FeatureSet from "../data/classes/FeatureSet";
 import Subclass from "../data/classes/Subclass";
 import Feat from "../data/Feat";
@@ -90,7 +90,8 @@ const replaceTags = (text: string): string => {
 
 const parseGear = (obj: any, fileName: string) => {
   let text = "";
-  if (obj.entries !== undefined) text = recursiveTextAdder(obj.entries, text).text;
+  let additional: string[] = [];
+  if (obj.entries !== undefined) text = recursiveTextAdder(obj.entries, text, additional);
   const description = replaceTags(text);
 
   let type = "";
@@ -248,7 +249,8 @@ const parseGear = (obj: any, fileName: string) => {
 
 const parseItem = (obj: any, fileName: string) => {
   let text = "";
-  if (obj.entries !== undefined) text = recursiveTextAdder(obj.entries, text).text;
+  let additional: string[] = [];
+  if (obj.entries !== undefined) text = recursiveTextAdder(obj.entries, text, additional);
   const description = replaceTags(text);
 
   let magicBonus = 0;
@@ -569,7 +571,8 @@ export const makeSpell = (obj: any, fileName: string): Spell => {
   duration = duration.trim();
 
   let text = "";
-  if (obj.entries !== undefined) text = recursiveTextAdder(obj.entries, text).text;
+  let additional: string[] = [];
+  if (obj.entries !== undefined) text = recursiveTextAdder(obj.entries, text, additional);
   if (obj.entriesHigherLevel !== undefined && obj.entriesHigherLevel.entries !== undefined) {
     obj.entriesHigherLevel.forEach((entry: any) => {
       text += "At Higher Levels: ";
@@ -910,29 +913,33 @@ const addAdditionalClassFeatures = (
     const featureParts: string[] = feature.split("|");
 
     let text = "";
+    let additional: string[] = [];
     json.classFeature.forEach((objFeature: any) => {
-      if (objFeature.name === featureParts[0] && objFeature.source === sources) {
-        text = recursiveTextAdder(objFeature.entries, text).text;
+      if (
+        objFeature.name === featureParts[0] &&
+        objFeature.className === featureParts[1] &&
+        objFeature.source === sources
+      ) {
+        text = recursiveTextAdder(objFeature.entries, text, additional);
       }
     });
     text = replaceTags(text);
 
     if (text !== undefined && text !== null && text !== "") {
       if (featureParts[0].toLocaleLowerCase() === "ability score improvement") {
-        text = "";
       }
       if (featureSets[+featureParts[3] - 1] === undefined) {
         featureSets.push(
           new FeatureSet(
             +featureParts[3],
-            [new Feature(featureParts[0], text, "", 0, [], undefined)],
+            [new Feature(featureParts[0], text, "", 0, FeatureRest.none, 0, [], undefined)],
             [],
             []
           )
         );
       } else {
         featureSets[+featureParts[3] - 1].features.push(
-          new Feature(featureParts[0], text, "", 0, [], undefined)
+          new Feature(featureParts[0], text, "", 0, FeatureRest.none, 0, [], undefined)
         );
       }
     }
@@ -995,16 +1002,16 @@ export const makeClass = (obj: any, json: any, fileName: string): Class => {
             let bonis: Boni[] | undefined = featureSets[rowIndex].bonis;
             if (bonis === undefined) bonis = [];
             if (typeof row[colIndex] == "number") {
-              bonis.push(new Boni(clearLabel, row[colIndex] + "", true));
+              bonis.push(new Boni(clearLabel, row[colIndex] + "", true, FeatureRest.none));
             } else if (typeof row[colIndex] == "string") {
               let text = replaceTags(row[colIndex]).split("|")[0].trim();
-              bonis.push(new Boni(clearLabel, text, false));
+              bonis.push(new Boni(clearLabel, text, false, FeatureRest.none));
             } else {
               if (row[colIndex].value !== undefined) {
-                bonis.push(new Boni(clearLabel, row[colIndex].value + "", false));
+                bonis.push(new Boni(clearLabel, row[colIndex].value + "", false, FeatureRest.none));
               } else if (row[colIndex].toRoll !== undefined) {
                 let text = row[colIndex].toRoll[0].number + "d" + row[colIndex].toRoll[0].faces;
-                bonis.push(new Boni(clearLabel, text, false));
+                bonis.push(new Boni(clearLabel, text, false, FeatureRest.none));
               }
             }
             featureSets[rowIndex].bonis = bonis;
@@ -1023,9 +1030,11 @@ export const makeClass = (obj: any, json: any, fileName: string): Class => {
       const featureParts: string[] = featureRaw.split("|");
 
       let text = "";
+      let additional: string[] = [];
+      let selections: { count: number } = { count: 0 };
       json.classFeature?.forEach((objFeature: any) => {
         if (objFeature.name === featureParts[0] && objFeature.source === sources) {
-          const { text: newText, additional } = recursiveTextAdder(objFeature.entries, text);
+          const newText = recursiveTextAdder(objFeature.entries, text, additional, selections);
           if (additional.length > 0)
             addAdditionalClassFeatures(additional, featureSets, json, sources);
           text = newText;
@@ -1038,21 +1047,32 @@ export const makeClass = (obj: any, json: any, fileName: string): Class => {
         if (featureParts[0].toLocaleLowerCase() === "ability score improvement") {
           isAbilityImprov = true;
         }
+        let newFeature: Feature = new Feature(
+          featureParts[0],
+          text,
+          "",
+          0,
+          FeatureRest.none,
+          0,
+          [],
+          undefined
+        );
+        [...Array(selections.count)].forEach(() => {
+          newFeature.selections.push(featureParts[0]);
+        });
         if (featureSets[+featureParts[3] - 1] === undefined) {
           featureSets.push(
             new FeatureSet(
               +featureParts[3],
-              isAbilityImprov ? [] : [new Feature(featureParts[0], text, "", 0, [], undefined)],
+              isAbilityImprov ? [] : [newFeature],
               [],
               [],
               isAbilityImprov
             )
           );
         } else {
-          featureSets[+featureParts[3] - 1].features.push(
-            new Feature(featureParts[0], text, "", 0, [], undefined)
-          );
-          featureSets[+featureParts[3] - 1].isAbilityImprov = isAbilityImprov;
+          if (!isAbilityImprov) featureSets[+featureParts[3] - 1].features.push(newFeature);
+          if (isAbilityImprov) featureSets[+featureParts[3] - 1].isAbilityImprov = isAbilityImprov;
         }
       }
     });
@@ -1067,8 +1087,12 @@ const addAdditionalSubclassFeatures = (additional: string[], features: FeatureSe
 
     let text = "";
     json.subclassFeature.forEach((objFeature: any) => {
-      if (objFeature.subclassShortName === featureParts[3] && objFeature.name === featureParts[0]) {
-        text = recursiveTextAdder(objFeature.entries, text).text;
+      if (
+        objFeature.subclassShortName === featureParts[3] &&
+        objFeature.className === featureParts[1] &&
+        objFeature.name === featureParts[0]
+      ) {
+        text = recursiveTextAdder(objFeature.entries, text, additional);
       }
     });
     text = replaceTags(text);
@@ -1081,12 +1105,14 @@ const addAdditionalSubclassFeatures = (additional: string[], features: FeatureSe
     if (text !== undefined && text !== null && text !== "") {
       if (featureParts[0].toLocaleLowerCase() === "ability score improvement") {
         text = "";
-      }
-      features
-        .filter((featureSet) => featureSet.level === +featureParts[5])
-        .forEach((feat) => {
-          feat.features.push(new Feature(featureParts[0], text, "", 0, [], undefined));
-        });
+      } else
+        features
+          .filter((featureSet) => featureSet.level === +featureParts[5])
+          .forEach((feat) => {
+            feat.features.push(
+              new Feature(featureParts[0], text, "", 0, FeatureRest.none, 0, [], undefined)
+            );
+          });
     }
   });
 };
@@ -1104,12 +1130,13 @@ export const makeSubclass = (obj: any, json: any, classe: string, fileName: stri
       const featureParts: string[] = featureRaw.split("|");
 
       let text = "";
+      let additional: string[] = [];
       json.subclassFeature?.forEach((objFeature: any) => {
         if (
           objFeature.subclassShortName === featureParts[3] &&
           objFeature.name === featureParts[0]
         ) {
-          const { text: newText, additional } = recursiveTextAdder(objFeature.entries, text);
+          const newText = recursiveTextAdder(objFeature.entries, text, additional);
           if (additional.length > 0) addAdditionalSubclassFeatures(additional, features, json);
           text = newText;
         }
@@ -1128,7 +1155,9 @@ export const makeSubclass = (obj: any, json: any, classe: string, fileName: stri
         features
           .filter((featureSet) => featureSet.level === +featureParts[5])
           .forEach((feat) => {
-            feat.features.push(new Feature(featureParts[0], text, "", 0, [], undefined));
+            feat.features.push(
+              new Feature(featureParts[0], text, "", 0, FeatureRest.none, 0, [], undefined)
+            );
           });
       }
     });
@@ -1139,25 +1168,28 @@ export const makeSubclass = (obj: any, json: any, classe: string, fileName: stri
 const recursiveTextAdder = (
   entries: any,
   text: string,
+  additional: string[],
+  selections?: { count: number },
   seperator?: string
-): { text: string; additional: string[] } => {
+): string => {
   let newText: string = text;
-  let additional: string[] = [];
   if (entries !== undefined && entries !== null) {
     if (typeof entries == "string" || typeof entries == "number") {
       newText += entries + "";
+    } else if (entries.type !== undefined && entries.type === "options") {
+      if (entries.count !== undefined && selections !== undefined) selections.count = entries.count;
     } else if (Array.isArray(entries)) {
       entries.forEach((entry) => {
-        const { text, additional } = recursiveTextAdder(entry, newText, seperator);
+        const text = recursiveTextAdder(entry, newText, additional, selections, seperator);
         newText = text;
-        additional.concat(additional);
+        // additional.concat(additional);
       });
       newText += "\n";
     } else if (entries.entries !== undefined) {
       if (entries.name !== undefined) newText += entries.name + "\n";
-      const { text, additional } = recursiveTextAdder(entries.entries, newText, seperator);
+      const text = recursiveTextAdder(entries.entries, newText, additional, selections, seperator);
       newText = text + "\r\n";
-      additional.concat(additional);
+      // newAdditional.concat(additional);
     } else if (entries.items !== undefined) {
       entries.items.forEach((item: any) => {
         if (typeof item == "string" || typeof item == "number") {
@@ -1194,20 +1226,20 @@ const recursiveTextAdder = (
     } else if (typeof entries == "object") {
       for (const value of Object.entries(entries)) {
         if (value[0] !== undefined) {
-          const { text, additional } = recursiveTextAdder(value[0], newText, seperator);
+          const text = recursiveTextAdder(value[0], newText, additional, selections, seperator);
           newText = text + (seperator || ": ");
-          additional.concat(additional);
+          // newAdditional.concat(additional);
         }
         if (value[1] !== undefined) {
-          const { text, additional } = recursiveTextAdder(value[1], newText, seperator);
+          const text = recursiveTextAdder(value[1], newText, additional, selections, seperator);
           newText = text;
-          additional.concat(additional);
+          // newAdditional.concat(additional);
         }
         newText += "\r\n";
       }
     }
   }
-  return { text: newText, additional: additional };
+  return newText;
 };
 
 export const makeSelection = (
@@ -1219,12 +1251,17 @@ export const makeSelection = (
   level: number;
 } => {
   let text = "";
-  if (obj.entries !== undefined) text = recursiveTextAdder(obj.entries, text).text;
+  let additional: string[] = [];
+  if (obj.entries !== undefined) text = recursiveTextAdder(obj.entries, text, additional);
   text = replaceTags(text);
 
   let level: number = 0;
   let prequisite: string = "";
-  if (obj.prerequisite !== undefined && obj.prerequisite !== "") {
+  if (
+    obj.prerequisite !== undefined &&
+    Array.isArray(obj.prerequisite) &&
+    obj.prerequisite.length > 0
+  ) {
     for (const [key, value] of Object.entries(obj.prerequisite[0])) {
       if (key === "level") {
         for (const [key2, value2] of Object.entries(value as Object)) {
@@ -1281,20 +1318,18 @@ export const makeSelection = (
 
 export const makeFeat = (obj: any, json: any, fileName: string): Feat => {
   let text = "";
-  if (obj.ability !== undefined) text = recursiveTextAdder(obj.ability, text).text;
-  if (obj.entries !== undefined) text = recursiveTextAdder(obj.entries, text).text;
+  let additional: string[] = [];
+  if (obj.ability !== undefined) text = recursiveTextAdder(obj.ability, text, additional);
+  if (obj.entries !== undefined) text = recursiveTextAdder(obj.entries, text, additional);
   text = replaceTags(text);
 
   let prequisite = "";
   if (obj.prerequisite !== undefined)
-    prequisite = recursiveTextAdder(obj.prerequisite, prequisite).text;
+    prequisite = recursiveTextAdder(obj.prerequisite, prequisite, additional);
   prequisite = replaceTags(prequisite);
 
-  let name = obj.name;
-  name = obj.source !== undefined ? name + " (" + obj.source + ")" : name;
-
   return {
-    name: name,
+    name: obj.name,
     prerequisite: prequisite,
     description: text,
     sources: obj.source,
@@ -1304,24 +1339,21 @@ export const makeFeat = (obj: any, json: any, fileName: string): Feat => {
 export const makeBackground = (obj: any, json: any, fileName: string): Background => {
   let proficiencies = "";
   let text = "";
-
+  let additional: string[] = [];
   if (obj.entries !== undefined) {
     let entries = [...obj.entries];
     if (entries[0].type === "list") {
-      proficiencies = recursiveTextAdder(entries[0], proficiencies).text;
+      proficiencies = recursiveTextAdder(entries[0], proficiencies, additional);
       entries = entries.slice(1);
     }
     proficiencies = replaceTags(proficiencies);
 
-    text = recursiveTextAdder(entries, text).text;
+    text = recursiveTextAdder(entries, text, additional);
     text = replaceTags(text);
   }
 
-  let name = obj.name;
-  name = obj.source !== undefined ? name + " (" + obj.source + ")" : name;
-
   return {
-    name: name,
+    name: obj.name,
     proficiencies: proficiencies,
     description: text,
     sources: obj.source,

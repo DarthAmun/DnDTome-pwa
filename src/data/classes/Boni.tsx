@@ -1,13 +1,17 @@
 import IEntity from "../IEntity";
+import { FeatureRest } from "./Feature";
 
 export default class Boni implements IEntity {
   name: string;
   value: string;
   isCurrency: boolean;
-  constructor(name: string, value: string, isCurrency: boolean) {
+  rest: FeatureRest;
+
+  constructor(name: string, value: string, isCurrency: boolean, rest: FeatureRest) {
     this.name = name;
     this.value = value;
     this.isCurrency = isCurrency;
+    this.rest = rest | FeatureRest.none;
   }
 }
 

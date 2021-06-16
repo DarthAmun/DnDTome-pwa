@@ -53,10 +53,16 @@ const DataSelectField = ({
       results.forEach((entities: IEntity[] | undefined) => {
         if (entities !== undefined)
           entities.forEach((entity: IEntity) => {
-            newList.push({
-              value: entity.name + "|" + entity.sources,
-              label: entity.name + "|" + entity.sources,
-            });
+            if (entity.sources !== undefined)
+              newList.push({
+                value: entity.name + "|" + entity.sources,
+                label: entity.name + "|" + entity.sources,
+              });
+            else
+              newList.push({
+                value: entity.name,
+                label: entity.name,
+              });
           });
       });
       setOptions(newList);
@@ -74,6 +80,8 @@ const DataSelectField = ({
   const handleChange = (option: { value: string; label: string }) => {
     if (option !== null && option !== undefined) {
       onChange(option.value);
+    } else {
+      onChange("");
     }
   };
 

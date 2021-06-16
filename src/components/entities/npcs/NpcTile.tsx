@@ -24,7 +24,18 @@ const NpcTile = ({ npc }: $Props) => {
   }, [npc]);
 
   return (
-    <Tile to={"/npc-detail/id/" + npc.id}>
+    <Tile
+      to={"/npc-detail/id/" + npc.id}
+      style={{
+        opacity:
+          npc.char?.deathSaves !== undefined &&
+          npc.char?.deathSaves[3] === 1 &&
+          npc.char?.deathSaves[4] === 1 &&
+          npc.char?.deathSaves[5] === 1
+            ? 0.3
+            : 1,
+      }}
+    >
       {npc.monster !== undefined && (
         <Level>
           <FontAwesomeIcon icon={faDragon} />
@@ -38,7 +49,15 @@ const NpcTile = ({ npc }: $Props) => {
       {getPicture() !== "" ? <Image pic={getPicture()}></Image> : ""}
       <PropWrapper>
         <Name>
-          <b>{npc.name}</b>
+          <b>
+            {npc.name}{" "}
+            {npc.char?.deathSaves !== undefined &&
+            npc.char?.deathSaves[3] === 1 &&
+            npc.char?.deathSaves[4] === 1 &&
+            npc.char?.deathSaves[5] === 1
+              ? " - Dead"
+              : ""}
+          </b>
         </Name>
 
         <WideProp>

@@ -15,6 +15,7 @@ import CharLabEquipment from "./CharLabEquipment";
 import { useQuery } from "../../../../hooks/QueryHook";
 import CharLabBackground from "./CharLabBackground";
 import { recalcClasses } from "../../../../services/CharacterService";
+import CharView from "../details/CharView";
 
 const CharLab = () => {
   let history = useHistory();
@@ -182,10 +183,17 @@ const CharLab = () => {
                 completedAbilities &&
                 completedGeneral &&
                 completedEquipment && (
-                  <PropWrapper>
-                    <Prop>Create Char?</Prop>
-                    <IconButton icon={faCheckCircle} onClick={() => saveChar()} />
-                  </PropWrapper>
+                  <>
+                    <PropWrapper>
+                      <Prop>Create Char?</Prop>
+                      <IconButton icon={faCheckCircle} onClick={() => saveChar()} />
+                    </PropWrapper>
+                    <CharView
+                      character={newChar}
+                      modifications={true}
+                      saveChar={() => undefined}
+                    ></CharView>
+                  </>
                 )}
             </>
           )}

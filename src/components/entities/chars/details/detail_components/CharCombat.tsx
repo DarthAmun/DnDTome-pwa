@@ -1,4 +1,6 @@
 import { faDiscord } from "@fortawesome/free-brands-svg-icons";
+import { faCheckSquare, faSquare } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router";
 import styled from "styled-components";
@@ -12,9 +14,10 @@ import FormatedText from "../../../../general_elements/FormatedText";
 
 interface $Props {
   buildChar: BuildChar;
+  onChange: (character: BuildChar) => void;
 }
 
-const CharCombat = ({ buildChar }: $Props) => {
+const CharCombat = ({ buildChar, onChange }: $Props) => {
   let history = useHistory();
   let webhook = useWebhook();
   const [actions, setActions] = useState<Feature[]>([]);
@@ -114,6 +117,27 @@ const CharCombat = ({ buildChar }: $Props) => {
       setReactions(newReactions);
     }
   }, [buildChar]);
+
+  const castUseFeature = (index: number, i: number) => {
+    let newUses = [...buildChar.character.currentFeatureUses];
+    if (newUses[index].value === i + 1) {
+      newUses[index].value = i;
+    } else {
+      newUses[index].value = i + 1;
+    }
+    onChange({
+      ...buildChar,
+      oldCharacter: { ...buildChar.oldCharacter, currentFeatureUses: newUses },
+    });
+  };
+
+  const changeSlotIcon = (aviable: number, i: number) => {
+    if (aviable > i) {
+      return faCheckSquare;
+    } else {
+      return faSquare;
+    }
+  };
 
   return (
     <>
@@ -295,6 +319,36 @@ const CharCombat = ({ buildChar }: $Props) => {
               return (
                 <Text key={index}>
                   <PropTitle>{action.name}:</PropTitle>
+                  {action.uses > 0 && action.rest !== undefined && (
+                    <SlotRow key={action.name + index + "rest"}>
+                      <SlotTitle>Uses:</SlotTitle>
+                      {buildChar.character.currentFeatureUses.map(
+                        (
+                          currentUses: {
+                            origin: string;
+                            value: number;
+                            max: number;
+                          },
+                          index: number
+                        ) => {
+                          if (action.name === currentUses.origin) {
+                            return [...Array(currentUses.max)].map((val, i: number) => {
+                              return (
+                                <SlotIcon
+                                  key={action.name + "use" + i}
+                                  onClick={(e) => castUseFeature(index, i)}
+                                >
+                                  <FontAwesomeIcon icon={changeSlotIcon(currentUses.value, i)} />
+                                </SlotIcon>
+                              );
+                            });
+                          } else {
+                            return <></>;
+                          }
+                        }
+                      )}
+                    </SlotRow>
+                  )}
                   <FormatedText text={action.text} />
                 </Text>
               );
@@ -309,6 +363,36 @@ const CharCombat = ({ buildChar }: $Props) => {
               return (
                 <Text key={index}>
                   <PropTitle>{action.name}:</PropTitle>
+                  {action.uses > 0 && action.rest !== undefined && (
+                    <SlotRow key={action.name + index + "rest"}>
+                      <SlotTitle>Uses:</SlotTitle>
+                      {buildChar.character.currentFeatureUses.map(
+                        (
+                          currentUses: {
+                            origin: string;
+                            value: number;
+                            max: number;
+                          },
+                          index: number
+                        ) => {
+                          if (action.name === currentUses.origin) {
+                            return [...Array(currentUses.max)].map((val, i: number) => {
+                              return (
+                                <SlotIcon
+                                  key={action.name + "use" + i}
+                                  onClick={(e) => castUseFeature(index, i)}
+                                >
+                                  <FontAwesomeIcon icon={changeSlotIcon(currentUses.value, i)} />
+                                </SlotIcon>
+                              );
+                            });
+                          } else {
+                            return <></>;
+                          }
+                        }
+                      )}
+                    </SlotRow>
+                  )}
                   <FormatedText text={action.text} />
                 </Text>
               );
@@ -420,4 +504,27 @@ const MainLink = styled.span`
   font-size: 16px;
   padding: 0px 5px 0px 5px;
   cursor: pointer;
+`;
+
+const SlotRow = styled.div`
+  flex: 1 1 100%;
+  line-height: 24px;
+
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+`;
+const SlotIcon = styled.div`
+  font-size: 24px;
+  flex: 1 1;
+  max-width: min-content;
+  margin-right: 5px;
+  cursor: pointer;
+`;
+
+const SlotTitle = styled.span`
+  display: inline-block;
+  color: ${({ theme }) => theme.tile.backgroundColorLink};
+  text-decoration: none;
+  margin: 0px 5px 0px 5px;
 `;

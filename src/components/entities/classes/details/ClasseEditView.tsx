@@ -7,9 +7,12 @@ import Selection from "../../../../data/Selection";
 
 import { faLink, faImage, faPlus, faTrash, faMinus } from "@fortawesome/free-solid-svg-icons";
 import Feature, {
+  FeatureRest,
+  featureRestArray,
   FeatureType,
   featureTypeArray,
-  getOptionFromEnum,
+  getOptionFromRestEnum,
+  getOptionFromTypeEnum,
 } from "../../../../data/classes/Feature";
 import TextButton from "../../../form_elements/TextButton";
 import CheckField from "../../../form_elements/CheckField";
@@ -222,6 +225,7 @@ const ClasseEditView = ({ classe, onEdit }: $Props) => {
           name: "",
           value: "",
           isCurrency: false,
+          rest: FeatureRest.none,
         };
         return { ...featureSet, bonis: [...featureSet.bonis, newBoni] };
       }
@@ -237,6 +241,8 @@ const ClasseEditView = ({ classe, onEdit }: $Props) => {
           name: "",
           text: "",
           type: FeatureType.normal,
+          uses: 0,
+          rest: FeatureRest.none,
           usedCurrency: "",
           cost: 0,
           selections: [],
@@ -381,6 +387,14 @@ const ClasseEditView = ({ classe, onEdit }: $Props) => {
                         label="is Currency?"
                         onChange={(value) => onBoniChange(featureSet, boni, "isCurrency", value)}
                       />
+                      {boni.rest !== undefined && (
+                        <EnumField
+                          options={featureRestArray}
+                          value={getOptionFromRestEnum(boni.rest)}
+                          label="Reset on"
+                          onChange={(rest) => onBoniChange(featureSet, boni, "rest", rest)}
+                        />
+                      )}
                     </BoniContainer>
                   );
                 })}
@@ -404,9 +418,20 @@ const ClasseEditView = ({ classe, onEdit }: $Props) => {
                       />
                       <EnumField
                         options={featureTypeArray}
-                        value={getOptionFromEnum(feature.type)}
+                        value={getOptionFromTypeEnum(feature.type)}
                         label="Types"
                         onChange={(type) => onFeatureChange(featureSet, feature, "type", type)}
+                      />
+                      <NumberField
+                        value={feature.uses}
+                        label="Uses"
+                        onChange={(uses) => onFeatureChange(featureSet, feature, "uses", uses)}
+                      />
+                      <EnumField
+                        options={featureRestArray}
+                        value={getOptionFromRestEnum(feature.rest)}
+                        label="per"
+                        onChange={(rest) => onFeatureChange(featureSet, feature, "rest", rest)}
                       />
                       {featureSet.bonis !== undefined && (
                         <>

@@ -221,7 +221,7 @@ const FormatedText = ({ text }: $Props) => {
     checkedText = formatLink(checkedText);
     setFormatedParts(checkedText);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [text]);
 
   return (
     <FormatedTextContainer>

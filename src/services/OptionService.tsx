@@ -17,6 +17,7 @@ import Npc, { isNpc } from "../data/campaign/Npc";
 import Location, { isLocation } from "../data/world/Location";
 import Event, { isEvent } from "../data/world/Event";
 import World, { isWorld } from "../data/world/World";
+import Group from "../data/campaign/Group";
 
 export const scanImportFileTest = async (json: any, fileName: string, callback: () => void) => {
   let promList: Promise<any>[] = [];
@@ -241,7 +242,8 @@ export const exportAllFromTable = (tableName: string, filename: string) => {
 };
 
 export const exportAll = async (filename: string) => {
-  const spells = await reciveAllPromise("spells");
+  console.time("Get all");
+  let spells = await reciveAllPromise("spells");
   let items = await reciveAllPromise("items");
   let gears = await reciveAllPromise("gears");
   let monsters = await reciveAllPromise("monsters");
@@ -262,6 +264,75 @@ export const exportAll = async (filename: string) => {
   let groups = await reciveAllPromise("groups");
   let feats = await reciveAllPromise("feats");
   let backgrounds = await reciveAllPromise("backgrounds");
+  let notes = await reciveAllPromise("notes");
+  console.timeEnd("Get all");
+
+  console.time("Remove Base64 Images");
+  spells = spells.map((v: Spell) => {
+    let newV = { ...v };
+    newV.picBase64 = "";
+    return newV;
+  });
+  items = items.map((v: Item) => {
+    let newV = { ...v };
+    newV.picBase64 = "";
+    return newV;
+  });
+  gears = gears.map((v: Gear) => {
+    let newV = { ...v };
+    newV.picBase64 = "";
+    return newV;
+  });
+  monsters = monsters.map((v: Monster) => {
+    let newV = { ...v };
+    newV.picBase64 = "";
+    return newV;
+  });
+  races = races.map((v: Race) => {
+    let newV = { ...v };
+    newV.picBase64 = "";
+    return newV;
+  });
+  classes = classes.map((v: Class) => {
+    let newV = { ...v };
+    newV.picBase64 = "";
+    return newV;
+  });
+  chars = chars.map((v: Char) => {
+    let newV = { ...v };
+    newV.picBase64 = "";
+    return newV;
+  });
+  campaigns = campaigns.map((v: Campaign) => {
+    let newV = { ...v };
+    newV.picBase64 = "";
+    return newV;
+  });
+  quests = quests.map((v: Quest) => {
+    let newV = { ...v };
+    newV.picBase64 = "";
+    return newV;
+  });
+  npcs = npcs.map((v: Npc) => {
+    let newV = { ...v };
+    newV.picBase64 = "";
+    if (newV.char !== undefined) {
+      let newChar: Char = { ...newV.char };
+      newChar.picBase64 = "";
+      newV.char = newChar;
+    } else if (newV.monster !== undefined) {
+      let newMonster: Monster = { ...newV.monster };
+      newMonster.picBase64 = "";
+      newV.monster = newMonster;
+    }
+    return newV;
+  });
+  groups = groups.map((v: Group) => {
+    let newV = { ...v };
+    newV.picBase64 = "";
+    return newV;
+  });
+  console.timeEnd("Remove Base64 Images");
 
   let all: any = {
     spells: spells,
@@ -285,6 +356,157 @@ export const exportAll = async (filename: string) => {
     groups: groups,
     feats: feats,
     backgrounds: backgrounds,
+    notes: notes,
+  };
+
+  let contentType = "application/json;charset=utf-8;";
+
+  var a = document.createElement("a");
+  a.download = filename;
+  a.href = "data:" + contentType + "," + encodeURIComponent(JSON.stringify(all));
+  a.target = "_blank";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+};
+
+export const exportAllRight = async (filename: string) => {
+  console.time("Get all");
+  let spells = await reciveAllPromise("spells");
+  let items = await reciveAllPromise("items");
+  let gears = await reciveAllPromise("gears");
+  let monsters = await reciveAllPromise("monsters");
+  let races = await reciveAllPromise("races");
+  let subraces = await reciveAllPromise("subraces");
+  let classes = await reciveAllPromise("classes");
+  let subclasses = await reciveAllPromise("subclasses");
+  let chars = await reciveAllPromise("chars");
+  let feats = await reciveAllPromise("feats");
+  let backgrounds = await reciveAllPromise("backgrounds");
+  console.timeEnd("Get all");
+
+  console.time("Remove Base64 Images");
+  spells = spells.map((v: Spell) => {
+    let newV = { ...v };
+    newV.picBase64 = "";
+    return newV;
+  });
+  items = items.map((v: Item) => {
+    let newV = { ...v };
+    newV.picBase64 = "";
+    return newV;
+  });
+  gears = gears.map((v: Gear) => {
+    let newV = { ...v };
+    newV.picBase64 = "";
+    return newV;
+  });
+  monsters = monsters.map((v: Monster) => {
+    let newV = { ...v };
+    newV.picBase64 = "";
+    return newV;
+  });
+  races = races.map((v: Race) => {
+    let newV = { ...v };
+    newV.picBase64 = "";
+    return newV;
+  });
+  classes = classes.map((v: Class) => {
+    let newV = { ...v };
+    newV.picBase64 = "";
+    return newV;
+  });
+  chars = chars.map((v: Char) => {
+    let newV = { ...v };
+    newV.picBase64 = "";
+    return newV;
+  });
+  console.timeEnd("Remove Base64 Images");
+
+  let all: any = {
+    spells: spells,
+    items: items,
+    gears: gears,
+    monsters: monsters,
+    races: races,
+    subraces: subraces,
+    classes: classes,
+    subclasses: subclasses,
+    chars: chars,
+    feats: feats,
+    backgrounds: backgrounds,
+  };
+
+  let contentType = "application/json;charset=utf-8;";
+
+  var a = document.createElement("a");
+  a.download = filename;
+  a.href = "data:" + contentType + "," + encodeURIComponent(JSON.stringify(all));
+  a.target = "_blank";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+};
+
+export const exportAllLeft = async (filename: string) => {
+  console.time("Get all");
+  let encounters = await reciveAllPromise("encounters");
+  let selections = await reciveAllPromise("selections");
+  let randomTables = await reciveAllPromise("randomTables");
+  let campaigns = await reciveAllPromise("campaigns");
+  let quests = await reciveAllPromise("quests");
+  let npcs = await reciveAllPromise("npcs");
+  let worlds = await reciveAllPromise("worlds");
+  let locations = await reciveAllPromise("locations");
+  let events = await reciveAllPromise("events");
+  let groups = await reciveAllPromise("groups");
+  let notes = await reciveAllPromise("notes");
+  console.timeEnd("Get all");
+
+  console.time("Remove Base64 Images");
+  campaigns = campaigns.map((v: Campaign) => {
+    let newV = { ...v };
+    newV.picBase64 = "";
+    return newV;
+  });
+  quests = quests.map((v: Quest) => {
+    let newV = { ...v };
+    newV.picBase64 = "";
+    return newV;
+  });
+  npcs = npcs.map((v: Npc) => {
+    let newV = { ...v };
+    newV.picBase64 = "";
+    if (newV.char !== undefined) {
+      let newChar: Char = { ...newV.char };
+      newChar.picBase64 = "";
+      newV.char = newChar;
+    } else if (newV.monster !== undefined) {
+      let newMonster: Monster = { ...newV.monster };
+      newMonster.picBase64 = "";
+      newV.monster = newMonster;
+    }
+    return newV;
+  });
+  groups = groups.map((v: Group) => {
+    let newV = { ...v };
+    newV.picBase64 = "";
+    return newV;
+  });
+  console.timeEnd("Remove Base64 Images");
+
+  let all: any = {
+    encounters: encounters,
+    selections: selections,
+    randomTables: randomTables,
+    campaigns: campaigns,
+    quests: quests,
+    npcs: npcs,
+    worlds: worlds,
+    locations: locations,
+    events: events,
+    groups: groups,
+    notes: notes,
   };
 
   let contentType = "application/json;charset=utf-8;";

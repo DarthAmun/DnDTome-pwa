@@ -104,7 +104,7 @@ const SlotRow = styled.div`
 `;
 const SlotIcon = styled.div`
   font-size: 24px;
-  flew: 1 1;
+  flex: 1 1;
   margin-right: 5px;
   cursor: pointer;
 `;

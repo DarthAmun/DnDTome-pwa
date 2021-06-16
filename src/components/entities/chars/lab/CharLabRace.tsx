@@ -73,9 +73,11 @@ const CharLabRace = ({ char, onChange, completed }: $Props) => {
         {races && subraces && (
           <CharView>
             <SingleSelectField
-              options={races?.map((c) => {
-                return { value: c.name + "|" + c.sources, label: c.name + "|" + c.sources };
-              })}
+              options={races
+                ?.map((c) => {
+                  return { value: c.name + "|" + c.sources, label: c.name + "|" + c.sources };
+                })
+                .sort((a, b) => a.value.localeCompare(b.value))}
               value={char.race.race}
               label="Race *"
               onChange={(race) => onChange({ ...char, race: { ...char.race, race: race } })}
@@ -89,7 +91,8 @@ const CharLabRace = ({ char, onChange, completed }: $Props) => {
                 )
                 .map((c) => {
                   return { value: c.name + "|" + c.sources, label: c.name + "|" + c.sources };
-                })}
+                })
+                .sort((a, b) => a.value.localeCompare(b.value))}
               value={char.race.subrace}
               label="Subrace"
               onChange={(subrace) =>

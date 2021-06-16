@@ -16,6 +16,7 @@ import FormatedText from "../../../general_elements/FormatedText";
 import SingleSelectField from "../../../form_elements/SingleSelectField";
 import ClassSet from "../../../../data/chars/ClassSet";
 import Background from "../../../../data/Background";
+import { recalcClasses } from "../../../../services/CharacterService";
 
 interface $Props {
   char: Char;
@@ -61,6 +62,13 @@ const CharLabBackground = ({ char, onChange, completed }: $Props) => {
       setBackgrounds(results);
     });
   }, []);
+
+  const onComplete = () => {
+    recalcClasses(char).then((newChar) => {
+      onChange(newChar);
+      completed(true, "Abilities");
+    });
+  };
 
   return (
     <>
@@ -108,7 +116,7 @@ const CharLabBackground = ({ char, onChange, completed }: $Props) => {
             <IconButton
               icon={faCheckCircle}
               disabled={!(char && char.background)}
-              onClick={() => completed(true, "Abilities")}
+              onClick={() => onComplete()}
             />
             <PropWrapper>
               {char.background &&

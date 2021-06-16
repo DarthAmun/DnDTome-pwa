@@ -171,14 +171,24 @@ const MonsterView = ({ monster, isNpc }: $Props) => {
             <MdRecordVoiceOver />
             {monster.lang}
           </Prop>
-          {monster.savingThrows && <Prop>{monster.savingThrows}</Prop>}
+          {monster.savingThrows && (
+            <Prop>
+              <PropTitle>Saving Throws:</PropTitle>
+              {monster.savingThrows}
+            </Prop>
+          )}
           {monster.skills && (
             <Prop>
               <PropTitle>Skills:</PropTitle>
               {monster.skills}
             </Prop>
           )}
-          {monster.dmgVulnerabilitie && <Prop>{monster.dmgVulnerabilitie}</Prop>}
+          {monster.dmgVulnerabilitie && (
+            <Prop>
+              <PropTitle>Vulnerabilities:</PropTitle>
+              {monster.dmgVulnerabilitie}
+            </Prop>
+          )}
           {monster.dmgResistance && (
             <Prop>
               <PropTitle>Resistance:</PropTitle>

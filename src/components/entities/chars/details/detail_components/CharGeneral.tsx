@@ -1,11 +1,14 @@
 import {
   faAngleDoubleUp,
   faAngleUp,
+  faBed,
+  faCampground,
   faHeartbeat,
   faHeartBroken,
   faMinus,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { GiBroadsword, GiHeartBottle } from "react-icons/gi";
 import React, { useCallback, useState } from "react";
 import styled from "styled-components";
 import BuildChar from "../../../../../data/chars/BuildChar";
@@ -13,6 +16,9 @@ import { calcProf } from "../../../../../services/CharacterService";
 import SmallNumberField from "../../../../form_elements/SmallNumberField";
 import FormatedText from "../../../../general_elements/FormatedText";
 import RollableProp from "../../../../general_elements/RollableProp";
+import { DamageDialog, ShortRestDialod } from "../../../../general_elements/Dialog";
+import TextButton from "../../../../form_elements/TextButton";
+import { FeatureRest } from "../../../../../data/classes/Feature";
 
 interface $Props {
   buildChar: BuildChar;
@@ -20,7 +26,8 @@ interface $Props {
 }
 
 const CharGeneral = ({ buildChar, onChange }: $Props) => {
-  const [deathSaves, setDeathSaves] = useState<number[]>([0, 0, 0, 0, 0, 0]);
+  const [damageDialog, setDamageDialog] = useState<boolean>(false);
+  const [shortRestDialod, setShortRestDialod] = useState<boolean>(false);
 
   const formatProf = useCallback((prof: number) => {
     if (prof === undefined || prof === 0) {
@@ -75,13 +82,102 @@ const CharGeneral = ({ buildChar, onChange }: $Props) => {
     }
   };
   const changeDeathSave = (index: number) => {
-    let newDeathSaves = [...deathSaves];
-    newDeathSaves[index] = (deathSaves[index] + 1) % 2;
-    setDeathSaves(newDeathSaves);
+    let newDeathSaves = [...buildChar.oldCharacter.deathSaves];
+    newDeathSaves[index] = (newDeathSaves[index] + 1) % 2;
+    const newChar = {
+      ...buildChar,
+      oldCharacter: { ...buildChar.oldCharacter, deathSaves: newDeathSaves },
+    };
+    onChange(newChar);
+  };
+
+  const makeShortRest = (value: number) => {
+    console.log(buildChar.oldCharacter);
+    const newChar = {
+      ...buildChar,
+      oldCharacter: {
+        ...buildChar.oldCharacter,
+        currentHp: value > buildChar.oldCharacter.hp ? buildChar.oldCharacter.hp : value,
+        currencyBonis: buildChar.character.currencyBonis?.map(
+          (boni: { origin: string; value: number; max: number; rest: FeatureRest }) => {
+            if (boni.rest.toString() === FeatureRest[FeatureRest.short])
+              return { ...boni, value: boni.max };
+            else return boni;
+          }
+        ),
+        currentFeatureUses: buildChar.character.currentFeatureUses?.map(
+          (featureUse: { origin: string; value: number; max: number; rest: FeatureRest }) => {
+            if (featureUse.rest.toString() === FeatureRest[FeatureRest.short])
+              return { ...featureUse, value: featureUse.max };
+            else return featureUse;
+          }
+        ),
+      },
+    };
+    onChange(newChar);
+  };
+  const makeLongRest = () => {
+    const newChar = {
+      ...buildChar,
+      oldCharacter: {
+        ...buildChar.oldCharacter,
+        currentHp: buildChar.character.hp,
+        spellSlots: buildChar.character.spellSlots?.map(
+          (slots: { origin: string; slots: number[]; max: number[] }) => {
+            return { ...slots, slots: slots.max };
+          }
+        ),
+        deathSaves: [0, 0, 0, 0, 0, 0],
+        currencyBonis: buildChar.character.currencyBonis?.map(
+          (boni: { origin: string; value: number; max: number; rest: FeatureRest }) => {
+            return { ...boni, value: boni.max };
+          }
+        ),
+        currentFeatureUses: buildChar.character.currentFeatureUses?.map(
+          (featureUse: { origin: string; value: number; max: number; rest: FeatureRest }) => {
+            return { ...featureUse, value: featureUse.max };
+          }
+        ),
+      },
+    };
+    onChange(newChar);
   };
 
   return (
     <>
+      {damageDialog && (
+        <DamageDialog
+          name={buildChar.character.name}
+          damageText={"Damage"}
+          damageClick={(currentHp: number) => {
+            changeHp("currentHp", buildChar.character.currentHp - currentHp);
+            setDamageDialog(false);
+          }}
+          healText={"Heal"}
+          healClick={(currentHp: number) => {
+            changeHp("currentHp", buildChar.character.currentHp + currentHp);
+            setDamageDialog(false);
+          }}
+          abortText={"Back"}
+          abortClick={() => {
+            setDamageDialog(false);
+          }}
+        />
+      )}
+      {shortRestDialod && (
+        <ShortRestDialod
+          buildChar={buildChar}
+          healText={"Heal"}
+          healClick={(currentHp: number) => {
+            makeShortRest(buildChar.character.currentHp + currentHp);
+            setShortRestDialod(false);
+          }}
+          abortText={"Back"}
+          abortClick={() => {
+            setShortRestDialod(false);
+          }}
+        />
+      )}
       <MinView>
         <PropColumnWrapper>
           <PropWithProf>
@@ -424,20 +520,21 @@ const CharGeneral = ({ buildChar, onChange }: $Props) => {
             <PropTitle>Armor Class:</PropTitle>
             {buildChar.character.ac}
           </Prop>
-          <Prop>
-            <PropTitle>Hit Points:</PropTitle>
-            {buildChar.character.hp}
-          </Prop>
-          <SmallNumberField
-            value={buildChar.character.currentHp}
-            label="Current Hp"
-            onChange={(currentHp) => changeHp("currentHp", currentHp)}
-          />
+          <PropWrapper>
+            <Prop>
+              <PropTitle>Hit Points:</PropTitle>
+              {buildChar.character.currentHp} / {buildChar.character.hp}
+            </Prop>
+            <DamageButton onClick={() => setDamageDialog(true)}>
+              <GiBroadsword />
+              <GiHeartBottle />
+            </DamageButton>
+          </PropWrapper>
           <Prop>
             <PropTitle>Hit Die:</PropTitle>
             {buildChar.character.classes.map((classe) => {
               return buildChar.classes.map((classesClass) => {
-                if (classe.classe === classesClass.name) {
+                if (classe.classe === classesClass.name + "|" + classesClass.sources) {
                   return classe.level + classesClass.hitDices + " ";
                 } else {
                   return "";
@@ -445,6 +542,14 @@ const CharGeneral = ({ buildChar, onChange }: $Props) => {
               });
             })}
           </Prop>
+          <PropWrapper>
+            <TextButton
+              text={"Short Rest"}
+              icon={faCampground}
+              onClick={() => setShortRestDialod(true)}
+            />
+            <TextButton text={"Long Rest"} icon={faBed} onClick={() => makeLongRest()} />
+          </PropWrapper>
         </PropColumnWrapper>
       </MinView>
       <MinView>
@@ -520,37 +625,39 @@ const CharGeneral = ({ buildChar, onChange }: $Props) => {
           />
         </PropColumnWrapper>
       </MinView>
-      <MinView>
-        <PropColumnWrapper>
-          <Prop>
-            <PropTitle>Death Saves:</PropTitle>
-            <DeathSaveRow>
-              <DeathSaveRowHeader>Sucesses:</DeathSaveRowHeader>
-              <span onClick={(e) => changeDeathSave(0)}>
-                <FontAwesomeIcon icon={changeLifeIcon(deathSaves[0])} />
-              </span>
-              <span onClick={(e) => changeDeathSave(1)}>
-                <FontAwesomeIcon icon={changeLifeIcon(deathSaves[1])} />
-              </span>
-              <span onClick={(e) => changeDeathSave(2)}>
-                <FontAwesomeIcon icon={changeLifeIcon(deathSaves[2])} />
-              </span>
-            </DeathSaveRow>
-            <DeathSaveRow>
-              <DeathSaveRowHeader>Failures:</DeathSaveRowHeader>
-              <span onClick={(e) => changeDeathSave(3)}>
-                <FontAwesomeIcon icon={changeDeathIcon(deathSaves[3])} />
-              </span>
-              <span onClick={(e) => changeDeathSave(4)}>
-                <FontAwesomeIcon icon={changeDeathIcon(deathSaves[4])} />
-              </span>
-              <span onClick={(e) => changeDeathSave(5)}>
-                <FontAwesomeIcon icon={changeDeathIcon(deathSaves[5])} />
-              </span>
-            </DeathSaveRow>
-          </Prop>
-        </PropColumnWrapper>
-      </MinView>
+      {buildChar.oldCharacter.deathSaves && (
+        <MinView>
+          <PropColumnWrapper>
+            <Prop>
+              <PropTitle>Death Saves:</PropTitle>
+              <DeathSaveRow>
+                <DeathSaveRowHeader>Sucesses:</DeathSaveRowHeader>
+                <span onClick={(e) => changeDeathSave(0)}>
+                  <FontAwesomeIcon icon={changeLifeIcon(buildChar.oldCharacter.deathSaves[0])} />
+                </span>
+                <span onClick={(e) => changeDeathSave(1)}>
+                  <FontAwesomeIcon icon={changeLifeIcon(buildChar.oldCharacter.deathSaves[1])} />
+                </span>
+                <span onClick={(e) => changeDeathSave(2)}>
+                  <FontAwesomeIcon icon={changeLifeIcon(buildChar.oldCharacter.deathSaves[2])} />
+                </span>
+              </DeathSaveRow>
+              <DeathSaveRow>
+                <DeathSaveRowHeader>Failures:</DeathSaveRowHeader>
+                <span onClick={(e) => changeDeathSave(3)}>
+                  <FontAwesomeIcon icon={changeDeathIcon(buildChar.oldCharacter.deathSaves[3])} />
+                </span>
+                <span onClick={(e) => changeDeathSave(4)}>
+                  <FontAwesomeIcon icon={changeDeathIcon(buildChar.oldCharacter.deathSaves[4])} />
+                </span>
+                <span onClick={(e) => changeDeathSave(5)}>
+                  <FontAwesomeIcon icon={changeDeathIcon(buildChar.oldCharacter.deathSaves[5])} />
+                </span>
+              </DeathSaveRow>
+            </Prop>
+          </PropColumnWrapper>
+        </MinView>
+      )}
     </>
   );
 };
@@ -671,4 +778,29 @@ const DeathSaveRow = styled.div`
 const DeathSaveRowHeader = styled.div`
   width: 80px;
   float: left;
+`;
+
+const DamageButton = styled.button`
+  svg {
+    color: ${({ theme }) => theme.buttons.color};
+  }
+  font-size: 16px;
+  float: left;
+  padding: 5px;
+  margin-right: 5px;
+  cursor: pointer;
+  box-shadow: inset -2px -2px 5px 0px rgba(0, 0, 0, 0.3);
+  box-sizing: content-box;
+  border-radius: 10px;
+  border: none;
+
+  transition: color 0.2s;
+  background: ${({ theme }) => theme.buttons.backgroundColor};
+  &:hover {
+    color: ${({ theme }) => theme.buttons.hoverColor};
+  }
+
+  &:disabled {
+    background-color: ${({ theme }) => theme.buttons.disabled};
+  }
 `;

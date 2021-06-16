@@ -14,11 +14,8 @@ import Class from "../../../../data/classes/Class";
 import ClassSet from "../../../../data/chars/ClassSet";
 import Saves from "../../../../data/chars/Saves";
 import Skills from "../../../../data/chars/Skills";
-import Feature from "../../../../data/classes/Feature";
-import FeatureSet from "../../../../data/classes/FeatureSet";
-import Subclass from "../../../../data/classes/Subclass";
 import Selection from "../../../../data/Selection";
-import { calcLevel, calcProf } from "../../../../services/CharacterService";
+import { calcLevel, calcProf, recalcSelections } from "../../../../services/CharacterService";
 import { reciveAll, recivePromiseByMultiAttribute } from "../../../../services/DatabaseService";
 import AutoStringField from "../../../form_elements/AutoStringField";
 import CheckField from "../../../form_elements/CheckField";
@@ -31,6 +28,7 @@ import TextButton from "../../../form_elements/TextButton";
 import TextField from "../../../form_elements/TextField";
 import TabBar from "../../../general_elements/TabBar";
 import ImageImportField from "../../../form_elements/ImageField";
+import SingleSelectField from "../../../form_elements/SingleSelectField";
 
 interface $Props {
   character: Char;
@@ -57,12 +55,17 @@ const CharEditView = ({ character, onEdit, isNpc }: $Props) => {
   };
   const addNewSpell = () => {
     let newSpellList = [...character.spells];
-    newSpellList.push("");
+    newSpellList.push({ origin: "", prepared: false });
     onEdit({ ...character, spells: newSpellList });
   };
   const onChangeSpell = (newSpell: string, i: number) => {
     let spells = [...character.spells];
-    spells[i] = newSpell;
+    spells[i].origin = newSpell;
+    onEdit({ ...character, spells: spells });
+  };
+  const onPrepareSpell = (i: number) => {
+    let spells = [...character.spells];
+    spells[i].prepared = !spells[i].prepared;
     onEdit({ ...character, spells: spells });
   };
 
@@ -127,132 +130,6 @@ const CharEditView = ({ character, onEdit, isNpc }: $Props) => {
     onEdit({ ...character, classes: newClassList });
   };
 
-  const recalcSelections = useCallback(async (): Promise<Char> => {
-    let newActiveSelections: {
-      selectionName: string;
-      activeOption: {
-        entityName: string;
-        entityText: string;
-        level: number;
-      };
-      featureName: string;
-      featureCount: number;
-      className: string;
-    }[] = [];
-    let newAbilityImprovs: {
-      origin: string;
-      level: number;
-      s1: string;
-      s2: string;
-      feat: string;
-    }[] = [];
-    if (character !== undefined) {
-      let classes: Class[] = [];
-      let subclasses: Subclass[] = [];
-      let classList: Promise<Class>[] = [];
-      let subclassList: Promise<Subclass>[] = [];
-      character.classes.forEach((classe) => {
-        let [name, sources] = classe.classe.split("|");
-        classList.push(recivePromiseByMultiAttribute("classes", { name: name, sources: sources }));
-        [name, sources] = classe.subclasse.split("|");
-        subclassList.push(
-          recivePromiseByMultiAttribute("subclasses", { name: name, sources: sources })
-        );
-      });
-      classes = await Promise.all(classList);
-      subclasses = await Promise.all(subclassList);
-
-      character.classes?.forEach((classe) => {
-        classes?.forEach((c) => {
-          if (classe.classe === c.name + "|" + c.sources) {
-            c?.featureSets.forEach((featureSet: FeatureSet) => {
-              if (classe.level >= featureSet.level) {
-                if (featureSet.isAbilityImprov) {
-                  let found: boolean = false;
-                  character.abilityImprovs?.forEach((a) => {
-                    if (a.origin === c.name + "|" + c.sources && featureSet.level === a.level) {
-                      newAbilityImprovs.push(a);
-                      found = true;
-                    }
-                  });
-                  if (!found) {
-                    newAbilityImprovs.push({
-                      origin: c.name + "|" + c.sources,
-                      level: featureSet.level,
-                      s1: "str",
-                      s2: "str",
-                      feat: "",
-                    });
-                  }
-                }
-                if (featureSet) {
-                  featureSet.features.forEach((feature: Feature) => {
-                    if (feature.selections !== undefined && feature.selections.length > 0) {
-                      let count = 1;
-                      feature.selections.forEach((select: string) => {
-                        selections.forEach((selection: Selection) => {
-                          if (selection.name === select) {
-                            newActiveSelections.push({
-                              selectionName: selection.name,
-                              activeOption: selection.selectionOptions[0],
-                              featureName: feature.name,
-                              featureCount: count,
-                              className: c.name,
-                            });
-                            count++;
-                          }
-                        });
-                      });
-                    }
-                  });
-                }
-              }
-            });
-          }
-          subclasses.forEach((subclass: Subclass) => {
-            if (subclass !== undefined) {
-              if (c?.name === subclass.type) {
-                subclass.features.forEach((featureSet: FeatureSet) => {
-                  if (classe.level >= featureSet.level) {
-                    featureSet.features.forEach((feature: Feature) => {
-                      if (feature.selections !== undefined && feature.selections.length > 0) {
-                        let count = 1;
-                        feature.selections.forEach((select: string) => {
-                          selections.forEach((selection: Selection) => {
-                            if (selection.name === select) {
-                              newActiveSelections.push({
-                                selectionName: selection.name,
-                                activeOption: selection.selectionOptions[0],
-                                featureName: feature.name,
-                                featureCount: count,
-                                className: subclass.name,
-                              });
-                              count++;
-                            }
-                          });
-                        });
-                      }
-                    });
-                  }
-                });
-              }
-            }
-          });
-        });
-      });
-    }
-    let newChar = {
-      ...character,
-      activeSelections: newActiveSelections,
-      abilityImprovs: newAbilityImprovs,
-    };
-
-    return new Promise((resolve, reject) => {
-      if (newChar !== undefined) resolve(newChar);
-      reject("Error");
-    });
-  }, [character, selections]);
-
   const changeClassLevel = useCallback(
     (oldClassSet: ClassSet, level: number) => {
       if (character !== undefined) {
@@ -264,7 +141,7 @@ const CharEditView = ({ character, onEdit, isNpc }: $Props) => {
           }
         });
 
-        recalcSelections().then((char) => {
+        recalcSelections(character).then((char) => {
           onEdit({
             ...char,
             classes: classes,
@@ -272,7 +149,7 @@ const CharEditView = ({ character, onEdit, isNpc }: $Props) => {
         });
       }
     },
-    [character, onEdit, recalcSelections]
+    [character, onEdit]
   );
   const changeClass = useCallback(
     (oldClassSet: ClassSet, classe: string) => {
@@ -384,6 +261,32 @@ const CharEditView = ({ character, onEdit, isNpc }: $Props) => {
       }
     },
     [character, selections, onEdit]
+  );
+
+  const onFeatureAbilityChange = useCallback(
+    (
+      abilityImprov: {
+        origin: string;
+        level: number;
+        s1: string;
+        s2: string;
+        feat: string;
+      },
+      name: string,
+      value: string
+    ) => {
+      let newAbilityImprovs = character.abilityImprovs.map(
+        (set: { origin: string; level: number; s1: string; s2: string; feat: string }) => {
+          if (abilityImprov.level === set.level && abilityImprov.origin === set.origin) {
+            return { ...set, [name]: value };
+          } else {
+            return set;
+          }
+        }
+      );
+      onEdit({ ...character, abilityImprovs: newAbilityImprovs });
+    },
+    [character, onEdit]
   );
 
   const calcSpellValues = () => {
@@ -627,6 +530,94 @@ const CharEditView = ({ character, onEdit, isNpc }: $Props) => {
                     );
                   }
                 )}
+                {character.abilityImprovs &&
+                  character.abilityImprovs
+                    .filter((a) => a.level <= calcLevel(character))
+                    .map((a, i) => {
+                      return (
+                        <Prop key={a.feat + i}>
+                          <PropTitle>
+                            Class: {a.origin} - Level: {a.level}
+                          </PropTitle>
+                          {a.feat === "" && (
+                            <>
+                              <SingleSelectField
+                                options={[
+                                  {
+                                    value: "str",
+                                    label: "Str +1",
+                                  },
+                                  {
+                                    value: "dex",
+                                    label: "Dex +1",
+                                  },
+                                  {
+                                    value: "con",
+                                    label: "Con +1",
+                                  },
+                                  {
+                                    value: "int",
+                                    label: "Int +1",
+                                  },
+                                  {
+                                    value: "wis",
+                                    label: "Wis +1",
+                                  },
+                                  {
+                                    value: "cha",
+                                    label: "Cha +1",
+                                  },
+                                ]}
+                                value={a.s1}
+                                label="First Ability +1"
+                                onChange={(s) => onFeatureAbilityChange(a, "s1", s)}
+                              />
+                              <SingleSelectField
+                                options={[
+                                  {
+                                    value: "str",
+                                    label: "Str +1",
+                                  },
+                                  {
+                                    value: "dex",
+                                    label: "Dex +1",
+                                  },
+                                  {
+                                    value: "con",
+                                    label: "Con +1",
+                                  },
+                                  {
+                                    value: "int",
+                                    label: "Int +1",
+                                  },
+                                  {
+                                    value: "wis",
+                                    label: "Wis +1",
+                                  },
+                                  {
+                                    value: "cha",
+                                    label: "Cha +1",
+                                  },
+                                ]}
+                                value={a.s2}
+                                label="Second Ability +1"
+                                onChange={(s) => onFeatureAbilityChange(a, "s2", s)}
+                              />
+                              <AbilitySeperator> or </AbilitySeperator>
+                            </>
+                          )}
+                          {a.feat !== "" && (
+                            <AbilitySeperator>Clear Feat for ability scores</AbilitySeperator>
+                          )}
+                          <DataSelectField
+                            optionTable={["feats"]}
+                            value={a.feat}
+                            label="Feat"
+                            onChange={(feat) => onFeatureAbilityChange(a, "feat", feat)}
+                          />
+                        </Prop>
+                      );
+                    })}
               </>
             )}
             {activeTab === "Races" && (
@@ -918,19 +909,26 @@ const CharEditView = ({ character, onEdit, isNpc }: $Props) => {
                   icon={faCalculator}
                   onClick={() => calcSpellValues()}
                 />
-                {character.spells.map((spell: string, index: number) => {
-                  return (
-                    <Container key={index}>
-                      <AutoStringField
-                        optionTable={"spells"}
-                        value={spell}
-                        label="Spell"
-                        onChange={(newSpell) => onChangeSpell(newSpell, index)}
-                      />
-                      <IconButton icon={faTrash} onClick={() => removeSpell(index)} />
-                    </Container>
-                  );
-                })}
+                {character.spells.map(
+                  (spell: { origin: string; prepared: boolean }, index: number) => {
+                    return (
+                      <Container key={index}>
+                        <AutoStringField
+                          optionTable={"spells"}
+                          value={spell.origin}
+                          label="Spell"
+                          onChange={(newSpell) => onChangeSpell(newSpell, index)}
+                        />
+                        <CheckField
+                          value={spell.prepared}
+                          label="Prepared"
+                          onChange={(value) => onPrepareSpell(index)}
+                        />
+                        <IconButton icon={faTrash} onClick={() => removeSpell(index)} />
+                      </Container>
+                    );
+                  }
+                )}
                 <TextButton text={"Add new Spell"} icon={faPlus} onClick={() => addNewSpell()} />
               </>
             )}
@@ -1102,6 +1100,24 @@ const PropProf = styled.div`
   }
 `;
 
+const Prop = styled.div`
+  flex: 1 1 auto;
+  max-width: 100%;
+  height: auto;
+  margin: 2px;
+  padding: 10px;
+  border-radius: 5px;
+  background-color: ${({ theme }) => theme.tile.backgroundColor};
+
+  svg {
+    margin-right: 5px;
+    height: auto;
+    border-radius: 150px;
+    transition: color 0.2s;
+    color: ${({ theme }) => theme.main.highlight};
+  }
+`;
+
 const PropTitle = styled.span`
   display: inline-block;
   color: ${({ theme }) => theme.tile.backgroundColorLink};
@@ -1140,4 +1156,9 @@ const FieldGroup = styled.div`
   @media (max-width: 576px) {
     flex-wrap: wrap;
   }
+`;
+
+const AbilitySeperator = styled.div`
+  width: 100%;
+  text-align: center;
 `;

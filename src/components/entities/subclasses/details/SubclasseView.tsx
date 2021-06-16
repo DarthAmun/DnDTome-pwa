@@ -111,7 +111,8 @@ const SubclasseView = ({ subclasse }: $Props) => {
                       <FeatureRow key={index}>
                         <FeatureProp>{featureSet.level}</FeatureProp>
                         <FeatureProp>
-                          {featureSet.features.map((feature) => {
+                          {featureSet.features.map((feature, i) => {
+                            if (i === featureSet.features.length - 1) return feature.name;
                             return feature.name + ", ";
                           })}
                         </FeatureProp>

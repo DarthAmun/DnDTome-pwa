@@ -4,6 +4,7 @@ import Money from "./Money";
 import IEntity from "../IEntity";
 import ClassSet, { isClassSet } from "./ClassSet";
 import RaceSet, { isRaceSet } from "./RaceSet";
+import { FeatureRest } from "../classes/Feature";
 
 export default class Char implements IEntity {
   id?: number;
@@ -15,7 +16,7 @@ export default class Char implements IEntity {
   classes: ClassSet[];
   race: RaceSet;
   background: string;
-  spells: string[];
+  spells: { origin: string; prepared: boolean }[];
   spellSlots: { origin: string; slots: number[]; max: number[] }[];
   activeSelections: {
     selectionName: string;
@@ -28,7 +29,8 @@ export default class Char implements IEntity {
     featureCount: number;
     className: string;
   }[];
-  currencyBonis: { origin: string; value: number; max: number }[];
+  currencyBonis: { origin: string; value: number; max: number; rest: FeatureRest }[];
+  currentFeatureUses: { origin: string; value: number; max: number; rest: FeatureRest }[];
   items: {
     origin: string;
     attuned: boolean;
@@ -59,6 +61,7 @@ export default class Char implements IEntity {
   inspiration: number;
   castingHit: number;
   castingDC: number;
+  deathSaves: number[];
 
   constructor(
     id?: number,
@@ -70,7 +73,7 @@ export default class Char implements IEntity {
     classes?: ClassSet[],
     race?: RaceSet,
     background?: string,
-    spells?: string[],
+    spells?: { origin: string; prepared: boolean }[],
     spellSlots?: { origin: string; slots: number[]; max: number[] }[],
     activeSelections?: {
       selectionName: string;
@@ -83,7 +86,8 @@ export default class Char implements IEntity {
       featureCount: number;
       className: string;
     }[],
-    currencyBonis?: { origin: string; value: number; max: number }[],
+    currencyBonis?: { origin: string; value: number; max: number; rest: FeatureRest }[],
+    currentFeatureUses?: { origin: string; value: number; max: number; rest: FeatureRest }[],
     items?: {
       origin: string;
       attuned: boolean;
@@ -113,7 +117,8 @@ export default class Char implements IEntity {
     alignment?: string,
     inspiration?: number,
     castingHit?: number,
-    castingDC?: number
+    castingDC?: number,
+    deathSaves?: number[]
   ) {
     this.id = id || -1;
     this.name = name || "";
@@ -128,6 +133,7 @@ export default class Char implements IEntity {
     this.spellSlots = spellSlots || [];
     this.activeSelections = activeSelections || [];
     this.currencyBonis = currencyBonis || [];
+    this.currentFeatureUses = currentFeatureUses || [];
     this.items = items || [];
     this.monsters = monsters || [];
     this.ac = ac || 0;
@@ -153,6 +159,7 @@ export default class Char implements IEntity {
     this.inspiration = inspiration || 0;
     this.castingHit = castingHit || 0;
     this.castingDC = castingDC || 0;
+    this.deathSaves = deathSaves || [0, 0, 0, 0, 0, 0];
   }
 }
 

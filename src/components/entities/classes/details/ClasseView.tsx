@@ -107,7 +107,7 @@ const ClasseView = ({ classe }: $Props) => {
                   const link: string = "/subclasse-detail/id/" + subclass.id;
                   return (
                     <SubclasseLink key={index} onClick={() => history.push(link)}>
-                      {subclass.name}
+                      {subclass.name} | {subclass.sources}
                     </SubclasseLink>
                   );
                 })}
@@ -195,7 +195,8 @@ const ClasseView = ({ classe }: $Props) => {
                         <FeatureProp>{featureSet.level}</FeatureProp>
                         <FeatureProp>
                           {!featureSet.isAbilityImprov &&
-                            featureSet.features.map((feature) => {
+                            featureSet.features.map((feature, i) => {
+                              if (i === featureSet.features.length - 1) return feature.name;
                               return feature.name + ", ";
                             })}
                           {featureSet.isAbilityImprov && "Abilityscore Improvement or Feat"}
@@ -222,6 +223,9 @@ const ClasseView = ({ classe }: $Props) => {
                     {feature.name}
                     {feature.usedCurrency !== "" && feature.usedCurrency !== undefined
                       ? " (uses " + feature.cost + " " + feature.usedCurrency + ")"
+                      : ""}
+                    {feature.rest !== undefined && feature.uses > 0
+                      ? " (" + feature.uses + " per " + feature.rest + " rest)"
                       : ""}
                     :
                   </PropTitle>

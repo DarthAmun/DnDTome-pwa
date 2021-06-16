@@ -6,7 +6,7 @@ import Skills from "../../../../data/chars/Skills";
 import Class from "../../../../data/classes/Class";
 import Race from "../../../../data/races/Race";
 import Subrace from "../../../../data/races/Subrace";
-import { recivePromiseByMultiAttribute } from "../../../../services/DatabaseService";
+import { reciveAll, recivePromiseByMultiAttribute } from "../../../../services/DatabaseService";
 
 import IconButton from "../../../form_elements/IconButton";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -18,9 +18,13 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import NumberField from "../../../form_elements/NumberField";
 import FormatedText from "../../../general_elements/FormatedText";
-import { calcProf } from "../../../../services/CharacterService";
+import { calcLevel, calcProf } from "../../../../services/CharacterService";
 import ClassSet from "../../../../data/chars/ClassSet";
 import Background from "../../../../data/Background";
+import Selection from "../../../../data/Selection";
+import EnumField from "../../../form_elements/EnumField";
+import SingleSelectField from "../../../form_elements/SingleSelectField";
+import DataSelectField from "../../../form_elements/DataSelectField";
 
 interface $Props {
   char: Char;
@@ -30,6 +34,7 @@ interface $Props {
 
 const CharLabAbilities = ({ char, onChange, completed }: $Props) => {
   const [classes, setClasses] = useState<Class[]>([]);
+  const [selections, setSelections] = useState<Selection[]>([]);
   const [race, setRace] = useState<Race>();
   const [subrace, setSubrace] = useState<Subrace>();
   const [background, setBackground] = useState<Background>();
@@ -58,6 +63,10 @@ const CharLabAbilities = ({ char, onChange, completed }: $Props) => {
         setBackground
       );
     }
+    reciveAll("selections", (data: any[]) => {
+      let selectionsData = data as Selection[];
+      setSelections(selectionsData);
+    });
   }, [char]);
 
   const formatProf = useCallback((prof: number) => {
@@ -98,6 +107,58 @@ const CharLabAbilities = ({ char, onChange, completed }: $Props) => {
       let profValue = saves[profName];
       profValue = (profValue + 1) % 2;
       onChange({ ...char, saves: { ...char.saves, [profName]: profValue } });
+    },
+    [char, onChange]
+  );
+
+  const onChangeActiveSelection = useCallback(
+    (id: number, select: string) => {
+      if (char !== undefined) {
+        let newActiveSelections = [...char.activeSelections];
+        let activSelect = {
+          entityName: "",
+          entityText: "",
+          level: 0,
+        };
+
+        selections.forEach((selection: Selection) => {
+          if (selection.name === newActiveSelections[id].selectionName) {
+            selection.selectionOptions.forEach((option) => {
+              if (option.entityName === select) {
+                activSelect = option;
+              }
+            });
+          }
+        });
+        newActiveSelections[id].activeOption = activSelect;
+        onChange({ ...char, activeSelections: newActiveSelections });
+      }
+    },
+    [char, selections, onChange]
+  );
+
+  const onFeatureAbilityChange = useCallback(
+    (
+      abilityImprov: {
+        origin: string;
+        level: number;
+        s1: string;
+        s2: string;
+        feat: string;
+      },
+      name: string,
+      value: string
+    ) => {
+      let newAbilityImprovs = char.abilityImprovs.map(
+        (set: { origin: string; level: number; s1: string; s2: string; feat: string }) => {
+          if (abilityImprov.level === set.level && abilityImprov.origin === set.origin) {
+            return { ...set, [name]: value };
+          } else {
+            return set;
+          }
+        }
+      );
+      onChange({ ...char, abilityImprovs: newAbilityImprovs });
     },
     [char, onChange]
   );
@@ -409,6 +470,138 @@ const CharLabAbilities = ({ char, onChange, completed }: $Props) => {
               </PropProf>
             </PropWithProf>
           </PropWrapper>
+          <PropWrapper>
+            {char.activeSelections?.map(
+              (
+                activeSelection: {
+                  selectionName: string;
+                  activeOption: {
+                    entityName: string;
+                    entityText: string;
+                    level: number;
+                  };
+                  featureName: string;
+                  className: string;
+                },
+                index: number
+              ) => {
+                return (
+                  <PropWrapper key={index}>
+                    <SelectionTitle>
+                      {activeSelection.featureName} of {activeSelection.className}
+                    </SelectionTitle>
+                    <EnumField
+                      options={
+                        selections
+                          .find((select) => select.name === activeSelection.selectionName)
+                          ?.selectionOptions.filter((option) => option.level <= calcLevel(char))
+                          .map((option) => {
+                            return {
+                              value: option.entityName,
+                              label: option.entityName,
+                            };
+                          }) || []
+                      }
+                      value={{
+                        value: activeSelection.activeOption.entityName,
+                        label: activeSelection.activeOption.entityName,
+                      }}
+                      label={activeSelection.selectionName}
+                      onChange={(select) => onChangeActiveSelection(index, select)}
+                    />
+                  </PropWrapper>
+                );
+              }
+            )}
+            {char.abilityImprovs &&
+              char.abilityImprovs
+                .filter((a) => a.level <= calcLevel(char))
+                .map((a, i) => {
+                  return (
+                    <Prop key={a.feat + i}>
+                      <PropTitle>
+                        Class: {a.origin} - Level: {a.level}
+                      </PropTitle>
+                      {a.feat === "" && (
+                        <>
+                          <SingleSelectField
+                            options={[
+                              {
+                                value: "str",
+                                label: "Str +1",
+                              },
+                              {
+                                value: "dex",
+                                label: "Dex +1",
+                              },
+                              {
+                                value: "con",
+                                label: "Con +1",
+                              },
+                              {
+                                value: "int",
+                                label: "Int +1",
+                              },
+                              {
+                                value: "wis",
+                                label: "Wis +1",
+                              },
+                              {
+                                value: "cha",
+                                label: "Cha +1",
+                              },
+                            ]}
+                            value={a.s1}
+                            label="First Ability +1"
+                            onChange={(s) => onFeatureAbilityChange(a, "s1", s)}
+                          />
+                          <SingleSelectField
+                            options={[
+                              {
+                                value: "str",
+                                label: "Str +1",
+                              },
+                              {
+                                value: "dex",
+                                label: "Dex +1",
+                              },
+                              {
+                                value: "con",
+                                label: "Con +1",
+                              },
+                              {
+                                value: "int",
+                                label: "Int +1",
+                              },
+                              {
+                                value: "wis",
+                                label: "Wis +1",
+                              },
+                              {
+                                value: "cha",
+                                label: "Cha +1",
+                              },
+                            ]}
+                            value={a.s2}
+                            label="Second Ability +1"
+                            onChange={(s) => onFeatureAbilityChange(a, "s2", s)}
+                          />
+                          <AbilitySeperator> or </AbilitySeperator>
+                        </>
+                      )}
+                      {a.feat !== "" && (
+                        <AbilitySeperator>Clear Feat for ability scores</AbilitySeperator>
+                      )}
+                      <DataSelectField
+                        optionTable={["feats"]}
+                        value={a.feat}
+                        label="Feat"
+                        onChange={(feat) => onFeatureAbilityChange(a, "feat", feat)}
+                      />
+                    </Prop>
+                  );
+                })}
+          </PropWrapper>
         </CharView>
       </CenterWrapper>
     </>
@@ -494,6 +687,24 @@ const PropProf = styled.div`
   }
 `;
 
+const Prop = styled.div`
+  flex: 1 1 auto;
+  max-width: 100%;
+  height: auto;
+  margin: 2px;
+  padding: 10px;
+  border-radius: 5px;
+  background-color: ${({ theme }) => theme.tile.backgroundColor};
+
+  svg {
+    margin-right: 5px;
+    height: auto;
+    border-radius: 150px;
+    transition: color 0.2s;
+    color: ${({ theme }) => theme.main.highlight};
+  }
+`;
+
 const PropTitle = styled.span`
   display: inline-block;
   color: ${({ theme }) => theme.tile.backgroundColorLink};
@@ -507,4 +718,23 @@ const Icon = styled(FontAwesomeIcon)`
   height: auto;
   border-radius: 150px;
   color: ${({ theme }) => theme.main.highlight};
+`;
+
+const AbilitySeperator = styled.div`
+  width: 100%;
+  text-align: center;
+`;
+
+const SelectionTitle = styled.div`
+  color: ${({ theme }) => theme.tile.color};
+  background-color: ${({ theme }) => theme.tile.backgroundColor};
+  font-size: 16px;
+  flex: 1 1 auto;
+  padding: 5px;
+  margin: 5px;
+  border-radius: 5px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;

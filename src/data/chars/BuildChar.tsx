@@ -39,7 +39,7 @@ export default class BuildChar {
     prof: boolean;
     attribute: string;
   }[];
-  spells: Spell[];
+  spells: { origin: Spell; prepared: boolean }[];
   monsters: Monster[];
   modifiers: Modifier[];
 
@@ -69,7 +69,7 @@ export default class BuildChar {
       prof: boolean;
       attribute: string;
     }[],
-    spells?: Spell[],
+    spells?: { origin: Spell; prepared: boolean }[],
     monsters?: Monster[],
     modifiers?: Modifier[]
   ) {

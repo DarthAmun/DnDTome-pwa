@@ -35,6 +35,7 @@ const SingleSelectField = ({ options, value, label, style, icon, transform, onCh
       <StyledSelect
         isMulti={false}
         classNamePrefix="react-select"
+        isClearable={true}
         value={{
           value: value,
           label: value,
@@ -79,7 +80,7 @@ const StyledSelect = styled(Select)`
   flex: 3 2 auto;
   box-sizing: border-box;
   border: none;
-  min-width: 120px;
+  min-width: 200px;
 
   background-color: ${({ theme }) => theme.input.backgroundColor};
   color: ${({ theme }) => theme.input.color};

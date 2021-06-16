@@ -258,7 +258,7 @@ const FileTile = ({ files, modus }: $FileProps) => {
 
   const importImage = async (base64: string, fileName: string) => {
     let entityTable: string = fileName.split("_")[0];
-    let entityName: string = fileName.split("_")[1].split(".")[0];
+    let entityName: string = fileName.split("_")[1].split(".")[0].trim();
     console.log(entityTable, entityName);
 
     let entities = await reciveAllFilteredPromise(entityTable, [new Filter("name", entityName)]);
@@ -329,6 +329,7 @@ const FileTile = ({ files, modus }: $FileProps) => {
       await saveNewFromList(newTableName, bulkList);
       listOfNew = listOfNew.filter((entity) => entity.tableName !== newTableName);
     }
+    console.log("Done saving");
   }, [listOfNewEntities]);
 
   useEffect(() => {
@@ -352,7 +353,6 @@ const FileTile = ({ files, modus }: $FileProps) => {
         fails.length > 0 &&
         filesDone === files.length &&
         fails.map((fail) => {
-          console.log(fail);
           return (
             <Fails>
               {fail.filename} - {fail.obj.name} ... failed.

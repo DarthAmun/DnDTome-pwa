@@ -18,11 +18,12 @@ import FormatedText from "../../../../general_elements/FormatedText";
 
 interface $Props {
   spell: Spell;
+  prepared: boolean;
   char: BuildChar;
   saveChar: (char: BuildChar) => void;
 }
 
-const CharSpellView = ({ spell, char, saveChar }: $Props) => {
+const CharSpellView = ({ spell, prepared, char, saveChar }: $Props) => {
   let webhook = useWebhook();
   const [json, setJson] = useState<string>("");
   const [showText, setShowText] = useState<boolean>(false);
@@ -118,6 +119,15 @@ const CharSpellView = ({ spell, char, saveChar }: $Props) => {
     return "";
   }, [spell]);
 
+  const isPrepared = useCallback(() => {
+    if (spell !== undefined && prepared !== undefined) {
+      if (prepared) {
+        return <div className="icon">P</div>;
+      }
+    }
+    return "";
+  }, [spell, prepared]);
+
   const hasConcentration = useCallback(() => {
     if (spell !== undefined) {
       let search = spell.duration.toLowerCase();
@@ -188,6 +198,9 @@ const CharSpellView = ({ spell, char, saveChar }: $Props) => {
     <Tile showText={showText ? 1 : 0}>
       <School school={spell.school}>{spell.school}</School>
 
+      <Flag>
+        <b>{isPrepared()}</b>
+      </Flag>
       <Flag>
         <b>{hasConcentration()}</b>
       </Flag>

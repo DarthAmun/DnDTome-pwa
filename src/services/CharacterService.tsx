@@ -4,18 +4,24 @@ import Char from "../data/chars/Char";
 import ClassSet from "../data/chars/ClassSet";
 import Boni from "../data/classes/Boni";
 import Class from "../data/classes/Class";
+import Feature, { FeatureRest } from "../data/classes/Feature";
 import FeatureSet from "../data/classes/FeatureSet";
 import Subclass from "../data/classes/Subclass";
 import Feat from "../data/Feat";
 import Gear from "../data/Gear";
 import Item from "../data/Item";
+import Selection from "../data/Selection";
 import Modifier, { ModifierOperator } from "../data/Modifier";
 import Monster from "../data/Monster";
 import Race from "../data/races/Race";
 import Subrace from "../data/races/Subrace";
 import Trait from "../data/races/Trait";
 import Spell from "../data/Spell";
-import { recivePromiseByAttribute, recivePromiseByMultiAttribute } from "./DatabaseService";
+import {
+  reciveAllPromise,
+  recivePromiseByAttribute,
+  recivePromiseByMultiAttribute,
+} from "./DatabaseService";
 
 const MulticlassSpellslotTable: number[][] = [
   [2, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -41,7 +47,8 @@ const MulticlassSpellslotTable: number[][] = [
 ];
 
 export const recalcClasses = async (char: Char) => {
-  let bonis: { origin: string; value: number; max: number }[] = [];
+  let bonis: { origin: string; value: number; max: number; rest: FeatureRest }[] = [];
+  let featureUses: { origin: string; value: number; max: number; rest: FeatureRest }[] = [];
   let spellSlots: {
     origin: string;
     slots: number[];
@@ -78,6 +85,29 @@ export const recalcClasses = async (char: Char) => {
   });
 
   fullClassList?.forEach((classe: { class: Class; classSet: ClassSet }) => {
+    classe.class.featureSets.forEach((featureSet) => {
+      featureSet.features.forEach((feature) => {
+        let count = featureUses.length;
+        char.currentFeatureUses.forEach((uses) => {
+          if (uses.origin === feature.name && count >= featureUses.length) {
+            featureUses.push({
+              origin: feature.name,
+              value: uses.value,
+              max: feature.uses,
+              rest: feature.rest,
+            });
+          }
+        });
+        if (count === featureUses.length) {
+          featureUses.push({
+            origin: feature.name,
+            value: feature.uses,
+            max: feature.uses,
+            rest: feature.rest,
+          });
+        }
+      });
+    });
     let featureSet = classe.class.featureSets[classe.classSet.level - 1];
     if (featureSet !== undefined) {
       if (featureSet.bonis) {
@@ -89,6 +119,7 @@ export const recalcClasses = async (char: Char) => {
                 origin: boni.name,
                 value: +boni.value,
                 max: +boni.value,
+                rest: boni.rest,
               },
             ];
           }
@@ -124,6 +155,7 @@ export const recalcClasses = async (char: Char) => {
           origin: newBoni.origin,
           value: old.value,
           max: newBoni.max,
+          rest: newBoni.rest,
         };
       } else {
         return null;
@@ -177,8 +209,137 @@ export const recalcClasses = async (char: Char) => {
     ...char,
     spellSlots: spellSlots,
     currencyBonis: bonis,
+    currentFeatureUses: featureUses,
   };
+  updatedChar = await recalcSelections(updatedChar);
   return updatedChar;
+};
+
+export const recalcSelections = async (character: Char): Promise<Char> => {
+  let selections: Selection[] = await reciveAllPromise("selections");
+  let newActiveSelections: {
+    selectionName: string;
+    activeOption: {
+      entityName: string;
+      entityText: string;
+      level: number;
+    };
+    featureName: string;
+    featureCount: number;
+    className: string;
+  }[] = [];
+  let newAbilityImprovs: {
+    origin: string;
+    level: number;
+    s1: string;
+    s2: string;
+    feat: string;
+  }[] = [];
+  if (character !== undefined) {
+    let classes: Class[] = [];
+    let subclasses: Subclass[] = [];
+    let classList: Promise<Class>[] = [];
+    let subclassList: Promise<Subclass>[] = [];
+    character.classes.forEach((classe) => {
+      let [name, sources] = classe.classe.split("|");
+      classList.push(recivePromiseByMultiAttribute("classes", { name: name, sources: sources }));
+      [name, sources] = classe.subclasse.split("|");
+      subclassList.push(
+        recivePromiseByMultiAttribute("subclasses", { name: name, sources: sources })
+      );
+    });
+    classes = await Promise.all(classList);
+    subclasses = await Promise.all(subclassList);
+
+    character.classes?.forEach((classe) => {
+      classes?.forEach((c) => {
+        if (classe.classe === c.name + "|" + c.sources) {
+          c?.featureSets.forEach((featureSet: FeatureSet) => {
+            if (classe.level >= featureSet.level) {
+              if (featureSet.isAbilityImprov) {
+                let found: boolean = false;
+                character.abilityImprovs?.forEach((a) => {
+                  if (a.origin === c.name + "|" + c.sources && featureSet.level === a.level) {
+                    newAbilityImprovs.push(a);
+                    found = true;
+                  }
+                });
+                if (!found) {
+                  newAbilityImprovs.push({
+                    origin: c.name + "|" + c.sources,
+                    level: featureSet.level,
+                    s1: "str",
+                    s2: "str",
+                    feat: "",
+                  });
+                }
+              }
+              if (featureSet) {
+                featureSet.features.forEach((feature: Feature) => {
+                  if (feature.selections !== undefined && feature.selections.length > 0) {
+                    let count = 1;
+                    feature.selections.forEach((select: string) => {
+                      selections.forEach((selection: Selection) => {
+                        if (selection.name === select) {
+                          newActiveSelections.push({
+                            selectionName: selection.name,
+                            activeOption: selection.selectionOptions[0],
+                            featureName: feature.name,
+                            featureCount: count,
+                            className: c.name,
+                          });
+                          count++;
+                        }
+                      });
+                    });
+                  }
+                });
+              }
+            }
+          });
+        }
+        subclasses.forEach((subclass: Subclass) => {
+          if (subclass !== undefined) {
+            if (c?.name === subclass.type) {
+              subclass.features.forEach((featureSet: FeatureSet) => {
+                if (classe.level >= featureSet.level) {
+                  featureSet.features.forEach((feature: Feature) => {
+                    if (feature.selections !== undefined && feature.selections.length > 0) {
+                      let count = 1;
+                      feature.selections.forEach((select: string) => {
+                        selections.forEach((selection: Selection) => {
+                          if (selection.name === select) {
+                            newActiveSelections.push({
+                              selectionName: selection.name,
+                              activeOption: selection.selectionOptions[0],
+                              featureName: feature.name,
+                              featureCount: count,
+                              className: subclass.name,
+                            });
+                            count++;
+                          }
+                        });
+                      });
+                    }
+                  });
+                }
+              });
+            }
+          }
+        });
+      });
+    });
+  }
+  let newChar = {
+    ...character,
+    activeSelections: newActiveSelections,
+    abilityImprovs: newAbilityImprovs,
+  };
+
+  return new Promise((resolve, reject) => {
+    if (newChar !== undefined) resolve(newChar);
+    reject("Error");
+  });
 };
 
 export const calcLevel = (char: Char): number => {
@@ -221,7 +382,7 @@ export const buildCharacter = async (character: Char): Promise<BuildChar> => {
     prof: boolean;
     attribute: string;
   }[] = [];
-  let spells: Spell[];
+  let spells: { origin: Spell; prepared: boolean }[] = [];
   let monsters: Monster[] = [];
 
   console.time("load");
@@ -251,8 +412,8 @@ export const buildCharacter = async (character: Char): Promise<BuildChar> => {
     let [name, sources] = monster.split("|");
     monsterList.push(recivePromiseByMultiAttribute("monsters", { name: name, sources: sources }));
   });
-  character.spells.forEach((spell: string) => {
-    let [name, sources] = spell.split("|");
+  character.spells.forEach((spell: { origin: string; prepared: boolean }) => {
+    let [name, sources] = spell.origin.split("|");
     spellList.push(recivePromiseByMultiAttribute("spells", { name: name, sources: sources }));
   });
   character.abilityImprovs?.forEach((a) => {
@@ -277,7 +438,6 @@ export const buildCharacter = async (character: Char): Promise<BuildChar> => {
   classes = await Promise.all(classList);
   subclasses = await Promise.all(subclassList);
   monsters = await Promise.all(monsterList);
-  spells = await Promise.all(spellList);
   feats = await Promise.all(featList);
   let currentGears = await Promise.all(gearList);
   let currentBases = await Promise.all(baseList);
@@ -378,6 +538,17 @@ export const buildCharacter = async (character: Char): Promise<BuildChar> => {
           }
       });
     }
+  });
+
+  (await Promise.all(spellList)).forEach((spell: Spell) => {
+    character.spells.forEach((oldSpell: { origin: string; prepared: boolean }) => {
+      if (
+        oldSpell.origin.toLowerCase() ===
+        spell.name.toLowerCase() + "|" + spell.sources.toLowerCase()
+      ) {
+        spells.push({ origin: spell, prepared: oldSpell.prepared });
+      }
+    });
   });
   console.timeEnd("load");
 

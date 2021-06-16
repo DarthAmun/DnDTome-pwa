@@ -241,10 +241,12 @@ const fillTemplate = async (template: string | ArrayBuffer, char: Char) => {
     [10101, 10100, 10102, 10103, 10104, 10105, 10106],
     [10108, 10107, 10109, 101010, 101011, 101012, 101013],
   ];
-  completeChar.spells.forEach((spell: Spell) => {
-    if (spellFieldNumbers[spell.level].length > 0) {
-      form.getTextField(`Spells ${spellFieldNumbers[spell.level][0]}`).setText(spell.name);
-      spellFieldNumbers[spell.level].slice(1);
+  completeChar.spells.forEach((spell: { origin: Spell; prepared: boolean }) => {
+    if (spellFieldNumbers[spell.origin.level].length > 0) {
+      form
+        .getTextField(`Spells ${spellFieldNumbers[spell.origin.level][0]}`)
+        .setText(spell.origin.name);
+      spellFieldNumbers[spell.origin.level].slice(1);
     }
   });
 

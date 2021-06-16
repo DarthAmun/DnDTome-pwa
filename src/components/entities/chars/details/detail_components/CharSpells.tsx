@@ -34,14 +34,25 @@ const CharSpell = ({ buildChar, saveChar }: $Props) => {
         <SpellWrapper>
           {buildChar.spells &&
             buildChar.spells
-              .sort((a: Spell, b: Spell) => {
-                const leveldif = a.level - b.level;
-                if (leveldif === 0) return a.name.localeCompare(b.name);
-                return leveldif;
-              })
+              .sort(
+                (
+                  a: { origin: Spell; prepared: boolean },
+                  b: { origin: Spell; prepared: boolean }
+                ) => {
+                  const leveldif = a.origin.level - b.origin.level;
+                  if (leveldif === 0) return a.origin.name.localeCompare(b.origin.name);
+                  return leveldif;
+                }
+              )
               .map((spell, index: number) => {
                 return (
-                  <CharSpellView key={index} char={buildChar} saveChar={saveChar} spell={spell} />
+                  <CharSpellView
+                    key={index}
+                    char={buildChar}
+                    saveChar={saveChar}
+                    spell={spell.origin}
+                    prepared={spell.prepared}
+                  />
                 );
               })}
         </SpellWrapper>

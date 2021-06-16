@@ -12,9 +12,30 @@ export enum FeatureType {
   bonusAction,
   reaction,
 }
-export function getOptionFromEnum(value: FeatureType): { value: string; label: string } {
+export function getOptionFromTypeEnum(value: FeatureType): { value: string; label: string } {
   let opt = undefined;
   featureTypeArray.forEach((option) => {
+    if (option.value === value.toString()) opt = option;
+  });
+  if (opt !== undefined) {
+    return opt;
+  }
+  return { value: "", label: "" };
+}
+
+export const featureRestArray: { value: string; label: string }[] = [
+  { value: "none", label: "None" },
+  { value: "long", label: "Long Rest" },
+  { value: "short", label: "Short Rest" },
+];
+export enum FeatureRest {
+  none,
+  long,
+  short,
+}
+export function getOptionFromRestEnum(value: FeatureRest): { value: string; label: string } {
+  let opt = undefined;
+  featureRestArray.forEach((option) => {
     if (option.value === value.toString()) opt = option;
   });
   if (opt !== undefined) {
@@ -28,6 +49,8 @@ export default class Feature implements IEntity {
   text: string;
   type: FeatureType;
   usedCurrency: string;
+  uses: number;
+  rest: FeatureRest;
   cost: number;
   selections: string[];
 
@@ -35,6 +58,8 @@ export default class Feature implements IEntity {
     name: string,
     text: string,
     usedCurrency: string,
+    uses: number,
+    rest: FeatureRest,
     cost: number,
     selections: string[],
     type?: FeatureType
@@ -43,6 +68,8 @@ export default class Feature implements IEntity {
     this.text = text;
     this.type = type || FeatureType.normal;
     this.usedCurrency = usedCurrency || "";
+    this.uses = uses || 0;
+    this.rest = rest || FeatureRest.none;
     this.cost = cost || 0;
     this.selections = selections;
   }

@@ -108,7 +108,7 @@ const BookView = ({ book }: $Props) => {
         <TextButton onClick={() => showPdf()} text={"Show PDF"} icon={faExternalLinkAlt} />
         <TextButton
           onClick={() => downloadFile(book.name + ".pdf")}
-          text={"Downlaod PDF"}
+          text={"Download PDF"}
           icon={faFileDownload}
         />
         <TagWrapper>

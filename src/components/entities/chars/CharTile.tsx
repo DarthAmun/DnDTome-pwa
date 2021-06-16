@@ -29,11 +29,24 @@ const CharTile = ({ char }: $Props) => {
   }, [char]);
 
   return (
-    <Tile to={"/char-detail/id/" + char.id}>
+    <Tile
+      to={"/char-detail/id/" + char.id}
+      style={{
+        opacity:
+          char.deathSaves[3] === 1 && char.deathSaves[4] === 1 && char.deathSaves[5] === 1
+            ? 0.3
+            : 1,
+      }}
+    >
       {getPicture() !== "" ? <Image pic={getPicture()}></Image> : ""}
       <PropWrapper>
         <Name>
-          <b>{char.name}</b>
+          <b>
+            {char.name}{" "}
+            {char.deathSaves[3] === 1 && char.deathSaves[4] === 1 && char.deathSaves[5] === 1
+              ? " - Dead"
+              : ""}
+          </b>
         </Name>
         {char.campaign && <Name>{char.campaign}</Name>}
         <PropRowWrapper>

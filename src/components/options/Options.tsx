@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { exportAll } from "../../services/OptionService";
+import { exportAll, exportAllLeft, exportAllRight } from "../../services/OptionService";
 import {
   deleteAll,
   reciveCount,
@@ -249,25 +249,47 @@ const Options = () => {
           }}
         />
       )}
-      <OptionSection>
-        <SelectionTitle>Import</SelectionTitle>
-        <ImportField modus={ImportModus.NORMAL} />
-      </OptionSection>
-      <OptionSection>
-        <SelectionTitle>Export</SelectionTitle>
-        <SectionRow>
-          <SectionText>Export as one file?</SectionText>
-          <IconButton icon={faFileExport} onClick={() => exportAll("DnDTome_all.json")} />
-        </SectionRow>
-      </OptionSection>
-      <OptionSection>
-        <SelectionTitle>Import Images</SelectionTitle>
-        <ImportField modus={ImportModus.IMAGE} />
-      </OptionSection>
-      <OptionSection>
-        <SelectionTitle>Reset Database</SelectionTitle>
-        <IconButton icon={faTrashAlt} onClick={() => setResetDialog(true)} />
-      </OptionSection>
+      <OptionWrapper>
+        <OptionSection>
+          <SelectionTitle>Import</SelectionTitle>
+          <ImportField modus={ImportModus.NORMAL} />
+        </OptionSection>
+        <OptionSection>
+          <SelectionTitle>Import Images</SelectionTitle>
+          <ImportField modus={ImportModus.IMAGE} />
+        </OptionSection>
+        <OptionSection>
+          <SelectionTitle>Export All</SelectionTitle>
+          <SectionRow>
+            <SectionText>Export all as one file?</SectionText>
+            <IconButton icon={faFileExport} onClick={() => exportAll("DnDTome_all.json")} />
+          </SectionRow>
+        </OptionSection>
+        <OptionSection>
+          <SelectionTitle>Export Campaigns, Worlds etc</SelectionTitle>
+          <SectionRow>
+            <SectionText>Export Campaigns, Worlds etc as one file?</SectionText>
+            <IconButton
+              icon={faFileExport}
+              onClick={() => exportAllLeft("DnDTome_all_campagin.json")}
+            />
+          </SectionRow>
+        </OptionSection>
+        <OptionSection>
+          <SelectionTitle>Export Spells, Monsters etc</SelectionTitle>
+          <SectionRow>
+            <SectionText>Export Spells, Monsters etc as one file?</SectionText>
+            <IconButton
+              icon={faFileExport}
+              onClick={() => exportAllRight("DnDTome_all_entities.json")}
+            />
+          </SectionRow>
+        </OptionSection>
+        <OptionSection>
+          <SelectionTitle>Reset Database</SelectionTitle>
+          <IconButton icon={faTrashAlt} onClick={() => setResetDialog(true)} />
+        </OptionSection>
+      </OptionWrapper>
       <TabBar
         children={[
           "General",
@@ -437,8 +459,16 @@ const OptionTab = styled(General)`
   flex: 1 1 auto;
 `;
 
+const OptionWrapper = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  align-content: flex-start;
+`;
+
 const OptionSection = styled(General)`
-  flex: 1 1 auto;
+  flex: 1 1;
+  min-width: max-content;
   color: ${({ theme }) => theme.tile.color};
   background-color: ${({ theme }) => theme.tile.backgroundColor};
   margin: 0.5em;
