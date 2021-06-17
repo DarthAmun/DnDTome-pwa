@@ -1,0 +1,2 @@
+(this.webpackJsonpdndtome=this.webpackJsonpdndtome||[]).push([[20],{635:function(e,t,n){"use strict";n.r(t);var a=n(16),c=(n(2),n(10)),s=n(380),r=n(45),i=n(487),b=n(1);t.default=function(e){var t=e.match,n=new c.a,d=Object(s.a)(n.encounters,+t.params.id),j=Object(a.a)(d,3),o=j[0],u=j[1],m=j[2];return Object(b.jsxs)(b.Fragment,{children:[!m&&u&&Object(b.jsx)(r.b,{}),m&&!u&&Object(b.jsx)(b.Fragment,{children:"Fail by Id"}),m||u||void 0===o?"":Object(b.jsx)(i.a,{encounter:o,isNew:""===o.name})]})}}}]);
+//# sourceMappingURL=20.8530a50f.chunk.js.map
