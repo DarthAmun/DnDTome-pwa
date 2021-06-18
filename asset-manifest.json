@@ -15,11 +15,11 @@
     "main.css": "/DnDTome-pwa/static/css/main.484463a6.chunk.css",
     "main.js": "/DnDTome-pwa/static/js/main.e78cf227.chunk.js",
     "main.js.map": "/DnDTome-pwa/static/js/main.e78cf227.chunk.js.map",
-    "runtime-main.js": "/DnDTome-pwa/static/js/runtime-main.0838455d.js",
-    "runtime-main.js.map": "/DnDTome-pwa/static/js/runtime-main.0838455d.js.map",
+    "runtime-main.js": "/DnDTome-pwa/static/js/runtime-main.0d900048.js",
+    "runtime-main.js.map": "/DnDTome-pwa/static/js/runtime-main.0d900048.js.map",
     "static/css/8.c1e28d34.chunk.css": "/DnDTome-pwa/static/css/8.c1e28d34.chunk.css",
-    "static/js/8.4851e94e.chunk.js": "/DnDTome-pwa/static/js/8.4851e94e.chunk.js",
-    "static/js/8.4851e94e.chunk.js.map": "/DnDTome-pwa/static/js/8.4851e94e.chunk.js.map",
+    "static/js/8.19dea658.chunk.js": "/DnDTome-pwa/static/js/8.19dea658.chunk.js",
+    "static/js/8.19dea658.chunk.js.map": "/DnDTome-pwa/static/js/8.19dea658.chunk.js.map",
     "static/js/9.848f412c.chunk.js": "/DnDTome-pwa/static/js/9.848f412c.chunk.js",
     "static/js/9.848f412c.chunk.js.map": "/DnDTome-pwa/static/js/9.848f412c.chunk.js.map",
     "static/js/10.cbe1cd7b.chunk.js": "/DnDTome-pwa/static/js/10.cbe1cd7b.chunk.js",
@@ -54,7 +54,7 @@
     "static/js/12.18764f07.chunk.js.LICENSE.txt": "/DnDTome-pwa/static/js/12.18764f07.chunk.js.LICENSE.txt",
     "static/js/17.e888190b.chunk.js.LICENSE.txt": "/DnDTome-pwa/static/js/17.e888190b.chunk.js.LICENSE.txt",
     "static/js/3.6805766c.chunk.js.LICENSE.txt": "/DnDTome-pwa/static/js/3.6805766c.chunk.js.LICENSE.txt",
-    "static/js/8.4851e94e.chunk.js.LICENSE.txt": "/DnDTome-pwa/static/js/8.4851e94e.chunk.js.LICENSE.txt",
+    "static/js/8.19dea658.chunk.js.LICENSE.txt": "/DnDTome-pwa/static/js/8.19dea658.chunk.js.LICENSE.txt",
     "static/js/9.848f412c.chunk.js.LICENSE.txt": "/DnDTome-pwa/static/js/9.848f412c.chunk.js.LICENSE.txt",
     "static/media/asi.d4c63f5f.gif": "/DnDTome-pwa/static/media/asi.d4c63f5f.gif",
     "static/media/asiChar.f0a5b8b1.gif": "/DnDTome-pwa/static/media/asiChar.f0a5b8b1.gif",
@@ -70,7 +70,7 @@
     "static/media/selection.aad0d62e.gif": "/DnDTome-pwa/static/media/selection.aad0d62e.gif"
   },
   "entrypoints": [
-    "static/js/runtime-main.0838455d.js",
+    "static/js/runtime-main.0d900048.js",
     "static/js/12.18764f07.chunk.js",
     "static/css/main.484463a6.chunk.css",
     "static/js/main.e78cf227.chunk.js"
