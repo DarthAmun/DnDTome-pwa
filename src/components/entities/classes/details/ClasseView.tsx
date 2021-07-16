@@ -1,4 +1,9 @@
-import { faLink, faPaperPlane, faPlusCircle } from "@fortawesome/free-solid-svg-icons";
+import {
+  faFileExport,
+  faLink,
+  faPaperPlane,
+  faPlusCircle,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useCallback, useEffect, useState } from "react";
 import { GiDiceEightFacesEight } from "react-icons/gi";
@@ -68,6 +73,27 @@ const ClasseView = ({ classe }: $Props) => {
     });
   };
 
+  const exportThis = () => {
+    console.time("Remove Base64 Images");
+    let newClasse = { ...classe };
+    newClasse.picBase64 = "";
+    console.timeEnd("Remove Base64 Images");
+
+    let all: any = {
+      classes: [newClasse],
+      subclasses: subclasses,
+    };
+    let contentType = "application/json;charset=utf-8;";
+
+    var a = document.createElement("a");
+    a.download = classe.name + "|" + classe.sources + ".json";
+    a.href = "data:" + contentType + "," + encodeURIComponent(JSON.stringify(all));
+    a.target = "_blank";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  };
+
   return (
     <>
       <CenterWrapper>
@@ -117,6 +143,11 @@ const ClasseView = ({ classe }: $Props) => {
             </Text>
           </PropWrapper>
           <PropWrapper>
+            <TextButton
+              text={`Export ${classe.name}`}
+              icon={faFileExport}
+              onClick={() => exportThis()}
+            />
             {!send && (
               <TextButton
                 text={`Send ${classe.name}`}

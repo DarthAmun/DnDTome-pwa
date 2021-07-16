@@ -16,7 +16,7 @@ import Monster from "../data/Monster";
 import Race from "../data/races/Race";
 import Subrace from "../data/races/Subrace";
 import Trait from "../data/races/Trait";
-import Spell from "../data/Spell";
+import Spell, { isSpell } from "../data/Spell";
 import {
   reciveAllPromise,
   recivePromiseByAttribute,
@@ -85,10 +85,10 @@ export const recalcClasses = async (char: Char) => {
   });
 
   fullClassList?.forEach((classe: { class: Class; classSet: ClassSet }) => {
-    classe.class.featureSets.forEach((featureSet) => {
-      featureSet.features.forEach((feature) => {
+    classe.class.featureSets?.forEach((featureSet) => {
+      featureSet.features?.forEach((feature) => {
         let count = featureUses.length;
-        char.currentFeatureUses.forEach((uses) => {
+        char.currentFeatureUses?.forEach((uses) => {
           if (uses.origin === feature.name && count >= featureUses.length) {
             featureUses.push({
               origin: feature.name,
@@ -211,7 +211,7 @@ export const recalcClasses = async (char: Char) => {
     currencyBonis: bonis,
     currentFeatureUses: featureUses,
   };
-  updatedChar = await recalcSelections(updatedChar);
+  //updatedChar = await recalcSelections(updatedChar);
   return updatedChar;
 };
 
@@ -413,8 +413,13 @@ export const buildCharacter = async (character: Char): Promise<BuildChar> => {
     monsterList.push(recivePromiseByMultiAttribute("monsters", { name: name, sources: sources }));
   });
   character.spells.forEach((spell: { origin: string; prepared: boolean }) => {
-    let [name, sources] = spell.origin.split("|");
-    spellList.push(recivePromiseByMultiAttribute("spells", { name: name, sources: sources }));
+    if (spell.origin !== undefined) {
+      let [name, sources] = spell.origin.split("|");
+      spellList.push(recivePromiseByMultiAttribute("spells", { name: name, sources: sources }));
+    } else if (isSpell(spell)) {
+      let [name, sources] = spell.name.split("|");
+      spellList.push(recivePromiseByMultiAttribute("spells", { name: name, sources: sources }));
+    }
   });
   character.abilityImprovs?.forEach((a) => {
     if (a.feat !== "") {

@@ -7,7 +7,12 @@ import Subrace from "../../../../data/races/Subrace";
 import styled from "styled-components";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faLink, faPaperPlane, faPlusCircle } from "@fortawesome/free-solid-svg-icons";
+import {
+  faFileExport,
+  faLink,
+  faPaperPlane,
+  faPlusCircle,
+} from "@fortawesome/free-solid-svg-icons";
 import { GiUpgrade } from "react-icons/gi";
 import FormatedText from "../../../general_elements/FormatedText";
 import TextButton from "../../../form_elements/TextButton";
@@ -50,6 +55,27 @@ const RaceView = ({ race }: $Props) => {
     createNewWithId("subraces", newSubrace, (id) => {
       history.push(`/subrace-detail/id/${id}`);
     });
+  };
+
+  const exportThis = () => {
+    console.time("Remove Base64 Images");
+    let newRace = { ...race };
+    newRace.picBase64 = "";
+    console.timeEnd("Remove Base64 Images");
+
+    let all: any = {
+      races: [newRace],
+      subraces: subraces,
+    };
+    let contentType = "application/json;charset=utf-8;";
+
+    var a = document.createElement("a");
+    a.download = race.name + "|" + race.sources + ".json";
+    a.href = "data:" + contentType + "," + encodeURIComponent(JSON.stringify(all));
+    a.target = "_blank";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
   };
 
   return (
@@ -111,6 +137,11 @@ const RaceView = ({ race }: $Props) => {
           </Prop>
         </PropWrapper>
         <PropWrapper>
+          <TextButton
+            text={`Export ${race.name}`}
+            icon={faFileExport}
+            onClick={() => exportThis()}
+          />
           {!send && (
             <TextButton
               text={`Send ${race.name}`}

@@ -6,13 +6,44 @@ import { faArrowRight, faDice } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import TextButton from "../../../form_elements/TextButton";
 import FormatedText from "../../../general_elements/FormatedText";
+import { useEffect } from "react";
+import { reciveAll } from "../../../../services/DatabaseService";
+import IEntity from "../../../../data/IEntity";
+import BackgroundTile from "../../backgrounds/BackgroundTile";
+import ClassTile from "../../classes/ClassTile";
+import FeatTile from "../../feats/FeatTile";
+import GearTile from "../../gear/GearTile";
+import ItemTile from "../../items/ItemTile";
+import MonsterTile from "../../monsters/MonsterTile";
+import RaceTile from "../../races/RaceTile";
+import SpellTile from "../../spells/SpellTile";
 
 interface $Props {
   randomtable: RandomTable;
 }
 
 const RandomTableView = ({ randomtable: randomTable }: $Props) => {
+  const isEntity = randomTable.entity !== undefined && randomTable.entity !== "" ? true : false;
   const [rands, setRands] = useState<number[]>([]);
+  const [entities, setEntities] = useState<IEntity[]>([]);
+
+  const tiles = {
+    classes: ClassTile,
+    gears: GearTile,
+    items: ItemTile,
+    monsters: MonsterTile,
+    races: RaceTile,
+    spells: SpellTile,
+    feats: FeatTile,
+    backgrounds: BackgroundTile,
+  };
+
+  useEffect(() => {
+    if (randomTable.entity !== undefined && randomTable.entity !== "")
+      reciveAll(randomTable.entity, (result: any[]) => {
+        setEntities(result);
+      });
+  }, [randomTable]);
 
   const rollForRandom = () => {
     const min = 1;
@@ -31,110 +62,139 @@ const RandomTableView = ({ randomtable: randomTable }: $Props) => {
     setRands((r) => [rand, ...r]);
   };
 
+  const rollForRandomEntity = () => {
+    const rand = Math.round(Math.random() * (entities.length - 1));
+    setRands((r) => [rand, ...r]);
+  };
+
   return (
     <CenterWrapper>
       <Name>
         <b>{randomTable.name}</b>
       </Name>
-      <View>
-        <table>
-          <tbody>
-            <tr>
-              <TableHeadProp>Number</TableHeadProp>
-              {randomTable.header &&
-                randomTable.header.split("|").map((cell: string, index: number) => {
-                  return <TableHeadProp key={index}>{cell}</TableHeadProp>;
-                })}
-            </tr>
-            {randomTable.rows &&
-              randomTable.rows.map((row: { value: string; cells: string }, index: number) => {
-                return (
-                  <tr key={index}>
-                    <TableProp key={index}>{row.value}</TableProp>
-                    {row.cells.split("|").map((cell: string, index: number) => {
-                      return (
-                        <TableProp key={index}>
-                          <FormatedText text={cell} />
-                        </TableProp>
-                      );
+      {!isEntity && (
+        <>
+          <View>
+            <table>
+              <tbody>
+                <tr>
+                  <TableHeadProp>Number</TableHeadProp>
+                  {randomTable.header &&
+                    randomTable.header.split("|").map((cell: string, index: number) => {
+                      return <TableHeadProp key={index}>{cell}</TableHeadProp>;
                     })}
-                  </tr>
+                </tr>
+                {randomTable.rows &&
+                  randomTable.rows.map((row: { value: string; cells: string }, index: number) => {
+                    return (
+                      <tr key={index}>
+                        <TableProp key={index}>{row.value}</TableProp>
+                        {row.cells.split("|").map((cell: string, index: number) => {
+                          return (
+                            <TableProp key={index}>
+                              <FormatedText text={cell} />
+                            </TableProp>
+                          );
+                        })}
+                      </tr>
+                    );
+                  })}
+              </tbody>
+            </table>
+          </View>
+          <View>
+            <TextButton text={"Roll"} icon={faDice} onClick={() => rollForRandom()} />
+            {rands !== [] &&
+              rands.map((rand) => {
+                return (
+                  <Prop>
+                    <PropTitle>
+                      Rolled: {rand} <Icon icon={faArrowRight} />
+                    </PropTitle>
+                    {randomTable.rows.map((row: { value: string; cells: string }) => {
+                      if (row.value.includes("-")) {
+                        // normal -
+                        let range = row.value.trim().split("-");
+                        const min: number = +range[0];
+                        const max: number = +range[1];
+                        if (min <= rand && rand <= max) {
+                          let newRows = row.cells.split("|");
+                          const main = newRows[0];
+                          newRows = newRows.slice(1);
+                          return (
+                            <>
+                              <PropTitle>{main}</PropTitle>
+                              {newRows &&
+                                newRows.map((row) => {
+                                  return <FormatedText text={row} />;
+                                })}
+                            </>
+                          );
+                        }
+                      } else if (row.value.includes("–")) {
+                        // – used by DnDBeyond
+                        let range = row.value.trim().split("–");
+                        const min: number = +range[0];
+                        const max: number = +range[1];
+                        if (min <= rand && rand <= max) {
+                          let newRows = row.cells.split("|");
+                          const main = newRows[0];
+                          newRows = newRows.slice(1);
+                          return (
+                            <>
+                              <PropTitle>{main}</PropTitle>
+                              {newRows &&
+                                newRows.map((row) => {
+                                  return <FormatedText text={row} />;
+                                })}
+                            </>
+                          );
+                        }
+                      } else {
+                        const valueNumber = +row.value;
+                        if (valueNumber === rand) {
+                          let newRows = row.cells.split("|");
+                          const main = newRows[0];
+                          newRows = newRows.slice(1);
+                          return (
+                            <>
+                              <PropTitle>{main}</PropTitle>
+                              {newRows &&
+                                newRows.map((row) => {
+                                  return <FormatedText text={row} />;
+                                })}
+                            </>
+                          );
+                        }
+                      }
+                      return <></>;
+                    })}
+                  </Prop>
                 );
               })}
-          </tbody>
-        </table>
-      </View>
-      <View>
-        <TextButton text={"Roll"} icon={faDice} onClick={() => rollForRandom()} />
-        {rands !== [] &&
-          rands.map((rand) => {
-            return (
-              <Prop>
-                <PropTitle>
-                  Rolled: {rand} <Icon icon={faArrowRight} />
-                </PropTitle>
-                {randomTable.rows.map((row: { value: string; cells: string }) => {
-                  if (row.value.includes("-")) {
-                    // normal -
-                    let range = row.value.trim().split("-");
-                    const min: number = +range[0];
-                    const max: number = +range[1];
-                    if (min <= rand && rand <= max) {
-                      let newRows = row.cells.split("|");
-                      const main = newRows[0];
-                      newRows = newRows.slice(1);
-                      return (
-                        <>
-                          <PropTitle>{main}</PropTitle>
-                          {newRows &&
-                            newRows.map((row) => {
-                              return <FormatedText text={row} />;
-                            })}
-                        </>
-                      );
-                    }
-                  } else if (row.value.includes("–")) {
-                    // – used by DnDBeyond
-                    let range = row.value.trim().split("–");
-                    const min: number = +range[0];
-                    const max: number = +range[1];
-                    if (min <= rand && rand <= max) {
-                      let newRows = row.cells.split("|");
-                      const main = newRows[0];
-                      newRows = newRows.slice(1);
-                      return (
-                        <>
-                          <PropTitle>{main}</PropTitle>
-                          {newRows &&
-                            newRows.map((row) => {
-                              return <FormatedText text={row} />;
-                            })}
-                        </>
-                      );
-                    }
-                  } else {
-                    const valueNumber = +row.value;
-                    if (valueNumber === rand) {
-                      let newRows = row.cells.split("|");
-                      const main = newRows[0];
-                      newRows = newRows.slice(1);
-                      return (
-                        <>
-                          <PropTitle>{main}</PropTitle>
-                          {newRows &&
-                            newRows.map((row) => {
-                              return <FormatedText text={row} />;
-                            })}
-                        </>
-                      );
-                    }
-                  }
-                  return <></>;
-                })}
-              </Prop>
-            );
-          })}
-      </View>
+          </View>
+        </>
+      )}
+      {isEntity && (
+        <View>
+          <TextButton text={"Roll"} icon={faDice} onClick={() => rollForRandomEntity()} />
+          {rands !== [] &&
+            rands.map((rand, index) => {
+              return (
+                <>
+                  <Prop key={index}>
+                    <PropTitle>
+                      Rolled: {rand} <Icon icon={faArrowRight} />
+                    </PropTitle>
+                  </Prop>
+                  {React.createElement(tiles[randomTable.entity], {
+                    [randomTable.entity.slice(0, -1)]: entities[rand],
+                  })}
+                </>
+              );
+            })}
+        </View>
+      )}
     </CenterWrapper>
   );
 };

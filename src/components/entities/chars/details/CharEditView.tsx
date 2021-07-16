@@ -161,7 +161,12 @@ const CharEditView = ({ character, onEdit, isNpc }: $Props) => {
             return classSet;
           }
         });
-        onEdit({ ...character, classes: classes });
+        recalcSelections(character).then((char) => {
+          onEdit({
+            ...char,
+            classes: classes,
+          });
+        });
       }
     },
     [character, onEdit]

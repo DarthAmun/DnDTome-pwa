@@ -33,7 +33,11 @@ const CharTile = ({ char }: $Props) => {
       to={"/char-detail/id/" + char.id}
       style={{
         opacity:
-          char.deathSaves[3] === 1 && char.deathSaves[4] === 1 && char.deathSaves[5] === 1
+          char.deathSaves !== undefined &&
+          char.deathSaves.length === 6 &&
+          char.deathSaves[3] === 1 &&
+          char.deathSaves[4] === 1 &&
+          char.deathSaves[5] === 1
             ? 0.3
             : 1,
       }}
@@ -43,7 +47,11 @@ const CharTile = ({ char }: $Props) => {
         <Name>
           <b>
             {char.name}{" "}
-            {char.deathSaves[3] === 1 && char.deathSaves[4] === 1 && char.deathSaves[5] === 1
+            {char.deathSaves !== undefined &&
+            char.deathSaves.length === 6 &&
+            char.deathSaves[3] === 1 &&
+            char.deathSaves[4] === 1 &&
+            char.deathSaves[5] === 1
               ? " - Dead"
               : ""}
           </b>

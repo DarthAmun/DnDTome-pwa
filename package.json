@@ -1,6 +1,6 @@
 {
   "name": "dndtome",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "private": true,
   "homepage": "https://darthamun.github.io/DnDTome-pwa/",
   "devDependencies": {
@@ -61,6 +61,7 @@
     "react-string-replace": "^0.4.4",
     "react-swipeable": "^6.0.1",
     "recharts": "^2.0.9",
+    "source-map-explorer": "^2.5.2",
     "styled-components": "^5.1.1",
     "typescript": "^4.2.4"
   },
@@ -70,7 +71,8 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d build"
+    "deploy": "gh-pages -d build",
+    "analyze": "source-map-explorer 'build/static/js/*.js'"
   },
   "eslintConfig": {
     "extends": "react-app"

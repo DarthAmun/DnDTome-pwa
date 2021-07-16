@@ -5,6 +5,7 @@ export default class RandomTable implements IEntity {
   name: string;
   header: string;
   rows: { value: string; cells: string }[];
+  entity: string;
   filename?: string;
 
   constructor(
@@ -12,13 +13,15 @@ export default class RandomTable implements IEntity {
     name?: string,
     filename?: string,
     header?: string,
-    rows?: { value: string; cells: string }[]
+    rows?: { value: string; cells: string }[],
+    entity?: string
   ) {
     this.id = id;
     this.filename = filename || "";
     this.name = name || "";
     this.header = header || "";
     this.rows = rows || [];
+    this.entity = entity || "";
   }
 }
 
@@ -30,9 +33,7 @@ export function isRandomTable(arg: any): arg is RandomTable {
   return arg && nameCheck && headerCheck && rowsCheck;
 }
 
-export function findRandomTableFormattError(
-  arg: any
-): {
+export function findRandomTableFormattError(arg: any): {
   nameCheck: boolean;
   headerCheck: boolean;
   rowsCheck: boolean;

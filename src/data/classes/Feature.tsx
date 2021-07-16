@@ -36,7 +36,7 @@ export enum FeatureRest {
 export function getOptionFromRestEnum(value: FeatureRest): { value: string; label: string } {
   let opt = undefined;
   featureRestArray.forEach((option) => {
-    if (option.value === value.toString()) opt = option;
+    if (value !== undefined && option.value === value.toString()) opt = option;
   });
   if (opt !== undefined) {
     return opt;

@@ -227,9 +227,7 @@ const CharSpellView = ({ spell, prepared, char, saveChar }: $Props) => {
         </ImageName>
       ) : (
         <Name>
-          <b>
-            {spell.name} | {spell.sources}
-          </b>
+          <b>{spell.name}</b>
           <CastButton onClick={() => castSpell()} style={{}}>
             <GiBoltSpellCast />
             {"Cast"}

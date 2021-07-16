@@ -625,39 +625,40 @@ const CharGeneral = ({ buildChar, onChange }: $Props) => {
           />
         </PropColumnWrapper>
       </MinView>
-      {buildChar.oldCharacter.deathSaves && (
-        <MinView>
-          <PropColumnWrapper>
-            <Prop>
-              <PropTitle>Death Saves:</PropTitle>
-              <DeathSaveRow>
-                <DeathSaveRowHeader>Sucesses:</DeathSaveRowHeader>
-                <span onClick={(e) => changeDeathSave(0)}>
-                  <FontAwesomeIcon icon={changeLifeIcon(buildChar.oldCharacter.deathSaves[0])} />
-                </span>
-                <span onClick={(e) => changeDeathSave(1)}>
-                  <FontAwesomeIcon icon={changeLifeIcon(buildChar.oldCharacter.deathSaves[1])} />
-                </span>
-                <span onClick={(e) => changeDeathSave(2)}>
-                  <FontAwesomeIcon icon={changeLifeIcon(buildChar.oldCharacter.deathSaves[2])} />
-                </span>
-              </DeathSaveRow>
-              <DeathSaveRow>
-                <DeathSaveRowHeader>Failures:</DeathSaveRowHeader>
-                <span onClick={(e) => changeDeathSave(3)}>
-                  <FontAwesomeIcon icon={changeDeathIcon(buildChar.oldCharacter.deathSaves[3])} />
-                </span>
-                <span onClick={(e) => changeDeathSave(4)}>
-                  <FontAwesomeIcon icon={changeDeathIcon(buildChar.oldCharacter.deathSaves[4])} />
-                </span>
-                <span onClick={(e) => changeDeathSave(5)}>
-                  <FontAwesomeIcon icon={changeDeathIcon(buildChar.oldCharacter.deathSaves[5])} />
-                </span>
-              </DeathSaveRow>
-            </Prop>
-          </PropColumnWrapper>
-        </MinView>
-      )}
+      {buildChar.oldCharacter.deathSaves !== undefined &&
+        buildChar.oldCharacter.deathSaves.length === 6 && (
+          <MinView>
+            <PropColumnWrapper>
+              <Prop>
+                <PropTitle>Death Saves:</PropTitle>
+                <DeathSaveRow>
+                  <DeathSaveRowHeader>Sucesses:</DeathSaveRowHeader>
+                  <span onClick={(e) => changeDeathSave(0)}>
+                    <FontAwesomeIcon icon={changeLifeIcon(buildChar.oldCharacter.deathSaves[0])} />
+                  </span>
+                  <span onClick={(e) => changeDeathSave(1)}>
+                    <FontAwesomeIcon icon={changeLifeIcon(buildChar.oldCharacter.deathSaves[1])} />
+                  </span>
+                  <span onClick={(e) => changeDeathSave(2)}>
+                    <FontAwesomeIcon icon={changeLifeIcon(buildChar.oldCharacter.deathSaves[2])} />
+                  </span>
+                </DeathSaveRow>
+                <DeathSaveRow>
+                  <DeathSaveRowHeader>Failures:</DeathSaveRowHeader>
+                  <span onClick={(e) => changeDeathSave(3)}>
+                    <FontAwesomeIcon icon={changeDeathIcon(buildChar.oldCharacter.deathSaves[3])} />
+                  </span>
+                  <span onClick={(e) => changeDeathSave(4)}>
+                    <FontAwesomeIcon icon={changeDeathIcon(buildChar.oldCharacter.deathSaves[4])} />
+                  </span>
+                  <span onClick={(e) => changeDeathSave(5)}>
+                    <FontAwesomeIcon icon={changeDeathIcon(buildChar.oldCharacter.deathSaves[5])} />
+                  </span>
+                </DeathSaveRow>
+              </Prop>
+            </PropColumnWrapper>
+          </MinView>
+        )}
     </>
   );
 };
