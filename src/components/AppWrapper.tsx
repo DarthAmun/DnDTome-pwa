@@ -1,7 +1,7 @@
 import React, { ReactNode, useState } from "react";
 import { useSwipeable } from "react-swipeable";
 import styled from "styled-components";
-import Header from "./navigation/Header";
+import { HeaderBar } from "./navigation/Header";
 import Navigation from "./navigation/Navigation";
 
 interface $Props {
@@ -26,9 +26,9 @@ const AppWrapper = ({ children }: $Props) => {
 
   return (
     <App {...handlers}>
-      <Header />
-      <Navigation open={open} setOpen={setOpen} />
-      <Content>{children}</Content>
+      <HeaderBar />
+      {/* <Navigation open={open} setOpen={setOpen} /> */}
+      {/* <Content>{children}</Content> */}
     </App>
   );
 };
@@ -40,7 +40,7 @@ const App = styled.div`
   width: 100%;
   height: 100%;
   min-height: calc(100vh - 4rem);
-  background-color: ${({ theme }) => theme.main.backgroundColor};
+  background-color: ${({ theme }) => theme.backgroundColor};
   display: flex;
   flex-wrap: no-wrap;
   align-items: flex-start;
