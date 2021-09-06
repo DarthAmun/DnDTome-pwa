@@ -1,6 +1,4 @@
-import IEntity from "../IEntity";
-
-export default class Trait implements IEntity {
+export default class Trait {
   name: string;
   text: string;
   level: number;

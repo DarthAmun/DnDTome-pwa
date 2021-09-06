@@ -1,9 +1,6 @@
 import IEntity from "./IEntity";
 
-export default class Background implements IEntity {
-  id?: number;
-  name: string;
-  sources: string;
+export default class Background extends IEntity {
   proficiencies: string;
   description: string;
 
@@ -14,10 +11,8 @@ export default class Background implements IEntity {
     proficiencies?: string,
     description?: string
   ) {
-    this.id = id;
-    this.name = name || "";
+    super(id, name, sources, "");
     this.description = description || "";
     this.proficiencies = proficiencies || "";
-    this.sources = sources || "";
   }
 }

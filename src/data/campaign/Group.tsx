@@ -2,9 +2,7 @@ import { FlowElement } from "react-flow-renderer";
 import IEntity from "../IEntity";
 import Note from "./Note";
 
-export default class Group implements IEntity {
-  id?: number;
-  name: string;
+export default class Group extends IEntity {
   pic: string;
   picBase64: string;
   description: string;
@@ -13,8 +11,6 @@ export default class Group implements IEntity {
   npcs: string[];
   monsters: string[];
   flow: FlowElement[];
-  sources: string;
-  filename?: string;
 
   constructor(
     id?: number,
@@ -30,8 +26,7 @@ export default class Group implements IEntity {
     sources?: string,
     filename?: string
   ) {
-    this.id = id;
-    this.name = name || "";
+    super(id, name, sources, filename);
     this.pic = pic || "";
     this.picBase64 = picBase64 || "";
     this.description = description || "";
@@ -40,8 +35,6 @@ export default class Group implements IEntity {
     this.npcs = npcs || [];
     this.monsters = monsters || [];
     this.flow = flow || [];
-    this.sources = sources || "";
-    this.filename = filename || "";
   }
 }
 

@@ -2,9 +2,7 @@ import IEntity from "../IEntity";
 import Player from "./Player";
 import Slot from "./Slot";
 
-export default class Encounter implements IEntity {
-  id?: number;
-  name: string;
+export default class Encounter extends IEntity {
   enemies: Player[];
   players: Player[];
   isPlaying: boolean;
@@ -28,8 +26,7 @@ export default class Encounter implements IEntity {
     dimension?: { width: number; height: number; size: number; zoom: number },
     board?: Slot[]
   ) {
-    this.id = id;
-    this.name = name || "";
+    super(id, name, "", "");
     this.enemies = enemies || [];
     this.players = players || [];
     this.isPlaying = isPlaying || false;

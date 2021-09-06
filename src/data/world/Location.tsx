@@ -1,14 +1,11 @@
 import { LatLng } from "leaflet";
 import IEntity from "../IEntity";
 
-export default class Location implements IEntity {
-  id?: number;
-  name: string;
+export default class Location extends IEntity {
   map: string;
   mapBase64: string;
   dimension: { height: number; width: number };
   markers: { position: LatLng; text: string }[];
-  sources: string;
 
   constructor(
     id?: number,
@@ -19,9 +16,7 @@ export default class Location implements IEntity {
     dimension?: { height: number; width: number },
     markers?: { position: LatLng; text: string }[]
   ) {
-    this.id = id;
-    this.name = name || "";
-    this.sources = sources || "";
+    super(id, name, sources, "");
     this.map = map || "";
     this.mapBase64 = mapBase64 || "";
     this.dimension = dimension || {

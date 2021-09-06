@@ -1,15 +1,11 @@
 import IEntity from "../IEntity";
 import FeatureSet, { isFeatureSet } from "./FeatureSet";
 
-export default class Class implements IEntity {
-  id?: number;
-  name: string;
+export default class Class extends IEntity {
   featureSets: FeatureSet[];
   hitDices: string;
   proficiencies: string;
   equipment: string;
-  sources: string;
-  filename: string;
   pic: string;
   picBase64: string;
 
@@ -25,14 +21,11 @@ export default class Class implements IEntity {
     pic?: string,
     picBase64?: string
   ) {
-    this.id = id;
-    this.name = name || "";
+    super(id, name, sources, filename);
     this.featureSets = featureSets || [];
     this.hitDices = hitDices || "";
     this.proficiencies = proficiencies || "";
     this.equipment = equipment || "";
-    this.filename = filename || "";
-    this.sources = sources || "";
     this.pic = pic || "";
     this.picBase64 = picBase64 || "";
   }

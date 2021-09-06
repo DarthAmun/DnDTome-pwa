@@ -1,8 +1,6 @@
 import IEntity from "./IEntity";
 
-export default class Book implements IEntity{
-  id?: number;
-  name: string;
+export default class Book extends IEntity {
   cover: string;
   data: Blob;
   pages: number;
@@ -16,8 +14,7 @@ export default class Book implements IEntity{
     pages?: number,
     tags?: string[]
   ) {
-    this.id = id;
-    this.name = name || "";
+    super(id, name, "", "");
     this.cover = cover || "";
     this.data = data || new Blob();
     this.pages = pages || 0;

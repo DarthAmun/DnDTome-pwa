@@ -1,9 +1,7 @@
 import IEntity from "../IEntity";
 import Trait, { isTrait } from "./Trait";
 
-export default class Race implements IEntity {
-  id?: number;
-  name: string;
+export default class Race extends IEntity {
   abilityScores: string;
   age: string;
   alignment: string;
@@ -11,8 +9,6 @@ export default class Race implements IEntity {
   speed: string;
   lang: string;
   traits: Trait[];
-  sources: string;
-  filename: string;
   pic: string;
   picBase64: string;
 
@@ -31,9 +27,7 @@ export default class Race implements IEntity {
     traits?: Trait[],
     sources?: string
   ) {
-    this.name = name || "";
-    this.id = id;
-    this.filename = filename || "";
+    super(id, name, sources, filename);
     this.pic = pic || "";
     this.picBase64 = picBase64 || "";
     this.abilityScores = abilityScores || "";
@@ -43,7 +37,6 @@ export default class Race implements IEntity {
     this.speed = speed || "";
     this.lang = lang || "";
     this.traits = traits || [];
-    this.sources = sources || "";
   }
 }
 

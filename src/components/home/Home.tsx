@@ -5,7 +5,6 @@ import styled from "styled-components";
 
 import { faCog, faQuestionCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import TextButton from "../form_elements/TextButton";
 import { faDiscord, faGithub, faPatreon, faReddit } from "@fortawesome/free-brands-svg-icons";
 
 const Home = () => {
@@ -76,9 +75,7 @@ const Home = () => {
           <SectionText>
             To import/export or to make other adjustments to your collection...
           </SectionText>
-          <ButtonBar>
-            <TextButton text={"Go to options"} onClick={() => history.push(`/options`)} />
-          </ButtonBar>
+          <ButtonBar></ButtonBar>
         </HomeSection>
         <HomeSection>
           <SelectionTitle>
@@ -88,9 +85,7 @@ const Home = () => {
           <SectionText>
             Help on where to find what and how to add tables or hyperlinks inside of text fields.
           </SectionText>
-          <ButtonBar>
-            <TextButton text={"Help"} onClick={() => history.push(`/help`)} />
-          </ButtonBar>
+          <ButtonBar></ButtonBar>
         </HomeSection>
       </General>
     </>

@@ -1,9 +1,6 @@
 import IEntity from "./IEntity";
 
-export default class Feat implements IEntity {
-  id?: number;
-  name: string;
-  sources: string;
+export default class Feat extends IEntity {
   prerequisite: string;
   description: string;
 
@@ -14,10 +11,8 @@ export default class Feat implements IEntity {
     prerequisite?: string,
     description?: string
   ) {
-    this.id = id;
-    this.name = name || "";
+    super(id, name, sources, "");
     this.description = description || "";
     this.prerequisite = prerequisite || "";
-    this.sources = sources || "";
   }
 }

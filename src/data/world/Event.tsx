@@ -1,18 +1,13 @@
 import IEntity from "../IEntity";
 
-export default class Event implements IEntity {
-  id?: number;
-  name: string;
+export default class Event extends IEntity {
   description: string;
   date: string;
-  sources: string;
 
   constructor(id?: number, name?: string, description?: string, date?: string, sources?: string) {
-    this.id = id;
-    this.name = name || "";
+    super(id, name, sources, "");
     this.description = description || "";
     this.date = date || "";
-    this.sources = sources || "";
   }
 }
 

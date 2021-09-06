@@ -2,9 +2,8 @@ import React, { useCallback, useEffect, useState } from "react";
 import { RouteComponentProps, useHistory } from "react-router";
 import { useQuery } from "../../../hooks/QueryHook";
 
-import { LoadingSpinner } from "../../Loading";
+import { LoadingSpinner } from "../../general/Loading";
 import Details from "./EntityDetail";
-import ErrorTile from "../ErrorTile";
 import Campaign from "../../../data/campaign/Campaign";
 import {
   createNewWithId,
@@ -110,7 +109,7 @@ const ToEntity = ({ match }: RouteComponentProps<TParams>) => {
     race: new Race(match.params.name),
     randomTable: new RandomTable(0, match.params.name),
     selection: new Selection(0, match.params.name),
-    spell: new Spell(match.params.name),
+    spell: new Spell(0, match.params.name),
     subclasse: new Subclass(0, match.params.name),
     subrace: new Subrace(match.params.name),
     world: new World(0, match.params.name),
@@ -134,13 +133,7 @@ const ToEntity = ({ match }: RouteComponentProps<TParams>) => {
   return (
     <>
       {loading && <LoadingSpinner />}
-      {!loading && error && (
-        <ErrorTile
-          text={"No such campaign exists. Want to creat such campaign?"}
-          buttonText={"Add"}
-          onButton={() => createNewEntity()}
-        />
-      )}
+      {!loading && error && <>Error</>}
       {!error && !loading && entity !== undefined && (
         <Details
           entity={entity}

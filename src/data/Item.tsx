@@ -1,9 +1,6 @@
 import IEntity from "./IEntity";
 
-export default class Item implements IEntity {
-  id?: number;
-  name: string;
-  sources: string;
+export default class Item extends IEntity {
   description: string;
   pic: string;
   picBase64: string;
@@ -12,7 +9,6 @@ export default class Item implements IEntity {
   attunment: number;
   base: string;
   type: string;
-  filename: string;
 
   constructor(
     id?: number,
@@ -28,8 +24,7 @@ export default class Item implements IEntity {
     type?: string,
     filename?: string
   ) {
-    this.name = name || "";
-    this.sources = sources || "";
+    super(id, name, sources, filename);
     this.description = description || "";
     this.pic = pic || "";
     this.picBase64 = picBase64 || "";
@@ -38,8 +33,6 @@ export default class Item implements IEntity {
     this.attunment = attunment || 0;
     this.base = base || "";
     this.type = type || "";
-    this.id = id;
-    this.filename = filename || "";
   }
 }
 

@@ -1,7 +1,6 @@
-import IEntity from "../IEntity";
 import { FeatureRest } from "./Feature";
 
-export default class Boni implements IEntity {
+export default class Boni {
   name: string;
   value: string;
   isCurrency: boolean;

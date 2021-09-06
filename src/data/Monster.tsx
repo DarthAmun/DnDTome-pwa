@@ -1,12 +1,8 @@
 import IEntity from "./IEntity";
 
-export default class Monster implements IEntity {
-  id?: number;
-  filename: string;
-  name: string;
+export default class Monster extends IEntity {
   pic: string;
   picBase64: string;
-  sources: string;
   size: string;
   type: string;
   subtype: string;
@@ -66,9 +62,7 @@ export default class Monster implements IEntity {
     lAblt?: string,
     filename?: string
   ) {
-    this.name = name || "";
-    this.sources = sources || "";
-    this.id = id;
+    super(id, name, sources, filename);
     this.pic = pic || "";
     this.picBase64 = picBase64 || "";
     this.size = size || "";
@@ -96,7 +90,6 @@ export default class Monster implements IEntity {
     this.sAblt = sAblt || "";
     this.ablt = ablt || "";
     this.lAblt = lAblt || "";
-    this.filename = filename || "";
   }
 }
 

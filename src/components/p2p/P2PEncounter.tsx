@@ -3,7 +3,6 @@ import styled from "styled-components";
 import Peer from "peerjs";
 import { generateBrokerId } from "../../services/PeerIdService";
 import { faExclamationCircle } from "@fortawesome/free-solid-svg-icons";
-import StringField from "../form_elements/StringField";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Encounter from "../../data/encounter/Encounter";
 
@@ -93,27 +92,7 @@ const P2PEncounter = ({ encounter, isHost, onEdit }: $Props) => {
     // eslint-disable-next-line
   }, [encounter, connections, isHost]);
 
-  return (
-    <>
-      {peer !== undefined && isHost && (
-        <StringField
-          value={peer.id}
-          label={`Your ID:`}
-          onChange={() => {}}
-          style={{ minWidth: "250px", float: "right", height: "30px" }}
-        />
-      )}
-      {peer !== undefined && !isHost && (
-        <StringField
-          value={peerId}
-          label={"ID to recive from"}
-          onChange={setId}
-          style={{ minWidth: "250px", float: "right" }}
-        />
-      )}
-      {error && <Icon icon={faExclamationCircle} />}
-    </>
-  );
+  return <>{error && <Icon icon={faExclamationCircle} />}</>;
 };
 
 export default P2PEncounter;

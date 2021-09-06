@@ -209,7 +209,7 @@ export const recivePromiseByMultiAttribute = (tableName: string, obj: IEntity) =
         db.close();
       });
   } else {
-    delete obj.sources;
+    // delete obj.sources;
     return db
       .open()
       .then(async function () {

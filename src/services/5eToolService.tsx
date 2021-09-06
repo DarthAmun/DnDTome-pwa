@@ -588,19 +588,20 @@ export const makeSpell = (obj: any, fileName: string): Spell => {
   text = replaceTags(text);
 
   return new Spell(
+    0,
     obj.name,
-    classes,
     obj.source,
+    fileName,
+    classes,
     obj.level,
     school,
     time,
     range,
     components,
     duration,
-    obj.meta && obj.meta.ritual ? 1 : 0,
+    obj.meta.ritual,
     text,
-    0,
-    fileName,
+    "",
     ""
   );
 };

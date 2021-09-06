@@ -3,17 +3,13 @@ import IEntity from "../IEntity";
 import Monster from "../Monster";
 
 //npcs: "++id, name, pic, char, traits, description, sources, filename",
-export default class Npc implements IEntity {
-  id?: number;
-  name: string;
+export default class Npc extends IEntity {
   pic: string;
   picBase64: string;
   char: Char | undefined;
   monster: Monster | undefined;
   traits: string;
   description: string;
-  sources: string;
-  filename?: string;
 
   constructor(
     id?: number,
@@ -27,16 +23,13 @@ export default class Npc implements IEntity {
     sources?: string,
     filename?: string
   ) {
-    this.id = id;
-    this.name = name || "";
+    super(id, name, sources, filename);
     this.pic = pic || "";
     this.picBase64 = picBase64 || "";
     this.char = char || undefined;
     this.monster = monster || undefined;
     this.traits = traits || "";
     this.description = description || "";
-    this.sources = sources || "";
-    this.filename = filename || "";
   }
 }
 

@@ -3,9 +3,7 @@ import IEntity from "../IEntity";
 import Note from "./Note";
 
 // campaigns: "++id, name, pic, description, world, quests, events, notes, sources, filename",
-export default class Campaign implements IEntity {
-  id?: number;
-  name: string;
+export default class Campaign extends IEntity {
   pic: string;
   description: string;
   players: string[];
@@ -14,8 +12,6 @@ export default class Campaign implements IEntity {
   npcs: string[];
   notes: Note[];
   flow: FlowElement[];
-  sources: string;
-  filename?: string;
   picBase64: string;
 
   constructor(
@@ -33,8 +29,7 @@ export default class Campaign implements IEntity {
     filename?: string,
     picBase64?: string
   ) {
-    this.id = id;
-    this.name = name || "";
+    super(id, name, sources, filename);
     this.pic = pic || "";
     this.picBase64 = picBase64 || "";
     this.description = description || "";
@@ -44,8 +39,6 @@ export default class Campaign implements IEntity {
     this.npcs = npcs || [];
     this.notes = notes || [];
     this.flow = flow || [];
-    this.sources = sources || "";
-    this.filename = filename || "";
   }
 }
 

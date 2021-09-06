@@ -1,9 +1,6 @@
 import IEntity from "./IEntity";
 
-export default class Gear implements IEntity {
-  id?: number;
-  name: string;
-  sources: string;
+export default class Gear extends IEntity {
   description: string;
   pic: string;
   picBase64: string;
@@ -12,7 +9,6 @@ export default class Gear implements IEntity {
   weight: string;
   properties: string;
   type: string;
-  filename: string;
 
   constructor(
     id?: number,
@@ -28,6 +24,7 @@ export default class Gear implements IEntity {
     type?: string,
     filename?: string
   ) {
+    super(id, name, sources, filename);
     this.name = name || "";
     this.sources = sources || "";
     this.description = description || "";

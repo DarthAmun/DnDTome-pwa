@@ -44,7 +44,7 @@ export function getOptionFromRestEnum(value: FeatureRest): { value: string; labe
   return { value: "", label: "" };
 }
 
-export default class Feature implements IEntity {
+export default class Feature {
   name: string;
   text: string;
   type: FeatureType;

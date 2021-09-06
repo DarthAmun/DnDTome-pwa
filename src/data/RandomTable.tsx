@@ -1,12 +1,9 @@
 import IEntity from "./IEntity";
 
-export default class RandomTable implements IEntity {
-  id?: number;
-  name: string;
+export default class RandomTable extends IEntity {
   header: string;
   rows: { value: string; cells: string }[];
   entity: string;
-  filename?: string;
 
   constructor(
     id?: number,
@@ -16,9 +13,7 @@ export default class RandomTable implements IEntity {
     rows?: { value: string; cells: string }[],
     entity?: string
   ) {
-    this.id = id;
-    this.filename = filename || "";
-    this.name = name || "";
+    super(id, name, "", filename);
     this.header = header || "";
     this.rows = rows || [];
     this.entity = entity || "";

@@ -1,16 +1,12 @@
 import IEntity from "../IEntity";
 
 //quests:"++id, name, pic, locations, origin, description, rewards, followQuest, sources, filename",
-export default class Quest implements IEntity {
-  id?: number;
-  name: string;
+export default class Quest extends IEntity {
   pic: string;
   picBase64: string;
   description: string;
   rewards: string;
   followQuest: string;
-  sources: string;
-  filename?: string;
 
   constructor(
     id?: number,
@@ -23,15 +19,12 @@ export default class Quest implements IEntity {
     sources?: string,
     filename?: string
   ) {
-    this.id = id;
-    this.name = name || "";
+    super(id, name, sources, filename);
     this.pic = pic || "";
     this.picBase64 = picBase64 || "";
     this.description = description || "";
     this.rewards = rewards || "";
     this.followQuest = followQuest || "";
-    this.sources = sources || "";
-    this.filename = filename || "";
   }
 }
 

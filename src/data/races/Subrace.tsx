@@ -1,14 +1,10 @@
 import IEntity from "../IEntity";
 import Trait, { isTrait } from "./Trait";
 
-export default class Subrace implements IEntity {
-  id?: number;
-  name: string;
+export default class Subrace extends IEntity {
   type: string;
   abilityScores: string;
   traits: Trait[];
-  sources: string;
-  filename: string;
 
   constructor(
     name?: string,
@@ -19,13 +15,10 @@ export default class Subrace implements IEntity {
     traits?: Trait[],
     sources?: string
   ) {
-    this.name = name || "";
-    this.id = id;
+    super(id, name, sources, filename);
     this.type = type || "";
-    this.filename = filename || "";
     this.abilityScores = abilityScores || "";
     this.traits = traits || [];
-    this.sources = sources || "";
   }
 }
 
@@ -35,24 +28,12 @@ export function isSubrace(arg: any): arg is Subrace {
   const abilityScoresCheck =
     arg.abilityScores !== undefined && typeof arg.abilityScores == "string";
   const traitsCheck =
-    arg.traits !== undefined &&
-    Array.isArray(arg.traits) &&
-    isTrait(arg.traits[0]);
-  const sourcesCheck =
-    arg.sources !== undefined && typeof arg.sources == "string";
-  return (
-    arg &&
-    nameCheck &&
-    typeCheck &&
-    abilityScoresCheck &&
-    traitsCheck &&
-    sourcesCheck
-  );
+    arg.traits !== undefined && Array.isArray(arg.traits) && isTrait(arg.traits[0]);
+  const sourcesCheck = arg.sources !== undefined && typeof arg.sources == "string";
+  return arg && nameCheck && typeCheck && abilityScoresCheck && traitsCheck && sourcesCheck;
 }
 
-export function findSubraceFormattError(
-  arg: any
-): {
+export function findSubraceFormattError(arg: any): {
   nameCheck: boolean;
   typeCheck: boolean;
   abilityScoresCheck: boolean;
@@ -64,11 +45,8 @@ export function findSubraceFormattError(
   const abilityScoresCheck =
     arg.abilityScores !== undefined && typeof arg.abilityScores == "string";
   const traitsCheck =
-    arg.traits !== undefined &&
-    Array.isArray(arg.traits) &&
-    isTrait(arg.traits[0]);
-  const sourcesCheck =
-    arg.sources !== undefined && typeof arg.sources == "string";
+    arg.traits !== undefined && Array.isArray(arg.traits) && isTrait(arg.traits[0]);
+  const sourcesCheck = arg.sources !== undefined && typeof arg.sources == "string";
   return {
     nameCheck: nameCheck,
     typeCheck: typeCheck,

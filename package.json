@@ -61,6 +61,7 @@
     "react-string-replace": "^0.4.4",
     "react-swipeable": "^6.0.1",
     "recharts": "^2.0.9",
+    "rsuite": "4.8.9",
     "source-map-explorer": "^2.5.2",
     "styled-components": "^5.1.1",
     "typescript": "^4.2.4"

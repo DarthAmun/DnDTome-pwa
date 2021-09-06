@@ -6,7 +6,6 @@ import IEntity from "../../data/IEntity";
 import { generateBrokerId } from "../../services/PeerIdService";
 
 import { faExclamationCircle } from "@fortawesome/free-solid-svg-icons";
-import StringField from "../form_elements/StringField";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 interface $Props {
@@ -73,11 +72,7 @@ const P2PSender = ({ data, mode }: $Props) => {
 
   return (
     <>
-      {peer !== undefined && peer.id !== null && (
-        <>
-          <StringField value={peer.id} label={`Your ${name} ID:`} onChange={() => {}} />
-        </>
-      )}
+      {peer !== undefined && peer.id !== null && <></>}
       {error && <Icon icon={faExclamationCircle} />}
     </>
   );

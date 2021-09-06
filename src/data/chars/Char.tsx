@@ -6,9 +6,7 @@ import ClassSet, { isClassSet } from "./ClassSet";
 import RaceSet, { isRaceSet } from "./RaceSet";
 import { FeatureRest } from "../classes/Feature";
 
-export default class Char implements IEntity {
-  id?: number;
-  name: string;
+export default class Char extends IEntity {
   player: string;
   campaign: string;
   pic: string;
@@ -120,8 +118,7 @@ export default class Char implements IEntity {
     castingDC?: number,
     deathSaves?: number[]
   ) {
-    this.id = id || -1;
-    this.name = name || "";
+    super(id, name, "", "");
     this.player = player || "";
     this.campaign = campaign || "";
     this.pic = pic || "";

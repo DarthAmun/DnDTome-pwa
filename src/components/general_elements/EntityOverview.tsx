@@ -5,53 +5,10 @@ import Filter from "../../data/Filter";
 import IEntity from "../../data/IEntity";
 import { reciveAllFiltered } from "../../services/DatabaseService";
 
-import { LoadingSpinner } from "../Loading";
+import { LoadingSpinner } from "../general/Loading";
 import InfiniteScroll from "react-infinite-scroll-component";
 
-import CampaignSearchBar from "../entities/campaigns/CampaignSearchBar";
-import CharSearchBar from "../entities/chars/CharSearchBar";
-import EncounterSearchBar from "../entities/encounters/EncounterSearchBar";
-import EventSearchBar from "../entities/events/EventSearchBar";
-import GearSearchBar from "../entities/gear/GearSearchBar";
-import GroupSearchBar from "../entities/groups/GroupSearchBar";
-import ItemSearchBar from "../entities/items/ItemSearchBar";
-import LocationSearchBar from "../entities/locations/LocationSearchBar";
-import MonsterSearchBar from "../entities/monsters/MonsterSearchBar";
-import NpcSearchBar from "../entities/npcs/NpcSearchBar";
-import QuestSearchBar from "../entities/quests/QuestSearchBar";
-import RaceSearchBar from "../entities/races/RaceSearchBar";
-import RandomTableSearchBar from "../entities/random_tables/RandomTableSearchBar";
-import SelectionSearchBar from "../entities/selections/SelectionSearchBar";
-import SpellSearchBar from "../entities/spells/SpellSearchBar";
-import WorldSearchBar from "../entities/worlds/WorldSearchBar";
-import ClassSearchBar from "../entities/classes/ClassSearchBar";
-import BookSearchBar from "../entities/library/BookSearchBar";
-
-import CampaignTile from "../entities/campaigns/CampaignTile";
-import CharTile from "../entities/chars/CharTile";
-import ClassTile from "../entities/classes/ClassTile";
-import EncounterTile from "../entities/encounters/EncounterTile";
-import EventTile from "../entities/events/EventTile";
-import GearTile from "../entities/gear/GearTile";
-import GroupTile from "../entities/groups/GroupTile";
-import ItemTile from "../entities/items/ItemTile";
-import BookTile from "../entities/library/BookTile";
-import LocationTile from "../entities/locations/LocationTile";
-import MonsterTile from "../entities/monsters/MonsterTile";
-import NpcTile from "../entities/npcs/NpcTile";
-import QuestTile from "../entities/quests/QuestTile";
-import RaceTile from "../entities/races/RaceTile";
-import RandomTableTile from "../entities/random_tables/RandomTableTile";
-import SelectionTile from "../entities/selections/SelectionTile";
-import SpellTile from "../entities/spells/SpellTile";
-import WorldTile from "../entities/worlds/WorldTile";
 import { useQuery } from "../../hooks/QueryHook";
-import BackgroundSearchBar from "../entities/backgrounds/BackgroundSearchBar";
-import BackgroundTile from "../entities/backgrounds/BackgroundTile";
-import FeatSearchBar from "../entities/feats/FeatSearchBar";
-import FeatTile from "../entities/feats/FeatTile";
-import NoteSearchBar from "../entities/notes/NoteSearchBar";
-import NoteTile from "../entities/notes/NoteTile";
 
 const EntityOverview = ({ match }: RouteComponentProps) => {
   const rawFilters = useQuery().get("filter");
@@ -118,53 +75,9 @@ const EntityOverview = ({ match }: RouteComponentProps) => {
     });
   };
 
-  const searchbars = {
-    campaign: CampaignSearchBar,
-    classe: ClassSearchBar,
-    event: EventSearchBar,
-    gear: GearSearchBar,
-    group: GroupSearchBar,
-    item: ItemSearchBar,
-    book: BookSearchBar,
-    location: LocationSearchBar,
-    monster: MonsterSearchBar,
-    npc: NpcSearchBar,
-    quest: QuestSearchBar,
-    race: RaceSearchBar,
-    randomTable: RandomTableSearchBar,
-    selection: SelectionSearchBar,
-    spell: SpellSearchBar,
-    world: WorldSearchBar,
-    char: CharSearchBar,
-    encounter: EncounterSearchBar,
-    feat: FeatSearchBar,
-    background: BackgroundSearchBar,
-    note: NoteSearchBar,
-  };
+  const searchbars = {};
 
-  const tiles = {
-    campaign: CampaignTile,
-    classe: ClassTile,
-    event: EventTile,
-    gear: GearTile,
-    group: GroupTile,
-    item: ItemTile,
-    book: BookTile,
-    location: LocationTile,
-    monster: MonsterTile,
-    npc: NpcTile,
-    quest: QuestTile,
-    race: RaceTile,
-    randomTable: RandomTableTile,
-    selection: SelectionTile,
-    spell: SpellTile,
-    world: WorldTile,
-    char: CharTile,
-    encounter: EncounterTile,
-    feat: FeatTile,
-    background: BackgroundTile,
-    note: NoteTile,
-  };
+  const tiles = {};
 
   return (
     <>
