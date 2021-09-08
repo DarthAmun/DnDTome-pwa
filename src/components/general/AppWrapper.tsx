@@ -1,5 +1,4 @@
-import React, { ReactNode, useState } from "react";
-import { useSwipeable } from "react-swipeable";
+import React, { ReactNode } from "react";
 import styled from "styled-components";
 import Header from "./Header";
 
@@ -8,12 +7,10 @@ interface $Props {
 }
 
 const AppWrapper = ({ children }: $Props) => {
-  const [active, setActive] = useState<string>("home");
-
   return (
     <App>
       <Header />
-      {/* <Content>{children}</Content> */}
+      <Content>{children}</Content>
     </App>
   );
 };
@@ -28,10 +25,6 @@ const App = styled.div`
 `;
 
 const Content = styled.div`
-  margin-left: 105px;
-  width: 100%;
-
-  @media (max-width: 576px) {
-    margin-left: 0px;
-  }
+  width: calc(100% - 20px);
+  padding: 10px;
 `;

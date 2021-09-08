@@ -1,10 +1,11 @@
-import styled from "styled-components";
-import { CgMenuGridO } from "react-icons/cg";
-import { FaUser, FaCog, FaTerminal } from "react-icons/fa";
-import LogoImg from "../../logo192.png";
-import { AutoComplete, InputGroup } from "rsuite";
 import { useState } from "react";
 import { useHistory } from "react-router";
+import { useLocation } from "react-router-dom";
+import styled from "styled-components";
+import { CgMenuGridO } from "react-icons/cg";
+import { FaUser, FaCog, FaTerminal, FaCogs, FaUsersCog } from "react-icons/fa";
+import LogoImg from "../../logo192.png";
+import { AutoComplete, InputGroup } from "rsuite";
 import IEntity from "../../data/IEntity";
 import { createNewWithId } from "../../services/DatabaseService";
 import Class from "../../data/classes/Class";
@@ -27,10 +28,13 @@ import Event from "../../data/world/Event";
 import Group from "../../data/campaign/Group";
 import Location from "../../data/world/Location";
 import Selection from "../../data/Selection";
+import packageJson from "../../../package.json";
+import { usePeer } from "../p2p/P2PProvider";
 
 const Header = () => {
   let history = useHistory();
-  const [active, setActive] = useState<string>("");
+  let location = useLocation();
+  let peer = usePeer();
   const [code, setCode] = useState<string>("");
   const comandNames: string[] = ["new", "edit", "search", "go", "n", "e", "s", "g"];
   const entityNames: string[] = [
@@ -142,10 +146,11 @@ const Header = () => {
     <HeaderBar>
       <HeaderElm>
         <Logo src={LogoImg} />
-        DnDTome
+        <Reducable>DnDTome v{packageJson.version}</Reducable>
       </HeaderElm>
-      <HeaderElm>
-        <InputGroup inside>
+      <HeaderElm reducable>
+        {peer.peer.connections}
+        {/* <InputGroup inside>
           <AutoComplete
             data={makeComands()}
             value={code}
@@ -159,25 +164,28 @@ const Header = () => {
           <InputGroup.Button onClick={() => applyComand()}>
             <FaTerminal />
           </InputGroup.Button>
-        </InputGroup>
+        </InputGroup> */}
       </HeaderElm>
       <HeaderElm right>
-        <NavElm active={active !== "group" && active !== "options"}>
+        <NavElm
+          active={location.pathname !== "/group" && location.pathname !== "/options"}
+          onClick={() => history.push("/menu")}
+        >
           <CgMenuGridO />
           <Flag>
             <CgMenuGridO />
           </Flag>
         </NavElm>
-        <NavElm active={active === "group"}>
+        <NavElm active={location.pathname === "/group"} onClick={() => history.push("/group")}>
           <FaUser />
           <Flag>
-            <CgMenuGridO />
+            <FaUsersCog />
           </Flag>
         </NavElm>
-        <NavElm active={active === "options"}>
-          <FaCog />
+        <NavElm active={location.pathname === "/options"} onClick={() => history.push("/options")}>
+          <FaCogs />
           <Flag>
-            <CgMenuGridO />
+            <FaCog />
           </Flag>
         </NavElm>
       </HeaderElm>
@@ -197,7 +205,7 @@ const HeaderBar = styled.div`
   color: white;
 `;
 
-const HeaderElm = styled.div<{ right?: boolean }>`
+const HeaderElm = styled.div<{ right?: boolean; reducable?: boolean }>`
   flex: 1 1;
   height: 50px;
   font-size: 30px;
@@ -205,9 +213,10 @@ const HeaderElm = styled.div<{ right?: boolean }>`
 
   display: flex;
   gap: 10px;
-  ${(props) => (props.right ? "justify-content: flex-end;" : "")}
+  ${(props) => (props.right ? "justify-content: flex-end;text-align: right;min-width: 230px;" : "")}
 
-  ${(props) => (props.right ? "text-align: right;" : "")}
+  ${(props) =>
+    props.reducable ? "@media only screen and (max-width: 500px) {display: none;}" : ""}
 `;
 
 const Logo = styled.img`
@@ -247,6 +256,13 @@ const NavElm = styled.div<{ active?: boolean }>`
   max-width: 70px;
   height: 40px;
   text-align: center;
+  cursor: pointer;
 
   ${(props) => (props.active ? "overflow: ;" : "overflow: hidden;")}
+`;
+
+const Reducable = styled.div`
+  @media only screen and (max-width: 500px) {
+    display: none;
+  }
 `;

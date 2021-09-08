@@ -53,7 +53,7 @@ const Wrapper = styled.div`
 const CompleteWrapper = styled.div`
   height: 100vh;
   width: 100vw;
-  background-color: ${({ theme }) => theme.main.backgroundColor};
+  background-color: ${({ theme }) => theme.backgroundColor};
 `;
 
 const LocalSpinner = styled.div`
@@ -77,9 +77,9 @@ const Icon = styled(FontAwesomeIcon)`
   width: 100%;
   height: 100%;
   border-radius: 150px;
-  border: 5px solid ${({ theme }) => theme.main.backgroundColor};
+  border: 5px solid ${({ theme }) => theme.backgroundColor};
   animation: bounce 2s linear infinite;
-  background-color: ${({ theme }) => theme.main.backgroundColor};
+  background-color: ${({ theme }) => theme.backgroundColor};
 
   @-webkit-keyframes bounce {
     0%,

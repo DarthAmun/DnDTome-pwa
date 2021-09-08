@@ -4,14 +4,6 @@ import styled from "styled-components";
 
 import IEntity from "../../../data/IEntity";
 import { remove, updateWithCallback, createNewWithId } from "../../../services/DatabaseService";
-
-import {
-  faArrowLeft,
-  faSave,
-  faTrash,
-  faExclamationTriangle,
-  faClone,
-} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 interface $Props {
