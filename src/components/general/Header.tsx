@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useHistory } from "react-router";
 import { useLocation } from "react-router-dom";
 import styled from "styled-components";
@@ -142,6 +142,10 @@ const Header = () => {
     }
   };
 
+  useEffect(() => {
+    console.log(peer);
+  }, [peer]);
+
   return (
     <HeaderBar>
       <HeaderElm>
@@ -149,7 +153,6 @@ const Header = () => {
         <Reducable>DnDTome v{packageJson.version}</Reducable>
       </HeaderElm>
       <HeaderElm reducable>
-        {peer.peer.connections}
         {/* <InputGroup inside>
           <AutoComplete
             data={makeComands()}
