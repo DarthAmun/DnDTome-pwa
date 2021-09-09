@@ -83,7 +83,7 @@ const EntityOverview = ({ match }: RouteComponentProps) => {
     <>
       {entityName !== "" && React.createElement(searchbars[entityName], {})}
       <div id="scrollable" style={{ width: "100%" }}>
-        <EntityContainer
+        <InfiniteScroll
           dataLength={entitys.length}
           next={fetchMoreData}
           hasMore={scrollParam.hasMore}
@@ -97,7 +97,7 @@ const EntityOverview = ({ match }: RouteComponentProps) => {
                 [entityName]: entity,
               });
             })}
-        </EntityContainer>
+        </InfiniteScroll>
       </div>
     </>
   );
@@ -105,7 +105,7 @@ const EntityOverview = ({ match }: RouteComponentProps) => {
 
 export default EntityOverview;
 
-const EntityContainer = styled(InfiniteScroll)`
+const EntityContainer = styled.div`
   margin-top: 20px;
   width: 100%;
   display: flex;
