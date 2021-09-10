@@ -684,7 +684,7 @@ const extractModifier = (text: string, origin: string): Modifier[] => {
 
 export const applyMods = async (char: BuildChar, modifiers: boolean): Promise<BuildChar> => {
   if (modifiers) {
-    let newChar = char;
+    let newChar: any = char;
     char.modifiers
       .sort((a, b) => a.operator - b.operator)
       .forEach((mod: Modifier) => {
@@ -810,7 +810,8 @@ export const replacePlaceholder = (char: BuildChar, text: string | number) => {
       const cutStart = text.indexOf("[");
       const cutEnd = text.indexOf("]");
       const rawPlaceholder = text.substring(cutStart + 1, cutEnd);
-      text = text.replace(text.substring(cutStart, cutEnd + 1), char.character[rawPlaceholder]);
+      let temp: any = char.character;
+      text = text.replace(text.substring(cutStart, cutEnd + 1), temp[rawPlaceholder]);
     }
     // eslint-disable-next-line
     return Math.floor(eval(text));

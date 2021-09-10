@@ -197,7 +197,8 @@ const fillTemplate = async (template: string | ArrayBuffer, char: Char) => {
   completeChar.items.forEach((item) => {
     if (count <= 3 && item.base !== undefined) {
       count++;
-      const bonus = Math.floor((char[item.attribute] - 10) / 2);
+      let temp: any = char;
+      const bonus = Math.floor((temp[item.attribute] - 10) / 2);
       form.getTextField(`Wpn Name ${count}`).setText(item.item.name);
       form
         .getTextField(`Wpn${count} AtkBonus`)

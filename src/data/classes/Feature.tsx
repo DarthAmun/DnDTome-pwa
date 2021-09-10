@@ -1,5 +1,3 @@
-import IEntity from "../IEntity";
-
 export const featureTypeArray: { value: string; label: string }[] = [
   { value: "normal", label: "Normal" },
   { value: "action", label: "Action" },

@@ -1,4 +1,4 @@
-import { LatLng } from "leaflet";
+import { LatLng } from "react-leaflet";
 import IEntity from "../IEntity";
 
 export default class Location extends IEntity {

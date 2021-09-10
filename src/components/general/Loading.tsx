@@ -1,12 +1,9 @@
 import React from "react";
 import styled from "styled-components";
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faDiceD20 } from "@fortawesome/free-solid-svg-icons";
-
 export const LoadingSpinner = () => (
   <Spinner>
-    <Icon icon={faDiceD20} />
+    {/* <Icon icon={faDiceD20} /> */}
     <svg width="0" height="0">
       <radialGradient id="rg" r="150%" cx="30%" cy="107%">
         <stop stopColor="#350069" offset="0" />
@@ -19,7 +16,7 @@ export const LoadingSpinner = () => (
 export const CompleteLoadingSpinner = () => (
   <CompleteWrapper>
     <Spinner>
-      <Icon icon={faDiceD20} />
+      {/* <Icon icon={faDiceD20} /> */}
       <svg width="0" height="0">
         <radialGradient id="rg" r="150%" cx="30%" cy="107%">
           <stop stopColor="#350069" offset="0" />
@@ -33,7 +30,7 @@ export const CompleteLoadingSpinner = () => (
 export const LocalLoadingSpinner = () => (
   <Wrapper>
     <LocalSpinner>
-      <Icon icon={faDiceD20} />
+      {/* <Icon icon={faDiceD20} /> */}
       <svg width="0" height="0">
         <radialGradient id="rg" r="150%" cx="30%" cy="107%">
           <stop stopColor="#350069" offset="0" />
@@ -73,7 +70,7 @@ const Spinner = styled(LocalSpinner)`
   right: calc(50% - 20px);
 `;
 
-const Icon = styled(FontAwesomeIcon)`
+const Icon = styled.div`
   width: 100%;
   height: 100%;
   border-radius: 150px;

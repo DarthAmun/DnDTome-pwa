@@ -4,7 +4,6 @@ import styled from "styled-components";
 
 import IEntity from "../../../data/IEntity";
 import { remove, updateWithCallback, createNewWithId } from "../../../services/DatabaseService";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 interface $Props {
   entity: IEntity;
@@ -141,7 +140,7 @@ const Message = styled.div`
   float: right;
 `;
 
-const Icon = styled(FontAwesomeIcon)`
+const Icon = styled.div`
   float: right;
   line-height: 30px;
   display: block;

@@ -5,9 +5,6 @@ import Filter from "../../data/Filter";
 import IEntity from "../../data/IEntity";
 import { reciveAllFiltered } from "../../services/DatabaseService";
 
-import { LoadingSpinner } from "../general/Loading";
-import InfiniteScroll from "react-infinite-scroll-component";
-
 import { useQuery } from "../../hooks/QueryHook";
 
 const EntityOverview = ({ match }: RouteComponentProps) => {
@@ -81,7 +78,7 @@ const EntityOverview = ({ match }: RouteComponentProps) => {
 
   return (
     <>
-      {entityName !== "" && React.createElement(searchbars[entityName], {})}
+      {/* {entityName !== "" && React.createElement(searchbars[entityName], {})}
       <div id="scrollable" style={{ width: "100%" }}>
         <InfiniteScroll
           dataLength={entitys.length}
@@ -98,7 +95,7 @@ const EntityOverview = ({ match }: RouteComponentProps) => {
               });
             })}
         </InfiniteScroll>
-      </div>
+      </div> */}
     </>
   );
 };

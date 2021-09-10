@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from "react";
-import styled from "styled-components";
 import Peer from "peerjs";
 import { generateBrokerId } from "../../services/PeerIdService";
-import { faExclamationCircle } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Encounter from "../../data/encounter/Encounter";
+import { FaExclamationCircle } from "react-icons/fa";
 
 interface $Props {
   encounter?: Encounter;
@@ -92,15 +90,7 @@ const P2PEncounter = ({ encounter, isHost, onEdit }: $Props) => {
     // eslint-disable-next-line
   }, [encounter, connections, isHost]);
 
-  return <>{error && <Icon icon={faExclamationCircle} />}</>;
+  return <>{error && <FaExclamationCircle />}</>;
 };
 
 export default P2PEncounter;
-
-const Icon = styled(FontAwesomeIcon)`
-  margin-right: 5px;
-  width: 20px;
-  height: auto;
-  border-radius: 150px;
-  color: ${({ theme }) => theme.main.highlight};
-`;

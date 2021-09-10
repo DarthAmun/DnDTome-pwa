@@ -1,5 +1,5 @@
 import Peer from "peerjs";
-import React, { useEffect, createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useState } from "react";
 import { generateBrokerId } from "../../services/PeerIdService";
 
 export function createCtx<ContextType>() {

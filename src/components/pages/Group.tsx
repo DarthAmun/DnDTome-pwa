@@ -1,5 +1,4 @@
 import React from "react";
-import styled from "styled-components";
 import { Avatar, Divider } from "rsuite";
 import Card, { Cards } from "../general_elements/Card";
 

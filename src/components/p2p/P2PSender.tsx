@@ -1,12 +1,9 @@
 import React, { useEffect, useState } from "react";
-import styled from "styled-components";
 import Peer from "peerjs";
 import { reciveAllPromise } from "../../services/DatabaseService";
 import IEntity from "../../data/IEntity";
 import { generateBrokerId } from "../../services/PeerIdService";
-
-import { faExclamationCircle } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { FaExclamationCircle } from "react-icons/fa";
 
 interface $Props {
   data: string | IEntity;
@@ -73,17 +70,9 @@ const P2PSender = ({ data, mode }: $Props) => {
   return (
     <>
       {peer !== undefined && peer.id !== null && <></>}
-      {error && <Icon icon={faExclamationCircle} />}
+      {error && <FaExclamationCircle />}
     </>
   );
 };
 
 export default P2PSender;
-
-const Icon = styled(FontAwesomeIcon)`
-  margin-right: 5px;
-  width: 20px;
-  height: auto;
-  border-radius: 150px;
-  color: ${({ theme }) => theme.main.highlight};
-`;

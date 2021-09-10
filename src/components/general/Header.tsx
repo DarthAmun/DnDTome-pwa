@@ -60,7 +60,7 @@ const Header = () => {
     "background",
   ];
 
-  const entities = {
+  const entities: any = {
     campaign: new Campaign(),
     classe: new Class(),
     event: new Event(),
@@ -153,7 +153,7 @@ const Header = () => {
         <Reducable>DnDTome v{packageJson.version}</Reducable>
       </HeaderElm>
       <HeaderElm reducable>
-        {/* <InputGroup inside>
+        <InputGroup inside>
           <AutoComplete
             data={makeComands()}
             value={code}
@@ -167,7 +167,7 @@ const Header = () => {
           <InputGroup.Button onClick={() => applyComand()}>
             <FaTerminal />
           </InputGroup.Button>
-        </InputGroup> */}
+        </InputGroup>
       </HeaderElm>
       <HeaderElm right>
         <NavElm

@@ -1,12 +1,9 @@
 import React, { useEffect, useState } from "react";
-import styled from "styled-components";
 import Peer from "peerjs";
 import { scanImportFileTest } from "../../services/OptionService";
 import IEntity from "../../data/IEntity";
-
-import { faCheck, faExclamationCircle } from "@fortawesome/free-solid-svg-icons";
 import { LoadingSpinner } from "../general/Loading";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { FaExclamationCircle } from "react-icons/fa";
 
 interface $Props {
   changeData: (data: IEntity[] | IEntity | undefined) => void;
@@ -66,18 +63,10 @@ const P2PReciver = ({ changeData, reload }: $Props) => {
     <>
       {!!loading && <LoadingSpinner />}
       <>{peerId}</>
-      {error && <Icon icon={faExclamationCircle} />}
+      {error && <FaExclamationCircle />}
       {state !== undefined && peerId !== "" && <></>}
     </>
   );
 };
 
 export default P2PReciver;
-
-const Icon = styled(FontAwesomeIcon)`
-  margin-right: 5px;
-  width: 20px;
-  height: auto;
-  border-radius: 150px;
-  color: ${({ theme }) => theme.main.highlight};
-`;
