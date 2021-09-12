@@ -1,28 +1,22 @@
 interface Theme {
-  backgroundColor: string;
-  header: {
-    backgroundColor: string;
-    textColor: string;
-    highlight: string;
-  };
+  mainColor: string;
+  secondColor: string;
+  textColor: string;
+  highlight: string;
 }
 export default Theme;
 
 export const darkTheme: Theme = {
-  backgroundColor: "#191D38",
-  header: {
-    textColor: "white",
-    backgroundColor: "#272c4a",
-    highlight: "#8000ff",
-  },
+  mainColor: "#191D38",
+  secondColor: "#272c4a",
+  textColor: "white",
+  highlight: "#F55C5C",
 };
 export const lightTheme: Theme = {
-  backgroundColor: "#191D38",
-  header: {
-    textColor: "white",
-    backgroundColor: "#191D38",
-    highlight: "#8000ff",
-  },
+  mainColor: "#191D38",
+  secondColor: "#272c4a",
+  textColor: "white",
+  highlight: "#F55C5C",
 };
 
 // interface Theme {

@@ -11,7 +11,7 @@ const Home = () => {
       <Card onClick={() => history.push("/home")}>
         <FaHome /> Home
       </Card>
-      <Card onClick={() => history.push("/spells")}>
+      <Card onClick={() => history.push("/spell-overview")}>
         <FaMeteor /> Spell
       </Card>
     </Cards>

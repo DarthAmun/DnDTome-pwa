@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useHistory } from "react-router";
 import { useLocation } from "react-router-dom";
 import styled from "styled-components";
@@ -29,12 +29,10 @@ import Group from "../../data/campaign/Group";
 import Location from "../../data/world/Location";
 import Selection from "../../data/Selection";
 import packageJson from "../../../package.json";
-import { usePeer } from "../p2p/P2PProvider";
 
 const Header = () => {
   let history = useHistory();
   let location = useLocation();
-  let peer = usePeer();
   const [code, setCode] = useState<string>("");
   const comandNames: string[] = ["new", "edit", "search", "go", "n", "e", "s", "g"];
   const entityNames: string[] = [
@@ -141,10 +139,6 @@ const Header = () => {
         break;
     }
   };
-
-  useEffect(() => {
-    console.log(peer);
-  }, [peer]);
 
   return (
     <HeaderBar>
