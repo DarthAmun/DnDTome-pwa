@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Avatar, Button, Divider, Input, Modal, SelectPicker } from "rsuite";
-import Card, { Cards } from "../general_elements/Card";
+import Card, { Cards } from "../general/Card";
 import { reciveAll } from "../../services/DatabaseService";
 import Char from "../../data/chars/Char";
 import styled from "styled-components";
@@ -105,8 +105,8 @@ const CreateButton = styled.button`
   top: auto;
   z-index: 10;
 
-  background-color: #f55c5c;
-  color: white;
+  background-color: ${({ theme }) => theme.highlight};
+  color: ${({ theme }) => theme.textColor};
   box-shadow: 0px 5px 5px 0px rgba(0, 0, 0, 0.75);
   border: none;
   padding: 10px;

@@ -3,7 +3,7 @@ import { useHistory } from "react-router";
 import { useLocation } from "react-router-dom";
 import styled from "styled-components";
 import { CgMenuGridO } from "react-icons/cg";
-import { FaUser, FaCog, FaTerminal, FaCogs, FaUsersCog } from "react-icons/fa";
+import { FaUser, FaCog, FaTerminal, FaCogs, FaUsersCog, FaMeteor, FaHome } from "react-icons/fa";
 import LogoImg from "../../logo192.png";
 import { AutoComplete, InputGroup } from "rsuite";
 import IEntity from "../../data/IEntity";
@@ -140,11 +140,25 @@ const Header = () => {
     }
   };
 
+  const findIcon = () => {
+    switch (location.pathname) {
+      case "/":
+      case "/home":
+        return <FaHome />;
+      case "/spell-overview":
+        return <FaMeteor />;
+      default:
+        return <CgMenuGridO />;
+    }
+  };
+
   return (
     <HeaderBar>
       <HeaderElm>
         <Logo src={LogoImg} />
-        <Reducable>DnDTome v{packageJson.version}</Reducable>
+        <Reducable>
+          DnDTome <Version>v{packageJson.version}</Version>
+        </Reducable>
       </HeaderElm>
       <HeaderElm reducable>
         <InputGroup inside>
@@ -169,9 +183,7 @@ const Header = () => {
           onClick={() => history.push("/menu")}
         >
           <CgMenuGridO />
-          <Flag>
-            <CgMenuGridO />
-          </Flag>
+          <Flag>{findIcon()}</Flag>
         </NavElm>
         <NavElm active={location.pathname === "/group"} onClick={() => history.push("/group")}>
           <FaUser />
@@ -198,8 +210,8 @@ const HeaderBar = styled.div`
   padding: 10px;
   display: flex;
   gap: 10px;
-  background-color: #272c4a;
-  color: white;
+  background-color: ${({ theme }) => theme.secondColor};
+  color: ${({ theme }) => theme.textColor};
 `;
 
 const HeaderElm = styled.div<{ right?: boolean; reducable?: boolean }>`
@@ -220,9 +232,13 @@ const Logo = styled.img`
   margin-top: -7px;
   margin-right: 10px;
   height: 65px;
-  border: 5px solid #191d38;
+  border: 5px solid ${({ theme }) => theme.mainColor};
   border-radius: 50px;
-  background-color: #191d38;
+  background-color: ${({ theme }) => theme.mainColor};
+`;
+
+const Version = styled.span`
+  font-size: 14px;
 `;
 
 const Flag = styled.div`
@@ -230,7 +246,7 @@ const Flag = styled.div`
   height: 80px;
   line-height: 100px;
   text-align: center;
-  background-color: #272c4a;
+  background-color: ${({ theme }) => theme.secondColor};
   position: relative;
   top: -10px;
   border-radius: 10px;
@@ -244,7 +260,7 @@ const Flag = styled.div`
     height: 0;
     border-style: solid;
     border-width: 10px 10px 0 10px;
-    border-color: white transparent transparent transparent;
+    border-color: ${({ theme }) => theme.textColor} transparent transparent transparent;
   }
 `;
 

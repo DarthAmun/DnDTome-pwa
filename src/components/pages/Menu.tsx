@@ -1,7 +1,7 @@
 import React from "react";
 import { useHistory } from "react-router";
 import { FaHome, FaMeteor } from "react-icons/fa";
-import Card, { Cards } from "../general_elements/Card";
+import Card, { Cards } from "../general/Card";
 
 const Home = () => {
   let history = useHistory();

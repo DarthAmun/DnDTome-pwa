@@ -1,27 +1,27 @@
 import React, { lazy, Suspense } from "react";
 import { Switch, Route } from "react-router";
 import { MyThemeProvider as ThemeProvider } from "./components/theme/MyThemeProvider";
-import { CompleteLoadingSpinner } from "./components/general/Loading";
 import AppWrapper from "./components/general/AppWrapper";
 import { HashRouter } from "react-router-dom";
-import "rsuite/dist/styles/rsuite-dark.min.css";
 import Spell from "./data/Spell";
+import { Loader } from "rsuite";
 
-const ToEntity = lazy(() => import("./components/general_elements/details/ToEntity"));
-const EntityOverview = lazy(() => import("./components/general_elements/EntityOverview"));
+const ToEntity = lazy(() => import("./components/generic/details/ToEntity"));
+const EntityOverview = lazy(() => import("./components/generic/EntityOverview"));
 
 const Home = lazy(() => import("./components/pages/Home"));
 const Menu = lazy(() => import("./components/pages/Menu"));
 const Group = lazy(() => import("./components/pages/Group"));
 
 const SpellTile = lazy(() => import("./components/entities/spell/SpellTile"));
+const SpellSearch = lazy(() => import("./components/entities/spell/SpellSearch"));
 
 const App = () => {
   return (
     <ThemeProvider>
       <HashRouter>
         <AppWrapper>
-          <Suspense fallback={<CompleteLoadingSpinner />}>
+          <Suspense fallback={<Loader center content="Loading..." />}>
             <Switch>
               <Route exact path="/" component={Home} />
               <Route exact path="/home" component={Home} />
@@ -32,7 +32,12 @@ const App = () => {
               <Route
                 path="/spell-overview"
                 component={() => (
-                  <EntityOverview entityName={"spell"} Entity={Spell} Tile={SpellTile} />
+                  <EntityOverview
+                    entityName={"spell"}
+                    Entity={Spell}
+                    Tile={SpellTile}
+                    Search={SpellSearch}
+                  />
                 )}
               />
             </Switch>

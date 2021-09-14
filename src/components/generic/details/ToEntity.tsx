@@ -2,7 +2,6 @@ import React, { useCallback, useEffect, useState } from "react";
 import { RouteComponentProps } from "react-router";
 import { useQuery } from "../../../hooks/QueryHook";
 
-import { LoadingSpinner } from "../../general/Loading";
 import Details from "./EntityDetail";
 import {
   recivePromise,
@@ -10,6 +9,7 @@ import {
   recivePromiseByMultiAttribute,
 } from "../../../services/DatabaseService";
 import IEntity from "../../../data/IEntity";
+import { Loader } from "rsuite";
 
 type TParams = { id?: string; name?: string };
 
@@ -77,7 +77,7 @@ const ToEntity = ({ match }: RouteComponentProps<TParams>) => {
 
   return (
     <>
-      {loading && <LoadingSpinner />}
+      {loading && <Loader center content="Loading..." />}
       {!loading && error && <>Error</>}
       {!error && !loading && entity !== undefined && (
         <Details

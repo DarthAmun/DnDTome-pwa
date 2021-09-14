@@ -152,14 +152,17 @@ const SpellTile = ({ entity }: $Props) => {
 export default SpellTile;
 
 const Tile = styled(Link)`
-  flex: 1 1 15em;
+  flex: 1 1 20em;
   color: ${({ theme }) => theme.textColor};
   background-color: ${({ theme }) => theme.secondColor};
-  margin: 0.5em;
   border-radius: 10px;
   box-shadow: ${({ theme }) => theme.mainColor};
   overflow: hidden;
   cursor: pointer;
+
+  &:hover {
+    color: ${({ theme }) => theme.textColor};
+  }
 `;
 
 type SchoolType = {
@@ -202,8 +205,8 @@ const Level = styled.div`
 
   padding: 10px;
   margin: 5px;
-  width: 20px;
-  height: 20px;
+  width: 40px;
+  height: 40px;
 
   line-height: 20px;
   text-align: center;
@@ -246,13 +249,14 @@ const PropWrapper = styled.div`
 `;
 
 const Prop = styled.div`
-  height: 12px;
+  height: 30px;
   width: calc(50% - 22.5px);
   margin: 0 0 5px 5px;
   float: left;
   line-height: 10px;
   padding: 10px;
   font-size: 12px;
+  color: ${({ theme }) => theme.secondTextColor};
   border-radius: 5px;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -262,9 +266,9 @@ const Prop = styled.div`
     margin: 0 0 5px 0px;
   }
 
-  .svg {
+  svg {
     margin-right: 5px;
-    width: 20px;
+    width: 12px;
     height: auto;
     border-radius: 150px;
     color: ${({ theme }) => theme.highlight};

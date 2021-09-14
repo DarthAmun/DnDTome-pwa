@@ -3,11 +3,11 @@ export default class Filter {
   value: string | boolean | number | string[] | boolean[] | number[];
   sort: number;
   constructor(
-    filedName: string,
+    fieldName: string,
     value: string | boolean | number | string[] | boolean[] | number[],
     sort?: number
   ) {
-    this.fieldName = filedName;
+    this.fieldName = fieldName;
     this.value = value;
     this.sort = sort || 0;
   }

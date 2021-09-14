@@ -19,7 +19,7 @@ export default Card;
 const CardWrapper = styled.div`
   flex: 1 1;
   cursor: pointer;
-  background-color: #272c4a;
+  background-color: ${({ theme }) => theme.secondColor};
   max-width: max-content;
 `;
 

@@ -127,6 +127,7 @@ export const reciveAll = (tableName: string, callback: (data: IndexableType[]) =
   db.open()
     .then(function () {
       db.table(tableName)
+        .orderBy("name")
         .toArray()
         .then((array) => {
           callback(array);
@@ -291,7 +292,7 @@ export const reciveAllPromise = (tableName: string) => {
   return db
     .open()
     .then(async function () {
-      return await db.table(tableName).toArray();
+      return await db.table(tableName).orderBy("name").toArray();
     })
     .finally(function () {
       db.close();
@@ -333,7 +334,7 @@ export const applyFilters = (obj: any, filters: Filter[]) => {
         if (typeof filterPart === "string") {
           if (
             // @ts-ignore
-            obj[filter.fieldName].toLowerCase().includes(filterPart.toLowerCase())
+            obj[filter.fieldName].toLowerCase() === filterPart.toLowerCase()
           )
             arrayTest = true;
         } else if (typeof filterPart === "number") {
