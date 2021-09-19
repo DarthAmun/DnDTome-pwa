@@ -10,64 +10,60 @@ import {
 } from "../../../services/DatabaseService";
 import IEntity from "../../../data/IEntity";
 import { Loader } from "rsuite";
+import { TParams } from "../../../App";
 
-type TParams = { id?: string; name?: string };
+interface $EntityProps {
+  entityName: string;
+  Entity: any;
+  EntityDetails: any;
+  match: RouteComponentProps<TParams>;
+}
 
-const ToEntity = ({ match }: RouteComponentProps<TParams>) => {
+const ToEntity = ({ match, entityName, Entity, EntityDetails }: $EntityProps) => {
   const editmode = useQuery().get("editMode");
-  const [entityName, setEntityName] = useState<string>("");
-  const [entity, setEntity] = useState<IEntity>();
+  const [entity, setEntity] = useState<typeof Entity>();
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<boolean>(false);
 
   useEffect(() => {
-    console.log(editmode);
     if (entity !== undefined || error) {
       setLoading(true);
       setError(false);
-      setEntityName("");
       setEntity(undefined);
     }
     // eslint-disable-next-line
   }, [match]);
 
-  const makeEntity = useCallback(
-    async (name: string) => {
-      let newEntity: IEntity | undefined = undefined;
-      if (match.params.name !== undefined) {
-        let [entityName, sources] = match.params.name.split("|");
+  const makeEntity = useCallback(async () => {
+    let nameId: string | undefined = match.match.params.name;
+    let newEntity: typeof Entity | undefined = undefined;
+    var reg = /^\d+$/;
+    if (nameId !== undefined) {
+      if (!reg.test(nameId)) {
+        let [name, sources] = nameId.split("|");
         if (sources !== undefined) {
-          newEntity = await recivePromiseByMultiAttribute(name + "s", {
-            name: entityName,
+          newEntity = await recivePromiseByMultiAttribute(entityName + "s", {
+            name: name,
             sources: sources,
           });
         } else {
-          newEntity = await recivePromiseByAttribute(name + "s", "name", entityName);
+          newEntity = await recivePromiseByAttribute(entityName + "s", "name", name);
         }
-      }
-      if (match.params.id !== undefined)
-        newEntity = await recivePromise(name + "s", +match.params.id);
-      setLoading(false);
-      if (newEntity === undefined) {
-        setEntityName(name);
-        setError(true);
       } else {
-        setEntityName(name);
-        setEntity(newEntity);
+        newEntity = await recivePromise(entityName + "s", +nameId);
       }
-    },
-    [match]
-  );
+    }
+    setLoading(false);
+    if (newEntity === undefined) {
+      setError(true);
+    } else {
+      setEntity(newEntity);
+    }
+  }, [match]);
 
   useEffect(() => {
-    if (match !== undefined && entity === undefined) {
-      let newMatch: string = match.path
-        .split("/")
-        .filter((match: string) => match.includes("-detail"))[0]
-        .replaceAll("-detail", "");
-      if (newMatch !== undefined) {
-        makeEntity(newMatch);
-      }
+    if (match.match !== undefined && entity === undefined) {
+      makeEntity();
     }
   }, [match, makeEntity, entity]);
 
@@ -81,9 +77,10 @@ const ToEntity = ({ match }: RouteComponentProps<TParams>) => {
       {!loading && error && <>Error</>}
       {!error && !loading && entity !== undefined && (
         <Details
+          EntityDetails={EntityDetails}
           entity={entity}
           tableName={entityName + "s"}
-          isNew={entity.name === "" || editmode !== null ? true : false}
+          isNew={editmode !== null ? true : false}
           view={capitalize(entityName)}
         />
       )}

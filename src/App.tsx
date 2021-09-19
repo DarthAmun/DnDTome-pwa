@@ -1,5 +1,5 @@
 import React, { lazy, Suspense } from "react";
-import { Switch, Route } from "react-router";
+import { Switch, Route, RouteComponentProps } from "react-router";
 import { MyThemeProvider as ThemeProvider } from "./components/theme/MyThemeProvider";
 import AppWrapper from "./components/general/AppWrapper";
 import { HashRouter } from "react-router-dom";
@@ -15,6 +15,10 @@ const Group = lazy(() => import("./components/pages/Group"));
 
 const SpellTile = lazy(() => import("./components/entities/spell/SpellTile"));
 const SpellSearch = lazy(() => import("./components/entities/spell/SpellSearch"));
+const SpellBuilder = lazy(() => import("./components/entities/spell/SpellBuilder"));
+const SpellDetail = lazy(() => import("./components/entities/spell/SpellDetail"));
+
+export type TParams = { name?: string };
 
 const App = () => {
   return (
@@ -27,8 +31,29 @@ const App = () => {
               <Route exact path="/home" component={Home} />
               <Route exact path="/menu" component={Menu} />
               <Route exact path="/group" component={Group} />
-              <Route path="/spell-detail/name/:name" component={ToEntity} />
-              <Route path="/spell-detail/id/:id" component={ToEntity} />
+              <Route
+                path="/spell-detail/:name"
+                component={(match: RouteComponentProps<TParams>) => (
+                  <ToEntity
+                    entityName={"spell"}
+                    Entity={Spell}
+                    EntityDetails={SpellDetail}
+                    match={match}
+                  />
+                )}
+              />
+              <Route
+                path="/spell-detail/:id"
+                component={(match: RouteComponentProps<TParams>) => (
+                  <ToEntity
+                    entityName={"spell"}
+                    Entity={Spell}
+                    EntityDetails={SpellDetail}
+                    match={match}
+                  />
+                )}
+              />
+              <Route path="/spell-builder" component={SpellBuilder} />
               <Route
                 path="/spell-overview"
                 component={() => (

@@ -1,12 +1,6 @@
 import React, { useCallback } from "react";
-import {
-  FaHistory,
-  FaHourglassHalf,
-  FaPowerOff,
-  FaMortarPestle,
-  FaUser,
-  FaLink,
-} from "react-icons/fa";
+import { FaHistory, FaHourglassHalf, FaMortarPestle, FaUser, FaLink } from "react-icons/fa";
+import { GiBullseye } from "react-icons/gi";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 
@@ -95,7 +89,7 @@ const SpellTile = ({ entity }: $Props) => {
   }, [entity]);
 
   return (
-    <Tile to={"/entity-detail/id/" + entity.id}>
+    <Tile to={`/spell-detail/${entity.id}`}>
       <School school={entity.school}>{entity.school}</School>
 
       <Flag>
@@ -129,7 +123,7 @@ const SpellTile = ({ entity }: $Props) => {
           {formatDuration()}
         </Prop>
         <Prop>
-          <FaPowerOff />
+          <GiBullseye />
           {entity.range}
         </Prop>
         <Prop>

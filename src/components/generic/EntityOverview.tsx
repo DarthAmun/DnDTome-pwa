@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { Alert, Button, InputNumber, Loader, Pagination } from "rsuite";
+import { Alert, Button, ButtonGroup, InputNumber, Loader, Pagination } from "rsuite";
 import { reciveAll, reciveAllFiltered } from "../../services/DatabaseService";
-import { FaSearch } from "react-icons/fa";
+import { FaPlusCircle, FaSearch } from "react-icons/fa";
 import Filter from "../../data/Filter";
 import { useHistory, useLocation } from "react-router-dom";
 import { getPathVariable } from "../../services/LocationPathService";
@@ -117,6 +117,10 @@ const EntityOverview = ({ entityName, Entity, Tile, Search }: $OverviewProps) =>
     });
   };
 
+  const makeNew = () => {
+    history.push(`/${entityName}-builder`);
+  };
+
   return (
     <>
       <Search
@@ -127,9 +131,14 @@ const EntityOverview = ({ entityName, Entity, Tile, Search }: $OverviewProps) =>
       />
 
       <EntityOptions>
-        <Button onClick={() => openSearchBar((o) => !o)} style={{ marginRight: "5px" }}>
-          <FaSearch />
-        </Button>
+        <ButtonGroup>
+          <Button onClick={() => makeNew()}>
+            <FaPlusCircle />
+          </Button>
+          <Button onClick={() => openSearchBar((o) => !o)} style={{ marginRight: "5px" }}>
+            <FaSearch />
+          </Button>
+        </ButtonGroup>
         <InputNumber
           prefix="Step"
           value={step}
@@ -196,7 +205,7 @@ const EntityContainer = styled.div`
   width: 100%;
   display: flex;
   flex-wrap: wrap;
-  align-items: flex-start;
+  align-items: stretch;
   align-content: flex-start;
   gap: 20px;
 `;

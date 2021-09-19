@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
+import { FaArrowLeft, FaClone, FaExclamationTriangle, FaSave, FaTrash } from "react-icons/fa";
 import { useHistory } from "react-router";
+import { Button, ButtonGroup } from "rsuite";
 import styled from "styled-components";
 
 import IEntity from "../../../data/IEntity";
@@ -10,9 +12,10 @@ interface $Props {
   tableName: string;
   isNew: boolean;
   view: string;
+  EntityDetails: any;
 }
 
-const EntityDetail = ({ entity, tableName, isNew, view }: $Props) => {
+const EntityDetail = ({ entity, tableName, isNew, view, EntityDetails }: $Props) => {
   const [editMode, setMode] = useState<boolean>(isNew);
 
   const [entityObj, editEntity] = useState<IEntity>(entity);
@@ -81,43 +84,33 @@ const EntityDetail = ({ entity, tableName, isNew, view }: $Props) => {
             setDeleteDialog(false);
           }}
         />
-      )}
+      )} */}
       <TopBar>
-        <BackButton icon={faArrowLeft} action={() => history.goBack()} />
-        <EditToggle mode={editMode.toString()}>
-          <ToggleLeft onClick={() => setMode(false)}>View</ToggleLeft>
-          <ToggleRight onClick={() => setMode(true)}>Edit</ToggleRight>
-        </EditToggle>
-        {editMode && unsavedChanges && <Icon icon={faExclamationTriangle} />}
-        {editMode && (
-          <>
-            <IconButton
-              onClick={() => updateEntity(entityObj, "Saved successful!")}
-              icon={faSave}
-            />
-            <IconButton onClick={() => duplicateEntity(entityObj)} icon={faClone} />
-            <IconButton onClick={() => deleteEntity(entityObj.id)} icon={faTrash} />
-            {message && showAlert && <Message>{message}</Message>}
-          </>
-        )}
+        <ButtonGroup>
+          <Button onClick={() => history.goBack()}>
+            <FaArrowLeft />
+          </Button>
+          <Button onClick={() => duplicateEntity(entityObj)}>
+            <FaClone />
+          </Button>
+          <Button onClick={() => deleteEntity(entityObj.id)}>
+            <FaTrash />
+          </Button>
+        </ButtonGroup>
+        {message && showAlert && <Message>{message}</Message>}
       </TopBar>
-      {editMode
-        ? React.createElement(views[view + "EditView"], {
-            [view.toLocaleLowerCase()]: entityObj,
-            onEdit: (value: any) => editEntity(value),
-          })
-        : React.createElement(views[view + "View"], {
-            [view.toLocaleLowerCase()]: entityObj,
-            onEdit: (value: any) => editAndSaveEntity(value, "Saved successful!"),
-          })} */}
+      <EntityDetails
+        entity={entityObj}
+        onEdit={(value: any) => editAndSaveEntity(value, "Saved successful!")}
+      />
     </>
   );
 };
 
 export default EntityDetail;
 
-const TopBar = styled.div`
-  color: ${({ theme }) => theme.tile.color};
+export const TopBar = styled.div`
+  color: ${({ theme }) => theme.textColor};
   font-size: 16px;
   overflow: hidden;
   flex: 1 1;
@@ -146,5 +139,5 @@ const Icon = styled.div`
   display: block;
   height: 30px;
   padding: 10px;
-  color: ${({ theme }) => theme.main.highlight};
+  color: ${({ theme }) => theme.highlight};
 `;
