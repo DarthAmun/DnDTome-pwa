@@ -1,6 +1,5 @@
-import React, { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { RouteComponentProps } from "react-router";
-import { useQuery } from "../../../hooks/QueryHook";
 
 import Details from "./EntityDetail";
 import {
@@ -8,7 +7,6 @@ import {
   recivePromiseByAttribute,
   recivePromiseByMultiAttribute,
 } from "../../../services/DatabaseService";
-import IEntity from "../../../data/IEntity";
 import { Loader } from "rsuite";
 import { TParams } from "../../../App";
 
@@ -20,7 +18,6 @@ interface $EntityProps {
 }
 
 const ToEntity = ({ match, entityName, Entity, EntityDetails }: $EntityProps) => {
-  const editmode = useQuery().get("editMode");
   const [entity, setEntity] = useState<typeof Entity>();
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<boolean>(false);
@@ -67,22 +64,12 @@ const ToEntity = ({ match, entityName, Entity, EntityDetails }: $EntityProps) =>
     }
   }, [match, makeEntity, entity]);
 
-  const capitalize = (str: string) => {
-    return str.charAt(0).toUpperCase() + str.slice(1);
-  };
-
   return (
     <>
       {loading && <Loader center content="Loading..." />}
       {!loading && error && <>Error</>}
       {!error && !loading && entity !== undefined && (
-        <Details
-          EntityDetails={EntityDetails}
-          entity={entity}
-          tableName={entityName + "s"}
-          isNew={editmode !== null ? true : false}
-          view={capitalize(entityName)}
-        />
+        <Details EntityDetails={EntityDetails} entity={entity} tableName={entityName + "s"} />
       )}
     </>
   );

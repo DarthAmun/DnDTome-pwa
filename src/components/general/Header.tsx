@@ -81,7 +81,7 @@ const Header = () => {
     note: new Note(),
   };
 
-  const makeComands = (): string[] => {
+  const makeComands = (): any[] => {
     let newComands: string[] = [];
     comandNames.forEach((c) => {
       entityNames.forEach((e) => {
@@ -141,12 +141,21 @@ const Header = () => {
   };
 
   const findIcon = () => {
-    switch (location.pathname) {
-      case "/":
-      case "/home":
+    const base = location.pathname.split("/")[1];
+    switch (base) {
+      case "":
+      case "home":
         return <FaHome />;
-      case "/spell-overview":
+      case "spell-detail":
         return <FaMeteor />;
+      case "spell-overview":
+        return (
+          <IconGroup>
+            <FaMeteor size={10} />
+            <FaMeteor size={20} />
+            <FaMeteor size={10} />
+          </IconGroup>
+        );
       default:
         return <CgMenuGridO />;
     }
@@ -216,11 +225,11 @@ const HeaderBar = styled.div`
 
 const HeaderElm = styled.div<{ right?: boolean; reducable?: boolean }>`
   flex: 1 1;
-  height: 50px;
   font-size: 30px;
   line-height: 50px;
 
   display: flex;
+  align-items: center;
   gap: 10px;
   ${(props) => (props.right ? "justify-content: flex-end;text-align: right;min-width: 230px;" : "")}
 
@@ -278,4 +287,9 @@ const Reducable = styled.div`
   @media only screen and (max-width: 500px) {
     display: none;
   }
+`;
+
+const IconGroup = styled.div`
+  width: 50px;
+  margin-left: 10px;
 `;

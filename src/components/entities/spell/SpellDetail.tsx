@@ -1,77 +1,74 @@
+import { IndexableType } from "dexie";
 import { useCallback, useEffect, useState } from "react";
-import { FaHistory, FaHourglassHalf, FaLink, FaMortarPestle, FaUser } from "react-icons/fa";
+import {
+  FaBookOpen,
+  FaCheck,
+  FaHistory,
+  FaHourglassHalf,
+  FaImage,
+  FaLink,
+  FaMortarPestle,
+  FaUser,
+} from "react-icons/fa";
 import { GiBullseye } from "react-icons/gi";
-import { Input, InputGroup, InputNumber } from "rsuite";
+import { IoSchool } from "react-icons/io5";
+import {
+  Button,
+  Checkbox,
+  Input,
+  InputGroup,
+  InputNumber,
+  InputPicker,
+  Tag,
+  TagGroup,
+  TagPicker,
+} from "rsuite";
 import styled from "styled-components";
 
 import Spell from "../../../data/Spell";
-import { useWebhook } from "../../../hooks/webhookHook";
-import { formatDiscordText, sendEmbedMessage } from "../../../services/DiscordService";
+import { stringToColour } from "../../../services/ColorService";
+import { reciveAttributeSelection } from "../../../services/DatabaseService";
 
 interface $Props {
   entity: Spell;
+  isNew: boolean;
   onEdit: (value: any) => void;
 }
 
-const SpellDetail = ({ entity, onEdit }: $Props) => {
-  const [levelEdit, editLevel] = useState<boolean>(false);
-  const [timeEdit, editTime] = useState<boolean>(false);
+const SpellDetail = ({ entity, isNew, onEdit }: $Props) => {
+  const [currentSpell, changeSpell] = useState<Spell>({ ...entity });
+  const [levelEdit, editLevel] = useState<boolean>(isNew);
+  const [schoolEdit, editSchool] = useState<boolean>(isNew);
+  const [schoolList, setSchoolList] = useState<{ value: string; label: string }[]>([]);
+  const [timeEdit, editTime] = useState<boolean>(isNew);
+  const [nameEdit, editName] = useState<boolean>(isNew);
+  const [durationEdit, editDuration] = useState<boolean>(isNew);
+  const [rangeEdit, editRange] = useState<boolean>(isNew);
+  const [componentsEdit, editComponents] = useState<boolean>(isNew);
+  const [classesEdit, editClasses] = useState<boolean>(isNew);
+  const [classList, setClassList] = useState<{ value: string; label: string }[]>([]);
+  const [sourcesEdit, editSources] = useState<boolean>(isNew);
+  const [descriptionEdit, editDescription] = useState<boolean>(isNew);
+  const [ritualEdit, editRitual] = useState<boolean>(isNew);
 
-  let webhook = useWebhook();
-  const [json, setJson] = useState<string>("");
-  const [send, setSend] = useState<boolean>(false);
-
-  //   useEffect(() => {
-  //     if (webhook !== undefined) {
-  //       let newText = formatDiscordText(entity.description);
-  //       if (newText.length >= 1024) {
-  //         newText = newText.substring(0, 1021) + "...";
-  //       }
-  //       let newJson = {
-  //         username: webhook.name + " (DnDTome)",
-  //         embeds: [
-  //           {
-  //             author: {
-  //               name: entity.name,
-  //               icon_url: entity.pic,
-  //             },
-  //             fields: [
-  //               {
-  //                 name: "Level",
-  //                 value: entity.level ? entity.level : "-",
-  //                 inline: true,
-  //               },
-  //               {
-  //                 name: "School",
-  //                 value: entity.school ? entity.school : "-",
-  //                 inline: true,
-  //               },
-  //               {
-  //                 name: "Range",
-  //                 value: entity.range ? entity.range : "-",
-  //                 inline: true,
-  //               },
-  //               {
-  //                 name: "Duration",
-  //                 value: entity.duration ? entity.duration : "-",
-  //                 inline: true,
-  //               },
-  //               {
-  //                 name: "Time",
-  //                 value: entity.time ? entity.time : "-",
-  //                 inline: true,
-  //               },
-  //               {
-  //                 name: "Text",
-  //                 value: newText,
-  //               },
-  //             ],
-  //           },
-  //         ],
-  //       };
-  //       setJson(JSON.stringify(newJson));
-  //     }
-  //   }, [entity, webhook]);
+  useEffect(() => {
+    reciveAttributeSelection("spells", "school", (schools: IndexableType[]) => {
+      setSchoolList(
+        schools.map((text: IndexableType) => {
+          const newText: string = text as string;
+          return { value: newText, label: newText };
+        })
+      );
+    });
+    reciveAttributeSelection("classes", "name", (classes: IndexableType[]) => {
+      setClassList(
+        classes.map((text: IndexableType) => {
+          const newText: string = text as string;
+          return { value: newText, label: newText };
+        })
+      );
+    });
+  }, [entity]);
 
   const formatLevel = useCallback(() => {
     if (entity !== undefined) {
@@ -86,10 +83,14 @@ const SpellDetail = ({ entity, onEdit }: $Props) => {
   const hasRitual = useCallback(() => {
     if (entity !== undefined) {
       if (entity.ritual) {
-        return <FlagContent>R</FlagContent>;
+        return <FlagContent>Ritual</FlagContent>;
       }
     }
-    return "";
+    return (
+      <FlagContent>
+        <del>Ritual</del>
+      </FlagContent>
+    );
   }, [entity]);
 
   const hasConcentration = useCallback(() => {
@@ -118,42 +119,193 @@ const SpellDetail = ({ entity, onEdit }: $Props) => {
       <View>
         <Level isEditing={levelEdit} onClick={() => editLevel(true)}>
           {levelEdit && (
-            <InputNumber
-              value={entity.level}
-              onChange={(val: any) => onEdit({ ...entity, level: val })}
-              onKeyPress={(e: any) => {
-                if (e.key === "Enter") {
+            <InputGroup>
+              <InputNumber
+                value={currentSpell.level}
+                onChange={(val: any) => changeSpell({ ...entity, level: val })}
+                min={1}
+                step={1}
+                style={{ width: "60px" }}
+              />
+              <InputGroup.Button
+                onClick={(e) => {
+                  e.stopPropagation();
                   editLevel(false);
-                }
-              }}
-              min={1}
-              step={1}
-              style={{ width: "60px" }}
-            />
+                  onEdit(currentSpell);
+                }}
+              >
+                <FaCheck />
+              </InputGroup.Button>
+            </InputGroup>
           )}
           {!levelEdit && <b>{formatLevel()}</b>}
         </Level>
-
-        <School school={entity.school}>{entity.school}</School>
-
+        <School school={entity.school} isEditing={schoolEdit} onClick={() => editSchool(true)}>
+          {schoolEdit && (
+            <InputGroup>
+              <InputGroup.Addon>
+                <IoSchool />
+              </InputGroup.Addon>
+              <InputPicker
+                creatable
+                value={currentSpell.school}
+                data={schoolList}
+                onChange={(val: any) => changeSpell({ ...entity, school: val })}
+              />
+              <InputGroup.Button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  editSchool(false);
+                  onEdit(currentSpell);
+                }}
+              >
+                <FaCheck />
+              </InputGroup.Button>
+            </InputGroup>
+          )}
+          {!schoolEdit && (
+            <>
+              <IoSchool />
+              {entity.school}
+            </>
+          )}
+        </School>
         <Flag>
           <b>{hasConcentration()}</b>
         </Flag>
-        <Flag>
-          <b>{hasRitual()}</b>
+        <Flag isEditing={ritualEdit} onClick={() => editRitual(true)}>
+          {ritualEdit && (
+            <Checkbox
+              checked={entity.ritual}
+              onCheckboxClick={(e) => {
+                e.stopPropagation();
+                editRitual(false);
+                onEdit({ ...entity, ritual: !entity.ritual });
+              }}
+            >
+              Ritual
+            </Checkbox>
+          )}
+          {!ritualEdit && <>{hasRitual()}</>}
         </Flag>
-
         {getPicture() !== "" ? (
-          <ImageName>
-            <Image pic={getPicture()}></Image>
-            <b>{entity.name}</b>
+          <ImageName isEditing={nameEdit} onClick={() => editName(true)}>
+            {nameEdit && (
+              <>
+                <InputGroup style={{ width: "max-content" }}>
+                  <InputGroup.Addon>
+                    <FaHistory />
+                  </InputGroup.Addon>
+                  <Input
+                    placeholder={"Link to image"}
+                    value={currentSpell.pic}
+                    onChange={(val: any) => changeSpell({ ...entity, pic: val })}
+                    onKeyPress={(e: any) => {
+                      if (e.key === "Enter") {
+                        editName(false);
+                        onEdit(currentSpell);
+                      }
+                    }}
+                  />
+                  <InputGroup.Button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      editName(false);
+                      onEdit(currentSpell);
+                    }}
+                  >
+                    <FaCheck />
+                  </InputGroup.Button>
+                </InputGroup>
+                <InputGroup style={{ width: "max-content" }}>
+                  <Input
+                    placeholder={"Spell name"}
+                    value={currentSpell.name}
+                    onChange={(val: any) => changeSpell({ ...entity, name: val })}
+                    onKeyPress={(e: any) => {
+                      if (e.key === "Enter") {
+                        editName(false);
+                        onEdit(currentSpell);
+                      }
+                    }}
+                    style={{ width: "max-content", minWidth: "200px" }}
+                  />
+                  <InputGroup.Button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      editName(false);
+                      onEdit(currentSpell);
+                    }}
+                  >
+                    <FaCheck />
+                  </InputGroup.Button>
+                </InputGroup>
+              </>
+            )}
+            {!nameEdit && (
+              <>
+                <Image pic={getPicture()}></Image>
+                <b>{entity.name}</b>
+              </>
+            )}
           </ImageName>
         ) : (
-          <Name>
-            <b>{entity.name}</b>
+          <Name isEditing={nameEdit} onClick={() => editName(true)}>
+            {nameEdit && (
+              <>
+                <InputGroup style={{ width: "max-content" }}>
+                  <InputGroup.Addon>
+                    <FaImage />
+                  </InputGroup.Addon>
+                  <Input
+                    placeholder={"Link to image"}
+                    value={currentSpell.pic}
+                    onChange={(val: any) => changeSpell({ ...entity, pic: val })}
+                    onKeyPress={(e: any) => {
+                      if (e.key === "Enter") {
+                        editName(false);
+                        onEdit(currentSpell);
+                      }
+                    }}
+                  />
+                  <InputGroup.Button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      editName(false);
+                      onEdit(currentSpell);
+                    }}
+                  >
+                    <FaCheck />
+                  </InputGroup.Button>
+                </InputGroup>
+                <InputGroup style={{ width: "max-content" }}>
+                  <Input
+                    placeholder={"Spell name"}
+                    value={currentSpell.name}
+                    onChange={(val: any) => changeSpell({ ...entity, name: val })}
+                    onKeyPress={(e: any) => {
+                      if (e.key === "Enter") {
+                        editName(false);
+                        onEdit(currentSpell);
+                      }
+                    }}
+                    style={{ width: "max-content", minWidth: "200px" }}
+                  />
+                  <InputGroup.Button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      editName(false);
+                      onEdit(currentSpell);
+                    }}
+                  >
+                    <FaCheck />
+                  </InputGroup.Button>
+                </InputGroup>
+              </>
+            )}
+            {!nameEdit && <b>{entity.name}</b>}
           </Name>
         )}
-
         <PropWrapper>
           <Prop isEditing={timeEdit} onClick={() => editTime(true)}>
             {timeEdit && (
@@ -162,14 +314,25 @@ const SpellDetail = ({ entity, onEdit }: $Props) => {
                   <FaHistory />
                 </InputGroup.Addon>
                 <Input
-                  value={entity.time}
-                  onChange={(val: any) => onEdit({ ...entity, time: val })}
+                  placeholder={"Casting time"}
+                  value={currentSpell.time}
+                  onChange={(val: any) => changeSpell({ ...entity, time: val })}
                   onKeyPress={(e: any) => {
                     if (e.key === "Enter") {
                       editTime(false);
+                      onEdit(currentSpell);
                     }
                   }}
                 />
+                <InputGroup.Button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    editTime(false);
+                    onEdit(currentSpell);
+                  }}
+                >
+                  <FaCheck />
+                </InputGroup.Button>
               </InputGroup>
             )}
             {!timeEdit && (
@@ -178,51 +341,219 @@ const SpellDetail = ({ entity, onEdit }: $Props) => {
               </>
             )}
           </Prop>
-          <Prop>
-            <FaHourglassHalf />
-            {entity.duration}
+          <Prop isEditing={durationEdit} onClick={() => editDuration(true)}>
+            {durationEdit && (
+              <InputGroup style={{ width: "max-content" }}>
+                <InputGroup.Addon>
+                  <FaHourglassHalf />
+                </InputGroup.Addon>
+                <Input
+                  placeholder={"Spell duration"}
+                  value={currentSpell.duration}
+                  onChange={(val: any) => changeSpell({ ...entity, duration: val })}
+                  onKeyPress={(e: any) => {
+                    if (e.key === "Enter") {
+                      editDuration(false);
+                      onEdit(currentSpell);
+                    }
+                  }}
+                />
+                <InputGroup.Button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    editDuration(false);
+                    onEdit(currentSpell);
+                  }}
+                >
+                  <FaCheck />
+                </InputGroup.Button>
+              </InputGroup>
+            )}
+            {!durationEdit && (
+              <>
+                <FaHourglassHalf />
+                {entity.duration}
+              </>
+            )}
           </Prop>
-          <Prop>
-            <GiBullseye />
-            {entity.range}
+          <Prop isEditing={rangeEdit} onClick={() => editRange(true)}>
+            {rangeEdit && (
+              <InputGroup style={{ width: "max-content" }}>
+                <InputGroup.Addon>
+                  <GiBullseye />
+                </InputGroup.Addon>
+                <Input
+                  placeholder={"Spell range"}
+                  value={currentSpell.range}
+                  onChange={(val: any) => changeSpell({ ...entity, range: val })}
+                  onKeyPress={(e: any) => {
+                    if (e.key === "Enter") {
+                      editRange(false);
+                      onEdit(currentSpell);
+                    }
+                  }}
+                />
+                <InputGroup.Button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    editRange(false);
+                    onEdit(currentSpell);
+                  }}
+                >
+                  <FaCheck />
+                </InputGroup.Button>
+              </InputGroup>
+            )}
+            {!rangeEdit && (
+              <>
+                <GiBullseye />
+                {entity.range}
+              </>
+            )}
           </Prop>
-          <Prop>
-            <FaMortarPestle />
-            {entity.components}
+          <Prop isEditing={componentsEdit} onClick={() => editComponents(true)}>
+            {componentsEdit && (
+              <InputGroup style={{ width: "max-content" }}>
+                <InputGroup.Addon>
+                  <FaMortarPestle />
+                </InputGroup.Addon>
+                <Input
+                  placeholder={"Spell components"}
+                  value={currentSpell.components}
+                  onChange={(val: any) => changeSpell({ ...entity, components: val })}
+                  onKeyPress={(e: any) => {
+                    if (e.key === "Enter") {
+                      editComponents(false);
+                      onEdit(currentSpell);
+                    }
+                  }}
+                />
+                <InputGroup.Button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    editComponents(false);
+                    onEdit(currentSpell);
+                  }}
+                >
+                  <FaCheck />
+                </InputGroup.Button>
+              </InputGroup>
+            )}
+            {!componentsEdit && (
+              <>
+                <FaMortarPestle />
+                {entity.components}
+              </>
+            )}
           </Prop>
-          <Prop>
-            <FaUser />
-            {entity.classes}
+          <Prop isEditing={classesEdit} onClick={() => editClasses(true)}>
+            {classesEdit && (
+              <>
+                <TagPicker
+                  data={classList}
+                  trigger={"Enter"}
+                  placeholder={"Classes"}
+                  value={currentSpell.classes}
+                  onChange={(val: string[]) => changeSpell({ ...entity, classes: val })}
+                  onKeyPress={(e: any) => {
+                    if (e.key === "Enter") {
+                      editClasses(false);
+                      onEdit(currentSpell);
+                    }
+                  }}
+                  style={{ minWidth: "300px" }}
+                />
+                <Button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    editClasses(false);
+                    onEdit(currentSpell);
+                  }}
+                >
+                  <FaCheck />
+                </Button>
+              </>
+            )}
+            {!classesEdit && (
+              <>
+                <FaUser />
+                <TagGroup>
+                  {entity.classes.map((classe: string, index: number) => (
+                    <Tag key={index}>{classe}</Tag>
+                  ))}
+                </TagGroup>
+              </>
+            )}
           </Prop>
-          <Prop>
-            <FaLink />
-            {entity.sources}
+          <Prop isEditing={sourcesEdit} onClick={() => editSources(true)}>
+            {sourcesEdit && (
+              <InputGroup style={{ width: "max-content" }}>
+                <InputGroup.Addon>
+                  <FaLink />
+                </InputGroup.Addon>
+                <Input
+                  placeholder={"Sources"}
+                  value={currentSpell.sources}
+                  onChange={(val: any) => changeSpell({ ...entity, sources: val })}
+                  onKeyPress={(e: any) => {
+                    if (e.key === "Enter") {
+                      editSources(false);
+                      onEdit(currentSpell);
+                    }
+                  }}
+                />
+                <InputGroup.Button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    editSources(false);
+                    onEdit(currentSpell);
+                  }}
+                >
+                  <FaCheck />
+                </InputGroup.Button>
+              </InputGroup>
+            )}
+            {!sourcesEdit && (
+              <>
+                <FaLink />
+                {entity.sources}
+              </>
+            )}
           </Prop>
         </PropWrapper>
-        <Text>
-          {entity.description}
+        <Text isEditing={descriptionEdit} onClick={() => editDescription(true)}>
+          {descriptionEdit && (
+            <InputGroup>
+              <Input
+                placeholder="Description"
+                as="textarea"
+                rows={5}
+                value={currentSpell.description}
+                onChange={(description: any) =>
+                  changeSpell({ ...entity, description: description })
+                }
+              />
+              <InputGroup.Button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  editDescription(false);
+                  onEdit(currentSpell);
+                }}
+              >
+                <FaCheck />
+              </InputGroup.Button>
+            </InputGroup>
+          )}
+          {!descriptionEdit && (
+            <>
+              <PropTitle>
+                <FaBookOpen />
+              </PropTitle>
+              {entity.description}
+            </>
+          )}
           {/* <FormatedText text={entity.description} /> */}
         </Text>
-        {/* <PropWrapper>
-          {webhook !== undefined && (
-            <TextButton
-              style={{
-                backgroundColor: "#7289da",
-              }}
-              text={`Cast ${spell.name}`}
-              icon={faDiscord}
-              onClick={() => sendEmbedMessage(webhook, json)}
-            />
-          )}
-          {!send && (
-            <TextButton
-              text={`Send ${spell.name}`}
-              icon={faPaperPlane}
-              onClick={() => setSend(true)}
-            />
-          )}
-          {!!send && <P2PSender data={spell} mode={"THIS"} />}
-        </PropWrapper> */}
       </View>
     </CenterWrapper>
   );
@@ -247,6 +578,7 @@ const View = styled.div`
 
 const School = styled.div<{
   school?: string;
+  isEditing?: boolean;
 }>`
   height: auto;
   float: left;
@@ -255,7 +587,9 @@ const School = styled.div<{
   border-radius: 5px;
   background-color: ${({ theme }) => theme.secondColor};
   color: ${(props) => {
-    if (props.school === "Necromancy") {
+    if (props.school === "" || props.school === null) {
+      return "white";
+    } else if (props.school === "Necromancy") {
       return "#bef28e";
     } else if (props.school === "Conjuration") {
       return "#fce97a";
@@ -272,9 +606,17 @@ const School = styled.div<{
     } else if (props.school === "Illusion") {
       return "#8b42f9";
     } else {
-      return "white";
+      return stringToColour(props.school);
     }
   }};
+
+  svg {
+    margin-right: 5px;
+    width: 15px;
+    height: auto;
+    border-radius: 150px;
+    color: ${({ theme }) => theme.highlight};
+  }
 `;
 
 const Level = styled.div<{
@@ -293,7 +635,9 @@ const Level = styled.div<{
   background-color: ${({ theme }) => theme.secondColor};
 `;
 
-const Name = styled.div`
+const Name = styled.div<{
+  isEditing?: boolean;
+}>`
   height: auto;
   float: left;
   padding: 10px;
@@ -303,10 +647,13 @@ const Name = styled.div`
   text-align: center;
   border-radius: 5px;
   background-color: ${({ theme }) => theme.secondColor};
+  display: ${(props) => (props.isEditing ? "flex" : "block")};
+  flex-wrap: wrap;
+  gap: 5px;
 `;
 
 const ImageName = styled(Name)`
-  height: 30px;
+  height: auto;
   border-radius: 50px 5px 5px 50px;
 `;
 
@@ -331,8 +678,9 @@ const Prop = styled.div<{
   padding: ${(props) => (props.isEditing ? "3px" : "10px")};
   border-radius: 5px;
   background-color: ${({ theme }) => theme.secondColor};
+  display: flex;
 
-  svg {
+  & > svg {
     margin-right: 5px;
     width: 15px;
     height: auto;
@@ -341,7 +689,16 @@ const Prop = styled.div<{
   }
 `;
 
-const Text = styled.div`
+const PropTitle = styled.span`
+  display: inline-block;
+  color: ${({ theme }) => theme.highlight};
+  text-decoration: none;
+  margin: 0px 5px 0px 5px;
+`;
+
+const Text = styled.div<{
+  isEditing?: boolean;
+}>`
   height: auto;
   width: calc(100% - 15px);
   margin: 10px 5px 5px 5px;
@@ -352,7 +709,9 @@ const Text = styled.div`
   background-color: ${({ theme }) => theme.secondColor};
 `;
 
-const Flag = styled.div`
+const Flag = styled.div<{
+  isEditing?: boolean;
+}>`
   height: auto;
   float: left;
   padding: 5px 10px 7px 10px;

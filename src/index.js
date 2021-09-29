@@ -1,7 +1,7 @@
-import React from "react";
 import ReactDOM from "react-dom";
-import "rsuite/lib/styles/themes/dark/index.less";
 import "./index.css";
+// import "rsuite/dist/rsuite.min.css";
+import "./custome.less";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 

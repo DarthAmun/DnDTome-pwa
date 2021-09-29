@@ -332,7 +332,13 @@ export const applyFilters = (obj: any, filters: Filter[]) => {
       let arrayTest: boolean = false;
       filter.value.forEach((filterPart: string | boolean | number) => {
         if (typeof filterPart === "string") {
-          if (
+          if (obj[filter.fieldName] instanceof Array) {
+            obj[filter.fieldName].forEach((val: string) => {
+              if (val.toLowerCase() === filterPart.toLowerCase()) {
+                arrayTest = true;
+              }
+            });
+          } else if (
             // @ts-ignore
             obj[filter.fieldName].toLowerCase() === filterPart.toLowerCase()
           )

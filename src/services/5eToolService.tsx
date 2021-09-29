@@ -492,10 +492,10 @@ export const makeSubrace = (obj: any, race: Race, fileName: string): Subrace => 
 };
 
 export const makeSpell = (obj: any, fileName: string): Spell => {
-  let classes = "";
+  let classes: string[] = [];
   if (obj.classes !== undefined && obj.classes.fromClassList !== undefined) {
     obj.classes.fromClassList.forEach((classe: { name: string; source: string }) => {
-      classes += classe.name + ", ";
+      classes.push(classe.name.trim());
     });
   }
 

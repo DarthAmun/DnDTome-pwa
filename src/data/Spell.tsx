@@ -1,7 +1,7 @@
 import IEntity from "./IEntity";
 
 export default class Spell extends IEntity {
-  classes: string;
+  classes: string[];
   level: number;
   school: string;
   time: string;
@@ -19,7 +19,7 @@ export default class Spell extends IEntity {
     name?: string,
     sources?: string,
     filename?: string,
-    classes?: string,
+    classes?: string[],
     level?: number,
     school?: string,
     time?: string,
@@ -33,7 +33,7 @@ export default class Spell extends IEntity {
     picBase64?: string
   ) {
     super(id, name, sources, filename);
-    this.classes = classes || "";
+    this.classes = classes || [];
     this.level = level || 0;
     this.school = school || "";
     this.time = time || "";
@@ -50,7 +50,6 @@ export default class Spell extends IEntity {
 
 export function isSpell(arg: any): arg is Spell {
   const nameCheck = arg.name !== undefined && typeof arg.name == "string";
-  const classesCheck = arg.classes !== undefined && typeof arg.classes == "string";
   const sourcesCheck = arg.sources !== undefined && typeof arg.sources == "string";
   const levelCheck = arg.level !== undefined && typeof arg.level == "number";
   const schoolCheck = arg.school !== undefined && typeof arg.school == "string";
@@ -65,7 +64,6 @@ export function isSpell(arg: any): arg is Spell {
   return (
     arg &&
     nameCheck &&
-    classesCheck &&
     sourcesCheck &&
     levelCheck &&
     schoolCheck &&

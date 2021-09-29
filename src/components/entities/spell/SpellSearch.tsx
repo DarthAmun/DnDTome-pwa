@@ -16,6 +16,9 @@ import {
 } from "rsuite";
 import styled from "styled-components";
 import { getPathVariable } from "../../../services/LocationPathService";
+import { FaLongArrowAltDown, FaLongArrowAltUp } from "react-icons/fa";
+import { IndexableType } from "dexie";
+import { reciveAttributeSelection } from "../../../services/DatabaseService";
 
 interface $SearchProps {
   entities: Spell[];
@@ -43,7 +46,8 @@ const SpellSearch = ({ entities, showSearchBar, openSearchBar, doSearch }: $Sear
   const [durationList, setDurationList] = useState<{ value: string; label: string }[]>([]);
   const [components, setComponents] = useState<string>("");
   const [text, setText] = useState<string>("");
-  const [classes, setClasses] = useState<string>("");
+  const [classes, setClasses] = useState<string[]>([]);
+  const [classList, setClassList] = useState<{ value: string; label: string }[]>([]);
   const [sources, setSources] = useState<string>("");
 
   const [sort, setSort] = useState<{
@@ -62,7 +66,7 @@ const SpellSearch = ({ entities, showSearchBar, openSearchBar, doSearch }: $Sear
 
   useEffect(() => {
     let filters: string = getPathVariable(location, "filter");
-    const oldFilterString: string = unescape(filters.replace("filter=", ""));
+    const oldFilterString: string = unescape(filters);
     if (oldFilterString !== "") {
       const oldFilters: Filter[] = JSON.parse(oldFilterString);
       oldFilters.forEach((filter: Filter) => {
@@ -86,7 +90,7 @@ const SpellSearch = ({ entities, showSearchBar, openSearchBar, doSearch }: $Sear
             setText(filter.value as string);
             break;
           case "classes":
-            setClasses(filter.value as string);
+            setClasses(filter.value as string[]);
             break;
           case "sources":
             setSources(filter.value as string);
@@ -120,8 +124,16 @@ const SpellSearch = ({ entities, showSearchBar, openSearchBar, doSearch }: $Sear
       ...Array.from(new Set(entities.map((spell: Spell) => spell.duration))),
     ].sort();
     const newLevelList: number[] = [
-      ...Array.from(new Set(entities.map((spell: Spell) => spell.level))),
+      ...Array.from(new Set(entities.map((spell: Spell) => +spell.level))),
     ].sort((l1, l2) => l1 - l2);
+    reciveAttributeSelection("classes", "name", (classes: IndexableType[]) => {
+      setClassList(
+        classes.map((text: IndexableType) => {
+          const newText: string = text as string;
+          return { value: newText, label: newText };
+        })
+      );
+    });
     setSchoolList(
       newSchoolList.map((text: string) => {
         return { value: text, label: text };
@@ -169,7 +181,7 @@ const SpellSearch = ({ entities, showSearchBar, openSearchBar, doSearch }: $Sear
     if (text !== "") {
       newFilters = [...newFilters, new Filter("text", text)];
     }
-    if (classes !== "") {
+    if (classes.length !== 0) {
       newFilters = [...newFilters, new Filter("classes", classes)];
     }
     if (sources !== "") {
@@ -223,7 +235,7 @@ const SpellSearch = ({ entities, showSearchBar, openSearchBar, doSearch }: $Sear
       setDuration("");
       setComponents("");
       setText("");
-      setClasses("");
+      setClasses([]);
       setSources("");
       setSort({
         name: "",
@@ -236,9 +248,29 @@ const SpellSearch = ({ entities, showSearchBar, openSearchBar, doSearch }: $Sear
   };
 
   return (
-    <Drawer show={showSearchBar} onHide={() => openSearchBar(false)} placement={"top"}>
+    <Drawer open={showSearchBar} onClose={() => openSearchBar(false)} placement={"left"}>
       <Drawer.Header>
         <Drawer.Title>Search</Drawer.Title>
+        <Drawer.Actions>
+          <Button
+            onClick={() => {
+              search();
+              openSearchBar(false);
+            }}
+            appearance="primary"
+          >
+            Search
+          </Button>
+          <Button
+            onClick={() => {
+              reset();
+              openSearchBar(false);
+            }}
+            appearance="ghost"
+          >
+            Reset
+          </Button>
+        </Drawer.Actions>
       </Drawer.Header>
       <Drawer.Body>
         <SearchWrapper>
@@ -249,35 +281,44 @@ const SpellSearch = ({ entities, showSearchBar, openSearchBar, doSearch }: $Sear
           >
             <InputGroup style={{ width: "200px" }}>
               <InputGroup.Addon>Name</InputGroup.Addon>
-              <Input value={name} onChange={setName} />
+              <Input value={name} onChange={(val: any) => setName(val)} />
+              <InputGroup.Button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  let newSort = { ...sort };
+                  if (newSort.name === "name")
+                    setSort({ ...newSort, sort: (newSort.sort + 1) % 3 });
+                  else setSort({ ...newSort, sort: 1, name: "name" });
+                }}
+              >
+                {sort.name === "name" ? (
+                  <>
+                    {sort.sort === 0 ? <>-</> : <></>}
+                    {sort.sort === 1 ? <FaLongArrowAltDown /> : <></>}
+                    {sort.sort === 2 ? <FaLongArrowAltUp /> : <></>}
+                  </>
+                ) : (
+                  <>-</>
+                )}
+              </InputGroup.Button>
             </InputGroup>
           </Whisper>
-          <Whisper
-            trigger="focus"
-            placement={"top"}
-            speaker={<Tooltip>One or more schools</Tooltip>}
-          >
-            <TagPicker
-              placeholder="Select school"
-              data={schoolList}
-              value={school}
-              onChange={setSchool}
-              style={{ width: "max-content", minWidth: "200px" }}
-            />
-          </Whisper>
-          <Whisper
-            trigger="focus"
-            placement={"top"}
-            speaker={<Tooltip>One or more levels</Tooltip>}
-          >
-            <TagPicker
-              placeholder="Select level"
-              data={levelList}
-              value={level}
-              onChange={setLevel}
-              style={{ width: "max-content", minWidth: "200px" }}
-            />
-          </Whisper>
+          <TagPicker
+            placeholder="Select school"
+            data={schoolList}
+            trigger={"Enter"}
+            value={school}
+            onChange={setSchool}
+            style={{ width: "max-content", minWidth: "200px" }}
+          />
+          <TagPicker
+            placeholder="Select level"
+            data={levelList}
+            value={level}
+            onChange={(vals: string[]) => setLevel(vals.map((val: string) => +val))}
+            style={{ width: "max-content", minWidth: "200px" }}
+            trigger={"Enter"}
+          />
           <Checkbox checked={ritual} onCheckboxClick={() => setRitual((r) => !r)}>
             Ritual
           </Checkbox>
@@ -295,6 +336,25 @@ const SpellSearch = ({ entities, showSearchBar, openSearchBar, doSearch }: $Sear
                 onChange={setTime}
                 style={{ width: "max-content", minWidth: "200px" }}
               />
+              <InputGroup.Button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  let newSort = { ...sort };
+                  if (newSort.name === "time")
+                    setSort({ ...newSort, sort: (newSort.sort + 1) % 3 });
+                  else setSort({ ...newSort, sort: 1, name: "time" });
+                }}
+              >
+                {sort.name === "time" ? (
+                  <>
+                    {sort.sort === 0 ? <>-</> : <></>}
+                    {sort.sort === 1 ? <FaLongArrowAltDown /> : <></>}
+                    {sort.sort === 2 ? <FaLongArrowAltUp /> : <></>}
+                  </>
+                ) : (
+                  <>-</>
+                )}
+              </InputGroup.Button>
             </InputGroup>
           </Whisper>
           <Whisper
@@ -311,6 +371,25 @@ const SpellSearch = ({ entities, showSearchBar, openSearchBar, doSearch }: $Sear
                 onChange={setRange}
                 style={{ width: "max-content", minWidth: "200px" }}
               />
+              <InputGroup.Button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  let newSort = { ...sort };
+                  if (newSort.name === "range")
+                    setSort({ ...newSort, sort: (newSort.sort + 1) % 3 });
+                  else setSort({ ...newSort, sort: 1, name: "range" });
+                }}
+              >
+                {sort.name === "range" ? (
+                  <>
+                    {sort.sort === 0 ? <>-</> : <></>}
+                    {sort.sort === 1 ? <FaLongArrowAltDown /> : <></>}
+                    {sort.sort === 2 ? <FaLongArrowAltUp /> : <></>}
+                  </>
+                ) : (
+                  <>-</>
+                )}
+              </InputGroup.Button>
             </InputGroup>
           </Whisper>
           <Whisper
@@ -327,20 +406,70 @@ const SpellSearch = ({ entities, showSearchBar, openSearchBar, doSearch }: $Sear
                 onChange={setDuration}
                 style={{ width: "max-content", minWidth: "200px" }}
               />
+              <InputGroup.Button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  let newSort = { ...sort };
+                  if (newSort.name === "duration")
+                    setSort({ ...newSort, sort: (newSort.sort + 1) % 3 });
+                  else setSort({ ...newSort, sort: 1, name: "duration" });
+                }}
+              >
+                {sort.name === "duration" ? (
+                  <>
+                    {sort.sort === 0 ? <>-</> : <></>}
+                    {sort.sort === 1 ? <FaLongArrowAltDown /> : <></>}
+                    {sort.sort === 2 ? <FaLongArrowAltUp /> : <></>}
+                  </>
+                ) : (
+                  <>-</>
+                )}
+              </InputGroup.Button>
             </InputGroup>
           </Whisper>
+          <Whisper
+            trigger="focus"
+            placement={"top"}
+            speaker={<Tooltip>Part of the spell's duration</Tooltip>}
+          >
+            <InputGroup style={{ width: "max-content" }}>
+              <InputGroup.Addon>Components</InputGroup.Addon>
+              <Input
+                placeholder="Select components"
+                value={components}
+                onChange={(val: any) => setComponents(val)}
+                style={{ width: "max-content", minWidth: "200px" }}
+              />
+              <InputGroup.Button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  let newSort = { ...sort };
+                  if (newSort.name === "components")
+                    setSort({ ...newSort, sort: (newSort.sort + 1) % 3 });
+                  else setSort({ ...newSort, sort: 1, name: "components" });
+                }}
+              >
+                {sort.name === "components" ? (
+                  <>
+                    {sort.sort === 0 ? <>-</> : <></>}
+                    {sort.sort === 1 ? <FaLongArrowAltDown /> : <></>}
+                    {sort.sort === 2 ? <FaLongArrowAltUp /> : <></>}
+                  </>
+                ) : (
+                  <>-</>
+                )}
+              </InputGroup.Button>
+            </InputGroup>
+          </Whisper>
+          <TagPicker
+            placeholder="Select classes"
+            data={classList}
+            trigger={"Enter"}
+            value={classes}
+            onChange={setClasses}
+            style={{ width: "max-content", minWidth: "200px" }}
+          />
           {/*
-        <StringSearchField
-          value={components}
-          sort={sort}
-          field={"components"}
-          label="Comp."
-          icon={faMortarPestle}
-          onChange={(name: string, sort: { name: string; label: string; sort: number }) => {
-            setComponents(name);
-            setSort(sort);
-          }}
-        />
         <StringSearchField
           value={classes}
           sort={sort}
@@ -376,26 +505,6 @@ const SpellSearch = ({ entities, showSearchBar, openSearchBar, doSearch }: $Sear
         /> */}
         </SearchWrapper>
       </Drawer.Body>
-      <Drawer.Footer>
-        <Button
-          onClick={() => {
-            search();
-            openSearchBar(false);
-          }}
-          appearance="primary"
-        >
-          Search
-        </Button>
-        <Button
-          onClick={() => {
-            reset();
-            openSearchBar(false);
-          }}
-          appearance="ghost"
-        >
-          Reset
-        </Button>
-      </Drawer.Footer>
     </Drawer>
   );
 };

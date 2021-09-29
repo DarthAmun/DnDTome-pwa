@@ -2,6 +2,7 @@ import React, { useCallback } from "react";
 import { FaHistory, FaHourglassHalf, FaMortarPestle, FaUser, FaLink } from "react-icons/fa";
 import { GiBullseye } from "react-icons/gi";
 import { Link } from "react-router-dom";
+import { Tag, TagGroup } from "rsuite";
 import styled from "styled-components";
 
 import Spell from "../../../data/Spell";
@@ -130,10 +131,14 @@ const SpellTile = ({ entity }: $Props) => {
           <FaMortarPestle />
           {formatComponents()}
         </Prop>
-        <WideProp>
+        <ClassProp>
           <FaUser />
-          {entity.classes}
-        </WideProp>
+          <Tags>
+            {entity.classes.map((classe: string, index: number) => (
+              <Tag key={index}>{classe}</Tag>
+            ))}
+          </Tags>
+        </ClassProp>
         <WideProp>
           <FaLink />
           {entity.sources}
@@ -272,6 +277,11 @@ const Prop = styled.div`
 const WideProp = styled(Prop)`
   margin: 0 0 5px 0px;
   width: calc(100% - 20px);
+  display: flex;
+`;
+
+const ClassProp = styled(WideProp)`
+  height: auto;
 `;
 
 const Flag = styled.div`
@@ -315,3 +325,8 @@ const ImageElm = styled.div`
   overflow: hidden;
 `;
 const Empty = styled.div``;
+
+const Tags = styled(TagGroup)`
+  width: inherit;
+  white-space: normal;
+`;

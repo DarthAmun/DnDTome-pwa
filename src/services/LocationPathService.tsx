@@ -4,5 +4,5 @@ export const getPathVariable = (location: any, val: string): string => {
   locationParts.forEach((part: string) => {
     if (part.includes(val)) result = part.replace(`${val}=`, "");
   });
-  return result;
+  return unescape(result);
 };

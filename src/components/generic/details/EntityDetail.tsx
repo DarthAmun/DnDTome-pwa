@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
-import { FaArrowLeft, FaClone, FaExclamationTriangle, FaSave, FaTrash } from "react-icons/fa";
+import { useState } from "react";
+import { FaArrowLeft, FaClone, FaTrash } from "react-icons/fa";
 import { useHistory } from "react-router";
-import { Button, ButtonGroup } from "rsuite";
+import { Button, ButtonGroup, Message, toaster } from "rsuite";
 import styled from "styled-components";
 
 import IEntity from "../../../data/IEntity";
@@ -10,20 +10,13 @@ import { remove, updateWithCallback, createNewWithId } from "../../../services/D
 interface $Props {
   entity: IEntity;
   tableName: string;
-  isNew: boolean;
-  view: string;
   EntityDetails: any;
 }
 
-const EntityDetail = ({ entity, tableName, isNew, view, EntityDetails }: $Props) => {
-  const [editMode, setMode] = useState<boolean>(isNew);
-
+const EntityDetail = ({ entity, tableName, EntityDetails }: $Props) => {
   const [entityObj, editEntity] = useState<IEntity>(entity);
 
   const [showDeleteDialog, setDeleteDialog] = useState<boolean>(false);
-  const [showAlert, setAlert] = useState<boolean>(false);
-  const [message, setMessage] = useState<string>("");
-  const [unsavedChanges, setUnsavedChanges] = useState<boolean>(false);
   let history = useHistory();
 
   const deleteEntity = (entityId: number | undefined) => {
@@ -31,25 +24,23 @@ const EntityDetail = ({ entity, tableName, isNew, view, EntityDetails }: $Props)
     history.goBack();
   };
 
-  useEffect(() => {
-    if (entityObj !== entity) {
-      setUnsavedChanges(true);
-    }
-  }, [entityObj, entity]);
-
   const updateEntity = (entityObj: IEntity, msg: string) => {
     updateWithCallback(tableName, entityObj, (result) => {
       if (result > 0) {
-        setUnsavedChanges(false);
-        setMessage(msg);
-        setAlert(true);
+        toaster.push(
+          <Message showIcon type="success">
+            Success: {msg}.
+          </Message>,
+          { placement: "bottomStart" }
+        );
       } else {
-        setMessage("Something went wrong!");
-        setAlert(true);
+        toaster.push(
+          <Message showIcon type="error">
+            Error: Something went wrong!.
+          </Message>,
+          { placement: "bottomStart" }
+        );
       }
-      setTimeout(() => {
-        setAlert(false);
-      }, 3000);
     });
   };
 
@@ -65,8 +56,6 @@ const EntityDetail = ({ entity, tableName, isNew, view, EntityDetails }: $Props)
     editEntity(entity);
     updateEntity(entity, msg);
   };
-
-  const views = {};
 
   return (
     <>
@@ -87,20 +76,20 @@ const EntityDetail = ({ entity, tableName, isNew, view, EntityDetails }: $Props)
       )} */}
       <TopBar>
         <ButtonGroup>
-          <Button onClick={() => history.goBack()}>
+          <Button onClick={() => history.goBack()} size="lg">
             <FaArrowLeft />
           </Button>
-          <Button onClick={() => duplicateEntity(entityObj)}>
+          <Button onClick={() => duplicateEntity(entityObj)} size="lg">
             <FaClone />
           </Button>
-          <Button onClick={() => deleteEntity(entityObj.id)}>
+          <Button onClick={() => deleteEntity(entityObj.id)} size="lg">
             <FaTrash />
           </Button>
         </ButtonGroup>
-        {message && showAlert && <Message>{message}</Message>}
       </TopBar>
       <EntityDetails
         entity={entityObj}
+        isNew={false}
         onEdit={(value: any) => editAndSaveEntity(value, "Saved successful!")}
       />
     </>
@@ -116,28 +105,10 @@ export const TopBar = styled.div`
   flex: 1 1;
   width: 100%;
   max-width: calc(100% - 20px);
-  height: 45px;
+  height: 55px;
   padding: 10px;
 
   @media (max-width: 576px) {
     max-width: calc(100% - 20px);
   }
-`;
-
-const Message = styled.div`
-  padding: 5px;
-  width: 150px;
-  height: 30px;
-  line-height: 30px;
-  border-radius: 5px;
-  float: right;
-`;
-
-const Icon = styled.div`
-  float: right;
-  line-height: 30px;
-  display: block;
-  height: 30px;
-  padding: 10px;
-  color: ${({ theme }) => theme.highlight};
 `;

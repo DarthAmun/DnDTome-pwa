@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import styled from "styled-components";
-import { Alert, Button, ButtonGroup, InputNumber, Loader, Pagination } from "rsuite";
+import { Button, ButtonGroup, InputNumber, Loader, Pagination, Tag, TagGroup } from "rsuite";
 import { reciveAll, reciveAllFiltered } from "../../services/DatabaseService";
 import { FaPlusCircle, FaSearch } from "react-icons/fa";
 import Filter from "../../data/Filter";
 import { useHistory, useLocation } from "react-router-dom";
 import { getPathVariable } from "../../services/LocationPathService";
+import { TopBar } from "./details/EntityDetail";
 
 interface $OverviewProps {
   entityName: string;
@@ -20,6 +21,7 @@ const EntityOverview = ({ entityName, Entity, Tile, Search }: $OverviewProps) =>
   const [allEntitysFromType, setAllEntitys] = useState<typeof Entity[]>([]);
   const [entities, setEntities] = useState<typeof Entity[]>([]);
   const [pageEntities, setPageEntities] = useState<typeof Entity[]>([]);
+  const [filters, setFilters] = useState<Filter[]>([]);
 
   const [activePage, setActivePage] = useState<number>(1);
   const [pageAmount, setPageAmount] = useState<number>(1);
@@ -47,12 +49,16 @@ const EntityOverview = ({ entityName, Entity, Tile, Search }: $OverviewProps) =>
   useEffect(() => {
     let oldStep: string = getPathVariable(location, "step");
     let oldPage: string = getPathVariable(location, "page");
-    if (oldStep !== "" && oldPage !== "") {
-      const newStep = +oldStep.replace("step=", "");
-      const newPage = +oldPage.replace("page=", "");
-      if (newStep !== step) loadPage(newStep, newPage);
+    let oldFilters: string = getPathVariable(location, "filter");
+    if (oldFilters !== "") {
+      setFilters(JSON.parse(oldFilters));
+    } else {
+      setFilters([]);
     }
-  }, []);
+    if (oldStep !== "" && oldPage !== "") {
+      if (+oldStep !== step) loadPage(+oldStep, +oldPage);
+    }
+  }, [location]);
 
   const changePage = (page: number) => {
     const newEntities = entities.slice((page - 1) * step, page * step);
@@ -106,7 +112,6 @@ const EntityOverview = ({ entityName, Entity, Tile, Search }: $OverviewProps) =>
     reciveAllFiltered(entityName + "s", filters, (results: any[]) => {
       if (results.length <= 0) {
         openSearchBar(true);
-        Alert.warning("Nothing found.");
       }
       const newPage: string = getPathVariable(location, "page");
       setPageAmount(Math.ceil(results.length / step));
@@ -121,6 +126,26 @@ const EntityOverview = ({ entityName, Entity, Tile, Search }: $OverviewProps) =>
     history.push(`/${entityName}-builder`);
   };
 
+  const makeFilterTag = (filter: Filter, index: number) => {
+    if (filter.value instanceof Array) {
+      let length = filter.value.length;
+      return (
+        <Tag size="lg" key={index}>
+          {filter.fieldName} equals{" "}
+          {filter.value.map((val: any, index: number) =>
+            index + 1 === length ? val : val + " or "
+          )}
+        </Tag>
+      );
+    } else {
+      return (
+        <Tag size="lg" key={index}>
+          {filter.fieldName} equals {filter.value}
+        </Tag>
+      );
+    }
+  };
+
   return (
     <>
       <Search
@@ -132,10 +157,10 @@ const EntityOverview = ({ entityName, Entity, Tile, Search }: $OverviewProps) =>
 
       <EntityOptions>
         <ButtonGroup>
-          <Button onClick={() => makeNew()}>
+          <Button onClick={() => makeNew()} size="lg">
             <FaPlusCircle />
           </Button>
-          <Button onClick={() => openSearchBar((o) => !o)} style={{ marginRight: "5px" }}>
+          <Button onClick={() => openSearchBar((o) => !o)} style={{ marginRight: "5px" }} size="lg">
             <FaSearch />
           </Button>
         </ButtonGroup>
@@ -149,6 +174,9 @@ const EntityOverview = ({ entityName, Entity, Tile, Search }: $OverviewProps) =>
           scrollable={true}
           style={{ width: 120 }}
         />
+        <TagGroup style={{ marginLeft: "5px", marginTop: "-5px" }}>
+          {filters.map((filter: Filter, index: number) => makeFilterTag(filter, index))}
+        </TagGroup>
       </EntityOptions>
 
       {loading && <Loader center content="Loading..." />}
@@ -167,6 +195,7 @@ const EntityOverview = ({ entityName, Entity, Tile, Search }: $OverviewProps) =>
               maxButtons={5}
               activePage={activePage}
               onSelect={changePage}
+              total={0}
             />
           </PaginationWrapper>
 
@@ -191,6 +220,7 @@ const EntityOverview = ({ entityName, Entity, Tile, Search }: $OverviewProps) =>
               maxButtons={5}
               activePage={activePage}
               onSelect={changePage}
+              total={0}
             />
           </PaginationWrapper>
         </>
@@ -212,13 +242,12 @@ const EntityContainer = styled.div`
 
 const PaginationWrapper = styled.div`
   width: calc(100% - 20px);
-  text-align: center;
-  padding: 10px;
+  display: flex;
+  justify-content: center;
+  padding: 5px;
 `;
 
-const EntityOptions = styled.div`
-  width: 100%;
-  height: 40px;
+const EntityOptions = styled(TopBar)`
   display: flex;
   flex-wrap: wrap;
 `;
