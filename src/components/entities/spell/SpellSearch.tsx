@@ -45,10 +45,11 @@ const SpellSearch = ({ entities, showSearchBar, openSearchBar, doSearch }: $Sear
   const [duration, setDuration] = useState<string>("");
   const [durationList, setDurationList] = useState<{ value: string; label: string }[]>([]);
   const [components, setComponents] = useState<string>("");
-  const [text, setText] = useState<string>("");
+  const [description, setDescription] = useState<string>("");
   const [classes, setClasses] = useState<string[]>([]);
   const [classList, setClassList] = useState<{ value: string; label: string }[]>([]);
   const [sources, setSources] = useState<string>("");
+  const [sourcesList, setSourcesList] = useState<{ value: string; label: string }[]>([]);
 
   const [sort, setSort] = useState<{
     name: string;
@@ -86,8 +87,8 @@ const SpellSearch = ({ entities, showSearchBar, openSearchBar, doSearch }: $Sear
           case "components":
             setComponents(filter.value as string);
             break;
-          case "text":
-            setText(filter.value as string);
+          case "description":
+            setDescription(filter.value as string);
             break;
           case "classes":
             setClasses(filter.value as string[]);
@@ -123,6 +124,9 @@ const SpellSearch = ({ entities, showSearchBar, openSearchBar, doSearch }: $Sear
     const newDurationList: string[] = [
       ...Array.from(new Set(entities.map((spell: Spell) => spell.duration))),
     ].sort();
+    const newSourcesList: string[] = [
+      ...Array.from(new Set(entities.map((spell: Spell) => spell.sources))),
+    ].sort();
     const newLevelList: number[] = [
       ...Array.from(new Set(entities.map((spell: Spell) => +spell.level))),
     ].sort((l1, l2) => l1 - l2);
@@ -154,6 +158,11 @@ const SpellSearch = ({ entities, showSearchBar, openSearchBar, doSearch }: $Sear
         return { value: text, label: text };
       })
     );
+    setSourcesList(
+      newSourcesList.map((text: string) => {
+        return { value: text, label: text };
+      })
+    );
     setLevelList(
       newLevelList.map((level: number) => {
         return { value: level, label: String(level) };
@@ -178,8 +187,8 @@ const SpellSearch = ({ entities, showSearchBar, openSearchBar, doSearch }: $Sear
     if (components !== "") {
       newFilters = [...newFilters, new Filter("components", components)];
     }
-    if (text !== "") {
-      newFilters = [...newFilters, new Filter("text", text)];
+    if (description !== "") {
+      newFilters = [...newFilters, new Filter("description", description)];
     }
     if (classes.length !== 0) {
       newFilters = [...newFilters, new Filter("classes", classes)];
@@ -234,7 +243,7 @@ const SpellSearch = ({ entities, showSearchBar, openSearchBar, doSearch }: $Sear
       setRange("");
       setDuration("");
       setComponents("");
-      setText("");
+      setDescription("");
       setClasses([]);
       setSources("");
       setSort({
@@ -430,7 +439,7 @@ const SpellSearch = ({ entities, showSearchBar, openSearchBar, doSearch }: $Sear
           <Whisper
             trigger="focus"
             placement={"top"}
-            speaker={<Tooltip>Part of the spell's duration</Tooltip>}
+            speaker={<Tooltip>Part of the spell's components</Tooltip>}
           >
             <InputGroup style={{ width: "max-content" }}>
               <InputGroup.Addon>Components</InputGroup.Addon>
@@ -469,29 +478,76 @@ const SpellSearch = ({ entities, showSearchBar, openSearchBar, doSearch }: $Sear
             onChange={setClasses}
             style={{ width: "max-content", minWidth: "200px" }}
           />
+          <Whisper
+            trigger="focus"
+            placement={"top"}
+            speaker={<Tooltip>Part of the spell's sources</Tooltip>}
+          >
+            <InputGroup style={{ width: "max-content" }}>
+              <InputGroup.Addon>Sources</InputGroup.Addon>
+              <AutoComplete
+                placeholder="Select sources"
+                data={sourcesList}
+                value={sources}
+                onChange={setSources}
+                style={{ width: "max-content", minWidth: "200px" }}
+              />
+              <InputGroup.Button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  let newSort = { ...sort };
+                  if (newSort.name === "sources")
+                    setSort({ ...newSort, sort: (newSort.sort + 1) % 3 });
+                  else setSort({ ...newSort, sort: 1, name: "sources" });
+                }}
+              >
+                {sort.name === "sources" ? (
+                  <>
+                    {sort.sort === 0 ? <>-</> : <></>}
+                    {sort.sort === 1 ? <FaLongArrowAltDown /> : <></>}
+                    {sort.sort === 2 ? <FaLongArrowAltUp /> : <></>}
+                  </>
+                ) : (
+                  <>-</>
+                )}
+              </InputGroup.Button>
+            </InputGroup>
+          </Whisper>
+          <Whisper
+            trigger="focus"
+            placement={"top"}
+            speaker={<Tooltip>Part of the spell's description</Tooltip>}
+          >
+            <InputGroup style={{ width: "max-content" }}>
+              <InputGroup.Addon>Description</InputGroup.Addon>
+              <Input
+                placeholder="Select description"
+                value={description}
+                onChange={(val: any) => setDescription(val)}
+                style={{ width: "max-content", minWidth: "200px" }}
+              />
+              <InputGroup.Button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  let newSort = { ...sort };
+                  if (newSort.name === "description")
+                    setSort({ ...newSort, sort: (newSort.sort + 1) % 3 });
+                  else setSort({ ...newSort, sort: 1, name: "description" });
+                }}
+              >
+                {sort.name === "description" ? (
+                  <>
+                    {sort.sort === 0 ? <>-</> : <></>}
+                    {sort.sort === 1 ? <FaLongArrowAltDown /> : <></>}
+                    {sort.sort === 2 ? <FaLongArrowAltUp /> : <></>}
+                  </>
+                ) : (
+                  <>-</>
+                )}
+              </InputGroup.Button>
+            </InputGroup>
+          </Whisper>
           {/*
-        <StringSearchField
-          value={classes}
-          sort={sort}
-          field={"classes"}
-          label="Classes"
-          icon={faUser}
-          onChange={(name: string, sort: { name: string; label: string; sort: number }) => {
-            setClasses(name);
-            setSort(sort);
-          }}
-        />
-        <StringSearchField
-          value={sources}
-          sort={sort}
-          field={"sources"}
-          label="Sources"
-          icon={faLink}
-          onChange={(name: string, sort: { name: string; label: string; sort: number }) => {
-            setSources(name);
-            setSort(sort);
-          }}
-        />
         <StringSearchField
           value={text}
           sort={sort}
