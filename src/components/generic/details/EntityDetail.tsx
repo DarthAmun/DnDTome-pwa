@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { FaArrowLeft, FaClone, FaTrash } from "react-icons/fa";
 import { useHistory } from "react-router";
-import { Button, ButtonGroup, Message, toaster } from "rsuite";
+import { Button, ButtonGroup, Message, Modal, toaster } from "rsuite";
 import styled from "styled-components";
 
 import IEntity from "../../../data/IEntity";
@@ -19,9 +19,15 @@ const EntityDetail = ({ entity, tableName, EntityDetails }: $Props) => {
   const [showDeleteDialog, setDeleteDialog] = useState<boolean>(false);
   let history = useHistory();
 
-  const deleteEntity = (entityId: number | undefined) => {
-    remove(tableName, entityId);
+  const deleteEntity = () => {
+    remove(tableName, entityObj.id);
     history.goBack();
+    toaster.push(
+      <Message showIcon type="success">
+        Success: Deleted {entityObj.name}.
+      </Message>,
+      { placement: "bottomStart" }
+    );
   };
 
   const updateEntity = (entityObj: IEntity, msg: string) => {
@@ -59,21 +65,20 @@ const EntityDetail = ({ entity, tableName, EntityDetails }: $Props) => {
 
   return (
     <>
-      {/* {showDeleteDialog && (
-        <Dialog
-          message={`Delete ${entity.name}?`}
-          icon={faExclamationTriangle}
-          confirmeText={"Delete"}
-          confirmeClick={() => {
-            remove(tableName, entity.id);
-            history.goBack();
-          }}
-          abortText={"Back"}
-          abortClick={() => {
-            setDeleteDialog(false);
-          }}
-        />
-      )} */}
+      <Modal open={showDeleteDialog} onClose={() => setDeleteDialog(false)}>
+        <Modal.Header>
+          <Modal.Title>Attention</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>Are you sure you want to delete '{entity.name}'?</Modal.Body>
+        <Modal.Footer>
+          <Button onClick={() => deleteEntity()} appearance="primary">
+            Yes, delete!
+          </Button>
+          <Button onClick={() => setDeleteDialog(false)} appearance="subtle">
+            Cancel
+          </Button>
+        </Modal.Footer>
+      </Modal>
       <TopBar>
         <ButtonGroup>
           <Button onClick={() => history.goBack()} size="lg">
@@ -82,7 +87,7 @@ const EntityDetail = ({ entity, tableName, EntityDetails }: $Props) => {
           <Button onClick={() => duplicateEntity(entityObj)} size="lg">
             <FaClone />
           </Button>
-          <Button onClick={() => deleteEntity(entityObj.id)} size="lg">
+          <Button onClick={() => setDeleteDialog(true)} size="lg">
             <FaTrash />
           </Button>
         </ButtonGroup>
@@ -90,7 +95,7 @@ const EntityDetail = ({ entity, tableName, EntityDetails }: $Props) => {
       <EntityDetails
         entity={entityObj}
         isNew={false}
-        onEdit={(value: any) => editAndSaveEntity(value, "Saved successful!")}
+        onEdit={(value: any) => editAndSaveEntity(value, "Saved!")}
       />
     </>
   );

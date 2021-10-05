@@ -679,6 +679,7 @@ const Prop = styled.div<{
   border-radius: 5px;
   background-color: ${({ theme }) => theme.secondColor};
   display: flex;
+  gap: 5px;
 
   & > svg {
     margin-right: 5px;

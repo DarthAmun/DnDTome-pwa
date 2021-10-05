@@ -71,12 +71,12 @@ const EntityOverview = ({ entityName, Entity, Tile, Search }: $OverviewProps) =>
         if (part.includes("filter")) filters = part;
       });
       history.push({
-        pathname: "/spell-overview",
+        pathname: `/${entityName}-overview`,
         search: `?${filters}&page=${page}&step=${step}`,
       });
     } else {
       history.push({
-        pathname: "/spell-overview",
+        pathname: `/${entityName}-overview`,
         search: `?page=${page}&step=${step}`,
       });
     }
@@ -95,12 +95,12 @@ const EntityOverview = ({ entityName, Entity, Tile, Search }: $OverviewProps) =>
         if (part.includes("filter")) filters = part;
       });
       history.push({
-        pathname: "/spell-overview",
+        pathname: `/${entityName}-overview`,
         search: `?${filters}&page=1&step=${step}`,
       });
     } else {
       history.push({
-        pathname: "/spell-overview",
+        pathname: `/${entityName}-overview`,
         search: `?page=1&step=${step}`,
       });
     }

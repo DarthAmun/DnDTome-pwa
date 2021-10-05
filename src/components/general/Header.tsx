@@ -5,7 +5,7 @@ import styled from "styled-components";
 import { CgMenuGridO } from "react-icons/cg";
 import { FaUser, FaCog, FaTerminal, FaCogs, FaUsersCog, FaMeteor, FaHome } from "react-icons/fa";
 import LogoImg from "../../logo192.png";
-import { AutoComplete, InputGroup } from "rsuite";
+import { AutoComplete, Drawer, InputGroup } from "rsuite";
 import IEntity from "../../data/IEntity";
 import { createNewWithId } from "../../services/DatabaseService";
 import Class from "../../data/classes/Class";
@@ -29,10 +29,14 @@ import Group from "../../data/campaign/Group";
 import Location from "../../data/world/Location";
 import Selection from "../../data/Selection";
 import packageJson from "../../../package.json";
+import { GiBackpack } from "react-icons/gi";
+import Menu from "../pages/Menu";
 
 const Header = () => {
   let history = useHistory();
   let location = useLocation();
+  const [showMenu, openMenu] = useState<boolean>(false);
+
   const [code, setCode] = useState<string>("");
   const comandNames: string[] = ["new", "edit", "search", "go", "n", "e", "s", "g"];
   const entityNames: string[] = [
@@ -156,6 +160,16 @@ const Header = () => {
             <FaMeteor size={10} />
           </IconGroup>
         );
+      case "gear-detail":
+        return <GiBackpack />;
+      case "gear-overview":
+        return (
+          <IconGroup>
+            <GiBackpack size={10} />
+            <GiBackpack size={20} />
+            <GiBackpack size={10} />
+          </IconGroup>
+        );
       default:
         return <CgMenuGridO />;
     }
@@ -163,6 +177,15 @@ const Header = () => {
 
   return (
     <HeaderBar>
+      <Drawer open={showMenu} onClose={() => openMenu(false)} placement={"right"}>
+        <Drawer.Header>
+          <Drawer.Title>Menu</Drawer.Title>
+        </Drawer.Header>
+        <Drawer.Body>
+          <Menu show={openMenu} />
+        </Drawer.Body>
+      </Drawer>
+
       <HeaderElm>
         <Logo src={LogoImg} />
         <Reducable>
@@ -189,7 +212,7 @@ const Header = () => {
       <HeaderElm right>
         <NavElm
           active={location.pathname !== "/group" && location.pathname !== "/options"}
-          onClick={() => history.push("/menu")}
+          onClick={() => openMenu(true)}
         >
           <CgMenuGridO />
           <Flag>{findIcon()}</Flag>
