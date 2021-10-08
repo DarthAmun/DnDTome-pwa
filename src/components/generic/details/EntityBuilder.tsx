@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { FaArrowLeft, FaSave } from "react-icons/fa";
 import { useHistory } from "react-router-dom";
-import { Button, ButtonGroup, Message, toaster } from "rsuite";
+import { Button, ButtonGroup, Notification, toaster } from "rsuite";
 import { createNewWithId } from "../../../services/DatabaseService";
 import { TopBar } from "./EntityDetail";
 
@@ -22,9 +22,9 @@ const EntityBuilder = ({ entityName, Entity, EntityDetails }: $BuilderProps) => 
       history.push(`/${entityName}-detail/${id}`);
 
       toaster.push(
-        <Message showIcon type="success">
+        <Notification header={"Success"} type="success">
           Success: Created new {entityName} named {newEntity.name}.
-        </Message>,
+        </Notification>,
         { placement: "bottomStart" }
       );
     });

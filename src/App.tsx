@@ -13,6 +13,7 @@ const EntityBuilder = lazy(() => import("./components/generic/details/EntityBuil
 
 const Home = lazy(() => import("./components/pages/Home"));
 const Group = lazy(() => import("./components/pages/Group"));
+const Options = lazy(() => import("./components/pages/Options"));
 
 const SpellTile = lazy(() => import("./components/entities/spell/SpellTile"));
 const SpellSearch = lazy(() => import("./components/entities/spell/SpellSearch"));
@@ -35,6 +36,7 @@ const App = () => {
                 <Route exact path="/" component={Home} />
                 <Route exact path="/home" component={Home} />
                 <Route exact path="/group" component={Group} />
+                <Route exact path="/options" component={Options} />
                 <Route
                   path="/spell-detail/:name"
                   component={(match: RouteComponentProps<TParams>) => (

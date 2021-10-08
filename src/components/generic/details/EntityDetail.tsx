@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { FaArrowLeft, FaClone, FaTrash } from "react-icons/fa";
 import { useHistory } from "react-router";
-import { Button, ButtonGroup, Message, Modal, toaster } from "rsuite";
+import { Button, ButtonGroup, Notification, Modal, toaster } from "rsuite";
 import styled from "styled-components";
 
 import IEntity from "../../../data/IEntity";
@@ -23,9 +23,9 @@ const EntityDetail = ({ entity, tableName, EntityDetails }: $Props) => {
     remove(tableName, entityObj.id);
     history.goBack();
     toaster.push(
-      <Message showIcon type="success">
+      <Notification closable header={"Success"} type="success">
         Success: Deleted {entityObj.name}.
-      </Message>,
+      </Notification>,
       { placement: "bottomStart" }
     );
   };
@@ -34,16 +34,16 @@ const EntityDetail = ({ entity, tableName, EntityDetails }: $Props) => {
     updateWithCallback(tableName, entityObj, (result) => {
       if (result > 0) {
         toaster.push(
-          <Message showIcon type="success">
+          <Notification closable header={"Success"} type="success">
             Success: {msg}.
-          </Message>,
+          </Notification>,
           { placement: "bottomStart" }
         );
       } else {
         toaster.push(
-          <Message showIcon type="error">
+          <Notification closable header={"Error"} type="error">
             Error: Something went wrong!.
-          </Message>,
+          </Notification>,
           { placement: "bottomStart" }
         );
       }

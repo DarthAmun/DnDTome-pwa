@@ -1,10 +1,11 @@
-import { MyAppDatabase } from "../database/MyDatabase";
+import { DnDTomeDB } from "../database/DnDTomeDB";
 import { IndexableType } from "dexie";
 import IEntity from "../data/IEntity";
 import Filter from "../data/Filter";
+import { Notification, Tag, toaster } from "rsuite";
 
 export const update = (tableName: string, data: IEntity) => {
-  const db = new MyAppDatabase();
+  const db = new DnDTomeDB();
   db.open()
     .then(function () {
       db.table(tableName).update(data.id, data);
@@ -19,7 +20,7 @@ export const updateWithCallback = (
   data: IEntity,
   callback: (data: number) => void
 ) => {
-  const db = new MyAppDatabase();
+  const db = new DnDTomeDB();
   db.open()
     .then(function () {
       db.table(tableName)
@@ -34,7 +35,7 @@ export const updateWithCallback = (
 };
 
 export const save = (tableName: string, data: IEntity) => {
-  const db = new MyAppDatabase();
+  const db = new DnDTomeDB();
   db.open()
     .then(function () {
       db.table(tableName).add(data);
@@ -45,7 +46,7 @@ export const save = (tableName: string, data: IEntity) => {
 };
 
 export const saveNew = (tableName: string, entity: IEntity, filename: string) => {
-  const db = new MyAppDatabase();
+  const db = new DnDTomeDB();
   return db
     .open()
     .then(async function () {
@@ -59,7 +60,7 @@ export const saveNew = (tableName: string, entity: IEntity, filename: string) =>
 };
 
 export const saveNewFromList = (tableName: string, entities: IEntity[]) => {
-  const db = new MyAppDatabase();
+  const db = new DnDTomeDB();
   db.open()
     .then(async function () {
       const refinedEntities = (entities as IEntity[]).map((entity: IEntity) => {
@@ -75,7 +76,7 @@ export const saveNewFromList = (tableName: string, entities: IEntity[]) => {
 };
 
 export const resaveFromList = (tableName: string, entities: IEntity[]) => {
-  const db = new MyAppDatabase();
+  const db = new DnDTomeDB();
   db.open()
     .then(async function () {
       const refinedEntities = (entities as IEntity[]).map((entity: IEntity) => {
@@ -95,7 +96,7 @@ export const saveWithCallback = (
   data: IEntity,
   callback: (data: number) => void
 ) => {
-  const db = new MyAppDatabase();
+  const db = new DnDTomeDB();
   db.open()
     .then(function () {
       db.table(tableName)
@@ -110,7 +111,7 @@ export const saveWithCallback = (
 };
 
 export const remove = (tableName: string, id: number | undefined) => {
-  const db = new MyAppDatabase();
+  const db = new DnDTomeDB();
   if (id !== undefined) {
     db.open()
       .then(function () {
@@ -123,7 +124,7 @@ export const remove = (tableName: string, id: number | undefined) => {
 };
 
 export const reciveAll = (tableName: string, callback: (data: IndexableType[]) => void) => {
-  const db = new MyAppDatabase();
+  const db = new DnDTomeDB();
   db.open()
     .then(function () {
       db.table(tableName)
@@ -139,7 +140,7 @@ export const reciveAll = (tableName: string, callback: (data: IndexableType[]) =
 };
 
 export const reciveCount = (tableName: string, callback: (value: number) => void) => {
-  const db = new MyAppDatabase();
+  const db = new DnDTomeDB();
   db.open()
     .then(function () {
       db.table(tableName).count((count) => {
@@ -152,7 +153,7 @@ export const reciveCount = (tableName: string, callback: (value: number) => void
 };
 
 export const reciveCountPromise = (tableName: string) => {
-  const db = new MyAppDatabase();
+  const db = new DnDTomeDB();
   return db
     .open()
     .then(function () {
@@ -169,7 +170,7 @@ export const reciveByAttribute = (
   value: string,
   callback: (data: IEntity) => void
 ) => {
-  const db = new MyAppDatabase();
+  const db = new DnDTomeDB();
   db.open()
     .then(function () {
       db.table(tableName)
@@ -186,7 +187,7 @@ export const reciveByAttribute = (
 };
 
 export const recivePromiseByAttribute = (tableName: string, name: string, value: string) => {
-  const db = new MyAppDatabase();
+  const db = new DnDTomeDB();
   return db
     .open()
     .then(async function () {
@@ -199,7 +200,7 @@ export const recivePromiseByAttribute = (tableName: string, name: string, value:
 };
 
 export const recivePromiseByMultiAttribute = (tableName: string, obj: IEntity) => {
-  const db = new MyAppDatabase();
+  const db = new DnDTomeDB();
   if (obj.sources !== undefined) {
     return db
       .open()
@@ -223,7 +224,7 @@ export const recivePromiseByMultiAttribute = (tableName: string, obj: IEntity) =
 };
 
 export const reciveAllPromiseByAttribute = (tableName: string, name: string, value: string) => {
-  const db = new MyAppDatabase();
+  const db = new DnDTomeDB();
   return db
     .open()
     .then(async function () {
@@ -236,7 +237,7 @@ export const reciveAllPromiseByAttribute = (tableName: string, name: string, val
 };
 
 export const recivePromise = (tableName: string, value: number) => {
-  const db = new MyAppDatabase();
+  const db = new DnDTomeDB();
   return db
     .open()
     .then(async function () {
@@ -252,7 +253,7 @@ export const recivePromiseByAttributeCount = (
   name: string,
   value: string | number
 ) => {
-  const db = new MyAppDatabase();
+  const db = new DnDTomeDB();
   if (typeof value === "string") {
     return db
       .open()
@@ -288,7 +289,7 @@ export const recivePromiseByAttributeCount = (
 };
 
 export const reciveAllPromise = (tableName: string) => {
-  const db = new MyAppDatabase();
+  const db = new DnDTomeDB();
   return db
     .open()
     .then(async function () {
@@ -367,7 +368,7 @@ export const reciveAllFiltered = (
   filters: Filter[],
   callback: (data: IndexableType[]) => void
 ) => {
-  const db = new MyAppDatabase();
+  const db = new DnDTomeDB();
   db.open()
     .then(function () {
       let sortedFiled: string = "name";
@@ -403,7 +404,7 @@ export const reciveAllFiltered = (
 };
 
 export const reciveAllFilteredPromise = (tableName: string, filters: Filter[]) => {
-  const db = new MyAppDatabase();
+  const db = new DnDTomeDB();
   return db
     .open()
     .then(function () {
@@ -444,7 +445,7 @@ export const reciveAttributeSelection = (
   attribute: string,
   callback: (data: IndexableType[]) => void
 ) => {
-  const db = new MyAppDatabase();
+  const db = new DnDTomeDB();
   db.open()
     .then(function () {
       db.table(tableName)
@@ -459,7 +460,7 @@ export const reciveAttributeSelection = (
 };
 
 export const reciveAttributeSelectionPromise = (tableName: string, attribute: string) => {
-  const db = new MyAppDatabase();
+  const db = new DnDTomeDB();
   return db
     .open()
     .then(function () {
@@ -475,7 +476,7 @@ export const createNewWithId = (
   entity: IEntity,
   callback: (id: number) => void
 ) => {
-  const db = new MyAppDatabase();
+  const db = new DnDTomeDB();
   db.open()
     .then(function () {
       db.table(tableName)
@@ -490,10 +491,19 @@ export const createNewWithId = (
 };
 
 export const deleteAll = (tableName: string) => {
-  const db = new MyAppDatabase();
+  const db = new DnDTomeDB();
   db.open()
     .then(function () {
-      db.table(tableName).clear();
+      db.table(tableName)
+        .clear()
+        .then(() => {
+          toaster.push(
+            <Notification header={"Success"} closable type="success">
+              Deleted all {tableName}.
+            </Notification>,
+            { placement: "bottomStart" }
+          );
+        });
     })
     .finally(function () {
       db.close();
@@ -501,10 +511,42 @@ export const deleteAll = (tableName: string) => {
 };
 
 export const deleteAllByAttrs = (tableName: string, attr: string, attrs: string[]) => {
-  const db = new MyAppDatabase();
+  const db = new DnDTomeDB();
   db.open()
     .then(function () {
       db.table(tableName).where(attr).anyOf(attrs).delete();
+    })
+    .finally(function () {
+      db.close();
+    });
+};
+
+export const deleteAllByAttr = (tableName: string, attr: string, attrs: string) => {
+  const db = new DnDTomeDB();
+  db.open()
+    .then(function () {
+      db.table(tableName)
+        .where(attr)
+        .equals(attrs)
+        .delete()
+        .then((deleteCount) => {
+          if (deleteCount > 0)
+            toaster.push(
+              <Notification header={"Success"} closable type="success">
+                Deleted all <Tag size="lg">{deleteCount}</Tag> {tableName} where {attr} was equal to{" "}
+                {attrs}.
+              </Notification>,
+              { placement: "bottomStart" }
+            );
+          else
+            toaster.push(
+              <Notification header={"Warning"} closable type="warning">
+                Found <Tag size="lg">{deleteCount}</Tag> {tableName} where {attr} was equal to{" "}
+                {attrs}.
+              </Notification>,
+              { placement: "bottomStart" }
+            );
+        });
     })
     .finally(function () {
       db.close();
@@ -526,6 +568,6 @@ export const exportFilteredFromTable = (tableName: string, filters: Filter[], fi
 };
 
 export const deleteDatabase = () => {
-  const db = new MyAppDatabase();
+  const db = new DnDTomeDB();
   db.delete();
 };

@@ -57,7 +57,7 @@ const ToEntity = ({ match, entityName, Entity, EntityDetails }: $EntityProps) =>
     } else {
       setEntity(newEntity);
     }
-  }, [match]);
+  }, [match, entityName]);
 
   useEffect(() => {
     if (match.match !== undefined && entity === undefined) {
