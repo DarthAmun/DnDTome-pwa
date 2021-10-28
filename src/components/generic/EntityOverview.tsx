@@ -3,19 +3,20 @@ import styled from "styled-components";
 import { Button, ButtonGroup, InputNumber, Loader, Pagination, Tag, TagGroup } from "rsuite";
 import { reciveAll, reciveAllFiltered } from "../../services/DatabaseService";
 import { FaPlusCircle, FaSearch } from "react-icons/fa";
-import Filter from "../../data/Filter";
 import { useHistory, useLocation } from "react-router-dom";
 import { getPathVariable } from "../../services/LocationPathService";
 import { TopBar } from "./details/EntityDetail";
+import EntitySearch from "./EntitySearch";
+import Filter from "../../data/Filter";
+import BreadCrumbIcon from "../general/BreadCrumbIcon";
 
 interface $OverviewProps {
   entityName: string;
   Tile: any;
   Entity: any;
-  Search: any;
 }
 
-const EntityOverview = ({ entityName, Entity, Tile, Search }: $OverviewProps) => {
+const EntityOverview = ({ entityName, Entity, Tile }: $OverviewProps) => {
   let history = useHistory();
   let location = useLocation();
   const [allEntitysFromType, setAllEntitys] = useState<typeof Entity[]>([]);
@@ -37,28 +38,55 @@ const EntityOverview = ({ entityName, Entity, Tile, Search }: $OverviewProps) =>
       });
   }, [entityName]);
 
-  const loadPage = (newStep: number, newPage: number) => {
-    console.log("loadPage");
-    const newEntities = entities.slice((1 - 1) * newStep, 1 * newStep);
-    setPageAmount(Math.ceil(newEntities.length / newStep));
-    setPageEntities(newEntities);
-    setStep(newStep);
+  const loadPage = () => {
+    const { oldPage, oldStep, oldFilters } = load();
+    const newEntitiesShown = entities.slice((oldPage - 1) * oldStep, oldPage * oldStep);
+    setActivePage(oldPage);
+    setStep(oldStep);
+    setPageAmount(Math.ceil(entities.length / oldStep));
+    setPageEntities(newEntitiesShown);
+    setFilters(oldFilters);
+  };
+  const loadPageWithResults = (newStep: number, newPage: number, newEntities: any[]) => {
+    const newEntitiesShown = newEntities.slice((newPage - 1) * newStep, newPage * newStep);
     setActivePage(newPage);
+    setStep(newStep);
+    setPageAmount(Math.ceil(newEntities.length / newStep));
+    setPageEntities(newEntitiesShown);
+  };
+
+  const load = (): { oldStep: number; oldPage: number; oldFilters: any[] } => {
+    let oldStep: number = +getPathVariable(location, "step");
+    let oldPage: number = +getPathVariable(location, "page");
+    let oldFilters: string = getPathVariable(location, "filter");
+
+    if (oldPage < 1) oldPage = 1;
+    if (oldStep < 10) oldStep = 10;
+
+    if (oldFilters !== "") {
+      const newFilter: any[] = JSON.parse(oldFilters);
+      return { oldStep: oldStep, oldPage: oldPage, oldFilters: newFilter };
+    } else {
+      return { oldStep: oldStep, oldPage: oldPage, oldFilters: [] };
+    }
   };
 
   useEffect(() => {
-    let oldStep: string = getPathVariable(location, "step");
-    let oldPage: string = getPathVariable(location, "page");
-    let oldFilters: string = getPathVariable(location, "filter");
-    if (oldFilters !== "") {
-      setFilters(JSON.parse(oldFilters));
-    } else {
-      setFilters([]);
-    }
-    if (oldStep !== "" && oldPage !== "") {
-      if (+oldStep !== step) loadPage(+oldStep, +oldPage);
-    }
+    loadPage();
   }, [location]);
+
+  const search = (filters: Filter[]) => {
+    isLoading(true);
+    reciveAllFiltered(entityName + "s", filters, (results: any[]) => {
+      if (results.length <= 0) {
+        openSearchBar(true);
+      }
+      setEntities(results);
+      setFilters(filters);
+      loadPageWithResults(10, 1, results);
+      isLoading(false);
+    });
+  };
 
   const changePage = (page: number) => {
     const newEntities = entities.slice((page - 1) * step, page * step);
@@ -84,10 +112,8 @@ const EntityOverview = ({ entityName, Entity, Tile, Search }: $OverviewProps) =>
 
   const changeStep = (step: number) => {
     const newEntities = entities.slice((1 - 1) * step, 1 * step);
-    setPageAmount(Math.ceil(entities.length / step));
     setPageEntities(newEntities);
     setStep(step);
-    setActivePage(1);
     if (location.search.includes("filter")) {
       let filters: string = "";
       let locationParts: string[] = location.search.substring(1).split("&");
@@ -106,22 +132,6 @@ const EntityOverview = ({ entityName, Entity, Tile, Search }: $OverviewProps) =>
     }
   };
 
-  const search = (filters: Filter[]) => {
-    console.log("search");
-    isLoading(true);
-    reciveAllFiltered(entityName + "s", filters, (results: any[]) => {
-      if (results.length <= 0) {
-        openSearchBar(true);
-      }
-      const newPage: string = getPathVariable(location, "page");
-      setPageAmount(Math.ceil(results.length / step));
-      setActivePage(newPage !== "" ? +newPage : 1);
-      setEntities(results);
-      setPageEntities(results.slice(0, step));
-      isLoading(false);
-    });
-  };
-
   const makeNew = () => {
     history.push(`/${entityName}-builder`);
   };
@@ -131,16 +141,22 @@ const EntityOverview = ({ entityName, Entity, Tile, Search }: $OverviewProps) =>
       let length = filter.value.length;
       return (
         <Tag size="lg" key={index}>
-          {filter.fieldName} equals{" "}
+          {filter.fieldName}:{" "}
           {filter.value.map((val: any, index: number) =>
             index + 1 === length ? val : val + " or "
           )}
         </Tag>
       );
+    } else if (typeof filter.value === "boolean") {
+      return (
+        <Tag size="lg" key={index}>
+          {filter.fieldName}: {filter.value ? "true" : "false"}
+        </Tag>
+      );
     } else {
       return (
         <Tag size="lg" key={index}>
-          {filter.fieldName} equals {filter.value}
+          {filter.fieldName}: "{filter.value}"
         </Tag>
       );
     }
@@ -148,14 +164,18 @@ const EntityOverview = ({ entityName, Entity, Tile, Search }: $OverviewProps) =>
 
   return (
     <>
-      <Search
+      <EntitySearch
+        Entity={Entity}
+        entityName={"spell"}
         entities={allEntitysFromType}
+        filters={filters}
         showSearchBar={showSearchBar}
         openSearchBar={openSearchBar}
         doSearch={search}
       />
 
       <EntityOptions>
+        <BreadCrumbIcon />
         <ButtonGroup>
           <Button onClick={() => makeNew()} size="lg">
             <FaPlusCircle />
@@ -235,8 +255,7 @@ const EntityContainer = styled.div`
   width: 100%;
   display: flex;
   flex-wrap: wrap;
-  align-items: stretch;
-  align-content: flex-start;
+  justify-content: center;
   gap: 20px;
 `;
 

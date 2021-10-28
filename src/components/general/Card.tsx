@@ -19,8 +19,14 @@ export default Card;
 const CardWrapper = styled.div`
   flex: 1 1;
   cursor: pointer;
-  background-color: ${({ theme }) => theme.secondColor};
+  background-color: ${({ theme }) => theme.mainColor};
+  border-radius: 5px;
   max-width: max-content;
+  white-space: nowrap;
+
+  &:hover {
+    color: ${({ theme }) => theme.highlight};
+  }
 `;
 
 export const Cards = styled.div`

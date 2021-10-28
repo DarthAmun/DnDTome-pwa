@@ -3,9 +3,9 @@ import { useHistory } from "react-router";
 import { useLocation } from "react-router-dom";
 import styled from "styled-components";
 import { CgMenuGridO } from "react-icons/cg";
-import { FaUser, FaCog, FaTerminal, FaCogs, FaUsersCog, FaMeteor, FaHome } from "react-icons/fa";
+import { FaUser, FaTerminal, FaCogs } from "react-icons/fa";
 import LogoImg from "../../logo192.png";
-import { AutoComplete, Drawer, InputGroup } from "rsuite";
+import { AutoComplete, Drawer, InputGroup, Tooltip, Whisper } from "rsuite";
 import IEntity from "../../data/IEntity";
 import { createNewWithId } from "../../services/DatabaseService";
 import Class from "../../data/classes/Class";
@@ -29,7 +29,6 @@ import Group from "../../data/campaign/Group";
 import Location from "../../data/world/Location";
 import Selection from "../../data/Selection";
 import packageJson from "../../../package.json";
-import { GiBackpack } from "react-icons/gi";
 import Menu from "../pages/Menu";
 
 const Header = () => {
@@ -144,42 +143,12 @@ const Header = () => {
     }
   };
 
-  const findIcon = () => {
-    const base = location.pathname.split("/")[1];
-    switch (base) {
-      case "":
-      case "home":
-        return <FaHome />;
-      case "spell-detail":
-        return <FaMeteor />;
-      case "spell-overview":
-        return (
-          <IconGroup>
-            <FaMeteor size={10} />
-            <FaMeteor size={20} />
-            <FaMeteor size={10} />
-          </IconGroup>
-        );
-      case "gear-detail":
-        return <GiBackpack />;
-      case "gear-overview":
-        return (
-          <IconGroup>
-            <GiBackpack size={10} />
-            <GiBackpack size={20} />
-            <GiBackpack size={10} />
-          </IconGroup>
-        );
-      default:
-        return <CgMenuGridO />;
-    }
-  };
-
   return (
     <HeaderBar>
-      <Drawer open={showMenu} onClose={() => openMenu(false)} placement={"right"}>
+      <Drawer size={"xs"} open={showMenu} onClose={() => openMenu(false)} placement={"right"}>
         <Drawer.Header>
           <Drawer.Title>Menu</Drawer.Title>
+          <Version>v{packageJson.version}</Version>
         </Drawer.Header>
         <Drawer.Body>
           <Menu show={openMenu} />
@@ -188,26 +157,30 @@ const Header = () => {
 
       <HeaderElm>
         <Logo src={LogoImg} />
-        <Reducable>
-          DnDTome <Version>v{packageJson.version}</Version>
-        </Reducable>
+        <Reducable>DnDTome</Reducable>
       </HeaderElm>
       <HeaderElm reducable>
-        <InputGroup inside>
-          <AutoComplete
-            data={makeComands()}
-            value={code}
-            onChange={setCode}
-            onKeyPress={(e: any) => {
-              if (e.key === "Enter") {
-                applyComand();
-              }
-            }}
-          />
-          <InputGroup.Button onClick={() => applyComand()}>
-            <FaTerminal />
-          </InputGroup.Button>
-        </InputGroup>
+        <Whisper
+          trigger="focus"
+          placement={"bottom"}
+          speaker={<Tooltip>Type in fast commands</Tooltip>}
+        >
+          <InputGroup inside>
+            <AutoComplete
+              data={makeComands()}
+              value={code}
+              onChange={setCode}
+              onKeyPress={(e: any) => {
+                if (e.key === "Enter") {
+                  applyComand();
+                }
+              }}
+            />
+            <InputGroup.Button onClick={() => applyComand()}>
+              <FaTerminal />
+            </InputGroup.Button>
+          </InputGroup>
+        </Whisper>
       </HeaderElm>
       <HeaderElm right>
         <NavElm
@@ -215,19 +188,12 @@ const Header = () => {
           onClick={() => openMenu(true)}
         >
           <CgMenuGridO />
-          <Flag>{findIcon()}</Flag>
         </NavElm>
         <NavElm active={location.pathname === "/group"} onClick={() => history.push("/group")}>
           <FaUser />
-          <Flag>
-            <FaUsersCog />
-          </Flag>
         </NavElm>
         <NavElm active={location.pathname === "/options"} onClick={() => history.push("/options")}>
           <FaCogs />
-          <Flag>
-            <FaCog />
-          </Flag>
         </NavElm>
       </HeaderElm>
     </HeaderBar>
@@ -261,39 +227,13 @@ const HeaderElm = styled.div<{ right?: boolean; reducable?: boolean }>`
 `;
 
 const Logo = styled.img`
-  margin-top: -7px;
-  margin-right: 10px;
-  height: 65px;
-  border: 5px solid ${({ theme }) => theme.mainColor};
-  border-radius: 50px;
-  background-color: ${({ theme }) => theme.mainColor};
+  margin-top: 0px;
+  margin-right: 0px;
+  height: 50px;
 `;
 
 const Version = styled.span`
-  font-size: 14px;
-`;
-
-const Flag = styled.div`
-  width: 100%;
-  height: 80px;
-  line-height: 100px;
-  text-align: center;
-  background-color: ${({ theme }) => theme.secondColor};
-  position: relative;
-  top: -10px;
-  border-radius: 10px;
-
-  &:before {
-    position: absolute;
-    top: 5px;
-    left: 25px;
-    content: "";
-    width: 0;
-    height: 0;
-    border-style: solid;
-    border-width: 10px 10px 0 10px;
-    border-color: ${({ theme }) => theme.textColor} transparent transparent transparent;
-  }
+  line-height: 36px;
 `;
 
 const NavElm = styled.div<{ active?: boolean }>`
@@ -303,16 +243,17 @@ const NavElm = styled.div<{ active?: boolean }>`
   text-align: center;
   cursor: pointer;
 
-  ${(props) => (props.active ? "overflow: ;" : "overflow: hidden;")}
+  ${(props) => {
+    if (props.active) {
+      return `color: ${props.theme.highlight}`;
+    } else {
+      return `color: ${props.theme.textColor}`;
+    }
+  }}
 `;
 
 const Reducable = styled.div`
   @media only screen and (max-width: 500px) {
     display: none;
   }
-`;
-
-const IconGroup = styled.div`
-  width: 50px;
-  margin-left: 10px;
 `;

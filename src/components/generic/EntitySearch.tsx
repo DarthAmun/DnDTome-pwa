@@ -1,0 +1,225 @@
+import { useState, useEffect } from "react";
+import { useHistory, useLocation } from "react-router-dom";
+import Filter from "../../data/Filter";
+import styled from "styled-components";
+import { Drawer, Button } from "rsuite";
+import {
+  CompletableString,
+  CreatableSetNumber,
+  CreatableSetString,
+  SearchableString,
+  SetEntity,
+  SetString,
+  SwitchBoolean,
+} from "../../data/Datatypes";
+import { getPathVariable } from "../../services/LocationPathService";
+import SearchableStringField from "./searchFields/SearchableStringField";
+import SetStringField from "./searchFields/SetStringField";
+import CreatableSetStringField from "./searchFields/CreatableSetStringField";
+import CompletableStringField from "./searchFields/CompletableStringField";
+import SwitchBooleanField from "./searchFields/SwitchBooleanField";
+import CreatableSetNumberField from "./searchFields/CreatableSetNumberField";
+import SetEntityField from "./searchFields/SetEntityField";
+
+interface $SearchProps {
+  Entity: any;
+  entityName: string;
+  entities: any[];
+  filters: Filter[];
+  showSearchBar: boolean;
+  openSearchBar: (value: boolean) => void;
+  doSearch: (filters: Filter[]) => void;
+}
+
+const EntitySearch = ({
+  Entity,
+  entityName,
+  entities,
+  filters: mainFilters,
+  showSearchBar,
+  openSearchBar,
+  doSearch,
+}: $SearchProps) => {
+  let history = useHistory();
+  let location = useLocation();
+  const [fields, setFields] = useState<any[]>([]);
+  const [oldFilters, setOldFilters] = useState<Filter[]>(mainFilters);
+  const [filters, setFilters] = useState<Filter[]>([]);
+
+  const applyFilterChange = (filter: Filter, type: any) => {
+    setFilters((newFilters: Filter[]) => {
+      if (newFilters.filter((f) => f.fieldName === type).length === 1)
+        newFilters = newFilters.map((f) => (f.fieldName === type ? filter : f));
+      else newFilters = [...newFilters, filter];
+      return newFilters;
+    });
+  };
+
+  const makeField = (type: any, key: string, index: number): any => {
+    switch (true) {
+      case type[key] instanceof SearchableString:
+        return (
+          <SearchableStringField
+            key={index}
+            entityName={Entity.name}
+            type={key}
+            applyFilter={applyFilterChange}
+          />
+        );
+      case type[key] instanceof SetString:
+        return (
+          <SetStringField
+            key={index}
+            entityName={entityName}
+            type={key}
+            applyFilter={applyFilterChange}
+          />
+        );
+      case type[key] instanceof SetEntity:
+        return (
+          <SetEntityField
+            key={index}
+            entityName={entityName}
+            type={key}
+            applyFilter={applyFilterChange}
+          />
+        );
+      case type[key] instanceof CreatableSetString:
+        return (
+          <CreatableSetStringField
+            key={index}
+            Entity={Entity}
+            entities={entities}
+            type={key}
+            applyFilter={applyFilterChange}
+          />
+        );
+      case type[key] instanceof CompletableString:
+        return (
+          <CompletableStringField
+            key={index}
+            Entity={Entity}
+            entities={entities}
+            entityName={Entity.name}
+            type={key}
+            applyFilter={applyFilterChange}
+          />
+        );
+      case type[key] instanceof SwitchBoolean:
+        return <SwitchBooleanField key={index} type={key} applyFilter={applyFilterChange} />;
+      case type[key] instanceof CreatableSetNumber:
+        return (
+          <CreatableSetNumberField
+            key={index}
+            Entity={Entity}
+            entities={entities}
+            type={key}
+            applyFilter={applyFilterChange}
+          />
+        );
+    }
+  };
+
+  useEffect(() => {
+    doSearch(oldFilters);
+  }, [oldFilters]);
+
+  useEffect(() => {
+    let filters: string = getPathVariable(location, "filter");
+    const oldFilterString: string = unescape(filters);
+    if (oldFilterString !== "") {
+      const newOldFilters: Filter[] = JSON.parse(oldFilterString);
+      setOldFilters(newOldFilters);
+    }
+  }, []);
+
+  useEffect(() => {
+    console.log("Generate Searchfields");
+    const type: any = new Entity().getConfig();
+    const types: string[] = Object.getOwnPropertyNames(type);
+    let fields: any = [];
+    types.forEach((key: any, index: number) => {
+      fields.push(makeField(type, key, index));
+    });
+    setFields(fields);
+  }, [Entity, entities]);
+
+  const search = () => {
+    let newFilters: Filter[] = [...filters];
+    if (newFilters.length > 0) {
+      if (location.search !== "") {
+        let step: string = "";
+        const locationParts: string[] = location.search.substring(1).split("&");
+        locationParts.forEach((part: string) => {
+          if (part.includes("step")) step = part;
+        });
+        history.push({
+          pathname: `/${entityName}-overview`,
+          search: `?filter=${JSON.stringify(newFilters)}&${step !== "" ? `${step}&` : ""}page=1`,
+        });
+      } else {
+        history.push({
+          pathname: `/${entityName}-overview`,
+          search: `?filter=${JSON.stringify(newFilters)}`,
+        });
+      }
+    }
+    doSearch(newFilters);
+  };
+
+  const reset = () => {
+    setFilters([]);
+    setOldFilters([]);
+    let step: string = "";
+    const locationParts: string[] = location.search.substring(1).split("&");
+    locationParts.forEach((part: string) => {
+      if (part.includes("step")) step = part;
+    });
+    history.push({
+      pathname: `/${entityName}-overview`,
+      search: `?${step !== "" ? `${step}&` : ""}page=1`,
+    });
+  };
+
+  return (
+    <Drawer open={showSearchBar} onClose={() => openSearchBar(false)} placement={"top"}>
+      <Drawer.Header>
+        <Drawer.Title>Search</Drawer.Title>
+        <Drawer.Actions>
+          <Button
+            onClick={() => {
+              search();
+              openSearchBar(false);
+            }}
+            appearance="primary"
+          >
+            Search
+          </Button>
+          <Button
+            onClick={() => {
+              reset();
+              openSearchBar(false);
+            }}
+            appearance="ghost"
+          >
+            Reset
+          </Button>
+        </Drawer.Actions>
+      </Drawer.Header>
+      <Drawer.Body>
+        <SearchWrapper>{fields}</SearchWrapper>
+      </Drawer.Body>
+    </Drawer>
+  );
+};
+
+export default EntitySearch;
+
+const SearchWrapper = styled.div`
+  height: auto;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  align-content: flex-start;
+  gap: 10px;
+`;

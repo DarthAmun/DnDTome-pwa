@@ -28,6 +28,7 @@ import styled from "styled-components";
 import Spell from "../../../data/Spell";
 import { stringToColour } from "../../../services/ColorService";
 import { reciveAttributeSelection } from "../../../services/DatabaseService";
+import EditCompletableStringField from "../../generic/editFields/EditCompletableStringField";
 
 interface $Props {
   entity: Spell;
@@ -194,7 +195,7 @@ const SpellDetail = ({ entity, isNew, onEdit }: $Props) => {
               <>
                 <InputGroup style={{ width: "max-content" }}>
                   <InputGroup.Addon>
-                    <FaHistory />
+                    <FaImage />
                   </InputGroup.Addon>
                   <Input
                     placeholder={"Link to image"}
@@ -307,110 +308,30 @@ const SpellDetail = ({ entity, isNew, onEdit }: $Props) => {
           </Name>
         )}
         <PropWrapper>
-          <Prop isEditing={timeEdit} onClick={() => editTime(true)}>
-            {timeEdit && (
-              <InputGroup style={{ width: "max-content" }}>
-                <InputGroup.Addon>
-                  <FaHistory />
-                </InputGroup.Addon>
-                <Input
-                  placeholder={"Casting time"}
-                  value={currentSpell.time}
-                  onChange={(val: any) => changeSpell({ ...entity, time: val })}
-                  onKeyPress={(e: any) => {
-                    if (e.key === "Enter") {
-                      editTime(false);
-                      onEdit(currentSpell);
-                    }
-                  }}
-                />
-                <InputGroup.Button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    editTime(false);
-                    onEdit(currentSpell);
-                  }}
-                >
-                  <FaCheck />
-                </InputGroup.Button>
-              </InputGroup>
-            )}
-            {!timeEdit && (
-              <>
-                <FaHistory /> {entity.time}
-              </>
-            )}
-          </Prop>
-          <Prop isEditing={durationEdit} onClick={() => editDuration(true)}>
-            {durationEdit && (
-              <InputGroup style={{ width: "max-content" }}>
-                <InputGroup.Addon>
-                  <FaHourglassHalf />
-                </InputGroup.Addon>
-                <Input
-                  placeholder={"Spell duration"}
-                  value={currentSpell.duration}
-                  onChange={(val: any) => changeSpell({ ...entity, duration: val })}
-                  onKeyPress={(e: any) => {
-                    if (e.key === "Enter") {
-                      editDuration(false);
-                      onEdit(currentSpell);
-                    }
-                  }}
-                />
-                <InputGroup.Button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    editDuration(false);
-                    onEdit(currentSpell);
-                  }}
-                >
-                  <FaCheck />
-                </InputGroup.Button>
-              </InputGroup>
-            )}
-            {!durationEdit && (
-              <>
-                <FaHourglassHalf />
-                {entity.duration}
-              </>
-            )}
-          </Prop>
-          <Prop isEditing={rangeEdit} onClick={() => editRange(true)}>
-            {rangeEdit && (
-              <InputGroup style={{ width: "max-content" }}>
-                <InputGroup.Addon>
-                  <GiBullseye />
-                </InputGroup.Addon>
-                <Input
-                  placeholder={"Spell range"}
-                  value={currentSpell.range}
-                  onChange={(val: any) => changeSpell({ ...entity, range: val })}
-                  onKeyPress={(e: any) => {
-                    if (e.key === "Enter") {
-                      editRange(false);
-                      onEdit(currentSpell);
-                    }
-                  }}
-                />
-                <InputGroup.Button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    editRange(false);
-                    onEdit(currentSpell);
-                  }}
-                >
-                  <FaCheck />
-                </InputGroup.Button>
-              </InputGroup>
-            )}
-            {!rangeEdit && (
-              <>
-                <GiBullseye />
-                {entity.range}
-              </>
-            )}
-          </Prop>
+          <EditCompletableStringField
+            placeholder={"Casting time"}
+            icon={<FaHistory />}
+            value={currentSpell.time}
+            isNew={isNew}
+            changeEntity={(val: any) => changeSpell({ ...entity, time: val })}
+            triggerEdit={() => onEdit(currentSpell)}
+          />
+          <EditCompletableStringField
+            placeholder={"Spell duration"}
+            icon={<FaHourglassHalf />}
+            value={currentSpell.duration}
+            isNew={isNew}
+            changeEntity={(val: any) => changeSpell({ ...entity, duration: val })}
+            triggerEdit={() => onEdit(currentSpell)}
+          />
+          <EditCompletableStringField
+            placeholder={"Spell range"}
+            icon={<GiBullseye />}
+            value={currentSpell.range}
+            isNew={isNew}
+            changeEntity={(val: any) => changeSpell({ ...entity, range: val })}
+            triggerEdit={() => onEdit(currentSpell)}
+          />
           <Prop isEditing={componentsEdit} onClick={() => editComponents(true)}>
             {componentsEdit && (
               <InputGroup style={{ width: "max-content" }}>
@@ -454,7 +375,7 @@ const SpellDetail = ({ entity, isNew, onEdit }: $Props) => {
                   trigger={"Enter"}
                   placeholder={"Classes"}
                   value={currentSpell.classes}
-                  onChange={(val: string[]) => changeSpell({ ...entity, classes: val })}
+                  onChange={(val: any[]) => changeSpell({ ...entity, classes: val })}
                   onKeyPress={(e: any) => {
                     if (e.key === "Enter") {
                       editClasses(false);

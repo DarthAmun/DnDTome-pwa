@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import { useCallback } from "react";
 import { FaHistory, FaHourglassHalf, FaMortarPestle, FaUser, FaLink } from "react-icons/fa";
 import { GiBullseye } from "react-icons/gi";
 import { Link } from "react-router-dom";
@@ -152,6 +152,7 @@ export default SpellTile;
 
 const Tile = styled(Link)`
   flex: 1 1 20em;
+  max-width: 300px;
   color: ${({ theme }) => theme.textColor};
   background-color: ${({ theme }) => theme.secondColor};
   border-radius: 10px;

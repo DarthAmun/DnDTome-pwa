@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { FaArrowLeft, FaClone, FaTrash } from "react-icons/fa";
-import { useHistory } from "react-router";
+import { useHistory } from "react-router-dom";
 import { Button, ButtonGroup, Notification, Modal, toaster } from "rsuite";
 import styled from "styled-components";
+import BreadCrumbIcon from "../../general/BreadCrumbIcon";
 
 import IEntity from "../../../data/IEntity";
 import { remove, updateWithCallback, createNewWithId } from "../../../services/DatabaseService";
@@ -14,10 +15,10 @@ interface $Props {
 }
 
 const EntityDetail = ({ entity, tableName, EntityDetails }: $Props) => {
+  let history = useHistory();
   const [entityObj, editEntity] = useState<IEntity>(entity);
 
   const [showDeleteDialog, setDeleteDialog] = useState<boolean>(false);
-  let history = useHistory();
 
   const deleteEntity = () => {
     remove(tableName, entityObj.id);
@@ -80,6 +81,7 @@ const EntityDetail = ({ entity, tableName, EntityDetails }: $Props) => {
         </Modal.Footer>
       </Modal>
       <TopBar>
+        <BreadCrumbIcon />
         <ButtonGroup>
           <Button onClick={() => history.goBack()} size="lg">
             <FaArrowLeft />
@@ -112,6 +114,7 @@ export const TopBar = styled.div`
   max-width: calc(100% - 20px);
   height: 55px;
   padding: 10px;
+  display: flex;
 
   @media (max-width: 576px) {
     max-width: calc(100% - 20px);

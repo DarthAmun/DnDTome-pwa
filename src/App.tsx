@@ -16,11 +16,9 @@ const Group = lazy(() => import("./components/pages/Group"));
 const Options = lazy(() => import("./components/pages/Options"));
 
 const SpellTile = lazy(() => import("./components/entities/spell/SpellTile"));
-const SpellSearch = lazy(() => import("./components/entities/spell/SpellSearch"));
 const SpellDetail = lazy(() => import("./components/entities/spell/SpellDetail"));
 
 const GearDetail = lazy(() => import("./components/entities/gear/GearDetail"));
-const GearSearch = lazy(() => import("./components/entities/gear/GearSearch"));
 const GearTile = lazy(() => import("./components/entities/gear/GearTile"));
 
 export type TParams = { name?: string };
@@ -72,12 +70,7 @@ const App = () => {
                 <Route
                   path="/spell-overview"
                   component={() => (
-                    <EntityOverview
-                      entityName={"spell"}
-                      Entity={Spell}
-                      Tile={SpellTile}
-                      Search={SpellSearch}
-                    />
+                    <EntityOverview entityName={"spell"} Entity={Spell} Tile={SpellTile} />
                   )}
                 />
                 <Route
@@ -111,12 +104,7 @@ const App = () => {
                 <Route
                   path="/gear-overview"
                   component={() => (
-                    <EntityOverview
-                      entityName={"gear"}
-                      Entity={Gear}
-                      Tile={GearTile}
-                      Search={GearSearch}
-                    />
+                    <EntityOverview entityName={"gear"} Entity={Gear} Tile={GearTile} />
                   )}
                 />
               </Switch>

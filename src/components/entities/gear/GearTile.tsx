@@ -56,6 +56,7 @@ export default GearTile;
 
 const Tile = styled(Link)`
   flex: 1 1 20em;
+  max-width: 300px;
   color: ${({ theme }) => theme.secondTextColor};
   background-color: ${({ theme }) => theme.secondColor};
   border-radius: 10px;

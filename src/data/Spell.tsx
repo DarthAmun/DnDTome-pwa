@@ -1,4 +1,12 @@
-import IEntity from "./IEntity";
+import {
+  CreatableSetString,
+  CompletableString,
+  SearchableString,
+  SwitchBoolean,
+  CreatableSetNumber,
+  SetEntity,
+} from "./Datatypes";
+import IEntity, { IEntityConfig } from "./IEntity";
 
 export default class Spell extends IEntity {
   classes: string[];
@@ -26,9 +34,9 @@ export default class Spell extends IEntity {
     range?: string,
     components?: string,
     duration?: string,
-    ritual?: boolean,
     description?: string,
     higherLevel?: string,
+    ritual?: boolean,
     pic?: string,
     picBase64?: string
   ) {
@@ -45,5 +53,34 @@ export default class Spell extends IEntity {
     this.higherLevel = higherLevel || "";
     this.pic = pic || "";
     this.picBase64 = picBase64 || "";
+  }
+
+  getConfig = () => new SpellConfig();
+}
+
+export class SpellConfig extends IEntityConfig {
+  classes: SetEntity;
+  level: CreatableSetNumber;
+  school: CreatableSetString;
+  time: CompletableString;
+  range: CompletableString;
+  components: SearchableString;
+  duration: CompletableString;
+  description: SearchableString;
+  higherLevel: SearchableString;
+  ritual: SwitchBoolean;
+
+  constructor() {
+    super();
+    this.classes = new SetEntity();
+    this.level = new CreatableSetNumber();
+    this.school = new CreatableSetString();
+    this.time = new CompletableString();
+    this.range = new CompletableString();
+    this.components = new SearchableString();
+    this.duration = new CompletableString();
+    this.ritual = new SwitchBoolean();
+    this.description = new SearchableString();
+    this.higherLevel = new SearchableString();
   }
 }

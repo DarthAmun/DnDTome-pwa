@@ -4,6 +4,7 @@ import { useHistory } from "react-router-dom";
 import { Button, ButtonGroup, Notification, toaster } from "rsuite";
 import { createNewWithId } from "../../../services/DatabaseService";
 import { TopBar } from "./EntityDetail";
+import BreadCrumbIcon from "../../general/BreadCrumbIcon";
 
 interface $BuilderProps {
   entityName: string;
@@ -33,6 +34,7 @@ const EntityBuilder = ({ entityName, Entity, EntityDetails }: $BuilderProps) => 
   return (
     <>
       <TopBar>
+        <BreadCrumbIcon />
         <ButtonGroup>
           <Button onClick={() => history.goBack()} size="lg">
             <FaArrowLeft />

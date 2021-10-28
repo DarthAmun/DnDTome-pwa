@@ -1,4 +1,4 @@
-import { reciveAll, reciveAllPromise } from "./DatabaseService";
+import { reciveAll, reciveAllByAttribute, reciveAllPromise } from "./DatabaseService";
 import { IndexableType } from "dexie";
 import Char from "../data/chars/Char";
 import Class from "../data/classes/Class";
@@ -18,6 +18,19 @@ import Location from "../data/world/Location";
 import Event from "../data/world/Event";
 import World from "../data/world/World";
 import Group from "../data/campaign/Group";
+import IEntity from "../data/IEntity";
+
+export const downloadAllFromTableByAttr = async (
+  tableName: string,
+  attr: string,
+  attrLike: string,
+  fileName: string
+) => {
+  reciveAllByAttribute(tableName, attr, attrLike, (all: IEntity[]) => {
+    let entity = { [tableName]: all };
+    downloadContent(entity, fileName);
+  });
+};
 
 export const downloadAllFromTable = async (tableName: string, fileName: string) => {
   reciveAll(tableName, (all: IndexableType[]) => {

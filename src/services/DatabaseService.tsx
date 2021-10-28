@@ -186,6 +186,28 @@ export const reciveByAttribute = (
     });
 };
 
+export const reciveAllByAttribute = (
+  tableName: string,
+  name: string,
+  value: string,
+  callback: (data: IEntity[]) => void
+) => {
+  const db = new DnDTomeDB();
+  db.open()
+    .then(function () {
+      db.table(tableName)
+        .where(name)
+        .equalsIgnoreCase(value)
+        .toArray()
+        .then((array) => {
+          callback(array);
+        });
+    })
+    .finally(function () {
+      db.close();
+    });
+};
+
 export const recivePromiseByAttribute = (tableName: string, name: string, value: string) => {
   const db = new DnDTomeDB();
   return db
@@ -199,7 +221,13 @@ export const recivePromiseByAttribute = (tableName: string, name: string, value:
     });
 };
 
-export const recivePromiseByMultiAttribute = (tableName: string, obj: IEntity) => {
+export const recivePromiseByMultiAttribute = (
+  tableName: string,
+  obj: {
+    name: string;
+    sources: string;
+  }
+) => {
   const db = new DnDTomeDB();
   if (obj.sources !== undefined) {
     return db
@@ -318,17 +346,20 @@ export const applyFilters = (obj: any, filters: Filter[]) => {
           test.push(false);
         }
       } else {
-        test.push(
-          // @ts-ignore
-          obj[filter.fieldName].toLowerCase().includes(filter.value.toLowerCase())
-        );
+        if (obj[filter.fieldName] !== undefined)
+          test.push(
+            // @ts-ignore
+            obj[filter.fieldName].toLowerCase().includes(filter.value.toLowerCase())
+          );
       }
     } else if (typeof filter.value === "number") {
       // @ts-ignore
       test.push(obj[filter.fieldName] === filter.value);
     } else if (typeof filter.value === "boolean") {
       // @ts-ignore
-      test.push(obj[filter.fieldName] === filter.value);
+      const objValue: number | boolean = obj[filter.fieldName];
+      if (typeof objValue === "number") test.push(obj[filter.fieldName] === +filter.value);
+      else test.push(obj[filter.fieldName] === filter.value);
     } else if (filter.value instanceof Array) {
       let arrayTest: boolean = false;
       filter.value.forEach((filterPart: string | boolean | number) => {

@@ -35,7 +35,6 @@ const ToEntity = ({ match, entityName, Entity, EntityDetails }: $EntityProps) =>
     let nameId: string | undefined = match.match.params.name;
     let newEntity: typeof Entity | undefined = undefined;
     var reg = /^\d+$/;
-    console.log(nameId, entityName);
     if (nameId !== undefined) {
       if (!reg.test(nameId)) {
         let [name, sources] = nameId.split("|");
