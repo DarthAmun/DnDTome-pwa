@@ -28,7 +28,9 @@ import styled from "styled-components";
 import Spell from "../../../data/Spell";
 import { stringToColour } from "../../../services/ColorService";
 import { reciveAttributeSelection } from "../../../services/DatabaseService";
+import FormattedText from "../../general/FormattedText";
 import EditCompletableStringField from "../../generic/editFields/EditCompletableStringField";
+import EditSearchableStringField from "../../generic/editFields/EditSearchableStringField";
 
 interface $Props {
   entity: Spell;
@@ -332,41 +334,14 @@ const SpellDetail = ({ entity, isNew, onEdit }: $Props) => {
             changeEntity={(val: any) => changeSpell({ ...entity, range: val })}
             triggerEdit={() => onEdit(currentSpell)}
           />
-          <Prop isEditing={componentsEdit} onClick={() => editComponents(true)}>
-            {componentsEdit && (
-              <InputGroup style={{ width: "max-content" }}>
-                <InputGroup.Addon>
-                  <FaMortarPestle />
-                </InputGroup.Addon>
-                <Input
-                  placeholder={"Spell components"}
-                  value={currentSpell.components}
-                  onChange={(val: any) => changeSpell({ ...entity, components: val })}
-                  onKeyPress={(e: any) => {
-                    if (e.key === "Enter") {
-                      editComponents(false);
-                      onEdit(currentSpell);
-                    }
-                  }}
-                />
-                <InputGroup.Button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    editComponents(false);
-                    onEdit(currentSpell);
-                  }}
-                >
-                  <FaCheck />
-                </InputGroup.Button>
-              </InputGroup>
-            )}
-            {!componentsEdit && (
-              <>
-                <FaMortarPestle />
-                {entity.components}
-              </>
-            )}
-          </Prop>
+          <EditSearchableStringField
+            placeholder={"Spell components"}
+            icon={<FaMortarPestle />}
+            value={currentSpell.components}
+            isNew={isNew}
+            changeEntity={(val: any) => changeSpell({ ...entity, components: val })}
+            triggerEdit={() => onEdit(currentSpell)}
+          />
           <Prop isEditing={classesEdit} onClick={() => editClasses(true)}>
             {classesEdit && (
               <>
@@ -470,10 +445,9 @@ const SpellDetail = ({ entity, isNew, onEdit }: $Props) => {
               <PropTitle>
                 <FaBookOpen />
               </PropTitle>
-              {entity.description}
+              <FormattedText text={entity.description} />
             </>
           )}
-          {/* <FormatedText text={entity.description} /> */}
         </Text>
       </View>
     </CenterWrapper>

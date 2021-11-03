@@ -42,7 +42,6 @@ const EntitySearch = ({
 }: $SearchProps) => {
   let history = useHistory();
   let location = useLocation();
-  const [fields, setFields] = useState<any[]>([]);
   const [oldFilters, setOldFilters] = useState<Filter[]>(mainFilters);
   const [filters, setFilters] = useState<Filter[]>([]);
 
@@ -53,71 +52,6 @@ const EntitySearch = ({
       else newFilters = [...newFilters, filter];
       return newFilters;
     });
-  };
-
-  const makeField = (type: any, key: string, index: number): any => {
-    switch (true) {
-      case type[key] instanceof SearchableString:
-        return (
-          <SearchableStringField
-            key={index}
-            entityName={Entity.name}
-            type={key}
-            applyFilter={applyFilterChange}
-          />
-        );
-      case type[key] instanceof SetString:
-        return (
-          <SetStringField
-            key={index}
-            entityName={entityName}
-            type={key}
-            applyFilter={applyFilterChange}
-          />
-        );
-      case type[key] instanceof SetEntity:
-        return (
-          <SetEntityField
-            key={index}
-            entityName={entityName}
-            type={key}
-            applyFilter={applyFilterChange}
-          />
-        );
-      case type[key] instanceof CreatableSetString:
-        return (
-          <CreatableSetStringField
-            key={index}
-            Entity={Entity}
-            entities={entities}
-            type={key}
-            applyFilter={applyFilterChange}
-          />
-        );
-      case type[key] instanceof CompletableString:
-        return (
-          <CompletableStringField
-            key={index}
-            Entity={Entity}
-            entities={entities}
-            entityName={Entity.name}
-            type={key}
-            applyFilter={applyFilterChange}
-          />
-        );
-      case type[key] instanceof SwitchBoolean:
-        return <SwitchBooleanField key={index} type={key} applyFilter={applyFilterChange} />;
-      case type[key] instanceof CreatableSetNumber:
-        return (
-          <CreatableSetNumberField
-            key={index}
-            Entity={Entity}
-            entities={entities}
-            type={key}
-            applyFilter={applyFilterChange}
-          />
-        );
-    }
   };
 
   useEffect(() => {
@@ -132,17 +66,6 @@ const EntitySearch = ({
       setOldFilters(newOldFilters);
     }
   }, []);
-
-  useEffect(() => {
-    console.log("Generate Searchfields");
-    const type: any = new Entity().getConfig();
-    const types: string[] = Object.getOwnPropertyNames(type);
-    let fields: any = [];
-    types.forEach((key: any, index: number) => {
-      fields.push(makeField(type, key, index));
-    });
-    setFields(fields);
-  }, [Entity, entities]);
 
   const search = () => {
     let newFilters: Filter[] = [...filters];
@@ -181,6 +104,8 @@ const EntitySearch = ({
     });
   };
 
+  const type: any = new Entity().getConfig();
+
   return (
     <Drawer open={showSearchBar} onClose={() => openSearchBar(false)} placement={"top"}>
       <Drawer.Header>
@@ -207,7 +132,76 @@ const EntitySearch = ({
         </Drawer.Actions>
       </Drawer.Header>
       <Drawer.Body>
-        <SearchWrapper>{fields}</SearchWrapper>
+        <SearchWrapper>
+          {Object.getOwnPropertyNames(type).map((keyName: any, index: number) => {
+            switch (true) {
+              case type[keyName] instanceof SearchableString:
+                return (
+                  <SearchableStringField
+                    key={index}
+                    entityName={Entity.name}
+                    type={keyName}
+                    applyFilter={applyFilterChange}
+                  />
+                );
+              case type[keyName] instanceof SetString:
+                return (
+                  <SetStringField
+                    key={index}
+                    entityName={entityName}
+                    type={keyName}
+                    applyFilter={applyFilterChange}
+                  />
+                );
+              case type[keyName] instanceof SetEntity:
+                return (
+                  <SetEntityField
+                    key={index}
+                    entityName={entityName}
+                    type={keyName}
+                    applyFilter={applyFilterChange}
+                  />
+                );
+              case type[keyName] instanceof CreatableSetString:
+                return (
+                  <CreatableSetStringField
+                    key={index}
+                    Entity={Entity}
+                    entities={entities}
+                    type={keyName}
+                    applyFilter={applyFilterChange}
+                  />
+                );
+              case type[keyName] instanceof CompletableString:
+                return (
+                  <CompletableStringField
+                    key={index}
+                    Entity={Entity}
+                    entities={entities}
+                    entityName={Entity.name}
+                    type={keyName}
+                    applyFilter={applyFilterChange}
+                  />
+                );
+              case type[keyName] instanceof SwitchBoolean:
+                return (
+                  <SwitchBooleanField key={index} type={keyName} applyFilter={applyFilterChange} />
+                );
+              case type[keyName] instanceof CreatableSetNumber:
+                return (
+                  <CreatableSetNumberField
+                    key={index}
+                    Entity={Entity}
+                    entities={entities}
+                    type={keyName}
+                    applyFilter={applyFilterChange}
+                  />
+                );
+              default:
+                return <></>;
+            }
+          })}
+        </SearchWrapper>
       </Drawer.Body>
     </Drawer>
   );

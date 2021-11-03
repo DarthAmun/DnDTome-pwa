@@ -175,8 +175,6 @@ const School = styled.div<SchoolType>`
   padding: 5px 10px 7px 10px;
   font-size: 12px;
   line-height: 30px;
-  border-radius: 0px 0px 10px 0px;
-  background-color: ${({ theme }) => theme.mainColor};
   color: ${(props) => {
     if (props.school === "Necromancy") {
       return "#bef28e";
@@ -228,7 +226,7 @@ const Name = styled.div`
 `;
 
 const ImageName = styled.div`
-  height: 30px;
+  height: 40px;
   float: left;
   padding: 10px;
   margin: 0 5px 5px 5px;

@@ -18,7 +18,6 @@ export default class Spell extends IEntity {
   duration: string;
   ritual: boolean;
   description: string;
-  higherLevel: string;
   pic: string;
   picBase64: string;
 
@@ -35,7 +34,6 @@ export default class Spell extends IEntity {
     components?: string,
     duration?: string,
     description?: string,
-    higherLevel?: string,
     ritual?: boolean,
     pic?: string,
     picBase64?: string
@@ -50,7 +48,6 @@ export default class Spell extends IEntity {
     this.duration = duration || "";
     this.ritual = ritual || false;
     this.description = description || "";
-    this.higherLevel = higherLevel || "";
     this.pic = pic || "";
     this.picBase64 = picBase64 || "";
   }
@@ -67,7 +64,6 @@ export class SpellConfig extends IEntityConfig {
   components: SearchableString;
   duration: CompletableString;
   description: SearchableString;
-  higherLevel: SearchableString;
   ritual: SwitchBoolean;
 
   constructor() {
@@ -81,6 +77,5 @@ export class SpellConfig extends IEntityConfig {
     this.duration = new CompletableString();
     this.ritual = new SwitchBoolean();
     this.description = new SearchableString();
-    this.higherLevel = new SearchableString();
   }
 }
