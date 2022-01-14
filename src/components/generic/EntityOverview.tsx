@@ -166,7 +166,7 @@ const EntityOverview = ({ entityName, Entity, Tile }: $OverviewProps) => {
     <>
       <EntitySearch
         Entity={Entity}
-        entityName={"spell"}
+        entityName={entityName}
         entities={allEntitysFromType}
         filters={filters}
         showSearchBar={showSearchBar}
@@ -185,6 +185,7 @@ const EntityOverview = ({ entityName, Entity, Tile }: $OverviewProps) => {
           </Button>
         </ButtonGroup>
         <InputNumber
+          size="lg"
           prefix="Step"
           value={step}
           onChange={(value: any) => changeStep(value)}
@@ -192,7 +193,7 @@ const EntityOverview = ({ entityName, Entity, Tile }: $OverviewProps) => {
           max={100}
           min={10}
           scrollable={true}
-          style={{ width: 120 }}
+          style={{ width: 130 }}
         />
         <TagGroup style={{ marginLeft: "5px", marginTop: "-5px" }}>
           {filters.map((filter: Filter, index: number) => makeFilterTag(filter, index))}

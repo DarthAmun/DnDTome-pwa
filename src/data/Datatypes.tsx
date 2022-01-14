@@ -1,5 +1,7 @@
-//Name, Description, Components, Weight, Cost
+//Name, Components, Weight, Cost
 export class SearchableString {}
+//Description
+export class SearchableText {}
 //Classes
 export class SetString {}
 //Filename

@@ -1,5 +1,6 @@
 import ReactDOM from "react-dom";
 import "./index.css";
+import "react-quill/dist/quill.snow.css";
 // import "rsuite/dist/rsuite.min.css";
 import "./custome.less";
 import App from "./App";

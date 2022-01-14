@@ -24,6 +24,7 @@ import {
 import styled from "styled-components";
 import Gear from "../../../data/Gear";
 import { reciveAttributeSelection } from "../../../services/DatabaseService";
+import EditSearchableTextField from "../../generic/editFields/EditSearchableTextField";
 
 interface $Props {
   entity: Gear;
@@ -322,7 +323,7 @@ const GearDetail = ({ entity, isNew, onEdit }: $Props) => {
                   <FaCrosshairs />
                 </InputGroup.Addon>
                 <Input
-                  placeholder={"Spell damage"}
+                  placeholder={"Gear damage"}
                   value={currentGear.damage}
                   onChange={(val: any) => changeGear({ ...entity, damage: val })}
                   onKeyPress={(e: any) => {
@@ -351,40 +352,15 @@ const GearDetail = ({ entity, isNew, onEdit }: $Props) => {
             )}
           </Prop>
           {entity.properties && <Prop>{entity.properties}</Prop>}
-          <Text isEditing={descriptionEdit} onClick={() => editDescription(true)}>
-            {descriptionEdit && (
-              <InputGroup>
-                <Input
-                  placeholder="Description"
-                  as="textarea"
-                  rows={5}
-                  value={currentGear.description}
-                  onChange={(description: any) =>
-                    changeGear({ ...entity, description: description })
-                  }
-                />
-                <InputGroup.Button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    editDescription(false);
-                    onEdit(currentGear);
-                  }}
-                >
-                  <FaCheck />
-                </InputGroup.Button>
-              </InputGroup>
-            )}
-            {!descriptionEdit && (
-              <>
-                <PropTitle>
-                  <FaBookOpen />
-                </PropTitle>
-                {entity.description}
-              </>
-            )}
-            {/* <FormatedText text={entity.description} /> */}
-          </Text>
         </PropWrapper>
+        <EditSearchableTextField
+          placeholder={"Gear description"}
+          icon={<FaBookOpen />}
+          value={currentGear.description}
+          isNew={isNew}
+          changeEntity={(val: any) => changeGear({ ...entity, description: val })}
+          triggerEdit={() => onEdit(currentGear)}
+        />
       </View>
     </CenterWrapper>
   );
@@ -460,44 +436,6 @@ const Prop = styled.div<{
     border-radius: 150px;
     color: ${({ theme }) => theme.highlight};
   }
-`;
-
-const PropTitle = styled.span`
-  display: inline-block;
-  color: ${({ theme }) => theme.highlight};
-  text-decoration: none;
-  margin: 0px 5px 0px 5px;
-`;
-
-const Text = styled.div<{
-  isEditing?: boolean;
-}>`
-  height: auto;
-  width: calc(100% - 15px);
-  margin: 10px 5px 5px 5px;
-  padding: 10px;
-  float: left;
-  line-height: 18px;
-  border-radius: 5px;
-  background-color: ${({ theme }) => theme.secondColor};
-`;
-
-const Flag = styled.div<{
-  isEditing?: boolean;
-}>`
-  height: auto;
-  float: left;
-  padding: 5px 10px 7px 10px;
-  margin-left: 5px;
-  font-size: 12px;
-  line-height: 30px;
-  border-radius: 5px;
-  background-color: ${({ theme }) => theme.secondColor};
-`;
-
-const FlagContent = styled.div`
-  width: fit-content;
-  height: fit-content;
 `;
 
 interface $ImageProps {

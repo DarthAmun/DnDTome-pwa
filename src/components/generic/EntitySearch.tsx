@@ -8,6 +8,7 @@ import {
   CreatableSetNumber,
   CreatableSetString,
   SearchableString,
+  SearchableText,
   SetEntity,
   SetString,
   SwitchBoolean,
@@ -135,6 +136,7 @@ const EntitySearch = ({
         <SearchWrapper>
           {Object.getOwnPropertyNames(type).map((keyName: any, index: number) => {
             switch (true) {
+              case type[keyName] instanceof SearchableText:
               case type[keyName] instanceof SearchableString:
                 return (
                   <SearchableStringField

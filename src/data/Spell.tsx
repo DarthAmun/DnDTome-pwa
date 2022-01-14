@@ -5,6 +5,7 @@ import {
   SwitchBoolean,
   CreatableSetNumber,
   SetEntity,
+  SearchableText,
 } from "./Datatypes";
 import IEntity, { IEntityConfig } from "./IEntity";
 
@@ -63,7 +64,7 @@ export class SpellConfig extends IEntityConfig {
   range: CompletableString;
   components: SearchableString;
   duration: CompletableString;
-  description: SearchableString;
+  description: SearchableText;
   ritual: SwitchBoolean;
 
   constructor() {
@@ -76,6 +77,6 @@ export class SpellConfig extends IEntityConfig {
     this.components = new SearchableString();
     this.duration = new CompletableString();
     this.ritual = new SwitchBoolean();
-    this.description = new SearchableString();
+    this.description = new SearchableText();
   }
 }

@@ -28,9 +28,9 @@ import styled from "styled-components";
 import Spell from "../../../data/Spell";
 import { stringToColour } from "../../../services/ColorService";
 import { reciveAttributeSelection } from "../../../services/DatabaseService";
-import FormattedText from "../../general/FormattedText";
 import EditCompletableStringField from "../../generic/editFields/EditCompletableStringField";
 import EditSearchableStringField from "../../generic/editFields/EditSearchableStringField";
+import EditSearchableTextField from "../../generic/editFields/EditSearchableTextField";
 
 interface $Props {
   entity: Spell;
@@ -43,15 +43,10 @@ const SpellDetail = ({ entity, isNew, onEdit }: $Props) => {
   const [levelEdit, editLevel] = useState<boolean>(isNew);
   const [schoolEdit, editSchool] = useState<boolean>(isNew);
   const [schoolList, setSchoolList] = useState<{ value: string; label: string }[]>([]);
-  const [timeEdit, editTime] = useState<boolean>(isNew);
   const [nameEdit, editName] = useState<boolean>(isNew);
-  const [durationEdit, editDuration] = useState<boolean>(isNew);
-  const [rangeEdit, editRange] = useState<boolean>(isNew);
-  const [componentsEdit, editComponents] = useState<boolean>(isNew);
   const [classesEdit, editClasses] = useState<boolean>(isNew);
   const [classList, setClassList] = useState<{ value: string; label: string }[]>([]);
   const [sourcesEdit, editSources] = useState<boolean>(isNew);
-  const [descriptionEdit, editDescription] = useState<boolean>(isNew);
   const [ritualEdit, editRitual] = useState<boolean>(isNew);
 
   useEffect(() => {
@@ -417,38 +412,14 @@ const SpellDetail = ({ entity, isNew, onEdit }: $Props) => {
             )}
           </Prop>
         </PropWrapper>
-        <Text isEditing={descriptionEdit} onClick={() => editDescription(true)}>
-          {descriptionEdit && (
-            <InputGroup>
-              <Input
-                placeholder="Description"
-                as="textarea"
-                rows={5}
-                value={currentSpell.description}
-                onChange={(description: any) =>
-                  changeSpell({ ...entity, description: description })
-                }
-              />
-              <InputGroup.Button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  editDescription(false);
-                  onEdit(currentSpell);
-                }}
-              >
-                <FaCheck />
-              </InputGroup.Button>
-            </InputGroup>
-          )}
-          {!descriptionEdit && (
-            <>
-              <PropTitle>
-                <FaBookOpen />
-              </PropTitle>
-              <FormattedText text={entity.description} />
-            </>
-          )}
-        </Text>
+        <EditSearchableTextField
+          placeholder={"Spell description"}
+          icon={<FaBookOpen />}
+          value={currentSpell.description}
+          isNew={isNew}
+          changeEntity={(val: any) => changeSpell({ ...entity, description: val })}
+          triggerEdit={() => onEdit(currentSpell)}
+        />
       </View>
     </CenterWrapper>
   );
@@ -583,26 +554,6 @@ const Prop = styled.div<{
     border-radius: 150px;
     color: ${({ theme }) => theme.highlight};
   }
-`;
-
-const PropTitle = styled.span`
-  display: inline-block;
-  color: ${({ theme }) => theme.highlight};
-  text-decoration: none;
-  margin: 0px 5px 0px 5px;
-`;
-
-const Text = styled.div<{
-  isEditing?: boolean;
-}>`
-  height: auto;
-  width: calc(100% - 15px);
-  margin: 10px 5px 5px 5px;
-  padding: 10px;
-  float: left;
-  line-height: 18px;
-  border-radius: 5px;
-  background-color: ${({ theme }) => theme.secondColor};
 `;
 
 const Flag = styled.div<{

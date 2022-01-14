@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { ReactNodeArray } from "hoist-non-react-statics/node_modules/@types/react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { formating } from "../../services/TextService";
 
@@ -7,7 +8,12 @@ interface $Props {
 }
 
 const FormattedText = ({ text }: $Props) => {
-  const [formatted, setFormatted] = useState(formating(text));
+  const [formatted, setText] = useState<ReactNodeArray>([]);
+
+  useEffect(() => {
+    setText(formating(text));
+  }, [text]);
+
   return <FormatedTextContainer>{formatted}</FormatedTextContainer>;
 };
 

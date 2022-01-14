@@ -108,13 +108,13 @@ export default EntityDetail;
 export const TopBar = styled.div`
   color: ${({ theme }) => theme.textColor};
   font-size: 16px;
-  overflow: hidden;
   flex: 1 1;
   width: 100%;
   max-width: calc(100% - 20px);
   height: 55px;
   padding: 10px;
   display: flex;
+  align-items: flex-start;
 
   @media (max-width: 576px) {
     max-width: calc(100% - 20px);
