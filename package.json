@@ -41,7 +41,7 @@
     "@types/recharts": "^1.8.14",
     "@types/styled-components": "^5.1.0",
     "chart.js": "^3.1.0",
-    "dexie": "^3.0.3",
+    "dexie": "^3.2.2",
     "html-react-parser": "^1.2.4",
     "node-gyp": "8.0.0",
     "pdf-lib": "^1.11.2",
