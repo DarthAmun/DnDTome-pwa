@@ -19,7 +19,7 @@
     "html-webpack-plugin": "5.3.1",
     "image-size": "^0.9.3",
     "leaflet": "^1.7.1",
-    "react-flow-renderer": "9.4.4",
+    "react-flow-renderer": "9.7.4",
     "react-leaflet": "^3.0.5",
     "react-router-dom": "^5.1.2",
     "style-loader": "2.0.0"
@@ -60,7 +60,7 @@
     "react-select": "^4.3.0",
     "react-string-replace": "^0.4.4",
     "react-swipeable": "^6.0.1",
-    "recharts": "^2.0.9",
+    "recharts": "^2.1.14",
     "source-map-explorer": "^2.5.2",
     "styled-components": "^5.1.1",
     "typescript": "^4.2.4"
